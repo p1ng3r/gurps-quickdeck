@@ -65,14 +65,44 @@
                     <div>
                       <dt>Dodge</dt>
                       <dd>{{gurpsData.display.dodge}}</dd>
+                      <button
+                        type="button"
+                        data-action="roll-defense"
+                        data-actor-id="{{activeActor.id}}"
+                        data-defense="Dodge"
+                        data-value="{{gurpsData.display.dodge}}"
+                        class="quickdeck-roll-button"
+                      >
+                        Roll Dodge
+                      </button>
                     </div>
                     <div>
                       <dt>Parry</dt>
                       <dd>{{gurpsData.display.parry}}</dd>
+                      <button
+                        type="button"
+                        data-action="roll-defense"
+                        data-actor-id="{{activeActor.id}}"
+                        data-defense="Parry"
+                        data-value="{{gurpsData.display.parry}}"
+                        class="quickdeck-roll-button"
+                      >
+                        Roll Parry
+                      </button>
                     </div>
                     <div>
                       <dt>Block</dt>
                       <dd>{{gurpsData.display.block}}</dd>
+                      <button
+                        type="button"
+                        data-action="roll-defense"
+                        data-actor-id="{{activeActor.id}}"
+                        data-defense="Block"
+                        data-value="{{gurpsData.display.block}}"
+                        class="quickdeck-roll-button"
+                      >
+                        Roll Block
+                      </button>
                     </div>
                   </dl>
 
@@ -96,7 +126,7 @@
 
                     {{#if gurpsData.attacks.length}}
                       <div class="quickdeck-attacks-list">
-                        {{#each gurpsData.attacks as |attack|}}
+                        {{#each indexedAttacks as |attack|}}
                           <article class="quickdeck-attack-card">
                             <header>
                               <h5>{{attack.name}}</h5>
@@ -124,6 +154,15 @@
                                 <dd>{{#if attack.block}}{{attack.block}}{{else}}—{{/if}}</dd>
                               </div>
                             </dl>
+                            <button
+                              type="button"
+                              data-action="roll-attack"
+                              data-actor-id="{{../activeActor.id}}"
+                              data-attack-index="{{attack.index}}"
+                              class="quickdeck-roll-button"
+                            >
+                              Roll Attack
+                            </button>
                           </article>
                         {{/each}}
                       </div>

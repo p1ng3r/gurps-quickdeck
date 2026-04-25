@@ -15,6 +15,8 @@ A Foundry VTT module that adds a lightweight, drawer-based character viewer for 
   - **Skills**
 - Only one right drawer can be open at a time; clicking an active drawer tab closes it.
 - Combat Burst drawer emphasizes portrait, HP, FP, dodge/parry/block summary, and attacks.
+- Combat Burst includes quick roll buttons for Dodge, Parry, Block, and each listed attack.
+- Drawer panels are scroll-safe; long attacks and skills lists scroll within the drawer.
 - Skills drawer safely extracts from common GURPS paths and renders normalized skills.
 - Uses defensive data access so missing GURPS paths do not crash the app.
 
