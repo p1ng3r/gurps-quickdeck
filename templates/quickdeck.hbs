@@ -1,0 +1,74 @@
+<section class="quickdeck-shell">
+  <aside class="quickdeck-sidebar">
+    <h3>Characters</h3>
+
+    {{#if hasCharacters}}
+      <ul class="quickdeck-character-list">
+        {{#each characters as |actor|}}
+          <li>
+            <button
+              type="button"
+              data-action="open-actor"
+              data-actor-id="{{actor.id}}"
+              class="quickdeck-character-button {{#if actor.isActive}}is-active{{/if}}"
+            >
+              <img src="{{actor.img}}" alt="{{actor.name}}" />
+              <span>{{actor.name}}</span>
+            </button>
+          </li>
+        {{/each}}
+      </ul>
+    {{else}}
+      <p class="quickdeck-empty">No character actors found.</p>
+    {{/if}}
+  </aside>
+
+  <main class="quickdeck-main">
+    <nav class="quickdeck-tabs" aria-label="Open character tabs">
+      {{#each tabs as |tab|}}
+        <button
+          type="button"
+          data-action="activate-tab"
+          data-actor-id="{{tab.id}}"
+          class="quickdeck-tab {{#if (eq tab.id ../activeActor.id)}}is-active{{/if}}"
+        >
+          <img src="{{tab.img}}" alt="{{tab.name}}" />
+          <span>{{tab.name}}</span>
+        </button>
+      {{/each}}
+    </nav>
+
+    <section class="quickdeck-panel">
+      {{#if activeActor}}
+        <header class="quickdeck-actor-header">
+          <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+          <div>
+            <h2>{{activeActor.name}}</h2>
+            <p>Lightweight QuickDeck viewer MVP</p>
+          </div>
+        </header>
+
+        <dl class="quickdeck-stats">
+          <div>
+            <dt>HP</dt>
+            <dd>{{#if gurpsData.hp}}{{gurpsData.hp}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>FP</dt>
+            <dd>{{#if gurpsData.fp}}{{gurpsData.fp}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Move</dt>
+            <dd>{{#if gurpsData.move}}{{gurpsData.move}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Dodge</dt>
+            <dd>{{#if gurpsData.dodge}}{{gurpsData.dodge}}{{else}}—{{/if}}</dd>
+          </div>
+        </dl>
+      {{else}}
+        <p class="quickdeck-empty">Open a character from the left to start.</p>
+      {{/if}}
+    </section>
+  </main>
+</section>
