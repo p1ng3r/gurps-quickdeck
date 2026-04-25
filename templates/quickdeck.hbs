@@ -299,6 +299,15 @@
                                 <dd>{{#if skill.points}}{{skill.points}}{{else}}—{{/if}}</dd>
                               </div>
                             </dl>
+                            <button
+                              type="button"
+                              data-action="roll-skill"
+                              data-actor-id="{{../activeActor.id}}"
+                              data-skill-index="{{skill.index}}"
+                              class="quickdeck-roll-button"
+                            >
+                              Roll Skill
+                            </button>
                           </article>
                         {{/each}}
                       </div>
