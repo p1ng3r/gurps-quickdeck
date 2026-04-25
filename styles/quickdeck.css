@@ -16,7 +16,13 @@
 }
 
 .quickdeck-sidebar h3 {
-  margin: 0 0 0.5rem;
+  margin: 0;
+}
+
+.quickdeck-hint {
+  margin: 0.2rem 0 0.65rem;
+  font-size: 0.75rem;
+  opacity: 0.8;
 }
 
 .quickdeck-character-list {
@@ -73,74 +79,146 @@
   width: auto;
 }
 
-.quickdeck-panel {
-  padding: 0.75rem;
+.quickdeck-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  min-height: 0;
+}
+
+.quickdeck-stage {
+  padding: 0.9rem;
   overflow-y: auto;
+}
+
+.quickdeck-stage h2 {
+  margin: 0;
+}
+
+.quickdeck-stage p {
+  margin: 0.3rem 0 0;
+  opacity: 0.8;
+}
+
+.quickdeck-panel {
+  width: 350px;
+  max-width: 55vw;
+  border-left: 1px solid var(--color-border-light-2);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.03));
+  transition: width 160ms ease;
+  overflow: hidden;
+  position: relative;
+}
+
+.quickdeck-collapse-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  width: 100%;
+  border: 0;
+  border-bottom: 1px solid var(--color-border-light-2);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.45rem 0.6rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.quickdeck-collapse-icon {
+  width: 18px;
+  display: inline-flex;
+  justify-content: center;
+}
+
+.quickdeck-panel-content {
+  padding: 0.65rem;
+  height: calc(100% - 38px);
+  overflow-y: auto;
+}
+
+.quickdeck-panel.is-collapsed {
+  width: 44px;
+}
+
+.quickdeck-panel.is-collapsed .quickdeck-collapse-toggle {
+  height: 100%;
+  border-bottom: 0;
+  padding: 0.5rem 0.25rem;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  justify-content: center;
+}
+
+.quickdeck-panel.is-collapsed .quickdeck-collapse-label {
+  letter-spacing: 0.08em;
+}
+
+.quickdeck-panel.is-collapsed .quickdeck-panel-content {
+  display: none;
 }
 
 .quickdeck-actor-header {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.8rem;
 }
 
 .quickdeck-actor-header img {
-  width: 48px;
-  height: 48px;
+  width: 56px;
+  height: 56px;
 }
 
-.quickdeck-actor-header h2 {
+.quickdeck-actor-header h3 {
   margin: 0;
 }
 
 .quickdeck-actor-header p {
-  margin: 0.15rem 0 0;
+  margin: 0.1rem 0 0;
   opacity: 0.8;
+  font-size: 0.8rem;
 }
 
+.quickdeck-defenses,
 .quickdeck-stats {
   display: grid;
-  grid-template-columns: repeat(4, minmax(80px, 1fr));
-  gap: 0.5rem;
+  grid-template-columns: repeat(3, minmax(68px, 1fr));
+  gap: 0.45rem;
+  margin: 0 0 0.7rem;
 }
 
+.quickdeck-defenses div,
 .quickdeck-stats div {
   border: 1px solid var(--color-border-light-2);
   border-radius: 6px;
-  padding: 0.5rem;
+  padding: 0.45rem;
 }
 
-.quickdeck-stats dt {
-  font-size: 0.8rem;
-  opacity: 0.8;
-}
-
+.quickdeck-defenses dd,
 .quickdeck-stats dd {
   margin: 0.2rem 0 0;
-  font-size: 1.1rem;
-  font-weight: 600;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.quickdeck-defenses dt,
+.quickdeck-stats dt {
+  font-size: 0.74rem;
+  opacity: 0.8;
 }
 
 .quickdeck-empty {
   opacity: 0.8;
 }
 
-.quickdeck-open-button {
-  margin-left: 0.25rem;
-}
-
 .quickdeck-attacks-section {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
 }
 
-.quickdeck-attacks-section h3 {
+.quickdeck-attacks-section h4 {
   margin: 0 0 0.5rem;
 }
 
 .quickdeck-attacks-list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
   gap: 0.5rem;
 }
 
@@ -159,9 +237,9 @@
   margin-bottom: 0.4rem;
 }
 
-.quickdeck-attack-card h4 {
+.quickdeck-attack-card h5 {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
 }
 
 .quickdeck-attack-card header span {
