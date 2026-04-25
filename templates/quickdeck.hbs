@@ -30,7 +30,7 @@
           type="button"
           data-action="activate-tab"
           data-actor-id="{{tab.id}}"
-          class="quickdeck-tab {{#if (eq tab.id ../activeActor.id)}}is-active{{/if}}"
+          class="quickdeck-tab {{#if tab.isActive}}is-active{{/if}}"
         >
           <img src="{{tab.img}}" alt="{{tab.name}}" />
           <span>{{tab.name}}</span>

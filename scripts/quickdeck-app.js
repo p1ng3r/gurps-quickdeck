@@ -66,7 +66,8 @@ export class QuickDeckApp extends Application {
       .map((actor) => ({
         id: actor.id,
         name: actor.name,
-        img: actor.img || "icons/svg/mystery-man.svg"
+        img: actor.img || "icons/svg/mystery-man.svg",
+        isActive: actor.id === this.activeActorId
       }));
 
     const activeActor = this.getActiveActor();
