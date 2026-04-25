@@ -3,9 +3,10 @@ const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
     super(options);
-    this.openTabs = [];
+    this.rosterActorIds = [];
     this.activeActorId = null;
     this.activeDrawer = null;
+    this.availableSearch = "";
     this._actorSelectTimeout = null;
   }
 
@@ -16,8 +17,8 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 720,
-      height: 520,
+      width: 840,
+      height: 560,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
@@ -33,20 +34,27 @@ export class QuickDeckApp extends Application {
   }
 
   ensureActorTab(actorId) {
-    if (!this.openTabs.includes(actorId)) {
-      this.openTabs.push(actorId);
+    if (!actorId || !game.actors.has(actorId)) return;
+    if (!this.rosterActorIds.includes(actorId)) {
+      this.rosterActorIds.push(actorId);
     }
-
     this.activeActorId = actorId;
   }
 
-  onActorDeleted(actorId) {
-    this.openTabs = this.openTabs.filter((id) => id !== actorId);
+  removeActorFromRoster(actorId) {
+    if (!actorId) return;
+
+    const previousLength = this.rosterActorIds.length;
+    this.rosterActorIds = this.rosterActorIds.filter((id) => id !== actorId);
+    if (this.rosterActorIds.length === previousLength) return;
 
     if (this.activeActorId === actorId) {
-      this.activeActorId = this.openTabs[0] ?? null;
+      this.activeActorId = this.rosterActorIds[0] ?? null;
     }
+  }
 
+  onActorDeleted(actorId) {
+    this.removeActorFromRoster(actorId);
     this.render();
   }
 
@@ -327,14 +335,33 @@ export class QuickDeckApp extends Application {
   }
 
   getData() {
-    const actors = this.getCombatActors();
+    const allActors = this.getCombatActors();
+    const allActorIds = new Set(allActors.map((actor) => actor.id));
+    this.rosterActorIds = this.rosterActorIds.filter((id) => allActorIds.has(id));
 
-    this.openTabs = this.openTabs.filter((id) => game.actors.has(id));
-
-    if (!this.activeActorId && actors.length > 0) {
-      this.activeActorId = actors[0].id;
-      this.ensureActorTab(this.activeActorId);
+    if (this.activeActorId && !this.rosterActorIds.includes(this.activeActorId)) {
+      this.activeActorId = null;
     }
+    if (!this.activeActorId && this.rosterActorIds.length > 0) {
+      this.activeActorId = this.rosterActorIds[0];
+    }
+
+    const rosterActors = this.rosterActorIds
+      .map((id) => game.actors.get(id))
+      .filter((actor) => actor && actor.id);
+
+    const search = this.availableSearch.trim().toLowerCase();
+    const availableActors = allActors
+      .filter((actor) => {
+        if (!search) return true;
+        return (actor.name ?? "").toLowerCase().includes(search);
+      })
+      .map((actor) => ({
+        id: actor.id,
+        name: actor.name,
+        img: actor.img || "icons/svg/mystery-man.svg",
+        isInRoster: this.rosterActorIds.includes(actor.id)
+      }));
 
     const activeActor = this.getActiveActor();
     const attacks = this.extractAttacks(activeActor);
@@ -368,7 +395,9 @@ export class QuickDeckApp extends Application {
     };
 
     return {
-      actors: actors.map((actor) => ({
+      availableSearch: this.availableSearch,
+      availableActors,
+      rosterActors: rosterActors.map((actor) => ({
         id: actor.id,
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
@@ -382,7 +411,8 @@ export class QuickDeckApp extends Application {
           }
         : null,
       gurpsData,
-      hasActors: actors.length > 0,
+      hasAvailableActors: availableActors.length > 0,
+      hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
@@ -396,6 +426,25 @@ export class QuickDeckApp extends Application {
   activateListeners(html) {
     super.activateListeners(html);
 
+    html.find("[data-action='add-actor']").on("click", (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      if (!actorId || !game.actors.has(actorId)) return;
+
+      this.ensureActorTab(actorId);
+      this.render();
+    });
+
+    html.find("[data-action='remove-actor']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId;
+      if (!actorId) return;
+
+      this.removeActorFromRoster(actorId);
+      this.render();
+    });
+
     html.find("[data-action='open-actor']").on("click", (event) => {
       event.preventDefault();
       if (event.detail > 1) return;
@@ -404,7 +453,7 @@ export class QuickDeckApp extends Application {
 
       if (this._actorSelectTimeout) clearTimeout(this._actorSelectTimeout);
       this._actorSelectTimeout = window.setTimeout(() => {
-        this.ensureActorTab(actorId);
+        this.activeActorId = actorId;
         this.render();
         this._actorSelectTimeout = null;
       }, 225);
@@ -419,8 +468,14 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
-      this.ensureActorTab(actorId);
+      this.activeActorId = actorId;
       this.openActorSheet(actorId);
+      this.render();
+    });
+
+    html.find("[data-action='available-search']").on("input", (event) => {
+      const searchValue = event.currentTarget?.value;
+      this.availableSearch = typeof searchValue === "string" ? searchValue : "";
       this.render();
     });
 
