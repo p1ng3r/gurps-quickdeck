@@ -5,7 +5,7 @@ export class QuickDeckApp extends Application {
     super(options);
     this.openTabs = [];
     this.activeActorId = null;
-    this.isCombatPanelCollapsed = false;
+    this.activeDrawer = null;
   }
 
   static get defaultOptions() {
@@ -127,6 +127,26 @@ export class QuickDeckApp extends Application {
     };
   }
 
+  normalizeSkill(skill) {
+    if (!skill || typeof skill !== "object") return null;
+
+    const name =
+      this.getFirstDefinedValue(skill, ["name", "label", "skill", "title"]) ??
+      "Unnamed Skill";
+
+    return {
+      name,
+      level: this.getFirstDefinedValue(skill, ["level", "value", "import", "rsl"]),
+      relativeLevel: this.getFirstDefinedValue(skill, [
+        "relativeLevel",
+        "relative",
+        "rsl",
+        "relative_level"
+      ]),
+      points: this.getFirstDefinedValue(skill, ["points", "pts", "spent", "cp"])
+    };
+  }
+
   extractAttacks(actor) {
     if (!actor) return [];
 
@@ -150,6 +170,31 @@ export class QuickDeckApp extends Application {
     }
 
     return attacks;
+  }
+
+  extractSkills(actor) {
+    if (!actor) return [];
+
+    const skillSources = [
+      "system.skills",
+      "data.data.skills",
+      "system.ads",
+      "system.traits.skills"
+    ];
+
+    const skills = [];
+
+    for (const path of skillSources) {
+      const collection = foundry.utils.getProperty(actor, path);
+      const entries = this.getCollectionEntries(collection);
+
+      for (const entry of entries) {
+        const normalized = this.normalizeSkill(entry);
+        if (normalized) skills.push(normalized);
+      }
+    }
+
+    return skills;
   }
 
   toDisplayValue(value) {
@@ -194,7 +239,6 @@ export class QuickDeckApp extends Application {
   getData() {
     const actors = this.getCombatActors();
 
-    // Keep tabs in sync with actors currently available.
     this.openTabs = this.openTabs.filter((id) => game.actors.has(id));
 
     if (!this.activeActorId && actors.length > 0) {
@@ -202,23 +246,13 @@ export class QuickDeckApp extends Application {
       this.ensureActorTab(this.activeActorId);
     }
 
-    const tabs = this.openTabs
-      .map((id) => game.actors.get(id))
-      .filter(Boolean)
-      .map((actor) => ({
-        id: actor.id,
-        name: actor.name,
-        img: actor.img || "icons/svg/mystery-man.svg",
-        isActive: actor.id === this.activeActorId
-      }));
-
     const activeActor = this.getActiveActor();
     const attacks = this.extractAttacks(activeActor);
+    const skills = this.extractSkills(activeActor);
     const dodge = foundry.utils.getProperty(activeActor, "system.currentdodge") ?? null;
     const bestParry = this.getBestAttackDefense(attacks, "parry");
     const bestBlock = this.getBestAttackDefense(attacks, "block");
 
-    // Defensive GURPS data access: these paths may vary or be absent.
     const gurpsData = {
       hp: foundry.utils.getProperty(activeActor, "system.HP.value") ?? null,
       fp: foundry.utils.getProperty(activeActor, "system.FP.value") ?? null,
@@ -230,6 +264,7 @@ export class QuickDeckApp extends Application {
         block: bestBlock
       },
       attacks,
+      skills,
       display: {
         hp: this.toDisplayValue(foundry.utils.getProperty(activeActor, "system.HP.value")),
         fp: this.toDisplayValue(foundry.utils.getProperty(activeActor, "system.FP.value")),
@@ -249,7 +284,6 @@ export class QuickDeckApp extends Application {
         img: actor.img || "icons/svg/mystery-man.svg",
         isActive: actor.id === this.activeActorId
       })),
-      tabs,
       activeActor: activeActor
         ? {
             id: activeActor.id,
@@ -259,7 +293,9 @@ export class QuickDeckApp extends Application {
         : null,
       gurpsData,
       hasActors: actors.length > 0,
-      isCombatPanelCollapsed: this.isCombatPanelCollapsed
+      activeDrawer: this.activeDrawer,
+      isCombatDrawerOpen: this.activeDrawer === "combat",
+      isSkillsDrawerOpen: this.activeDrawer === "skills"
     };
   }
 
@@ -283,18 +319,12 @@ export class QuickDeckApp extends Application {
       this.openActorSheet(actorId);
     });
 
-    html.find("[data-action='activate-tab']").on("click", (event) => {
+    html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
-      if (!actorId || !game.actors.has(actorId)) return;
+      const drawer = event.currentTarget.dataset.drawer;
+      if (!drawer) return;
 
-      this.activeActorId = actorId;
-      this.render();
-    });
-
-    html.find("[data-action='toggle-combat-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.isCombatPanelCollapsed = !this.isCombatPanelCollapsed;
+      this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.render();
     });
   }
