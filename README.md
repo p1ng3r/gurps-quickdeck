@@ -6,10 +6,12 @@ A Foundry VTT module that adds a lightweight, drawer-based character viewer for 
 
 - Adds a **QuickDeck** button to the **Actor Directory** header.
 - Opens one resizable QuickDeck window.
-- Lists available actors that can reasonably open a sheet (characters/NPCs/enemies, system-dependent).
-- Single-clicking an actor selects/activates it in QuickDeck.
-- Double-clicking an actor opens the full Foundry actor sheet.
-- Keeps internal actor tab state without showing a visible top tab bar.
+- Uses a **selected roster** model:
+  - **Available Actors** list includes renderable actors (searchable).
+  - **QuickDeck Roster** only contains actors you explicitly add.
+  - Single-clicking a roster actor selects/activates it in QuickDeck.
+  - Double-clicking a roster actor opens the full Foundry actor sheet.
+  - Each roster actor has a remove button that removes it from QuickDeck only (not Foundry).
 - Right-side vertical drawer tabs:
   - **Combat Burst**
   - **Skills**

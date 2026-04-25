@@ -1,27 +1,76 @@
 <section class="quickdeck-shell">
   <aside class="quickdeck-sidebar">
-    <h3>Combatants</h3>
-    <p class="quickdeck-hint">Click: select actor · Double-click: open full sheet</p>
+    <section class="quickdeck-sidebar-block">
+      <h3>QuickDeck Roster</h3>
+      <p class="quickdeck-hint">Click: select actor · Double-click: open full sheet</p>
 
-    {{#if hasActors}}
-      <ul class="quickdeck-character-list">
-        {{#each actors as |actor|}}
-          <li>
-            <button
-              type="button"
-              data-action="open-actor"
-              data-actor-id="{{actor.id}}"
-              class="quickdeck-character-button {{#if actor.isActive}}is-active{{/if}}"
-            >
-              <img src="{{actor.img}}" alt="{{actor.name}}" />
-              <span>{{actor.name}}</span>
-            </button>
-          </li>
-        {{/each}}
-      </ul>
-    {{else}}
-      <p class="quickdeck-empty">No actors available for QuickDeck.</p>
-    {{/if}}
+      {{#if hasRosterActors}}
+        <ul class="quickdeck-roster-list">
+          {{#each rosterActors as |actor|}}
+            <li>
+              <button
+                type="button"
+                data-action="open-actor"
+                data-actor-id="{{actor.id}}"
+                class="quickdeck-roster-button {{#if actor.isActive}}is-active{{/if}}"
+              >
+                <img src="{{actor.img}}" alt="{{actor.name}}" />
+                <span>{{actor.name}}</span>
+              </button>
+              <button
+                type="button"
+                data-action="remove-actor"
+                data-actor-id="{{actor.id}}"
+                class="quickdeck-remove-button"
+                title="Remove from QuickDeck roster"
+                aria-label="Remove {{actor.name}} from QuickDeck roster"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p class="quickdeck-empty">No actors in roster. Add some from Available Actors.</p>
+      {{/if}}
+    </section>
+
+    <section class="quickdeck-sidebar-block quickdeck-sidebar-available">
+      <div class="quickdeck-available-header">
+        <h4>Available Actors</h4>
+        <input
+          type="search"
+          value="{{availableSearch}}"
+          data-action="available-search"
+          placeholder="Search actors..."
+          autocomplete="off"
+        />
+      </div>
+
+      {{#if hasAvailableActors}}
+        <ul class="quickdeck-available-list">
+          {{#each availableActors as |actor|}}
+            <li>
+              <div class="quickdeck-available-actor">
+                <img src="{{actor.img}}" alt="{{actor.name}}" />
+                <span>{{actor.name}}</span>
+              </div>
+              <button
+                type="button"
+                data-action="add-actor"
+                data-actor-id="{{actor.id}}"
+                class="quickdeck-add-button"
+                {{#if actor.isInRoster}}disabled{{/if}}
+              >
+                {{#if actor.isInRoster}}Added{{else}}Add{{/if}}
+              </button>
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p class="quickdeck-empty">No available actors found.</p>
+      {{/if}}
+    </section>
   </aside>
 
   <main class="quickdeck-main">
@@ -52,74 +101,76 @@
           <section class="quickdeck-panel">
             {{#if activeActor}}
               {{#if isCombatDrawerOpen}}
-                <div class="quickdeck-panel-content">
-                  <header class="quickdeck-actor-header">
-                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
-                    <div>
-                      <h3>{{activeActor.name}}</h3>
-                      <p>Combat snapshot</p>
-                    </div>
-                  </header>
+                <div class="quickdeck-panel-content quickdeck-panel-combat">
+                  <div class="quickdeck-panel-scroll-root">
+                    <header class="quickdeck-actor-header">
+                      <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+                      <div>
+                        <h3>{{activeActor.name}}</h3>
+                        <p>Combat snapshot</p>
+                      </div>
+                    </header>
 
-                  <dl class="quickdeck-defenses">
-                    <div>
-                      <dt>Dodge</dt>
-                      <dd>{{gurpsData.display.dodge}}</dd>
-                      <button
-                        type="button"
-                        data-action="roll-defense"
-                        data-actor-id="{{activeActor.id}}"
-                        data-defense="Dodge"
-                        data-value="{{gurpsData.display.dodge}}"
-                        class="quickdeck-roll-button"
-                      >
-                        Roll Dodge
-                      </button>
-                    </div>
-                    <div>
-                      <dt>Parry</dt>
-                      <dd>{{gurpsData.display.parry}}</dd>
-                      <button
-                        type="button"
-                        data-action="roll-defense"
-                        data-actor-id="{{activeActor.id}}"
-                        data-defense="Parry"
-                        data-value="{{gurpsData.display.parry}}"
-                        class="quickdeck-roll-button"
-                      >
-                        Roll Parry
-                      </button>
-                    </div>
-                    <div>
-                      <dt>Block</dt>
-                      <dd>{{gurpsData.display.block}}</dd>
-                      <button
-                        type="button"
-                        data-action="roll-defense"
-                        data-actor-id="{{activeActor.id}}"
-                        data-defense="Block"
-                        data-value="{{gurpsData.display.block}}"
-                        class="quickdeck-roll-button"
-                      >
-                        Roll Block
-                      </button>
-                    </div>
-                  </dl>
+                    <dl class="quickdeck-defenses">
+                      <div>
+                        <dt>Dodge</dt>
+                        <dd>{{gurpsData.display.dodge}}</dd>
+                        <button
+                          type="button"
+                          data-action="roll-defense"
+                          data-actor-id="{{activeActor.id}}"
+                          data-defense="Dodge"
+                          data-value="{{gurpsData.display.dodge}}"
+                          class="quickdeck-roll-button"
+                        >
+                          Roll Dodge
+                        </button>
+                      </div>
+                      <div>
+                        <dt>Parry</dt>
+                        <dd>{{gurpsData.display.parry}}</dd>
+                        <button
+                          type="button"
+                          data-action="roll-defense"
+                          data-actor-id="{{activeActor.id}}"
+                          data-defense="Parry"
+                          data-value="{{gurpsData.display.parry}}"
+                          class="quickdeck-roll-button"
+                        >
+                          Roll Parry
+                        </button>
+                      </div>
+                      <div>
+                        <dt>Block</dt>
+                        <dd>{{gurpsData.display.block}}</dd>
+                        <button
+                          type="button"
+                          data-action="roll-defense"
+                          data-actor-id="{{activeActor.id}}"
+                          data-defense="Block"
+                          data-value="{{gurpsData.display.block}}"
+                          class="quickdeck-roll-button"
+                        >
+                          Roll Block
+                        </button>
+                      </div>
+                    </dl>
 
-                  <dl class="quickdeck-stats">
-                    <div>
-                      <dt>HP</dt>
-                      <dd>{{gurpsData.display.hp}}</dd>
-                    </div>
-                    <div>
-                      <dt>FP</dt>
-                      <dd>{{gurpsData.display.fp}}</dd>
-                    </div>
-                    <div>
-                      <dt>Move</dt>
-                      <dd>{{gurpsData.display.move}}</dd>
-                    </div>
-                  </dl>
+                    <dl class="quickdeck-stats">
+                      <div>
+                        <dt>HP</dt>
+                        <dd>{{gurpsData.display.hp}}</dd>
+                      </div>
+                      <div>
+                        <dt>FP</dt>
+                        <dd>{{gurpsData.display.fp}}</dd>
+                      </div>
+                      <div>
+                        <dt>Move</dt>
+                        <dd>{{gurpsData.display.move}}</dd>
+                      </div>
+                    </dl>
+                  </div>
 
                   <section class="quickdeck-attacks-section">
                     <h4>Attacks</h4>
@@ -174,7 +225,7 @@
               {{/if}}
 
               {{#if isSkillsDrawerOpen}}
-                <div class="quickdeck-panel-content">
+                <div class="quickdeck-panel-content quickdeck-panel-skills">
                   <header class="quickdeck-actor-header">
                     <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
                     <div>
@@ -216,7 +267,7 @@
               {{/if}}
             {{else}}
               <div class="quickdeck-panel-content">
-                <p class="quickdeck-empty">Select an actor on the left first.</p>
+                <p class="quickdeck-empty">Select an actor from the QuickDeck Roster first.</p>
               </div>
             {{/if}}
           </section>
