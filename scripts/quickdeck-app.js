@@ -5,6 +5,7 @@ export class QuickDeckApp extends Application {
     super(options);
     this.openTabs = [];
     this.activeActorId = null;
+    this.isCombatPanelCollapsed = false;
   }
 
   static get defaultOptions() {
@@ -21,9 +22,12 @@ export class QuickDeckApp extends Application {
     });
   }
 
-  getCharacterActors() {
+  getCombatActors() {
     return game.actors
-      .filter((actor) => actor.type === "character")
+      .filter((actor) => {
+        if (!actor || !actor.id) return false;
+        return typeof actor.sheet?.render === "function";
+      })
       .sort((a, b) => a.name.localeCompare(b.name));
   }
 
@@ -77,6 +81,19 @@ export class QuickDeckApp extends Application {
         "usage"
       ]) ?? "Unnamed Attack";
 
+    const parry = this.getFirstDefinedValue(attack, [
+      "parry",
+      "calc.parry",
+      "defense.parry",
+      "defence.parry"
+    ]);
+    const block = this.getFirstDefinedValue(attack, [
+      "block",
+      "calc.block",
+      "defense.block",
+      "defence.block"
+    ]);
+
     return {
       name,
       type,
@@ -100,12 +117,12 @@ export class QuickDeckApp extends Application {
             ? ["reach", "meleeReach", "range", "distance"]
             : ["range", "accRange", "distance", "reach"]
         ) ?? null,
-      parryOrBlock: this.getFirstDefinedValue(attack, [
-        "parry",
-        "block",
-        "defense",
-        "defence"
-      ]),
+      parry,
+      block,
+      parryOrBlock:
+        parry ??
+        block ??
+        this.getFirstDefinedValue(attack, ["defense", "defence"]),
       raw: attack
     };
   }
@@ -135,14 +152,53 @@ export class QuickDeckApp extends Application {
     return attacks;
   }
 
+  toDisplayValue(value) {
+    return value === undefined || value === null || value === "" ? "—" : value;
+  }
+
+  parseDefenseScore(value) {
+    if (value === undefined || value === null || value === "") return null;
+    const match = String(value).match(/-?\d+/);
+    return match ? Number(match[0]) : null;
+  }
+
+  getBestAttackDefense(attacks, key) {
+    let firstValue = null;
+    let bestValue = null;
+    let bestScore = Number.NEGATIVE_INFINITY;
+
+    for (const attack of attacks) {
+      const value = attack?.[key];
+      if (value === undefined || value === null || value === "") continue;
+
+      if (firstValue === null) firstValue = value;
+
+      const score = this.parseDefenseScore(value);
+      if (score !== null && score > bestScore) {
+        bestScore = score;
+        bestValue = value;
+      }
+    }
+
+    return bestValue ?? firstValue ?? null;
+  }
+
+  openActorSheet(actorId) {
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+    if (typeof actor.sheet?.render !== "function") return;
+
+    actor.sheet.render(true);
+  }
+
   getData() {
-    const characters = this.getCharacterActors();
+    const actors = this.getCombatActors();
 
     // Keep tabs in sync with actors currently available.
     this.openTabs = this.openTabs.filter((id) => game.actors.has(id));
 
-    if (!this.activeActorId && characters.length > 0) {
-      this.activeActorId = characters[0].id;
+    if (!this.activeActorId && actors.length > 0) {
+      this.activeActorId = actors[0].id;
       this.ensureActorTab(this.activeActorId);
     }
 
@@ -157,18 +213,37 @@ export class QuickDeckApp extends Application {
       }));
 
     const activeActor = this.getActiveActor();
+    const attacks = this.extractAttacks(activeActor);
+    const dodge = foundry.utils.getProperty(activeActor, "system.currentdodge") ?? null;
+    const bestParry = this.getBestAttackDefense(attacks, "parry");
+    const bestBlock = this.getBestAttackDefense(attacks, "block");
 
     // Defensive GURPS data access: these paths may vary or be absent.
     const gurpsData = {
       hp: foundry.utils.getProperty(activeActor, "system.HP.value") ?? null,
       fp: foundry.utils.getProperty(activeActor, "system.FP.value") ?? null,
       move: foundry.utils.getProperty(activeActor, "system.basicmove.value") ?? null,
-      dodge: foundry.utils.getProperty(activeActor, "system.currentdodge") ?? null,
-      attacks: this.extractAttacks(activeActor)
+      dodge,
+      defenses: {
+        dodge,
+        parry: bestParry,
+        block: bestBlock
+      },
+      attacks,
+      display: {
+        hp: this.toDisplayValue(foundry.utils.getProperty(activeActor, "system.HP.value")),
+        fp: this.toDisplayValue(foundry.utils.getProperty(activeActor, "system.FP.value")),
+        move: this.toDisplayValue(
+          foundry.utils.getProperty(activeActor, "system.basicmove.value")
+        ),
+        dodge: this.toDisplayValue(dodge),
+        parry: this.toDisplayValue(bestParry),
+        block: this.toDisplayValue(bestBlock)
+      }
     };
 
     return {
-      characters: characters.map((actor) => ({
+      actors: actors.map((actor) => ({
         id: actor.id,
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
@@ -183,7 +258,8 @@ export class QuickDeckApp extends Application {
           }
         : null,
       gurpsData,
-      hasCharacters: characters.length > 0
+      hasActors: actors.length > 0,
+      isCombatPanelCollapsed: this.isCombatPanelCollapsed
     };
   }
 
@@ -199,12 +275,26 @@ export class QuickDeckApp extends Application {
       this.render();
     });
 
+    html.find("[data-action='open-actor']").on("dblclick", (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      if (!actorId || !game.actors.has(actorId)) return;
+
+      this.openActorSheet(actorId);
+    });
+
     html.find("[data-action='activate-tab']").on("click", (event) => {
       event.preventDefault();
       const actorId = event.currentTarget.dataset.actorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
       this.activeActorId = actorId;
+      this.render();
+    });
+
+    html.find("[data-action='toggle-combat-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.isCombatPanelCollapsed = !this.isCombatPanelCollapsed;
       this.render();
     });
   }
