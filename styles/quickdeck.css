@@ -489,7 +489,16 @@
   min-height: 0;
   flex: 1 1 auto;
   overflow-y: auto;
+  scrollbar-gutter: stable;
   padding-right: 0.15rem;
+}
+
+.quickdeck-debug-count {
+  margin-left: 0.35rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.02em;
+  opacity: 0.8;
+  text-transform: none;
 }
 
 .quickdeck-attack-card,
