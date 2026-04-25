@@ -1,8 +1,19 @@
 <section class="quickdeck-shell">
   <aside class="quickdeck-sidebar">
-    <section class="quickdeck-sidebar-block">
-      <h3>QuickDeck Roster</h3>
+    <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
+      <div class="quickdeck-block-title-row">
+        <h3>QuickDeck Roster <span class="quickdeck-badge">{{rosterCount}}</span></h3>
+        <button
+          type="button"
+          data-action="clear-roster"
+          class="quickdeck-clear-button"
+          title="Clear QuickDeck roster"
+        >
+          Clear Roster
+        </button>
+      </div>
       <p class="quickdeck-hint">Click: select actor · Double-click: open full sheet</p>
+      <p class="quickdeck-drop-hint">Drag actors here from the Actor Directory.</p>
 
       {{#if hasRosterActors}}
         <ul class="quickdeck-roster-list">
@@ -15,7 +26,10 @@
                 class="quickdeck-roster-button {{#if actor.isActive}}is-active{{/if}}"
               >
                 <img src="{{actor.img}}" alt="{{actor.name}}" />
-                <span>{{actor.name}}</span>
+                <span class="quickdeck-roster-name">{{actor.name}}</span>
+                {{#if actor.actorType}}
+                  <span class="quickdeck-type-pill">{{actor.actorType}}</span>
+                {{/if}}
               </button>
               <button
                 type="button"
@@ -37,7 +51,7 @@
 
     <section class="quickdeck-sidebar-block quickdeck-sidebar-available">
       <div class="quickdeck-available-header">
-        <h4>Available Actors</h4>
+        <h4>Available Actors <span class="quickdeck-badge">{{availableCount}}</span></h4>
         <input
           type="search"
           value="{{availableSearch}}"
@@ -54,6 +68,9 @@
               <div class="quickdeck-available-actor">
                 <img src="{{actor.img}}" alt="{{actor.name}}" />
                 <span>{{actor.name}}</span>
+                {{#if actor.actorType}}
+                  <span class="quickdeck-type-pill">{{actor.actorType}}</span>
+                {{/if}}
               </div>
               <button
                 type="button"
@@ -107,8 +124,21 @@
                       <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
                       <div>
                         <h3>{{activeActor.name}}</h3>
-                        <p>Combat snapshot</p>
+                        <p>
+                          Combat snapshot
+                          {{#if activeActor.actorType}}
+                            <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
+                          {{/if}}
+                        </p>
                       </div>
+                      <button
+                        type="button"
+                        data-action="open-sheet"
+                        data-actor-id="{{activeActor.id}}"
+                        class="quickdeck-open-sheet-button"
+                      >
+                        Open Sheet
+                      </button>
                     </header>
 
                     <dl class="quickdeck-defenses">
@@ -230,8 +260,21 @@
                     <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
                     <div>
                       <h3>{{activeActor.name}}</h3>
-                      <p>Skills snapshot</p>
+                      <p>
+                        Skills snapshot
+                        {{#if activeActor.actorType}}
+                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
+                        {{/if}}
+                      </p>
                     </div>
+                    <button
+                      type="button"
+                      data-action="open-sheet"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-open-sheet-button"
+                    >
+                      Open Sheet
+                    </button>
                   </header>
 
                   <section class="quickdeck-skills-section">

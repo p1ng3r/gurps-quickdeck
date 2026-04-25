@@ -8,6 +8,7 @@ export class QuickDeckApp extends Application {
     this.activeDrawer = null;
     this.availableSearch = "";
     this._actorSelectTimeout = null;
+    this.isDragOverRoster = false;
   }
 
   static get defaultOptions() {
@@ -39,6 +40,11 @@ export class QuickDeckApp extends Application {
       this.rosterActorIds.push(actorId);
     }
     this.activeActorId = actorId;
+  }
+
+  clearRoster() {
+    this.rosterActorIds = [];
+    this.activeActorId = null;
   }
 
   removeActorFromRoster(actorId) {
@@ -334,6 +340,50 @@ export class QuickDeckApp extends Application {
     await this.createFallbackRollChat(actor, rollContext);
   }
 
+  parseDropPayload(rawText) {
+    if (!rawText || typeof rawText !== "string") return null;
+    try {
+      return JSON.parse(rawText);
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  async resolveActorFromDropData(event) {
+    const transfer = event?.dataTransfer;
+    if (!transfer) return null;
+
+    const rawText = transfer.getData("text/plain");
+    const parsedPayload = this.parseDropPayload(rawText);
+    const payload = parsedPayload && typeof parsedPayload === "object" ? parsedPayload : null;
+
+    const rawLooksLikeUuid = typeof rawText === "string" && rawText.includes("Actor.");
+    const type = payload?.type ?? payload?.documentName ?? payload?.data?.type ?? null;
+    const uuid = payload?.uuid ?? payload?.data?.uuid ?? payload?.actorUuid ?? null;
+    const actorId = payload?.id ?? payload?.actorId ?? payload?.data?._id ?? payload?.data?.id ?? null;
+
+    const isActorPayload = !type || type === "Actor";
+
+    if (typeof fromUuid === "function" && (uuid || rawLooksLikeUuid)) {
+      try {
+        const uuidValue = uuid ?? rawText;
+        const resolvedDocument = await fromUuid(uuidValue);
+        if (resolvedDocument?.documentName === "Actor" || resolvedDocument instanceof Actor) {
+          return resolvedDocument;
+        }
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed to resolve dropped UUID.", error);
+      }
+    }
+
+    if (isActorPayload && actorId) {
+      const actor = game.actors.get(actorId);
+      if (actor) return actor;
+    }
+
+    return null;
+  }
+
   getData() {
     const allActors = this.getCombatActors();
     const allActorIds = new Set(allActors.map((actor) => actor.id));
@@ -360,6 +410,7 @@ export class QuickDeckApp extends Application {
         id: actor.id,
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
+        actorType: actor.type ? String(actor.type) : null,
         isInRoster: this.rosterActorIds.includes(actor.id)
       }));
 
@@ -397,17 +448,21 @@ export class QuickDeckApp extends Application {
     return {
       availableSearch: this.availableSearch,
       availableActors,
+      rosterCount: rosterActors.length,
+      availableCount: availableActors.length,
       rosterActors: rosterActors.map((actor) => ({
         id: actor.id,
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
+        actorType: actor.type ? String(actor.type) : null,
         isActive: actor.id === this.activeActorId
       })),
       activeActor: activeActor
         ? {
             id: activeActor.id,
             name: activeActor.name,
-            img: activeActor.img || "icons/svg/mystery-man.svg"
+            img: activeActor.img || "icons/svg/mystery-man.svg",
+            actorType: activeActor.type ? String(activeActor.type) : null
           }
         : null,
       gurpsData,
@@ -416,6 +471,7 @@ export class QuickDeckApp extends Application {
       activeDrawer: this.activeDrawer,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
+      isDragOverRoster: this.isDragOverRoster,
       indexedAttacks: attacks.map((attack, index) => ({
         ...attack,
         index
@@ -433,6 +489,19 @@ export class QuickDeckApp extends Application {
 
       this.ensureActorTab(actorId);
       this.render();
+    });
+
+    html.find("[data-action='clear-roster']").on("click", (event) => {
+      event.preventDefault();
+      this.clearRoster();
+      this.render();
+    });
+
+    html.find("[data-action='open-sheet']").on("click", (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      if (!actorId || !game.actors.has(actorId)) return;
+      this.openActorSheet(actorId);
     });
 
     html.find("[data-action='remove-actor']").on("click", (event) => {
@@ -527,6 +596,40 @@ export class QuickDeckApp extends Application {
         attackType: attack.type,
         attack
       });
+    });
+
+    const dropTarget = html.find("[data-drop-zone='roster']")[0];
+    if (!dropTarget) return;
+
+    dropTarget.addEventListener("dragenter", (event) => {
+      event.preventDefault();
+      this.isDragOverRoster = true;
+      this.render(false);
+    });
+
+    dropTarget.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      if (!this.isDragOverRoster) {
+        this.isDragOverRoster = true;
+        this.render(false);
+      }
+    });
+
+    dropTarget.addEventListener("dragleave", (event) => {
+      event.preventDefault();
+      if (event.currentTarget?.contains(event.relatedTarget)) return;
+      this.isDragOverRoster = false;
+      this.render(false);
+    });
+
+    dropTarget.addEventListener("drop", async (event) => {
+      event.preventDefault();
+      this.isDragOverRoster = false;
+      const actor = await this.resolveActorFromDropData(event);
+      if (actor?.id) {
+        this.ensureActorTab(actor.id);
+      }
+      this.render();
     });
   }
 }
