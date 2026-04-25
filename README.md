@@ -1,18 +1,21 @@
 # GURPS QuickDeck
 
-A Foundry VTT module that adds a lightweight, tabbed character viewer for GURPS worlds.
+A Foundry VTT module that adds a lightweight, drawer-based character viewer for GURPS worlds.
 
 ## MVP Features
 
 - Adds a **QuickDeck** button to the **Actor Directory** header.
 - Opens one resizable QuickDeck window.
 - Lists available actors that can reasonably open a sheet (characters/NPCs/enemies, system-dependent).
-- Clicking an actor adds/activates a tab for that actor.
+- Single-clicking an actor selects/activates it in QuickDeck.
 - Double-clicking an actor opens the full Foundry actor sheet.
-- Tabs show actor name and portrait.
-- Clicking a tab switches the active actor view.
-- Right-side **Combat Burst** panel can be collapsed/expanded with a launcher button.
-- Expanded panel emphasizes portrait, HP, FP, dodge, defense summary, and attacks.
+- Keeps internal actor tab state without showing a visible top tab bar.
+- Right-side vertical drawer tabs:
+  - **Combat Burst**
+  - **Skills**
+- Only one right drawer can be open at a time; clicking an active drawer tab closes it.
+- Combat Burst drawer emphasizes portrait, HP, FP, dodge/parry/block summary, and attacks.
+- Skills drawer safely extracts from common GURPS paths and renders normalized skills.
 - Uses defensive data access so missing GURPS paths do not crash the app.
 
 ## Compatibility
@@ -22,4 +25,4 @@ A Foundry VTT module that adds a lightweight, tabbed character viewer for GURPS 
 
 ## Development
 
-This repository contains a first MVP and intentionally does **not** embed the full GURPS actor sheet.
+This repository contains a focused MVP and intentionally does **not** embed the full GURPS actor sheet inside QuickDeck.
