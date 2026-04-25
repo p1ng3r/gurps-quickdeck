@@ -203,9 +203,14 @@
                   </div>
 
                   <section class="quickdeck-attacks-section">
-                    <h4>Attacks</h4>
+                    <h4>
+                      Attacks
+                      {{#if isDebugMode}}
+                        <span class="quickdeck-debug-count">Attacks: {{attackCount}}</span>
+                      {{/if}}
+                    </h4>
 
-                    {{#if gurpsData.attacks.length}}
+                    {{#if indexedAttacks.length}}
                       <div class="quickdeck-attacks-list">
                         {{#each indexedAttacks as |attack|}}
                           <article class="quickdeck-attack-card">
@@ -278,11 +283,16 @@
                   </header>
 
                   <section class="quickdeck-skills-section">
-                    <h4>Skills</h4>
+                    <h4>
+                      Skills
+                      {{#if isDebugMode}}
+                        <span class="quickdeck-debug-count">Skills: {{skillsCount}}</span>
+                      {{/if}}
+                    </h4>
 
-                    {{#if gurpsData.skills.length}}
+                    {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
-                        {{#each gurpsData.skills as |skill|}}
+                        {{#each indexedSkills as |skill|}}
                           <article class="quickdeck-skill-row">
                             <h5>{{skill.name}}</h5>
                             <dl>
@@ -299,6 +309,15 @@
                                 <dd>{{#if skill.points}}{{skill.points}}{{else}}—{{/if}}</dd>
                               </div>
                             </dl>
+                            <button
+                              type="button"
+                              data-action="roll-skill"
+                              data-actor-id="{{../activeActor.id}}"
+                              data-skill-index="{{skill.index}}"
+                              class="quickdeck-roll-button"
+                            >
+                              Roll Skill
+                            </button>
                           </article>
                         {{/each}}
                       </div>

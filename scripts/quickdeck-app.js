@@ -222,7 +222,8 @@ export class QuickDeckApp extends Application {
         "rsl",
         "relative_level"
       ]),
-      points: this.getFirstDefinedValue(skill, ["points", "pts", "spent", "cp"])
+      points: this.getFirstDefinedValue(skill, ["points", "pts", "spent", "cp"]),
+      raw: skill
     };
   }
 
@@ -439,12 +440,16 @@ export class QuickDeckApp extends Application {
   async createFallbackRollChat(actor, rollContext) {
     const speaker = ChatMessage.getSpeaker({ actor });
     const targetLabel = rollContext.value ?? "—";
+    const relativeLabel = rollContext.relativeLevel ?? null;
+    const pointsLabel = rollContext.points ?? null;
     const content = `
       <div class="gurps-quickdeck-roll-fallback">
         <h3>QuickDeck Roll</h3>
         <p><strong>Actor:</strong> ${actor?.name ?? "Unknown"}</p>
         <p><strong>Roll:</strong> ${rollContext.label}</p>
         <p><strong>Target:</strong> ${targetLabel}</p>
+        ${relativeLabel !== null ? `<p><strong>Relative:</strong> ${relativeLabel}</p>` : ""}
+        ${pointsLabel !== null ? `<p><strong>Points:</strong> ${pointsLabel}</p>` : ""}
       </div>
     `;
 
@@ -605,9 +610,16 @@ export class QuickDeckApp extends Application {
       activeDrawer: this.activeDrawer,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
+      isDebugMode: DEBUG,
+      attackCount: attacks.length,
+      skillsCount: skills.length,
       isDragOverRoster: this.isDragOverRoster,
       indexedAttacks: attacks.map((attack, index) => ({
         ...attack,
+        index
+      })),
+      indexedSkills: skills.map((skill, index) => ({
+        ...skill,
         index
       }))
     };
@@ -729,6 +741,32 @@ export class QuickDeckApp extends Application {
         attackName: attack.name,
         attackType: attack.type,
         attack
+      });
+    });
+
+    html.find("[data-action='roll-skill']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      const skillIndex = Number(event.currentTarget.dataset.skillIndex);
+      if (!actorId || Number.isNaN(skillIndex)) return;
+
+      const actor = game.actors.get(actorId);
+      const skills = this.extractSkills(actor);
+      const skill = skills[skillIndex];
+      if (!skill) return;
+
+      const value =
+        skill.level ??
+        this.getFirstDefinedValue(skill.raw, ["level", "import", "value", "rsl"]);
+
+      await this.triggerCombatRoll(actorId, {
+        type: "skill",
+        label: `Roll Skill (${skill.name})`,
+        value,
+        relativeLevel: skill.relativeLevel ?? null,
+        points: skill.points ?? null,
+        skillName: skill.name,
+        skill
       });
     });
 
