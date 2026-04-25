@@ -6,6 +6,7 @@ export class QuickDeckApp extends Application {
     this.openTabs = [];
     this.activeActorId = null;
     this.activeDrawer = null;
+    this._actorSelectTimeout = null;
   }
 
   static get defaultOptions() {
@@ -230,10 +231,99 @@ export class QuickDeckApp extends Application {
 
   openActorSheet(actorId) {
     const actor = game.actors.get(actorId);
-    if (!actor) return;
-    if (typeof actor.sheet?.render !== "function") return;
+    if (!actor) {
+      console.warn("gurps-quickdeck | Could not open actor sheet, actor not found.", {
+        actorId
+      });
+      return;
+    }
+    if (typeof actor.sheet?.render !== "function") {
+      console.warn("gurps-quickdeck | Could not open actor sheet, actor sheet render missing.", {
+        actorId
+      });
+      return;
+    }
 
     actor.sheet.render(true);
+  }
+
+  parseRollTarget(value) {
+    if (value === undefined || value === null || value === "") return null;
+    const match = String(value).match(/-?\d+/);
+    return match ? Number(match[0]) : null;
+  }
+
+  async callIfFunction(context, path, ...args) {
+    const fn = foundry.utils.getProperty(context, path);
+    if (typeof fn !== "function") return false;
+    try {
+      await fn.call(context, ...args);
+      return true;
+    } catch (error) {
+      console.warn(`gurps-quickdeck | Roll method failed at "${path}".`, error);
+      return false;
+    }
+  }
+
+  async tryGurpsRoll(actor, rollContext) {
+    const numericTarget = this.parseRollTarget(rollContext.value);
+
+    const actorPaths = [
+      "rollSkill",
+      "rollAttribute",
+      "rollTest",
+      "rollAgainst",
+      "roll",
+      "system.rollSkill",
+      "system.rollTest",
+      "system.rollAgainst"
+    ];
+    for (const path of actorPaths) {
+      const succeeded = await this.callIfFunction(actor, path, rollContext, numericTarget);
+      if (succeeded) return true;
+    }
+
+    const gurpsPaths = ["performAction", "roll", "rollSkill", "doRoll"];
+    for (const path of gurpsPaths) {
+      const succeeded = await this.callIfFunction(
+        game.GURPS,
+        path,
+        actor,
+        rollContext,
+        numericTarget
+      );
+      if (succeeded) return true;
+    }
+
+    return false;
+  }
+
+  async createFallbackRollChat(actor, rollContext) {
+    const speaker = ChatMessage.getSpeaker({ actor });
+    const targetLabel = rollContext.value ?? "—";
+    const content = `
+      <div class="gurps-quickdeck-roll-fallback">
+        <h3>QuickDeck Roll</h3>
+        <p><strong>Actor:</strong> ${actor?.name ?? "Unknown"}</p>
+        <p><strong>Roll:</strong> ${rollContext.label}</p>
+        <p><strong>Target:</strong> ${targetLabel}</p>
+      </div>
+    `;
+
+    await ChatMessage.create({
+      speaker,
+      content
+    });
+  }
+
+  async triggerCombatRoll(actorId, rollContext) {
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+    if (!rollContext?.label) return;
+
+    const usedSystemRoll = await this.tryGurpsRoll(actor, rollContext);
+    if (usedSystemRoll) return;
+    await this.createFallbackRollChat(actor, rollContext);
   }
 
   getData() {
@@ -295,7 +385,11 @@ export class QuickDeckApp extends Application {
       hasActors: actors.length > 0,
       activeDrawer: this.activeDrawer,
       isCombatDrawerOpen: this.activeDrawer === "combat",
-      isSkillsDrawerOpen: this.activeDrawer === "skills"
+      isSkillsDrawerOpen: this.activeDrawer === "skills",
+      indexedAttacks: attacks.map((attack, index) => ({
+        ...attack,
+        index
+      }))
     };
   }
 
@@ -304,19 +398,30 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='open-actor']").on("click", (event) => {
       event.preventDefault();
+      if (event.detail > 1) return;
       const actorId = event.currentTarget.dataset.actorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
-      this.ensureActorTab(actorId);
-      this.render();
+      if (this._actorSelectTimeout) clearTimeout(this._actorSelectTimeout);
+      this._actorSelectTimeout = window.setTimeout(() => {
+        this.ensureActorTab(actorId);
+        this.render();
+        this._actorSelectTimeout = null;
+      }, 225);
     });
 
     html.find("[data-action='open-actor']").on("dblclick", (event) => {
       event.preventDefault();
+      if (this._actorSelectTimeout) {
+        clearTimeout(this._actorSelectTimeout);
+        this._actorSelectTimeout = null;
+      }
       const actorId = event.currentTarget.dataset.actorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
+      this.ensureActorTab(actorId);
       this.openActorSheet(actorId);
+      this.render();
     });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
@@ -326,6 +431,47 @@ export class QuickDeckApp extends Application {
 
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.render();
+    });
+
+    html.find("[data-action='roll-defense']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      const defense = event.currentTarget.dataset.defense;
+      const value = event.currentTarget.dataset.value;
+      if (!actorId || !defense) return;
+
+      const label = `Roll ${defense}`;
+      await this.triggerCombatRoll(actorId, {
+        type: "defense",
+        defense,
+        label,
+        value
+      });
+    });
+
+    html.find("[data-action='roll-attack']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      const attackIndex = Number(event.currentTarget.dataset.attackIndex);
+      if (!actorId || Number.isNaN(attackIndex)) return;
+
+      const actor = game.actors.get(actorId);
+      const attacks = this.extractAttacks(actor);
+      const attack = attacks[attackIndex];
+      if (!attack) return;
+
+      const value =
+        attack.level ??
+        this.getFirstDefinedValue(attack.raw, ["skill", "level", "roll", "import"]);
+
+      await this.triggerCombatRoll(actorId, {
+        type: "attack",
+        label: `Roll Attack (${attack.name})`,
+        value,
+        attackName: attack.name,
+        attackType: attack.type,
+        attack
+      });
     });
   }
 }
