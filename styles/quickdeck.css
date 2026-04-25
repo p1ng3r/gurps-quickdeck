@@ -386,11 +386,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
-}
-
-.quickdeck-panel-combat,
-.quickdeck-panel-skills {
-  overflow: hidden;
+  overflow-y: auto;
 }
 
 .quickdeck-panel-scroll-root {
@@ -465,11 +461,6 @@
 .quickdeck-attacks-section,
 .quickdeck-skills-section {
   margin-top: 0;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  overflow: hidden;
 }
 
 .quickdeck-attacks-section h4,
@@ -486,11 +477,6 @@
   margin-top: 0.45rem;
   display: grid;
   gap: 0.5rem;
-  min-height: 0;
-  flex: 1 1 auto;
-  overflow-y: auto;
-  scrollbar-gutter: stable;
-  padding-right: 0.15rem;
 }
 
 .quickdeck-debug-count {

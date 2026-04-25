@@ -203,12 +203,7 @@
                   </div>
 
                   <section class="quickdeck-attacks-section">
-                    <h4>
-                      Attacks
-                      {{#if isDebugMode}}
-                        <span class="quickdeck-debug-count">Attacks: {{attackCount}}</span>
-                      {{/if}}
-                    </h4>
+                    <h4>Attacks ({{attackCount}})</h4>
 
                     {{#if indexedAttacks.length}}
                       <div class="quickdeck-attacks-list">
@@ -283,12 +278,7 @@
                   </header>
 
                   <section class="quickdeck-skills-section">
-                    <h4>
-                      Skills
-                      {{#if isDebugMode}}
-                        <span class="quickdeck-debug-count">Skills: {{skillsCount}}</span>
-                      {{/if}}
-                    </h4>
+                    <h4>Skills ({{skillsCount}})</h4>
 
                     {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
