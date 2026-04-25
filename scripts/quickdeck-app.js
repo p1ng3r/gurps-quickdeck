@@ -1,4 +1,5 @@
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
+const DEBUG = false;
 
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
@@ -82,6 +83,69 @@ export class QuickDeckApp extends Application {
       return Object.values(collection).filter(Boolean);
     }
     return [];
+  }
+
+  collectNestedMatches(root, matcher) {
+    if (typeof matcher !== "function") return [];
+
+    const results = [];
+    const visited = new WeakSet();
+    const stack = [root];
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+      if (!current || typeof current !== "object") continue;
+      if (visited.has(current)) continue;
+      visited.add(current);
+
+      if (matcher(current)) {
+        results.push(current);
+        continue;
+      }
+
+      if (Array.isArray(current)) {
+        for (const value of current) stack.push(value);
+      } else {
+        for (const value of Object.values(current)) stack.push(value);
+      }
+    }
+
+    return results;
+  }
+
+  objectHasAnyPath(source, paths = []) {
+    if (!source || typeof source !== "object") return false;
+    return paths.some((path) => foundry.utils.getProperty(source, path) !== undefined);
+  }
+
+  isAttackLike(value) {
+    return this.objectHasAnyPath(value, [
+      "name",
+      "mode",
+      "damage",
+      "dmg",
+      "level",
+      "skill",
+      "parry",
+      "block",
+      "reach",
+      "range",
+      "acc",
+      "rof",
+      "rcl"
+    ]);
+  }
+
+  isSkillLike(value) {
+    return this.objectHasAnyPath(value, [
+      "name",
+      "level",
+      "relativeLevel",
+      "rsl",
+      "points",
+      "pts",
+      "import"
+    ]);
   }
 
   normalizeAttack(attack, type) {
@@ -176,7 +240,9 @@ export class QuickDeckApp extends Application {
 
     for (const source of attackSources) {
       const collection = foundry.utils.getProperty(actor, source.path);
-      const entries = this.getCollectionEntries(collection);
+      const entries = this.collectNestedMatches(collection, (entry) =>
+        this.isAttackLike(entry)
+      );
 
       for (const entry of entries) {
         const normalized = this.normalizeAttack(entry, source.type);
@@ -193,7 +259,6 @@ export class QuickDeckApp extends Application {
     const skillSources = [
       "system.skills",
       "data.data.skills",
-      "system.ads",
       "system.traits.skills"
     ];
 
@@ -201,7 +266,9 @@ export class QuickDeckApp extends Application {
 
     for (const path of skillSources) {
       const collection = foundry.utils.getProperty(actor, path);
-      const entries = this.getCollectionEntries(collection);
+      const entries = this.collectNestedMatches(collection, (entry) =>
+        this.isSkillLike(entry)
+      );
 
       for (const entry of entries) {
         const normalized = this.normalizeSkill(entry);
@@ -241,6 +308,63 @@ export class QuickDeckApp extends Application {
     }
 
     return bestValue ?? firstValue ?? null;
+  }
+
+  summarizeActorPath(actor, path) {
+    const value = foundry.utils.getProperty(actor, path);
+    const summary = {
+      path,
+      exists: value !== undefined && value !== null,
+      kind: Array.isArray(value) ? "array" : typeof value
+    };
+
+    if (!summary.exists) return summary;
+
+    if (Array.isArray(value)) {
+      summary.length = value.length;
+      const firstObject = value.find((item) => item && typeof item === "object");
+      if (firstObject) summary.sampleKeys = Object.keys(firstObject).slice(0, 10);
+      return summary;
+    }
+
+    if (value && typeof value === "object") {
+      const entries = Object.entries(value);
+      summary.keyCount = entries.length;
+      const firstObjectEntry = entries.find(([, item]) => item && typeof item === "object");
+      if (firstObjectEntry) {
+        summary.sampleEntryKey = firstObjectEntry[0];
+        summary.sampleKeys = Object.keys(firstObjectEntry[1]).slice(0, 10);
+      }
+    }
+
+    return summary;
+  }
+
+  dumpActiveActorData() {
+    const actor = this.getActiveActor();
+    if (!actor) {
+      console.log("gurps-quickdeck | No active actor selected for debug dump.");
+      return;
+    }
+
+    const melee = this.extractAttacks(actor).filter((item) => item.type === "Melee").length;
+    const ranged = this.extractAttacks(actor).filter((item) => item.type === "Ranged").length;
+    const skills = this.extractSkills(actor).length;
+
+    console.log("gurps-quickdeck | Active actor debug summary", {
+      actor: actor.name,
+      paths: [
+        this.summarizeActorPath(actor, "system.melee"),
+        this.summarizeActorPath(actor, "system.ranged"),
+        this.summarizeActorPath(actor, "system.skills"),
+        this.summarizeActorPath(actor, "system.ads")
+      ],
+      extractedCounts: {
+        melee,
+        ranged,
+        skills
+      }
+    });
   }
 
   openActorSheet(actorId) {
@@ -417,6 +541,16 @@ export class QuickDeckApp extends Application {
     const activeActor = this.getActiveActor();
     const attacks = this.extractAttacks(activeActor);
     const skills = this.extractSkills(activeActor);
+    if (DEBUG) {
+      const meleeCount = attacks.filter((attack) => attack.type === "Melee").length;
+      const rangedCount = attacks.filter((attack) => attack.type === "Ranged").length;
+      console.log("gurps-quickdeck | Extraction debug", {
+        activeActor: activeActor?.name ?? null,
+        meleeCount,
+        rangedCount,
+        skillsCount: skills.length
+      });
+    }
     const dodge = foundry.utils.getProperty(activeActor, "system.currentdodge") ?? null;
     const bestParry = this.getBestAttackDefense(attacks, "parry");
     const bestBlock = this.getBestAttackDefense(attacks, "block");
