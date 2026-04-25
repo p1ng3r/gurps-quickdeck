@@ -49,6 +49,92 @@ export class QuickDeckApp extends Application {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
   }
 
+  getFirstDefinedValue(source, paths = []) {
+    for (const path of paths) {
+      const value = foundry.utils.getProperty(source, path);
+      if (value !== undefined && value !== null && value !== "") return value;
+    }
+    return null;
+  }
+
+  getCollectionEntries(collection) {
+    if (Array.isArray(collection)) return collection.filter(Boolean);
+    if (collection && typeof collection === "object") {
+      return Object.values(collection).filter(Boolean);
+    }
+    return [];
+  }
+
+  normalizeAttack(attack, type) {
+    if (!attack || typeof attack !== "object") return null;
+
+    const name =
+      this.getFirstDefinedValue(attack, [
+        "name",
+        "originalName",
+        "mode",
+        "attack",
+        "usage"
+      ]) ?? "Unnamed Attack";
+
+    return {
+      name,
+      type,
+      level: this.getFirstDefinedValue(attack, [
+        "level",
+        "skill",
+        "relativeLevel",
+        "import",
+        "roll"
+      ]),
+      damage: this.getFirstDefinedValue(attack, [
+        "damage",
+        "dmg",
+        "calc.damage",
+        "notes"
+      ]),
+      reachOrRange:
+        this.getFirstDefinedValue(
+          attack,
+          type === "Melee"
+            ? ["reach", "meleeReach", "range", "distance"]
+            : ["range", "accRange", "distance", "reach"]
+        ) ?? null,
+      parryOrBlock: this.getFirstDefinedValue(attack, [
+        "parry",
+        "block",
+        "defense",
+        "defence"
+      ]),
+      raw: attack
+    };
+  }
+
+  extractAttacks(actor) {
+    if (!actor) return [];
+
+    const attackSources = [
+      { path: "system.melee", type: "Melee" },
+      { path: "system.ranged", type: "Ranged" },
+      { path: "data.data.melee", type: "Melee" },
+      { path: "data.data.ranged", type: "Ranged" }
+    ];
+
+    const attacks = [];
+
+    for (const source of attackSources) {
+      const collection = foundry.utils.getProperty(actor, source.path);
+      const entries = this.getCollectionEntries(collection);
+
+      for (const entry of entries) {
+        const normalized = this.normalizeAttack(entry, source.type);
+        if (normalized) attacks.push(normalized);
+      }
+    }
+
+    return attacks;
+  }
+
   getData() {
     const characters = this.getCharacterActors();
 
@@ -77,7 +163,8 @@ export class QuickDeckApp extends Application {
       hp: foundry.utils.getProperty(activeActor, "system.HP.value") ?? null,
       fp: foundry.utils.getProperty(activeActor, "system.FP.value") ?? null,
       move: foundry.utils.getProperty(activeActor, "system.basicmove.value") ?? null,
-      dodge: foundry.utils.getProperty(activeActor, "system.currentdodge") ?? null
+      dodge: foundry.utils.getProperty(activeActor, "system.currentdodge") ?? null,
+      attacks: this.extractAttacks(activeActor)
     };
 
     return {
