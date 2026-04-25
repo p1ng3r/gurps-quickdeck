@@ -33,8 +33,7 @@
   gap: 0.35rem;
 }
 
-.quickdeck-character-button,
-.quickdeck-tab {
+.quickdeck-character-button {
   width: 100%;
   display: flex;
   align-items: center;
@@ -47,7 +46,6 @@
 }
 
 .quickdeck-character-button img,
-.quickdeck-tab img,
 .quickdeck-actor-header img {
   width: 28px;
   height: 28px;
@@ -55,104 +53,73 @@
   object-fit: cover;
 }
 
-.quickdeck-character-button.is-active,
-.quickdeck-tab.is-active {
+.quickdeck-character-button.is-active {
   border-color: var(--color-border-highlight-alt);
   background: rgba(255, 255, 255, 0.12);
 }
 
-.quickdeck-main {
-  display: grid;
-  grid-template-rows: auto 1fr;
+.quickdeck-main,
+.quickdeck-content {
   min-width: 0;
-}
-
-.quickdeck-tabs {
-  display: flex;
-  gap: 0.35rem;
-  flex-wrap: wrap;
-  padding: 0.5rem;
-  border-bottom: 1px solid var(--color-border-light-2);
-}
-
-.quickdeck-tab {
-  width: auto;
+  min-height: 0;
+  height: 100%;
 }
 
 .quickdeck-content {
   display: grid;
   grid-template-columns: 1fr auto;
-  min-height: 0;
 }
 
 .quickdeck-stage {
-  padding: 0.9rem;
-  overflow-y: auto;
+  min-width: 0;
 }
 
-.quickdeck-stage h2 {
-  margin: 0;
+.quickdeck-drawer-stack {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
 }
 
-.quickdeck-stage p {
-  margin: 0.3rem 0 0;
-  opacity: 0.8;
+.quickdeck-drawer-tabs {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 0.35rem;
+  padding: 0.35rem 0.25rem;
+  border-left: 1px solid var(--color-border-light-2);
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.quickdeck-drawer-tab {
+  border: 1px solid var(--color-border-light-2);
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 0.4rem 0.25rem;
+  cursor: pointer;
+  font-size: 0.72rem;
+  font-weight: 600;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  min-height: 100px;
+}
+
+.quickdeck-drawer-tab.is-active {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--color-border-highlight-alt);
 }
 
 .quickdeck-panel {
   width: 350px;
-  max-width: 55vw;
+  max-width: min(55vw, 480px);
   border-left: 1px solid var(--color-border-light-2);
   background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.03));
-  transition: width 160ms ease;
   overflow: hidden;
-  position: relative;
-}
-
-.quickdeck-collapse-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  width: 100%;
-  border: 0;
-  border-bottom: 1px solid var(--color-border-light-2);
-  background: rgba(255, 255, 255, 0.08);
-  padding: 0.45rem 0.6rem;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.quickdeck-collapse-icon {
-  width: 18px;
-  display: inline-flex;
-  justify-content: center;
 }
 
 .quickdeck-panel-content {
   padding: 0.65rem;
-  height: calc(100% - 38px);
-  overflow-y: auto;
-}
-
-.quickdeck-panel.is-collapsed {
-  width: 44px;
-}
-
-.quickdeck-panel.is-collapsed .quickdeck-collapse-toggle {
   height: 100%;
-  border-bottom: 0;
-  padding: 0.5rem 0.25rem;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  justify-content: center;
-}
-
-.quickdeck-panel.is-collapsed .quickdeck-collapse-label {
-  letter-spacing: 0.08em;
-}
-
-.quickdeck-panel.is-collapsed .quickdeck-panel-content {
-  display: none;
+  overflow-y: auto;
 }
 
 .quickdeck-actor-header {
@@ -209,20 +176,24 @@
   opacity: 0.8;
 }
 
-.quickdeck-attacks-section {
+.quickdeck-attacks-section,
+.quickdeck-skills-section {
   margin-top: 0.75rem;
 }
 
-.quickdeck-attacks-section h4 {
+.quickdeck-attacks-section h4,
+.quickdeck-skills-section h4 {
   margin: 0 0 0.5rem;
 }
 
-.quickdeck-attacks-list {
+.quickdeck-attacks-list,
+.quickdeck-skills-list {
   display: grid;
   gap: 0.5rem;
 }
 
-.quickdeck-attack-card {
+.quickdeck-attack-card,
+.quickdeck-skill-row {
   border: 1px solid var(--color-border-light-2);
   border-radius: 6px;
   padding: 0.5rem;
@@ -237,7 +208,8 @@
   margin-bottom: 0.4rem;
 }
 
-.quickdeck-attack-card h5 {
+.quickdeck-attack-card h5,
+.quickdeck-skill-row h5 {
   margin: 0;
   font-size: 0.9rem;
 }
@@ -247,24 +219,16 @@
   opacity: 0.85;
 }
 
-.quickdeck-attack-card dl {
+.quickdeck-attack-card dl,
+.quickdeck-skill-row dl {
   margin: 0;
   display: grid;
   gap: 0.25rem;
 }
 
-.quickdeck-attack-card dl div {
+.quickdeck-attack-card dl div,
+.quickdeck-skill-row dl div {
   display: grid;
   grid-template-columns: 88px 1fr;
   gap: 0.35rem;
-}
-
-.quickdeck-attack-card dt {
-  opacity: 0.75;
-  font-size: 0.75rem;
-}
-
-.quickdeck-attack-card dd {
-  margin: 0;
-  font-size: 0.8rem;
 }

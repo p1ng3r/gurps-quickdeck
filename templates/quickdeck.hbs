@@ -1,7 +1,7 @@
 <section class="quickdeck-shell">
   <aside class="quickdeck-sidebar">
     <h3>Combatants</h3>
-    <p class="quickdeck-hint">Click: open tab · Double-click: open full sheet</p>
+    <p class="quickdeck-hint">Click: select actor · Double-click: open full sheet</p>
 
     {{#if hasActors}}
       <ul class="quickdeck-character-list">
@@ -25,123 +25,162 @@
   </aside>
 
   <main class="quickdeck-main">
-    <nav class="quickdeck-tabs" aria-label="Open character tabs">
-      {{#each tabs as |tab|}}
-        <button
-          type="button"
-          data-action="activate-tab"
-          data-actor-id="{{tab.id}}"
-          class="quickdeck-tab {{#if tab.isActive}}is-active{{/if}}"
-        >
-          <img src="{{tab.img}}" alt="{{tab.name}}" />
-          <span>{{tab.name}}</span>
-        </button>
-      {{/each}}
-    </nav>
-
     <section class="quickdeck-content">
-      <section class="quickdeck-stage">
-        {{#if activeActor}}
-          <h2>{{activeActor.name}}</h2>
-          <p>Combat Burst panel is docked on the right.</p>
-        {{else}}
-          <p class="quickdeck-empty">Open a combatant from the left to start.</p>
-        {{/if}}
-      </section>
+      <div class="quickdeck-stage" aria-hidden="true"></div>
 
-      <aside class="quickdeck-panel {{#if isCombatPanelCollapsed}}is-collapsed{{/if}}">
-        <button
-          type="button"
-          class="quickdeck-collapse-toggle"
-          data-action="toggle-combat-panel"
-          aria-expanded="{{#if isCombatPanelCollapsed}}false{{else}}true{{/if}}"
-          title="{{#if isCombatPanelCollapsed}}Expand Combat Burst{{else}}Collapse Combat Burst{{/if}}"
-        >
-          <span class="quickdeck-collapse-icon">{{#if isCombatPanelCollapsed}}⚔{{else}}❯{{/if}}</span>
-          <span class="quickdeck-collapse-label">Combat Burst</span>
-        </button>
+      <aside class="quickdeck-drawer-stack">
+        <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck side drawers">
+          <button
+            type="button"
+            data-action="toggle-drawer"
+            data-drawer="combat"
+            class="quickdeck-drawer-tab {{#if isCombatDrawerOpen}}is-active{{/if}}"
+          >
+            Combat Burst
+          </button>
+          <button
+            type="button"
+            data-action="toggle-drawer"
+            data-drawer="skills"
+            class="quickdeck-drawer-tab {{#if isSkillsDrawerOpen}}is-active{{/if}}"
+          >
+            Skills
+          </button>
+        </nav>
 
-        {{#if activeActor}}
-          <div class="quickdeck-panel-content">
-            <header class="quickdeck-actor-header">
-              <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
-              <div>
-                <h3>{{activeActor.name}}</h3>
-                <p>Expanded combat snapshot</p>
-              </div>
-            </header>
+        {{#if activeDrawer}}
+          <section class="quickdeck-panel">
+            {{#if activeActor}}
+              {{#if isCombatDrawerOpen}}
+                <div class="quickdeck-panel-content">
+                  <header class="quickdeck-actor-header">
+                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+                    <div>
+                      <h3>{{activeActor.name}}</h3>
+                      <p>Combat snapshot</p>
+                    </div>
+                  </header>
 
-            <dl class="quickdeck-defenses">
-              <div>
-                <dt>Dodge</dt>
-                <dd>{{gurpsData.display.dodge}}</dd>
-              </div>
-              <div>
-                <dt>Parry</dt>
-                <dd>{{gurpsData.display.parry}}</dd>
-              </div>
-              <div>
-                <dt>Block</dt>
-                <dd>{{gurpsData.display.block}}</dd>
-              </div>
-            </dl>
+                  <dl class="quickdeck-defenses">
+                    <div>
+                      <dt>Dodge</dt>
+                      <dd>{{gurpsData.display.dodge}}</dd>
+                    </div>
+                    <div>
+                      <dt>Parry</dt>
+                      <dd>{{gurpsData.display.parry}}</dd>
+                    </div>
+                    <div>
+                      <dt>Block</dt>
+                      <dd>{{gurpsData.display.block}}</dd>
+                    </div>
+                  </dl>
 
-            <dl class="quickdeck-stats">
-              <div>
-                <dt>HP</dt>
-                <dd>{{gurpsData.display.hp}}</dd>
-              </div>
-              <div>
-                <dt>FP</dt>
-                <dd>{{gurpsData.display.fp}}</dd>
-              </div>
-              <div>
-                <dt>Move</dt>
-                <dd>{{gurpsData.display.move}}</dd>
-              </div>
-            </dl>
+                  <dl class="quickdeck-stats">
+                    <div>
+                      <dt>HP</dt>
+                      <dd>{{gurpsData.display.hp}}</dd>
+                    </div>
+                    <div>
+                      <dt>FP</dt>
+                      <dd>{{gurpsData.display.fp}}</dd>
+                    </div>
+                    <div>
+                      <dt>Move</dt>
+                      <dd>{{gurpsData.display.move}}</dd>
+                    </div>
+                  </dl>
 
-            <section class="quickdeck-attacks-section">
-              <h4>Attacks</h4>
+                  <section class="quickdeck-attacks-section">
+                    <h4>Attacks</h4>
 
-              {{#if gurpsData.attacks.length}}
-                <div class="quickdeck-attacks-list">
-                  {{#each gurpsData.attacks as |attack|}}
-                    <article class="quickdeck-attack-card">
-                      <header>
-                        <h5>{{attack.name}}</h5>
-                        <span>{{attack.type}}</span>
-                      </header>
-                      <dl>
-                        <div>
-                          <dt>Level/Skill</dt>
-                          <dd>{{#if attack.level}}{{attack.level}}{{else}}—{{/if}}</dd>
-                        </div>
-                        <div>
-                          <dt>Damage</dt>
-                          <dd>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</dd>
-                        </div>
-                        <div>
-                          <dt>Reach/Range</dt>
-                          <dd>{{#if attack.reachOrRange}}{{attack.reachOrRange}}{{else}}—{{/if}}</dd>
-                        </div>
-                        <div>
-                          <dt>Parry</dt>
-                          <dd>{{#if attack.parry}}{{attack.parry}}{{else}}—{{/if}}</dd>
-                        </div>
-                        <div>
-                          <dt>Block</dt>
-                          <dd>{{#if attack.block}}{{attack.block}}{{else}}—{{/if}}</dd>
-                        </div>
-                      </dl>
-                    </article>
-                  {{/each}}
+                    {{#if gurpsData.attacks.length}}
+                      <div class="quickdeck-attacks-list">
+                        {{#each gurpsData.attacks as |attack|}}
+                          <article class="quickdeck-attack-card">
+                            <header>
+                              <h5>{{attack.name}}</h5>
+                              <span>{{attack.type}}</span>
+                            </header>
+                            <dl>
+                              <div>
+                                <dt>Level/Skill</dt>
+                                <dd>{{#if attack.level}}{{attack.level}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Damage</dt>
+                                <dd>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Reach/Range</dt>
+                                <dd>{{#if attack.reachOrRange}}{{attack.reachOrRange}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Parry</dt>
+                                <dd>{{#if attack.parry}}{{attack.parry}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Block</dt>
+                                <dd>{{#if attack.block}}{{attack.block}}{{else}}—{{/if}}</dd>
+                              </div>
+                            </dl>
+                          </article>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      <p class="quickdeck-empty">No attacks found for this actor.</p>
+                    {{/if}}
+                  </section>
                 </div>
-              {{else}}
-                <p class="quickdeck-empty">No attacks found for this actor.</p>
               {{/if}}
-            </section>
-          </div>
+
+              {{#if isSkillsDrawerOpen}}
+                <div class="quickdeck-panel-content">
+                  <header class="quickdeck-actor-header">
+                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+                    <div>
+                      <h3>{{activeActor.name}}</h3>
+                      <p>Skills snapshot</p>
+                    </div>
+                  </header>
+
+                  <section class="quickdeck-skills-section">
+                    <h4>Skills</h4>
+
+                    {{#if gurpsData.skills.length}}
+                      <div class="quickdeck-skills-list">
+                        {{#each gurpsData.skills as |skill|}}
+                          <article class="quickdeck-skill-row">
+                            <h5>{{skill.name}}</h5>
+                            <dl>
+                              <div>
+                                <dt>Level</dt>
+                                <dd>{{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Relative</dt>
+                                <dd>{{#if skill.relativeLevel}}{{skill.relativeLevel}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Points</dt>
+                                <dd>{{#if skill.points}}{{skill.points}}{{else}}—{{/if}}</dd>
+                              </div>
+                            </dl>
+                          </article>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      <p class="quickdeck-empty">No skills found for this actor.</p>
+                    {{/if}}
+                  </section>
+                </div>
+              {{/if}}
+            {{else}}
+              <div class="quickdeck-panel-content">
+                <p class="quickdeck-empty">Select an actor on the left first.</p>
+              </div>
+            {{/if}}
+          </section>
         {{/if}}
       </aside>
     </section>
