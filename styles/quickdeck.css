@@ -1,0 +1,131 @@
+.gurps-quickdeck .window-content {
+  padding: 0;
+  overflow: hidden;
+}
+
+.quickdeck-shell {
+  display: grid;
+  grid-template-columns: 260px 1fr;
+  height: 100%;
+}
+
+.quickdeck-sidebar {
+  border-right: 1px solid var(--color-border-light-2);
+  padding: 0.75rem;
+  overflow-y: auto;
+}
+
+.quickdeck-sidebar h3 {
+  margin: 0 0 0.5rem;
+}
+
+.quickdeck-character-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.quickdeck-character-button,
+.quickdeck-tab {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid transparent;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  cursor: pointer;
+}
+
+.quickdeck-character-button img,
+.quickdeck-tab img,
+.quickdeck-actor-header img {
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  object-fit: cover;
+}
+
+.quickdeck-character-button.is-active,
+.quickdeck-tab.is-active {
+  border-color: var(--color-border-highlight-alt);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.quickdeck-main {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-width: 0;
+}
+
+.quickdeck-tabs {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--color-border-light-2);
+}
+
+.quickdeck-tab {
+  width: auto;
+}
+
+.quickdeck-panel {
+  padding: 0.75rem;
+  overflow-y: auto;
+}
+
+.quickdeck-actor-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.quickdeck-actor-header img {
+  width: 48px;
+  height: 48px;
+}
+
+.quickdeck-actor-header h2 {
+  margin: 0;
+}
+
+.quickdeck-actor-header p {
+  margin: 0.15rem 0 0;
+  opacity: 0.8;
+}
+
+.quickdeck-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(80px, 1fr));
+  gap: 0.5rem;
+}
+
+.quickdeck-stats div {
+  border: 1px solid var(--color-border-light-2);
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.quickdeck-stats dt {
+  font-size: 0.8rem;
+  opacity: 0.8;
+}
+
+.quickdeck-stats dd {
+  margin: 0.2rem 0 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.quickdeck-empty {
+  opacity: 0.8;
+}
+
+.quickdeck-open-button {
+  margin-left: 0.25rem;
+}
