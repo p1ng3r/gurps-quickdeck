@@ -1,3 +1,17 @@
+.gurps-quickdeck .window-header {
+  background:
+    linear-gradient(120deg, rgba(125, 95, 42, 0.9), rgba(48, 44, 61, 0.92)),
+    radial-gradient(circle at 20% 20%, rgba(255, 220, 150, 0.25), transparent 45%);
+  border-bottom: 1px solid rgba(222, 181, 109, 0.45);
+}
+
+.gurps-quickdeck .window-title {
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+
 .gurps-quickdeck .window-content {
   padding: 0;
   overflow: hidden;
@@ -5,41 +19,98 @@
 
 .quickdeck-shell {
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 320px 1fr;
   height: 100%;
   min-height: 0;
-  background: radial-gradient(circle at top, rgba(112, 76, 22, 0.08), rgba(16, 16, 19, 0.12));
+  background:
+    radial-gradient(circle at top right, rgba(125, 96, 44, 0.14), transparent 36%),
+    radial-gradient(circle at 15% 85%, rgba(113, 126, 148, 0.08), transparent 28%),
+    linear-gradient(145deg, rgba(10, 12, 18, 0.96), rgba(25, 24, 30, 0.95));
 }
 
 .quickdeck-sidebar {
-  border-right: 1px solid var(--color-border-light-2);
+  border-right: 1px solid rgba(193, 159, 97, 0.3);
   padding: 0.7rem;
   overflow-y: auto;
   min-height: 0;
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
-  background: linear-gradient(180deg, rgba(0, 0, 0, 0.24), rgba(0, 0, 0, 0.1));
+  background:
+    linear-gradient(180deg, rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.12)),
+    repeating-linear-gradient(
+      135deg,
+      rgba(214, 170, 96, 0.03) 0,
+      rgba(214, 170, 96, 0.03) 8px,
+      rgba(0, 0, 0, 0.02) 8px,
+      rgba(0, 0, 0, 0.02) 16px
+    );
 }
 
 .quickdeck-sidebar-block {
-  border: 1px solid var(--color-border-light-2);
-  border-radius: 8px;
-  padding: 0.55rem;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.08));
+  border: 1px solid rgba(203, 167, 101, 0.28);
+  border-radius: 10px;
+  padding: 0.6rem;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.26), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(0, 0, 0, 0.1)),
+    radial-gradient(circle at 10% 0, rgba(222, 182, 108, 0.08), transparent 45%);
+}
+
+.quickdeck-sidebar-roster {
+  position: relative;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
+}
+
+.quickdeck-sidebar-roster.is-drop-active {
+  border-color: rgba(241, 206, 138, 0.95);
+  box-shadow: 0 0 0 1px rgba(242, 208, 142, 0.4), 0 0 18px rgba(246, 200, 109, 0.25);
+  transform: translateY(-1px);
+}
+
+.quickdeck-block-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
 }
 
 .quickdeck-sidebar h3,
 .quickdeck-sidebar h4 {
   margin: 0;
   letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42rem;
+}
+
+.quickdeck-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  padding: 0.08rem 0.35rem;
+  border-radius: 999px;
+  font-size: 0.68rem;
+  color: #f7e8c8;
+  border: 1px solid rgba(221, 178, 100, 0.44);
+  background: linear-gradient(180deg, rgba(90, 65, 31, 0.95), rgba(61, 42, 20, 0.95));
 }
 
 .quickdeck-hint {
-  margin: 0.25rem 0 0.6rem;
+  margin: 0.25rem 0 0.42rem;
   font-size: 0.73rem;
   opacity: 0.8;
+}
+
+.quickdeck-drop-hint {
+  margin: 0 0 0.65rem;
+  padding: 0.35rem 0.45rem;
+  border: 1px dashed rgba(190, 151, 85, 0.46);
+  border-radius: 6px;
+  font-size: 0.72rem;
+  opacity: 0.88;
+  background: rgba(119, 87, 35, 0.12);
 }
 
 .quickdeck-roster-list,
@@ -62,6 +133,8 @@
 .quickdeck-roster-button,
 .quickdeck-add-button,
 .quickdeck-remove-button,
+.quickdeck-clear-button,
+.quickdeck-open-sheet-button,
 .quickdeck-drawer-tab,
 .quickdeck-roll-button {
   border-radius: 6px;
@@ -71,22 +144,28 @@
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  border: 1px solid rgba(223, 184, 116, 0.3);
-  background: linear-gradient(180deg, rgba(38, 38, 46, 0.76), rgba(24, 24, 30, 0.88));
-  padding: 0.35rem 0.45rem;
+  gap: 0.45rem;
+  border: 1px solid rgba(223, 184, 116, 0.28);
+  color: var(--color-text-light-0);
+  background: linear-gradient(180deg, rgba(38, 38, 46, 0.76), rgba(21, 22, 27, 0.9));
+  padding: 0.36rem 0.45rem;
   cursor: pointer;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
 }
 
 .quickdeck-roster-button:hover {
-  border-color: rgba(244, 205, 138, 0.6);
+  border-color: rgba(244, 205, 138, 0.72);
+  box-shadow: 0 0 10px rgba(229, 187, 108, 0.12);
 }
 
 .quickdeck-roster-button.is-active {
-  border-color: var(--color-border-highlight-alt);
-  background: linear-gradient(180deg, rgba(82, 59, 30, 0.72), rgba(42, 30, 16, 0.92));
-  box-shadow: 0 0 0 1px rgba(222, 180, 105, 0.28), 0 0 14px rgba(222, 180, 105, 0.12);
+  border-color: rgba(243, 203, 132, 0.88);
+  background: linear-gradient(180deg, rgba(88, 67, 36, 0.8), rgba(45, 35, 21, 0.92));
+  box-shadow: 0 0 0 1px rgba(222, 180, 105, 0.24), 0 0 14px rgba(222, 180, 105, 0.16);
+}
+
+.quickdeck-roster-name {
+  flex: 1 1 auto;
 }
 
 .quickdeck-roster-button img,
@@ -97,6 +176,18 @@
   border-radius: 4px;
   object-fit: cover;
   border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.quickdeck-type-pill {
+  display: inline-block;
+  padding: 0.08rem 0.32rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border: 1px solid rgba(188, 169, 131, 0.45);
+  background: rgba(57, 58, 67, 0.72);
+  color: rgba(245, 232, 202, 0.95);
 }
 
 .quickdeck-remove-button {
@@ -115,6 +206,22 @@
 .quickdeck-remove-button:hover {
   background: rgba(114, 26, 26, 0.75);
   color: #ffd7d7;
+}
+
+.quickdeck-clear-button,
+.quickdeck-open-sheet-button {
+  border: 1px solid rgba(174, 188, 209, 0.45);
+  color: #e2edf9;
+  background: linear-gradient(180deg, rgba(67, 78, 98, 0.72), rgba(45, 53, 67, 0.86));
+  font-size: 0.68rem;
+  padding: 0.25rem 0.45rem;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.quickdeck-clear-button:hover,
+.quickdeck-open-sheet-button:hover {
+  border-color: rgba(208, 223, 244, 0.85);
 }
 
 .quickdeck-sidebar-available {
@@ -192,6 +299,31 @@
 
 .quickdeck-stage {
   min-width: 0;
+  position: relative;
+}
+
+.quickdeck-stage::before,
+.quickdeck-stage::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  opacity: 0.16;
+}
+
+.quickdeck-stage::before {
+  inset: 18px auto auto 20px;
+  width: 120px;
+  height: 120px;
+  border: 1px solid rgba(212, 174, 106, 0.38);
+  border-radius: 50%;
+}
+
+.quickdeck-stage::after {
+  inset: auto 20px 20px auto;
+  width: 100px;
+  height: 100px;
+  border: 1px solid rgba(174, 194, 219, 0.35);
+  transform: rotate(45deg);
 }
 
 .quickdeck-drawer-stack {
@@ -208,34 +340,38 @@
   gap: 0.4rem;
   padding: 0.35rem 0.25rem;
   border-left: 1px solid var(--color-border-light-2);
-  background: rgba(0, 0, 0, 0.26);
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(6, 7, 10, 0.4));
 }
 
 .quickdeck-drawer-tab {
   border: 1px solid rgba(201, 160, 94, 0.38);
   background: linear-gradient(180deg, rgba(35, 35, 42, 0.92), rgba(14, 14, 17, 0.92));
   color: var(--color-text-light-0);
-  padding: 0.45rem 0.3rem;
+  padding: 0.5rem 0.35rem;
   cursor: pointer;
   font-size: 0.72rem;
   font-weight: 700;
   writing-mode: vertical-rl;
   text-orientation: mixed;
-  min-height: 104px;
+  min-height: 108px;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
+}
+
+.quickdeck-drawer-tab:hover {
+  border-color: rgba(236, 196, 121, 0.78);
 }
 
 .quickdeck-drawer-tab.is-active {
-  background: linear-gradient(180deg, rgba(123, 92, 43, 0.86), rgba(62, 45, 22, 0.9));
-  border-color: var(--color-border-highlight-alt);
+  background: linear-gradient(180deg, rgba(130, 97, 46, 0.86), rgba(68, 48, 21, 0.9));
+  border-color: rgba(243, 201, 125, 0.9);
   box-shadow: 0 0 12px rgba(222, 180, 105, 0.18);
 }
 
 .quickdeck-panel {
-  width: 390px;
-  max-width: min(58vw, 520px);
-  border-left: 1px solid var(--color-border-light-2);
+  width: 410px;
+  max-width: min(58vw, 540px);
+  border-left: 1px solid rgba(203, 166, 96, 0.34);
   background: linear-gradient(180deg, rgba(27, 27, 33, 0.98), rgba(12, 12, 15, 0.96));
   overflow: hidden;
   height: 100%;
@@ -284,10 +420,13 @@
 
 .quickdeck-actor-header p {
   margin: 0.1rem 0 0;
-  opacity: 0.75;
+  opacity: 0.8;
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .quickdeck-defenses,
@@ -336,10 +475,10 @@
 .quickdeck-attacks-section h4,
 .quickdeck-skills-section h4 {
   margin: 0;
-  font-size: 0.78rem;
-  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.84;
+  opacity: 0.88;
 }
 
 .quickdeck-attacks-list,
@@ -359,6 +498,12 @@
   border-radius: 8px;
   padding: 0.5rem;
   background: linear-gradient(180deg, rgba(55, 45, 27, 0.2), rgba(21, 21, 26, 0.56));
+}
+
+.quickdeck-attack-card:hover,
+.quickdeck-skill-row:hover {
+  border-color: rgba(237, 196, 121, 0.55);
+  box-shadow: 0 0 11px rgba(218, 176, 102, 0.16);
 }
 
 .quickdeck-attack-card header {
@@ -409,4 +554,5 @@
 .quickdeck-roll-button:hover {
   border-color: rgba(238, 197, 119, 0.88);
   color: #fff1d2;
+  box-shadow: 0 0 10px rgba(241, 198, 119, 0.2);
 }
