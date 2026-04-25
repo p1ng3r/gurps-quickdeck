@@ -14,6 +14,16 @@ function openQuickDeck() {
 
 Hooks.once("ready", () => {
   console.log(`${MODULE_ID} | Ready`);
+  game.gurpsQuickDeckDebug = {
+    open: () => openQuickDeck(),
+    dumpActiveActorData: () => {
+      if (!quickDeckApp) {
+        console.warn(`${MODULE_ID} | QuickDeck is not open; open it first to dump active actor data.`);
+        return;
+      }
+      quickDeckApp.dumpActiveActorData();
+    }
+  };
 });
 
 Hooks.on("renderActorDirectory", (app, html) => {
