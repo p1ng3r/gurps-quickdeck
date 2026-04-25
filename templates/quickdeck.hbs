@@ -66,6 +66,43 @@
             <dd>{{#if gurpsData.dodge}}{{gurpsData.dodge}}{{else}}—{{/if}}</dd>
           </div>
         </dl>
+
+        <section class="quickdeck-attacks-section">
+          <h3>Attacks</h3>
+
+          {{#if gurpsData.attacks.length}}
+            <div class="quickdeck-attacks-list">
+              {{#each gurpsData.attacks as |attack|}}
+                <article class="quickdeck-attack-card">
+                  <header>
+                    <h4>{{attack.name}}</h4>
+                    <span>{{attack.type}}</span>
+                  </header>
+                  <dl>
+                    <div>
+                      <dt>Level/Skill</dt>
+                      <dd>{{#if attack.level}}{{attack.level}}{{else}}—{{/if}}</dd>
+                    </div>
+                    <div>
+                      <dt>Damage</dt>
+                      <dd>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</dd>
+                    </div>
+                    <div>
+                      <dt>Reach/Range</dt>
+                      <dd>{{#if attack.reachOrRange}}{{attack.reachOrRange}}{{else}}—{{/if}}</dd>
+                    </div>
+                    <div>
+                      <dt>Parry/Block</dt>
+                      <dd>{{#if attack.parryOrBlock}}{{attack.parryOrBlock}}{{else}}—{{/if}}</dd>
+                    </div>
+                  </dl>
+                </article>
+              {{/each}}
+            </div>
+          {{else}}
+            <p class="quickdeck-empty">No attacks found for this character.</p>
+          {{/if}}
+        </section>
       {{else}}
         <p class="quickdeck-empty">Open a character from the left to start.</p>
       {{/if}}
