@@ -606,6 +606,12 @@ export class QuickDeckApp extends Application {
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isDragOverRoster: this.isDragOverRoster,
+      attackCount: attacks.length,
+      skillsCount: skills.length,
+      indexedSkills: skills.map((skill, index) => ({
+        ...skill,
+        index
+      })),
       indexedAttacks: attacks.map((attack, index) => ({
         ...attack,
         index

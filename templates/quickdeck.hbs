@@ -203,9 +203,9 @@
                   </div>
 
                   <section class="quickdeck-attacks-section">
-                    <h4>Attacks</h4>
+                    <h4>Attacks ({{attackCount}})</h4>
 
-                    {{#if gurpsData.attacks.length}}
+                    {{#if indexedAttacks.length}}
                       <div class="quickdeck-attacks-list">
                         {{#each indexedAttacks as |attack|}}
                           <article class="quickdeck-attack-card">
@@ -278,11 +278,11 @@
                   </header>
 
                   <section class="quickdeck-skills-section">
-                    <h4>Skills</h4>
+                    <h4>Skills ({{skillsCount}})</h4>
 
-                    {{#if gurpsData.skills.length}}
+                    {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
-                        {{#each gurpsData.skills as |skill|}}
+                        {{#each indexedSkills as |skill|}}
                           <article class="quickdeck-skill-row">
                             <h5>{{skill.name}}</h5>
                             <dl>
