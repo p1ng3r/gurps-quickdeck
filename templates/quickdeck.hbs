@@ -12,7 +12,7 @@
           Clear Roster
         </button>
       </div>
-      <p class="quickdeck-hint">Click: select actor · Double-click: open full sheet</p>
+      <p class="quickdeck-hint">Click selects · Double-click opens sheet · Drag actors here.</p>
       <p class="quickdeck-drop-hint">Drag actors here from the Actor Directory.</p>
 
       {{#if hasRosterActors}}
@@ -48,7 +48,7 @@
           {{/each}}
         </ul>
       {{else}}
-        <p class="quickdeck-empty">No actors in roster. Add some from Available Actors.</p>
+        <p class="quickdeck-empty">Drag actors here from the Actor Directory or add them below.</p>
       {{/if}}
     </section>
 
@@ -446,19 +446,20 @@
                         {{/each}}
                       </div>
                     {{else}}
-                      <p class="quickdeck-empty">No Quick Skills selected for this actor.</p>
+                      <p class="quickdeck-empty">Check skills in the Skills drawer to pin them here.</p>
                     {{/if}}
                   </section>
                 </div>
               {{/if}}
             {{else}}
               <div class="quickdeck-panel-content">
-                <p class="quickdeck-empty">Select an actor from the QuickDeck Roster first.</p>
+                <p class="quickdeck-empty">Select a roster actor to open a drawer.</p>
               </div>
             {{/if}}
           </section>
         {{/if}}
       </aside>
     </section>
+    <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
   </main>
 </section>

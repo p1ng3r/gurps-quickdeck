@@ -1,5 +1,12 @@
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const DEBUG = false;
+const MODULE_ID = "gurps-quickdeck";
+const SETTING_KEYS = {
+  ROSTER: "rosterActorIds",
+  QUICK_SKILLS: "quickSkillSelectionsByActor",
+  DEFAULT_DRAWER: "defaultDrawer"
+};
+const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills"]);
 
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
@@ -14,6 +21,8 @@ export class QuickDeckApp extends Application {
     this.quickSkillSelectionsByActor = {};
     this._actorSelectTimeout = null;
     this.isDragOverRoster = false;
+    this._stateLoadedFromSettings = false;
+    this.loadPersistedState();
   }
 
   static get defaultOptions() {
@@ -43,6 +52,7 @@ export class QuickDeckApp extends Application {
     if (!actorId || !game.actors.has(actorId)) return;
     if (!this.rosterActorIds.includes(actorId)) {
       this.rosterActorIds.push(actorId);
+      this.persistRosterState();
     }
     this.activeActorId = actorId;
   }
@@ -50,6 +60,7 @@ export class QuickDeckApp extends Application {
   clearRoster() {
     this.rosterActorIds = [];
     this.activeActorId = null;
+    this.persistRosterState();
   }
 
   removeActorFromRoster(actorId) {
@@ -62,6 +73,8 @@ export class QuickDeckApp extends Application {
     if (this.activeActorId === actorId) {
       this.activeActorId = this.rosterActorIds[0] ?? null;
     }
+
+    this.persistRosterState();
   }
 
   onActorDeleted(actorId) {
@@ -345,6 +358,104 @@ export class QuickDeckApp extends Application {
     const selection = this.getQuickSkillSelection(actorId);
     if (isSelected) selection.add(skillKey);
     else selection.delete(skillKey);
+    this.persistQuickSkillsState();
+  }
+
+  parseJsonSetting(rawValue, fallbackValue) {
+    if (typeof rawValue !== "string") return fallbackValue;
+    try {
+      const parsed = JSON.parse(rawValue);
+      return parsed ?? fallbackValue;
+    } catch (_error) {
+      return fallbackValue;
+    }
+  }
+
+  loadPersistedState() {
+    if (!game?.settings) return;
+
+    const savedRoster = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.ROSTER),
+      []
+    );
+    this.rosterActorIds = Array.isArray(savedRoster)
+      ? savedRoster.map((id) => String(id))
+      : [];
+
+    const savedQuickSkills = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.QUICK_SKILLS),
+      {}
+    );
+    if (savedQuickSkills && typeof savedQuickSkills === "object") {
+      this.quickSkillSelectionsByActor = Object.fromEntries(
+        Object.entries(savedQuickSkills).map(([actorId, skillKeys]) => [
+          String(actorId),
+          new Set(Array.isArray(skillKeys) ? skillKeys.map((entry) => String(entry)) : [])
+        ])
+      );
+    } else {
+      this.quickSkillSelectionsByActor = {};
+    }
+
+    this._stateLoadedFromSettings = true;
+  }
+
+  serializeQuickSkillsState() {
+    return Object.fromEntries(
+      Object.entries(this.quickSkillSelectionsByActor).map(([actorId, skillSet]) => [
+        actorId,
+        Array.from(skillSet instanceof Set ? skillSet : new Set())
+      ])
+    );
+  }
+
+  persistRosterState() {
+    if (!game?.settings) return;
+    const roster = Array.from(new Set(this.rosterActorIds.map((id) => String(id))));
+    game.settings.set(MODULE_ID, SETTING_KEYS.ROSTER, JSON.stringify(roster));
+  }
+
+  persistQuickSkillsState() {
+    if (!game?.settings) return;
+    const serialized = this.serializeQuickSkillsState();
+    game.settings.set(MODULE_ID, SETTING_KEYS.QUICK_SKILLS, JSON.stringify(serialized));
+  }
+
+  applyDefaultDrawerIfNeeded() {
+    if (this.activeDrawer) return;
+    const configuredDrawer = game.settings.get(MODULE_ID, SETTING_KEYS.DEFAULT_DRAWER);
+    if (configuredDrawer === "none") return;
+    if (!VALID_DRAWERS.has(configuredDrawer)) return;
+    this.activeDrawer = configuredDrawer;
+  }
+
+  sanitizePersistentState() {
+    const allActors = this.getCombatActors();
+    const validActorIds = new Set(allActors.map((actor) => actor.id));
+    const originalRosterLength = this.rosterActorIds.length;
+    this.rosterActorIds = this.rosterActorIds.filter((id) => validActorIds.has(id));
+
+    let removedQuickSkills = false;
+    for (const actorId of Object.keys(this.quickSkillSelectionsByActor)) {
+      if (!validActorIds.has(actorId)) {
+        delete this.quickSkillSelectionsByActor[actorId];
+        removedQuickSkills = true;
+      }
+    }
+
+    if (this.activeActorId && !this.rosterActorIds.includes(this.activeActorId)) {
+      this.activeActorId = this.rosterActorIds[0] ?? null;
+    }
+    if (!this.activeActorId && this.rosterActorIds.length > 0) {
+      this.activeActorId = this.rosterActorIds[0];
+    }
+
+    if (this.rosterActorIds.length !== originalRosterLength) {
+      this.persistRosterState();
+    }
+    if (removedQuickSkills) {
+      this.persistQuickSkillsState();
+    }
   }
 
   filterAttacks(attacks, searchTerm) {
@@ -913,16 +1024,11 @@ export class QuickDeckApp extends Application {
   }
 
   getData() {
-    const allActors = this.getCombatActors();
-    const allActorIds = new Set(allActors.map((actor) => actor.id));
-    this.rosterActorIds = this.rosterActorIds.filter((id) => allActorIds.has(id));
+    if (!this._stateLoadedFromSettings) this.loadPersistedState();
+    this.sanitizePersistentState();
+    this.applyDefaultDrawerIfNeeded();
 
-    if (this.activeActorId && !this.rosterActorIds.includes(this.activeActorId)) {
-      this.activeActorId = null;
-    }
-    if (!this.activeActorId && this.rosterActorIds.length > 0) {
-      this.activeActorId = this.rosterActorIds[0];
-    }
+    const allActors = this.getCombatActors();
 
     const { combatantByActorId, currentCombatantId } = this.getCombatRosterState();
 
