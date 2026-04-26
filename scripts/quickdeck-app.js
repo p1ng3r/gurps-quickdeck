@@ -100,7 +100,6 @@ export class QuickDeckApp extends Application {
 
       if (matcher(current)) {
         results.push(current);
-        continue;
       }
 
       if (Array.isArray(current)) {
@@ -137,15 +136,41 @@ export class QuickDeckApp extends Application {
   }
 
   isSkillLike(value) {
-    return this.objectHasAnyPath(value, [
-      "name",
-      "level",
-      "relativeLevel",
-      "rsl",
+    if (!value || typeof value !== "object") return false;
+
+    const hasName = this.objectHasAnyPath(value, ["name"]);
+    if (!hasName) return false;
+
+    const hasRealSkillField = this.objectHasAnyPath(value, [
+      "difficulty",
+      "defaults",
       "points",
-      "pts",
-      "import"
+      "calc.points",
+      "calc.level",
+      "calc.rsl",
+      "level",
+      "rsl",
+      "defaulted_from",
+      "reference"
     ]);
+
+    const tags = foundry.utils.getProperty(value, "tags");
+    const normalizedTags = Array.isArray(tags)
+      ? tags.map((tag) => String(tag).toLowerCase())
+      : typeof tags === "string"
+        ? [tags.toLowerCase()]
+        : [];
+    const hasSkillTag = normalizedTags.some((tag) =>
+      ["skill", "combat", "weapon"].some((needle) => tag.includes(needle))
+    );
+
+    const children = foundry.utils.getProperty(value, "children");
+    const hasChildren = Array.isArray(children)
+      ? children.length > 0
+      : Boolean(children && typeof children === "object" && Object.keys(children).length > 0);
+
+    if (!hasRealSkillField && !(hasSkillTag && !hasChildren)) return false;
+    return true;
   }
 
   normalizeAttack(attack, type) {
@@ -215,14 +240,15 @@ export class QuickDeckApp extends Application {
 
     return {
       name,
-      level: this.getFirstDefinedValue(skill, ["level", "value", "import", "rsl"]),
+      level: this.getFirstDefinedValue(skill, ["calc.level", "level", "value", "import", "rsl"]),
       relativeLevel: this.getFirstDefinedValue(skill, [
+        "calc.rsl",
         "relativeLevel",
         "relative",
         "rsl",
         "relative_level"
       ]),
-      points: this.getFirstDefinedValue(skill, ["points", "pts", "spent", "cp"]),
+      points: this.getFirstDefinedValue(skill, ["points", "calc.points", "pts", "spent", "cp"]),
       raw: skill
     };
   }
@@ -680,11 +706,16 @@ export class QuickDeckApp extends Application {
     if (DEBUG) {
       const meleeCount = attacks.filter((attack) => attack.type === "Melee").length;
       const rangedCount = attacks.filter((attack) => attack.type === "Ranged").length;
+      const firstSkills = skills.slice(0, 10).map((skill) => ({
+        name: skill.name,
+        level: skill.level ?? null
+      }));
       console.log("gurps-quickdeck | Extraction debug", {
         activeActor: activeActor?.name ?? null,
         meleeCount,
         rangedCount,
-        skillsCount: skills.length
+        skillsCount: skills.length,
+        firstSkills
       });
     }
     const dodge = foundry.utils.getProperty(activeActor, "system.currentdodge") ?? null;
