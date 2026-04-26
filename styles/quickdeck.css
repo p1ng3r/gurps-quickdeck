@@ -22,6 +22,7 @@
   grid-template-columns: 320px 1fr;
   height: 100%;
   min-height: 0;
+  color: #f3efe4;
   background:
     radial-gradient(circle at top right, rgba(125, 96, 44, 0.14), transparent 36%),
     radial-gradient(circle at 15% 85%, rgba(113, 126, 148, 0.08), transparent 28%),
@@ -78,6 +79,7 @@
 .quickdeck-sidebar h3,
 .quickdeck-sidebar h4 {
   margin: 0;
+  color: #f8f1df;
   letter-spacing: 0.02em;
   display: inline-flex;
   align-items: center;
@@ -100,7 +102,7 @@
 .quickdeck-hint {
   margin: 0.25rem 0 0.42rem;
   font-size: 0.73rem;
-  opacity: 0.8;
+  color: rgba(236, 230, 214, 0.92);
 }
 
 .quickdeck-drop-hint {
@@ -109,7 +111,7 @@
   border: 1px dashed rgba(190, 151, 85, 0.46);
   border-radius: 6px;
   font-size: 0.72rem;
-  opacity: 0.88;
+  color: rgba(239, 232, 218, 0.92);
   background: rgba(119, 87, 35, 0.12);
 }
 
@@ -166,6 +168,8 @@
 
 .quickdeck-roster-name {
   flex: 1 1 auto;
+  color: #f4efe0;
+  font-weight: 600;
 }
 
 .quickdeck-roster-button img,
@@ -239,12 +243,16 @@
 }
 
 .quickdeck-available-header input {
-  border: 1px solid var(--color-border-light-2);
+  border: 1px solid rgba(202, 176, 122, 0.5);
   border-radius: 6px;
   height: 28px;
   padding: 0.2rem 0.45rem;
   background: rgba(0, 0, 0, 0.22);
-  color: var(--color-text-light-0);
+  color: #f9f4e6;
+}
+
+.quickdeck-available-header input::placeholder {
+  color: rgba(243, 234, 213, 0.74);
 }
 
 .quickdeck-available-list {
@@ -265,6 +273,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #f2eddf;
 }
 
 .quickdeck-add-button {
@@ -346,7 +355,7 @@
 .quickdeck-drawer-tab {
   border: 1px solid rgba(201, 160, 94, 0.38);
   background: linear-gradient(180deg, rgba(35, 35, 42, 0.92), rgba(14, 14, 17, 0.92));
-  color: var(--color-text-light-0);
+  color: #f8f2e4;
   padding: 0.5rem 0.35rem;
   cursor: pointer;
   font-size: 0.72rem;
@@ -412,11 +421,12 @@
 .quickdeck-actor-header h3 {
   margin: 0;
   font-size: 1rem;
+  color: #f8f2e5;
 }
 
 .quickdeck-actor-header p {
   margin: 0.1rem 0 0;
-  opacity: 0.8;
+  color: rgba(231, 223, 204, 0.95);
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -446,16 +456,17 @@
   margin: 0.2rem 0 0;
   font-size: 1rem;
   font-weight: 700;
+  color: #f7f2e5;
 }
 
 .quickdeck-defenses dt,
 .quickdeck-stats dt {
   font-size: 0.74rem;
-  opacity: 0.8;
+  color: rgba(225, 214, 191, 0.92);
 }
 
 .quickdeck-empty {
-  opacity: 0.82;
+  color: rgba(241, 233, 217, 0.95);
 }
 
 .quickdeck-attacks-section,
@@ -469,7 +480,7 @@
   font-size: 0.8rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  opacity: 0.88;
+  color: rgba(244, 236, 220, 0.97);
 }
 
 .quickdeck-attacks-list,
@@ -513,11 +524,12 @@
 .quickdeck-skill-row h5 {
   margin: 0;
   font-size: 0.9rem;
+  color: #f7f2e6;
 }
 
 .quickdeck-attack-card header span {
   font-size: 0.72rem;
-  opacity: 0.86;
+  color: rgba(232, 222, 201, 0.95);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -536,6 +548,16 @@
   gap: 0.35rem;
 }
 
+.quickdeck-attack-card dt,
+.quickdeck-skill-row dt {
+  color: rgba(223, 210, 184, 0.95);
+}
+
+.quickdeck-attack-card dd,
+.quickdeck-skill-row dd {
+  color: #f5f0e2;
+}
+
 .quickdeck-roll-button {
   margin-top: 0.5rem;
   width: 100%;
@@ -544,10 +566,41 @@
   border: 1px solid rgba(206, 168, 93, 0.45);
   color: #f2e2bc;
   background: linear-gradient(180deg, rgba(78, 61, 31, 0.72), rgba(47, 36, 19, 0.92));
+  font-weight: 700;
 }
 
 .quickdeck-roll-button:hover {
   border-color: rgba(238, 197, 119, 0.88);
   color: #fff1d2;
   box-shadow: 0 0 10px rgba(241, 198, 119, 0.2);
+}
+
+.quickdeck-add-button:hover,
+.quickdeck-clear-button:hover,
+.quickdeck-open-sheet-button:hover,
+.quickdeck-remove-button:hover,
+.quickdeck-roll-button:hover,
+.quickdeck-drawer-tab:hover,
+.quickdeck-roster-button:hover {
+  filter: brightness(1.08);
+}
+
+.gurps-quickdeck-roll-fallback {
+  color: #f7f2e6;
+  border: 1px solid rgba(214, 175, 98, 0.45);
+  border-radius: 8px;
+  padding: 0.65rem 0.75rem;
+  background: linear-gradient(180deg, rgba(33, 34, 43, 0.98), rgba(15, 16, 21, 0.98));
+}
+
+.gurps-quickdeck-roll-fallback h3 {
+  margin: 0 0 0.45rem;
+  color: #fff2ce;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+}
+
+.gurps-quickdeck-roll-fallback p {
+  margin: 0.18rem 0;
+  color: #f0eadc;
 }
