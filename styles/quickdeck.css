@@ -370,6 +370,16 @@
 .quickdeck-content {
   min-width: 0;
   min-height: 0;
+}
+
+.quickdeck-main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.quickdeck-content {
+  flex: 1 1 auto;
   height: 100%;
 }
 
@@ -470,6 +480,26 @@
   overflow-y: auto;
 }
 
+.quickdeck-empty {
+  margin: 0.25rem 0;
+  padding: 0.55rem 0.65rem;
+  border: 1px dashed rgba(204, 170, 108, 0.35);
+  border-radius: 8px;
+  color: rgba(241, 233, 215, 0.92);
+  background: rgba(124, 91, 40, 0.1);
+}
+
+.quickdeck-footer-hint {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.28rem 0.6rem 0.34rem;
+  border-top: 1px solid rgba(201, 167, 106, 0.25);
+  color: rgba(234, 226, 210, 0.8);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .quickdeck-panel-scroll-root {
   position: sticky;
   top: 0;
@@ -544,10 +574,6 @@
 .quickdeck-stats dt {
   font-size: 0.74rem;
   color: rgba(225, 214, 191, 0.92);
-}
-
-.quickdeck-empty {
-  color: rgba(241, 233, 217, 0.95);
 }
 
 .quickdeck-attacks-section,

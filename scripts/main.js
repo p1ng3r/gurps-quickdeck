@@ -1,6 +1,11 @@
 import { QuickDeckApp } from "./quickdeck-app.js";
 
 const MODULE_ID = "gurps-quickdeck";
+const SETTING_KEYS = {
+  ROSTER: "rosterActorIds",
+  QUICK_SKILLS: "quickSkillSelectionsByActor",
+  DEFAULT_DRAWER: "defaultDrawer"
+};
 let quickDeckApp = null;
 
 function openQuickDeck() {
@@ -24,6 +29,41 @@ Hooks.once("ready", () => {
       quickDeckApp.dumpActiveActorData();
     }
   };
+});
+
+Hooks.once("init", () => {
+  game.settings.register(MODULE_ID, SETTING_KEYS.ROSTER, {
+    name: "QuickDeck Roster",
+    hint: "Client-side saved actor IDs for your QuickDeck roster.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "[]"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.QUICK_SKILLS, {
+    name: "QuickDeck Skill Pins",
+    hint: "Client-side saved Quick Skills per actor.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "{}"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.DEFAULT_DRAWER, {
+    name: "Default QuickDeck Drawer",
+    hint: "Drawer opened by default when QuickDeck has no active drawer.",
+    scope: "client",
+    config: true,
+    type: String,
+    choices: {
+      none: "None",
+      combat: "Combat",
+      skills: "Skills",
+      "quick-skills": "Quick Skills"
+    },
+    default: "none"
+  });
 });
 
 Hooks.on("renderActorDirectory", (app, html) => {
