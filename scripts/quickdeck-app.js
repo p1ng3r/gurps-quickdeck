@@ -413,11 +413,80 @@ export class QuickDeckApp extends Application {
     }
   }
 
+  async callAnyMethod(candidates = []) {
+    for (const candidate of candidates) {
+      if (!candidate?.context || !candidate.path) continue;
+      const succeeded = await this.callIfFunction(
+        candidate.context,
+        candidate.path,
+        ...(candidate.args ?? [])
+      );
+      if (succeeded) return true;
+    }
+    return false;
+  }
+
+  getObjectMethodCandidates(context, args = []) {
+    if (!context || typeof context !== "object") return [];
+
+    const preferredPaths = [
+      "roll",
+      "rollSkill",
+      "rollAttack",
+      "rollWeapon",
+      "rollMelee",
+      "rollRanged",
+      "performAction",
+      "doRoll",
+      "test",
+      "action"
+    ];
+
+    const discoveredPaths = Object.keys(context)
+      .filter((key) => typeof context[key] === "function")
+      .filter((key) => /^roll|^perform|^test|^use|^do/i.test(key));
+
+    return [...preferredPaths, ...discoveredPaths].map((path) => ({
+      context,
+      path,
+      args
+    }));
+  }
+
   async tryGurpsRoll(actor, rollContext) {
     const numericTarget = this.parseRollTarget(rollContext.value);
+    const skillRaw = rollContext.skill?.raw ?? null;
+    const attackRaw = rollContext.attack?.raw ?? null;
+    const actionName = rollContext.skillName ?? rollContext.attackName ?? rollContext.defense;
+    const actionPayload = {
+      type: rollContext.type,
+      actor,
+      skill: rollContext.skill ?? null,
+      attack: rollContext.attack ?? null,
+      defense: rollContext.defense ?? null,
+      name: actionName,
+      target: numericTarget
+    };
+
+    const contextualCandidates = [
+      ...this.getObjectMethodCandidates(skillRaw, [actor, rollContext, numericTarget]),
+      ...this.getObjectMethodCandidates(attackRaw, [actor, rollContext, numericTarget]),
+      ...this.getObjectMethodCandidates(skillRaw, [rollContext, numericTarget]),
+      ...this.getObjectMethodCandidates(attackRaw, [rollContext, numericTarget]),
+      ...this.getObjectMethodCandidates(actor.sheet, [rollContext, numericTarget]),
+      ...this.getObjectMethodCandidates(actor.system, [rollContext, numericTarget])
+    ];
+
+    const usedContextualRoll = await this.callAnyMethod(contextualCandidates);
+    if (usedContextualRoll) return true;
 
     const actorPaths = [
       "rollSkill",
+      "rollSkillCheck",
+      "rollSkillObject",
+      "rollWeapon",
+      "rollAttack",
+      "rollDefense",
       "rollAttribute",
       "rollTest",
       "rollAgainst",
@@ -426,21 +495,37 @@ export class QuickDeckApp extends Application {
       "system.rollTest",
       "system.rollAgainst"
     ];
-    for (const path of actorPaths) {
-      const succeeded = await this.callIfFunction(actor, path, rollContext, numericTarget);
-      if (succeeded) return true;
-    }
+    const actorCandidates = actorPaths.flatMap((path) => [
+      { context: actor, path, args: [rollContext, numericTarget] },
+      { context: actor, path, args: [actionPayload] },
+      { context: actor, path, args: [actionName, numericTarget] }
+    ]);
+    if (await this.callAnyMethod(actorCandidates)) return true;
 
-    const gurpsPaths = ["performAction", "roll", "rollSkill", "doRoll"];
-    for (const path of gurpsPaths) {
-      const succeeded = await this.callIfFunction(
-        game.GURPS,
-        path,
-        actor,
-        rollContext,
-        numericTarget
-      );
-      if (succeeded) return true;
+    const gurpsPaths = [
+      "performAction",
+      "performItemAction",
+      "handleRoll",
+      "roll",
+      "rollSkill",
+      "rollAttack",
+      "rollDefense",
+      "doRoll"
+    ];
+    const gurpsCandidates = gurpsPaths.flatMap((path) => [
+      { context: game.GURPS, path, args: [actionPayload] },
+      { context: game.GURPS, path, args: [actor, rollContext, numericTarget] },
+      { context: game.GURPS, path, args: [actor, actionName, numericTarget] }
+    ]);
+    if (await this.callAnyMethod(gurpsCandidates)) return true;
+
+    if (rollContext.type === "skill") {
+      console.warn("gurps-quickdeck | No GURPS-native skill roll method found, using 3d6 fallback.", {
+        actor: actor?.name,
+        skill: rollContext.skillName,
+        rawSkillKeys: skillRaw && typeof skillRaw === "object" ? Object.keys(skillRaw).slice(0, 20) : [],
+        hasActorSheet: Boolean(actor?.sheet)
+      });
     }
 
     return false;
@@ -511,7 +596,7 @@ export class QuickDeckApp extends Application {
     if (usedSystemRoll) return;
 
     const target = this.parseRollTarget(rollContext.value);
-    const roll = await new Roll("3d6").evaluate({ async: true });
+    const roll = await new Roll("3d6").evaluate();
     await this.createFallbackRollChat(actor, rollContext, roll, target);
   }
 
