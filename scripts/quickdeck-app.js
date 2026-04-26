@@ -800,6 +800,74 @@ export class QuickDeckApp extends Application {
     await actor.update({ [path]: parsed });
   }
 
+  getCombatRosterState() {
+    const combat = game?.combat;
+    if (!combat) {
+      return {
+        combatantByActorId: new Map(),
+        currentCombatantId: null
+      };
+    }
+
+    const combatants = Array.from(combat.combatants ?? []);
+    const combatantByActorId = new Map();
+    for (const combatant of combatants) {
+      const actorId = combatant?.actor?.id ?? combatant?.actorId ?? null;
+      if (!actorId) continue;
+      combatantByActorId.set(actorId, combatant);
+    }
+
+    const currentCombatantId =
+      combat?.current?.combatantId ?? combat?.combatant?.id ?? null;
+
+    return {
+      combatantByActorId,
+      currentCombatantId
+    };
+  }
+
+  getCombatBadgeText(combatant) {
+    if (!combatant) return null;
+
+    const initiative = combatant?.initiative;
+    if (initiative !== undefined && initiative !== null && initiative !== "") {
+      return `Init ${initiative}`;
+    }
+
+    const turnIndex = combatant?.turn ?? combatant?.sort ?? null;
+    if (turnIndex === undefined || turnIndex === null || turnIndex === "") return null;
+    if (typeof turnIndex === "number" && Number.isFinite(turnIndex)) {
+      return `Turn ${turnIndex + 1}`;
+    }
+    return `Turn ${turnIndex}`;
+  }
+
+  getResourceValue(actor, resource) {
+    const normalized = String(resource ?? "").toUpperCase();
+    if (!["HP", "FP"].includes(normalized)) return null;
+
+    return this.getFirstDefinedValue(actor, [
+      `system.${normalized}.value`,
+      `data.data.${normalized}.value`
+    ]);
+  }
+
+  getResourceMax(actor, resource) {
+    const normalized = String(resource ?? "").toUpperCase();
+    if (!["HP", "FP"].includes(normalized)) return null;
+
+    return this.getFirstDefinedValue(actor, [
+      `system.${normalized}.max`,
+      `system.${normalized}.maxvalue`,
+      `system.${normalized}.maxValue`,
+      `system.${normalized}.value`,
+      `data.data.${normalized}.max`,
+      `data.data.${normalized}.maxvalue`,
+      `data.data.${normalized}.maxValue`,
+      `data.data.${normalized}.value`
+    ]);
+  }
+
   parseDropPayload(rawText) {
     if (!rawText || typeof rawText !== "string") return null;
     try {
@@ -855,6 +923,8 @@ export class QuickDeckApp extends Application {
     if (!this.activeActorId && this.rosterActorIds.length > 0) {
       this.activeActorId = this.rosterActorIds[0];
     }
+
+    const { combatantByActorId, currentCombatantId } = this.getCombatRosterState();
 
     const rosterActors = this.rosterActorIds
       .map((id) => game.actors.get(id))
@@ -925,9 +995,16 @@ export class QuickDeckApp extends Application {
     const bestParry = this.getBestAttackDefense(attacks, "parry");
     const bestBlock = this.getBestAttackDefense(attacks, "block");
 
+    const currentHp = this.getResourceValue(activeActor, "HP");
+    const currentFp = this.getResourceValue(activeActor, "FP");
+    const maxHp = this.getResourceMax(activeActor, "HP");
+    const maxFp = this.getResourceMax(activeActor, "FP");
+
     const gurpsData = {
-      hp: foundry.utils.getProperty(activeActor, "system.HP.value") ?? null,
-      fp: foundry.utils.getProperty(activeActor, "system.FP.value") ?? null,
+      hp: currentHp ?? null,
+      fp: currentFp ?? null,
+      hpMax: maxHp ?? currentHp ?? null,
+      fpMax: maxFp ?? currentFp ?? null,
       move: foundry.utils.getProperty(activeActor, "system.basicmove.value") ?? null,
       dodge,
       defenses: {
@@ -938,8 +1015,10 @@ export class QuickDeckApp extends Application {
       attacks,
       skills,
       display: {
-        hp: this.toDisplayValue(foundry.utils.getProperty(activeActor, "system.HP.value")),
-        fp: this.toDisplayValue(foundry.utils.getProperty(activeActor, "system.FP.value")),
+        hp: this.toDisplayValue(currentHp),
+        fp: this.toDisplayValue(currentFp),
+        hpMax: this.toDisplayValue(maxHp ?? currentHp),
+        fpMax: this.toDisplayValue(maxFp ?? currentFp),
         move: this.toDisplayValue(
           foundry.utils.getProperty(activeActor, "system.basicmove.value")
         ),
@@ -963,7 +1042,11 @@ export class QuickDeckApp extends Application {
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
         actorType: actor.type ? String(actor.type) : null,
-        isActive: actor.id === this.activeActorId
+        isActive: actor.id === this.activeActorId,
+        combatBadge: this.getCombatBadgeText(combatantByActorId.get(actor.id)),
+        isCurrentTurn:
+          combatantByActorId.get(actor.id)?.id &&
+          combatantByActorId.get(actor.id).id === currentCombatantId
       })),
       activeActor: activeActor
         ? {

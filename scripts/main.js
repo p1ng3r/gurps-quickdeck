@@ -52,3 +52,24 @@ Hooks.on("deleteActor", (actor) => {
   if (!quickDeckApp) return;
   quickDeckApp.onActorDeleted(actor.id);
 });
+
+function refreshQuickDeckOnCombatChange() {
+  if (!quickDeckApp?.rendered) return;
+  quickDeckApp.render(false);
+}
+
+Hooks.on("updateCombat", () => {
+  refreshQuickDeckOnCombatChange();
+});
+
+Hooks.on("updateCombatant", () => {
+  refreshQuickDeckOnCombatChange();
+});
+
+Hooks.on("combatTurn", () => {
+  refreshQuickDeckOnCombatChange();
+});
+
+Hooks.on("deleteCombat", () => {
+  refreshQuickDeckOnCombatChange();
+});
