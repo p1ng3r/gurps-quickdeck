@@ -392,6 +392,15 @@ export class QuickDeckApp extends Application {
     return match ? Number(match[0]) : null;
   }
 
+  escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+  }
+
   async callIfFunction(context, path, ...args) {
     const fn = foundry.utils.getProperty(context, path);
     if (typeof fn !== "function") return false;
@@ -437,17 +446,51 @@ export class QuickDeckApp extends Application {
     return false;
   }
 
-  async createFallbackRollChat(actor, rollContext) {
+  async createFallbackRollChat(actor, rollContext, roll = null, target = null) {
     const speaker = ChatMessage.getSpeaker({ actor });
-    const targetLabel = rollContext.value ?? "—";
+    const rawTargetLabel = rollContext.value ?? "—";
+    const targetLabel = this.escapeHtml(rawTargetLabel);
     const relativeLabel = rollContext.relativeLevel ?? null;
     const pointsLabel = rollContext.points ?? null;
+    const actorName = this.escapeHtml(actor?.name ?? "Unknown");
+    const skillName = this.escapeHtml(rollContext.skillName ?? "—");
+    const attackName = this.escapeHtml(rollContext.attackName ?? "—");
+    const defenseName = this.escapeHtml(rollContext.defense ?? "—");
+    const rollTotal =
+      roll?.total ?? (typeof roll?.result === "string" ? Number(roll.result) : null);
+    const hasNumericTarget = Number.isFinite(target);
+    const isSuccess = hasNumericTarget && Number.isFinite(rollTotal) ? rollTotal <= target : null;
+    const margin =
+      hasNumericTarget && Number.isFinite(rollTotal) ? Math.abs(target - rollTotal) : null;
+    const outcomeText =
+      isSuccess === null ? "No target value found" : isSuccess ? "Success" : "Failure";
+    const marginText =
+      margin === null
+        ? "—"
+        : isSuccess
+          ? `Margin of Success: ${margin}`
+          : `Margin of Failure: ${margin}`;
+    const rollFormula = roll?.formula ?? "3d6";
+    const rollDetail = roll?.result ?? "—";
+    const chatTitle =
+      rollContext.type === "skill"
+        ? "QuickDeck Skill Roll"
+        : rollContext.type === "defense"
+          ? "QuickDeck Defense Roll"
+          : "QuickDeck Attack Roll";
     const content = `
       <div class="gurps-quickdeck-roll-fallback">
-        <h3>QuickDeck Roll</h3>
-        <p><strong>Actor:</strong> ${actor?.name ?? "Unknown"}</p>
-        <p><strong>Roll:</strong> ${rollContext.label}</p>
+        <h3>${chatTitle}</h3>
+        <p><strong>Actor:</strong> ${actorName}</p>
+        ${rollContext.type === "skill" ? `<p><strong>Skill:</strong> ${skillName}</p>` : ""}
+        ${rollContext.type === "attack" ? `<p><strong>Attack:</strong> ${attackName}</p>` : ""}
+        ${rollContext.type === "defense" ? `<p><strong>Defense:</strong> ${defenseName}</p>` : ""}
+        <p><strong>Roll:</strong> ${this.escapeHtml(rollContext.label)}</p>
         <p><strong>Target:</strong> ${targetLabel}</p>
+        <p><strong>3d6 Result:</strong> ${this.escapeHtml(`${rollFormula} = ${rollDetail} (Total ${rollTotal ?? "—"})`)}</p>
+        <p><strong>Outcome:</strong> ${outcomeText}</p>
+        <p><strong>${marginText}</strong></p>
+        ${hasNumericTarget ? "" : "<p><em>No numeric target value found for comparison.</em></p>"}
         ${relativeLabel !== null ? `<p><strong>Relative:</strong> ${relativeLabel}</p>` : ""}
         ${pointsLabel !== null ? `<p><strong>Points:</strong> ${pointsLabel}</p>` : ""}
       </div>
@@ -466,7 +509,10 @@ export class QuickDeckApp extends Application {
 
     const usedSystemRoll = await this.tryGurpsRoll(actor, rollContext);
     if (usedSystemRoll) return;
-    await this.createFallbackRollChat(actor, rollContext);
+
+    const target = this.parseRollTarget(rollContext.value);
+    const roll = await new Roll("3d6").evaluate({ async: true });
+    await this.createFallbackRollChat(actor, rollContext, roll, target);
   }
 
   parseDropPayload(rawText) {
