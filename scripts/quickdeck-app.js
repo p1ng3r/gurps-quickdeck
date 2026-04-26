@@ -13,7 +13,6 @@ export class QuickDeckApp extends Application {
     this.quickSkillsSearch = "";
     this.quickSkillSelectionsByActor = {};
     this._actorSelectTimeout = null;
-    this._searchRenderTimers = {};
     this.isDragOverRoster = false;
   }
 
@@ -378,6 +377,85 @@ export class QuickDeckApp extends Application {
     });
   }
 
+  getVisibleCountBySearchText(entries, searchTerm) {
+    const search = this.normalizeSearchText(searchTerm);
+    if (!search) return entries.length;
+    return entries.filter((entry) =>
+      this.normalizeSearchText(entry?.searchText).includes(search)
+    ).length;
+  }
+
+  normalizeSearchText(value) {
+    return String(value ?? "").trim().toLowerCase();
+  }
+
+  buildSearchText(parts = []) {
+    return parts
+      .map((value) => String(value ?? "").trim().toLowerCase())
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  updateCountText(html, countKey, value) {
+    const target = html.find(`[data-count='${countKey}']`)[0];
+    if (target) target.textContent = String(value);
+  }
+
+  applyDomFilterBySelector(html, rowSelector, searchTerm) {
+    const normalizedSearch = this.normalizeSearchText(searchTerm);
+    const rows = html.find(rowSelector).toArray();
+    let visible = 0;
+
+    for (const row of rows) {
+      const searchableText = this.normalizeSearchText(row.dataset.searchText);
+      const isVisible = !normalizedSearch || searchableText.includes(normalizedSearch);
+      row.hidden = !isVisible;
+      if (isVisible) visible += 1;
+    }
+
+    return { visible, total: rows.length };
+  }
+
+  applyAvailableActorFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='available']",
+      this.availableSearch
+    );
+    this.updateCountText(html, "available-visible", visible);
+    this.updateCountText(html, "available-total", total);
+  }
+
+  applyCombatFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='combat']",
+      this.combatSearch
+    );
+    this.updateCountText(html, "attacks-visible", visible);
+    this.updateCountText(html, "attacks-total", total);
+  }
+
+  applySkillsFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='skills']",
+      this.skillsSearch
+    );
+    this.updateCountText(html, "skills-visible", visible);
+    this.updateCountText(html, "skills-total", total);
+  }
+
+  applyQuickSkillsFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='quick-skills']",
+      this.quickSkillsSearch
+    );
+    this.updateCountText(html, "quick-skills-visible", visible);
+    this.updateCountText(html, "quick-skills-total", total);
+  }
+
   toDisplayValue(value) {
     return value === undefined || value === null || value === "" ? "—" : value;
   }
@@ -702,50 +780,6 @@ export class QuickDeckApp extends Application {
     await this.createFallbackRollChat(actor, rollContext, roll, target);
   }
 
-  captureInputState(inputElement) {
-    if (!inputElement) return null;
-    return {
-      action: inputElement.dataset.action ?? null,
-      actorId: inputElement.dataset.actorId ?? null,
-      resource: inputElement.dataset.resource ?? null,
-      value: inputElement.value ?? "",
-      selectionStart:
-        typeof inputElement.selectionStart === "number" ? inputElement.selectionStart : null,
-      selectionEnd:
-        typeof inputElement.selectionEnd === "number" ? inputElement.selectionEnd : null
-    };
-  }
-
-  async renderPreservingInput(inputState = null) {
-    await this.render();
-    if (!inputState?.action) return;
-
-    let selector = `[data-action='${inputState.action}']`;
-    if (inputState.actorId) selector += `[data-actor-id='${inputState.actorId}']`;
-    if (inputState.resource) selector += `[data-resource='${inputState.resource}']`;
-    const replacement = this.element?.find(selector)?.[0];
-    if (!replacement) return;
-
-    replacement.focus();
-    if (
-      typeof replacement.setSelectionRange === "function" &&
-      inputState.selectionStart !== null &&
-      inputState.selectionEnd !== null
-    ) {
-      replacement.setSelectionRange(inputState.selectionStart, inputState.selectionEnd);
-    }
-  }
-
-  scheduleSearchRender(action, inputElement) {
-    if (!action) return;
-    const state = this.captureInputState(inputElement);
-    if (this._searchRenderTimers[action]) clearTimeout(this._searchRenderTimers[action]);
-    this._searchRenderTimers[action] = window.setTimeout(async () => {
-      await this.renderPreservingInput(state);
-      delete this._searchRenderTimers[action];
-    }, 100);
-  }
-
   async updateActorResource(actorId, resource, rawValue) {
     if (!actorId || !resource) return;
     const actor = game.actors.get(actorId);
@@ -826,18 +860,13 @@ export class QuickDeckApp extends Application {
       .map((id) => game.actors.get(id))
       .filter((actor) => actor && actor.id);
 
-    const search = this.availableSearch.trim().toLowerCase();
-    const availableActors = allActors
-      .filter((actor) => {
-        if (!search) return true;
-        return (actor.name ?? "").toLowerCase().includes(search);
-      })
-      .map((actor) => ({
+    const availableActors = allActors.map((actor) => ({
         id: actor.id,
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
         actorType: actor.type ? String(actor.type) : null,
-        isInRoster: this.rosterActorIds.includes(actor.id)
+        isInRoster: this.rosterActorIds.includes(actor.id),
+        searchText: this.buildSearchText([actor.name, actor.type])
       }));
 
     const activeActor = this.getActiveActor();
@@ -849,7 +878,16 @@ export class QuickDeckApp extends Application {
 
     const indexedAttacks = attacks.map((attack, index) => ({
       ...attack,
-      index
+      index,
+      searchText: this.buildSearchText([
+        attack.name,
+        attack.type,
+        attack.damage,
+        attack.level,
+        attack.reachOrRange,
+        attack.parry,
+        attack.block
+      ])
     }));
     const filteredAttacks = this.filterAttacks(indexedAttacks, combatSearch);
 
@@ -861,7 +899,8 @@ export class QuickDeckApp extends Application {
         ...skill,
         index,
         quickSkillKey,
-        isQuickSkillSelected: quickSkillKey ? quickSelection.has(quickSkillKey) : false
+        isQuickSkillSelected: quickSkillKey ? quickSelection.has(quickSkillKey) : false,
+        searchText: this.buildSearchText([skill.name, skill.level, skill.relativeLevel, skill.points])
       };
     });
     const filteredSkills = this.filterSkills(indexedSkills, skillsSearch);
@@ -916,6 +955,7 @@ export class QuickDeckApp extends Application {
       skillsSearch,
       quickSkillsSearch,
       availableActors,
+      visibleAvailableCount: this.getVisibleCountBySearchText(availableActors, this.availableSearch),
       rosterCount: rosterActors.length,
       availableCount: availableActors.length,
       rosterActors: rosterActors.map((actor) => ({
@@ -948,9 +988,9 @@ export class QuickDeckApp extends Application {
       quickSkillsCount: quickSkills.length,
       visibleQuickSkillsCount: filteredQuickSkills.length,
       isDragOverRoster: this.isDragOverRoster,
-      indexedAttacks: filteredAttacks,
-      indexedSkills: filteredSkills,
-      indexedQuickSkills: filteredQuickSkills
+      indexedAttacks,
+      indexedSkills,
+      indexedQuickSkills: quickSkills
     };
   }
 
@@ -1020,26 +1060,26 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='available-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.availableSearch = typeof searchValue === "string" ? searchValue : "";
-      this.scheduleSearchRender("available-search", event.currentTarget);
+      this.applyAvailableActorFilter(html);
     });
 
 
     html.find("[data-action='combat-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.combatSearch = typeof searchValue === "string" ? searchValue : "";
-      this.scheduleSearchRender("combat-search", event.currentTarget);
+      this.applyCombatFilter(html);
     });
 
     html.find("[data-action='skills-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.skillsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.scheduleSearchRender("skills-search", event.currentTarget);
+      this.applySkillsFilter(html);
     });
 
     html.find("[data-action='quick-skills-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.quickSkillsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.scheduleSearchRender("quick-skills-search", event.currentTarget);
+      this.applyQuickSkillsFilter(html);
     });
 
     html.find("[data-action='toggle-quick-skill']").on("change", (event) => {
@@ -1177,5 +1217,10 @@ export class QuickDeckApp extends Application {
       }
       this.render();
     });
+
+    this.applyAvailableActorFilter(html);
+    this.applyCombatFilter(html);
+    this.applySkillsFilter(html);
+    this.applyQuickSkillsFilter(html);
   }
 }
