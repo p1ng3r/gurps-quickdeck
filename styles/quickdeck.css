@@ -473,6 +473,15 @@
   color: #f7f2e5;
 }
 
+.quickdeck-stats dd input {
+  width: 100%;
+  border: 1px solid rgba(204, 174, 114, 0.65);
+  border-radius: 5px;
+  padding: 0.2rem 0.4rem;
+  background: rgba(13, 15, 22, 0.85);
+  color: #f7f2e5;
+}
+
 .quickdeck-defenses dt,
 .quickdeck-stats dt {
   font-size: 0.74rem;
@@ -611,6 +620,12 @@
   width: auto;
   white-space: nowrap;
   padding: 0.22rem 0.55rem;
+}
+
+.quickdeck-skill-row.is-quick-skill-selected {
+  border-color: rgba(105, 169, 255, 0.88);
+  background: linear-gradient(180deg, rgba(35, 79, 148, 0.45), rgba(18, 45, 92, 0.58));
+  box-shadow: 0 0 0 1px rgba(91, 163, 255, 0.35), 0 0 12px rgba(75, 151, 255, 0.25);
 }
 
 .quickdeck-roll-button {

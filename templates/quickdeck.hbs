@@ -197,11 +197,29 @@
                     <dl class="quickdeck-stats">
                       <div>
                         <dt>HP</dt>
-                        <dd>{{gurpsData.display.hp}}</dd>
+                        <dd>
+                          <input
+                            type="number"
+                            value="{{gurpsData.hp}}"
+                            data-action="update-resource"
+                            data-actor-id="{{activeActor.id}}"
+                            data-resource="hp"
+                            aria-label="Edit HP for {{activeActor.name}}"
+                          />
+                        </dd>
                       </div>
                       <div>
                         <dt>FP</dt>
-                        <dd>{{gurpsData.display.fp}}</dd>
+                        <dd>
+                          <input
+                            type="number"
+                            value="{{gurpsData.fp}}"
+                            data-action="update-resource"
+                            data-actor-id="{{activeActor.id}}"
+                            data-resource="fp"
+                            aria-label="Edit FP for {{activeActor.name}}"
+                          />
+                        </dd>
                       </div>
                       <div>
                         <dt>Move</dt>
@@ -307,7 +325,7 @@
                     {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
                         {{#each indexedSkills as |skill|}}
-                          <article class="quickdeck-skill-row">
+                          <article class="quickdeck-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}">
                             <label class="quickdeck-skill-checkbox" aria-label="Mark {{skill.name}} as Quick Skill">
                               <input
                                 type="checkbox"
@@ -377,7 +395,7 @@
                     {{#if indexedQuickSkills.length}}
                       <div class="quickdeck-skills-list">
                         {{#each indexedQuickSkills as |skill|}}
-                          <article class="quickdeck-skill-row">
+                          <article class="quickdeck-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}">
                             <label class="quickdeck-skill-checkbox" aria-label="Mark {{skill.name}} as Quick Skill">
                               <input
                                 type="checkbox"

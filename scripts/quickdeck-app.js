@@ -13,6 +13,7 @@ export class QuickDeckApp extends Application {
     this.quickSkillsSearch = "";
     this.quickSkillSelectionsByActor = {};
     this._actorSelectTimeout = null;
+    this._searchRenderTimers = {};
     this.isDragOverRoster = false;
   }
 
@@ -673,9 +674,17 @@ export class QuickDeckApp extends Application {
         ${hasNumericTarget ? "" : "<p><em>No numeric target value found for comparison.</em></p>"}
       </div>
     `;
+    const flavor = `${chatTitle}: ${this.escapeHtml(rollContext.label)}`;
+
+    if (roll && typeof roll.toMessage === "function") {
+      await roll.toMessage({ speaker, flavor, content });
+      return;
+    }
 
     await ChatMessage.create({
       speaker,
+      flavor,
+      rolls: roll ? [roll] : [],
       content
     });
   }
@@ -691,6 +700,70 @@ export class QuickDeckApp extends Application {
     const target = this.parseRollTarget(rollContext.value);
     const roll = await new Roll("3d6").evaluate();
     await this.createFallbackRollChat(actor, rollContext, roll, target);
+  }
+
+  captureInputState(inputElement) {
+    if (!inputElement) return null;
+    return {
+      action: inputElement.dataset.action ?? null,
+      actorId: inputElement.dataset.actorId ?? null,
+      resource: inputElement.dataset.resource ?? null,
+      value: inputElement.value ?? "",
+      selectionStart:
+        typeof inputElement.selectionStart === "number" ? inputElement.selectionStart : null,
+      selectionEnd:
+        typeof inputElement.selectionEnd === "number" ? inputElement.selectionEnd : null
+    };
+  }
+
+  async renderPreservingInput(inputState = null) {
+    await this.render();
+    if (!inputState?.action) return;
+
+    let selector = `[data-action='${inputState.action}']`;
+    if (inputState.actorId) selector += `[data-actor-id='${inputState.actorId}']`;
+    if (inputState.resource) selector += `[data-resource='${inputState.resource}']`;
+    const replacement = this.element?.find(selector)?.[0];
+    if (!replacement) return;
+
+    replacement.focus();
+    if (
+      typeof replacement.setSelectionRange === "function" &&
+      inputState.selectionStart !== null &&
+      inputState.selectionEnd !== null
+    ) {
+      replacement.setSelectionRange(inputState.selectionStart, inputState.selectionEnd);
+    }
+  }
+
+  scheduleSearchRender(action, inputElement) {
+    if (!action) return;
+    const state = this.captureInputState(inputElement);
+    if (this._searchRenderTimers[action]) clearTimeout(this._searchRenderTimers[action]);
+    this._searchRenderTimers[action] = window.setTimeout(async () => {
+      await this.renderPreservingInput(state);
+      delete this._searchRenderTimers[action];
+    }, 100);
+  }
+
+  async updateActorResource(actorId, resource, rawValue) {
+    if (!actorId || !resource) return;
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+
+    const trimmedValue = String(rawValue ?? "").trim();
+    if (!trimmedValue) return;
+
+    const parsed = Number(trimmedValue);
+    if (!Number.isFinite(parsed)) return;
+
+    const normalizedResource = String(resource).toLowerCase();
+    let path = null;
+    if (normalizedResource === "hp") path = "system.HP.value";
+    if (normalizedResource === "fp") path = "system.FP.value";
+    if (!path) return;
+
+    await actor.update({ [path]: parsed });
   }
 
   parseDropPayload(rawText) {
@@ -947,26 +1020,26 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='available-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.availableSearch = typeof searchValue === "string" ? searchValue : "";
-      this.render();
+      this.scheduleSearchRender("available-search", event.currentTarget);
     });
 
 
     html.find("[data-action='combat-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.combatSearch = typeof searchValue === "string" ? searchValue : "";
-      this.render();
+      this.scheduleSearchRender("combat-search", event.currentTarget);
     });
 
     html.find("[data-action='skills-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.skillsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.render();
+      this.scheduleSearchRender("skills-search", event.currentTarget);
     });
 
     html.find("[data-action='quick-skills-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.quickSkillsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.render();
+      this.scheduleSearchRender("quick-skills-search", event.currentTarget);
     });
 
     html.find("[data-action='toggle-quick-skill']").on("change", (event) => {
@@ -976,6 +1049,25 @@ export class QuickDeckApp extends Application {
 
       this.setQuickSkillSelected(actorId, skillKey, Boolean(event.currentTarget.checked));
       this.render();
+    });
+
+    const commitResourceUpdate = async (event) => {
+      const input = event.currentTarget;
+      const actorId = input?.dataset?.actorId;
+      const resource = input?.dataset?.resource;
+      if (!actorId || !resource) return;
+      if (input.dataset.lastCommittedValue === input.value) return;
+      input.dataset.lastCommittedValue = input.value;
+      await this.updateActorResource(actorId, resource, input.value);
+      this.render();
+    };
+
+    html.find("[data-action='update-resource']").on("change", commitResourceUpdate);
+    html.find("[data-action='update-resource']").on("blur", commitResourceUpdate);
+    html.find("[data-action='update-resource']").on("keydown", async (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      await commitResourceUpdate(event);
     });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
