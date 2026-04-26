@@ -166,6 +166,37 @@
   box-shadow: 0 0 0 1px rgba(222, 180, 105, 0.24), 0 0 14px rgba(222, 180, 105, 0.16);
 }
 
+.quickdeck-roster-button.is-current-turn {
+  border-color: rgba(125, 214, 255, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(144, 216, 255, 0.42),
+    0 0 12px rgba(80, 195, 255, 0.48),
+    0 0 22px rgba(80, 195, 255, 0.24);
+  animation: quickdeck-current-turn-pulse 1.3s ease-in-out infinite;
+}
+
+@keyframes quickdeck-current-turn-pulse {
+  0%,
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(144, 216, 255, 0.32),
+      0 0 10px rgba(80, 195, 255, 0.26),
+      0 0 16px rgba(80, 195, 255, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(164, 226, 255, 0.68),
+      0 0 16px rgba(80, 195, 255, 0.64),
+      0 0 28px rgba(80, 195, 255, 0.45);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quickdeck-roster-button.is-current-turn {
+    animation: none;
+  }
+}
+
 .quickdeck-roster-name {
   flex: 1 1 auto;
   color: #f4efe0;
@@ -192,6 +223,21 @@
   border: 1px solid rgba(188, 169, 131, 0.45);
   background: rgba(57, 58, 67, 0.72);
   color: rgba(245, 232, 202, 0.95);
+}
+
+.quickdeck-combat-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0.15rem;
+  padding: 0.08rem 0.36rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  border: 1px solid rgba(130, 186, 255, 0.72);
+  background: rgba(42, 71, 110, 0.76);
+  color: rgba(226, 241, 255, 0.98);
+  white-space: nowrap;
 }
 
 .quickdeck-remove-button {
@@ -228,6 +274,18 @@
   border-color: rgba(208, 223, 244, 0.85);
 }
 
+.quickdeck-resource-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.quickdeck-resource-max {
+  color: rgba(239, 227, 199, 0.92);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+
 .quickdeck-sidebar-available {
   min-height: 180px;
   flex: 1 1 auto;
@@ -253,6 +311,20 @@
 
 .quickdeck-available-header input::placeholder {
   color: rgba(243, 234, 213, 0.74);
+}
+
+.quickdeck-drawer-search {
+  width: 100%;
+  border: 1px solid rgba(208, 178, 116, 0.5);
+  border-radius: 6px;
+  height: 30px;
+  padding: 0.25rem 0.5rem;
+  background: rgba(7, 8, 12, 0.65);
+  color: #f7f0dd;
+}
+
+.quickdeck-drawer-search::placeholder {
+  color: rgba(238, 226, 201, 0.72);
 }
 
 .quickdeck-available-list {
@@ -298,6 +370,16 @@
 .quickdeck-content {
   min-width: 0;
   min-height: 0;
+}
+
+.quickdeck-main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.quickdeck-content {
+  flex: 1 1 auto;
   height: 100%;
 }
 
@@ -398,6 +480,26 @@
   overflow-y: auto;
 }
 
+.quickdeck-empty {
+  margin: 0.25rem 0;
+  padding: 0.55rem 0.65rem;
+  border: 1px dashed rgba(204, 170, 108, 0.35);
+  border-radius: 8px;
+  color: rgba(241, 233, 215, 0.92);
+  background: rgba(124, 91, 40, 0.1);
+}
+
+.quickdeck-footer-hint {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.28rem 0.6rem 0.34rem;
+  border-top: 1px solid rgba(201, 167, 106, 0.25);
+  color: rgba(234, 226, 210, 0.8);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  background: rgba(0, 0, 0, 0.2);
+}
+
 .quickdeck-panel-scroll-root {
   position: sticky;
   top: 0;
@@ -459,14 +561,19 @@
   color: #f7f2e5;
 }
 
+.quickdeck-stats dd input {
+  width: 100%;
+  border: 1px solid rgba(204, 174, 114, 0.65);
+  border-radius: 5px;
+  padding: 0.2rem 0.4rem;
+  background: rgba(13, 15, 22, 0.85);
+  color: #f7f2e5;
+}
+
 .quickdeck-defenses dt,
 .quickdeck-stats dt {
   font-size: 0.74rem;
   color: rgba(225, 214, 191, 0.92);
-}
-
-.quickdeck-empty {
-  color: rgba(241, 233, 217, 0.95);
 }
 
 .quickdeck-attacks-section,
@@ -534,28 +641,75 @@
   letter-spacing: 0.05em;
 }
 
-.quickdeck-attack-card dl,
-.quickdeck-skill-row dl {
+.quickdeck-attack-card dl {
   margin: 0;
   display: grid;
   gap: 0.22rem;
 }
 
-.quickdeck-attack-card dl div,
-.quickdeck-skill-row dl div {
+.quickdeck-attack-card dl div {
   display: grid;
   grid-template-columns: 92px 1fr;
   gap: 0.35rem;
 }
 
-.quickdeck-attack-card dt,
-.quickdeck-skill-row dt {
+.quickdeck-attack-card dt {
   color: rgba(223, 210, 184, 0.95);
 }
 
-.quickdeck-attack-card dd,
-.quickdeck-skill-row dd {
+.quickdeck-attack-card dd {
   color: #f5f0e2;
+}
+
+.quickdeck-skill-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.45rem 0.5rem;
+  border-radius: 999px;
+}
+
+.quickdeck-skill-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quickdeck-skill-checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: #e1b05f;
+}
+
+.quickdeck-skill-main {
+  min-width: 0;
+}
+
+.quickdeck-skill-main h5 {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quickdeck-skill-main p {
+  margin: 0.1rem 0 0;
+  font-size: 0.73rem;
+  color: rgba(241, 231, 209, 0.9);
+}
+
+.quickdeck-skill-row .quickdeck-roll-button {
+  margin-top: 0;
+  width: auto;
+  white-space: nowrap;
+  padding: 0.22rem 0.55rem;
+}
+
+.quickdeck-skill-row.is-quick-skill-selected {
+  border-color: rgba(105, 169, 255, 0.88);
+  background: linear-gradient(180deg, rgba(35, 79, 148, 0.45), rgba(18, 45, 92, 0.58));
+  box-shadow: 0 0 0 1px rgba(91, 163, 255, 0.35), 0 0 12px rgba(75, 151, 255, 0.25);
 }
 
 .quickdeck-roll-button {

@@ -12,7 +12,7 @@
           Clear Roster
         </button>
       </div>
-      <p class="quickdeck-hint">Click: select actor · Double-click: open full sheet</p>
+      <p class="quickdeck-hint">Click selects · Double-click opens sheet · Drag actors here.</p>
       <p class="quickdeck-drop-hint">Drag actors here from the Actor Directory.</p>
 
       {{#if hasRosterActors}}
@@ -23,10 +23,13 @@
                 type="button"
                 data-action="open-actor"
                 data-actor-id="{{actor.id}}"
-                class="quickdeck-roster-button {{#if actor.isActive}}is-active{{/if}}"
+                class="quickdeck-roster-button {{#if actor.isActive}}is-active{{/if}} {{#if actor.isCurrentTurn}}is-current-turn{{/if}}"
               >
                 <img src="{{actor.img}}" alt="{{actor.name}}" />
                 <span class="quickdeck-roster-name">{{actor.name}}</span>
+                {{#if actor.combatBadge}}
+                  <span class="quickdeck-combat-pill">{{actor.combatBadge}}</span>
+                {{/if}}
                 {{#if actor.actorType}}
                   <span class="quickdeck-type-pill">{{actor.actorType}}</span>
                 {{/if}}
@@ -45,13 +48,19 @@
           {{/each}}
         </ul>
       {{else}}
-        <p class="quickdeck-empty">No actors in roster. Add some from Available Actors.</p>
+        <p class="quickdeck-empty">Drag actors here from the Actor Directory or add them below.</p>
       {{/if}}
     </section>
 
     <section class="quickdeck-sidebar-block quickdeck-sidebar-available">
       <div class="quickdeck-available-header">
-        <h4>Available Actors <span class="quickdeck-badge">{{availableCount}}</span></h4>
+        <h4>
+          Available Actors
+          <span class="quickdeck-badge">
+            <span data-count="available-visible">{{visibleAvailableCount}}</span> /
+            <span data-count="available-total">{{availableCount}}</span>
+          </span>
+        </h4>
         <input
           type="search"
           value="{{availableSearch}}"
@@ -64,7 +73,7 @@
       {{#if hasAvailableActors}}
         <ul class="quickdeck-available-list">
           {{#each availableActors as |actor|}}
-            <li>
+            <li data-search-row="available" data-search-text="{{actor.searchText}}">
               <div class="quickdeck-available-actor">
                 <img src="{{actor.img}}" alt="{{actor.name}}" />
                 <span>{{actor.name}}</span>
@@ -111,6 +120,14 @@
             class="quickdeck-drawer-tab {{#if isSkillsDrawerOpen}}is-active{{/if}}"
           >
             Skills
+          </button>
+          <button
+            type="button"
+            data-action="toggle-drawer"
+            data-drawer="quick-skills"
+            class="quickdeck-drawer-tab {{#if isQuickSkillsDrawerOpen}}is-active{{/if}}"
+          >
+            Quick Skills
           </button>
         </nav>
 
@@ -189,11 +206,35 @@
                     <dl class="quickdeck-stats">
                       <div>
                         <dt>HP</dt>
-                        <dd>{{gurpsData.display.hp}}</dd>
+                        <dd>
+                          <div class="quickdeck-resource-row">
+                            <input
+                              type="number"
+                              value="{{gurpsData.hp}}"
+                              data-action="update-resource"
+                              data-actor-id="{{activeActor.id}}"
+                              data-resource="hp"
+                              aria-label="Edit HP for {{activeActor.name}}"
+                            />
+                            <span class="quickdeck-resource-max">/ {{gurpsData.display.hpMax}}</span>
+                          </div>
+                        </dd>
                       </div>
                       <div>
                         <dt>FP</dt>
-                        <dd>{{gurpsData.display.fp}}</dd>
+                        <dd>
+                          <div class="quickdeck-resource-row">
+                            <input
+                              type="number"
+                              value="{{gurpsData.fp}}"
+                              data-action="update-resource"
+                              data-actor-id="{{activeActor.id}}"
+                              data-resource="fp"
+                              aria-label="Edit FP for {{activeActor.name}}"
+                            />
+                            <span class="quickdeck-resource-max">/ {{gurpsData.display.fpMax}}</span>
+                          </div>
+                        </dd>
                       </div>
                       <div>
                         <dt>Move</dt>
@@ -203,12 +244,23 @@
                   </div>
 
                   <section class="quickdeck-attacks-section">
-                    <h4>Attacks ({{attackCount}})</h4>
+                    <h4>
+                      Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> /
+                      <span data-count="attacks-total">{{attackCount}}</span>)
+                    </h4>
+                    <input
+                      type="search"
+                      class="quickdeck-drawer-search"
+                      value="{{combatSearch}}"
+                      data-action="combat-search"
+                      placeholder="Search attacks..."
+                      autocomplete="off"
+                    />
 
                     {{#if indexedAttacks.length}}
                       <div class="quickdeck-attacks-list">
                         {{#each indexedAttacks as |attack|}}
-                          <article class="quickdeck-attack-card">
+                          <article class="quickdeck-attack-card" data-search-row="combat" data-search-text="{{attack.searchText}}">
                             <header>
                               <h5>{{attack.name}}</h5>
                               <span>{{attack.type}}</span>
@@ -248,7 +300,7 @@
                         {{/each}}
                       </div>
                     {{else}}
-                      <p class="quickdeck-empty">No attacks found for this actor.</p>
+                      <p class="quickdeck-empty">No attacks match this search.</p>
                     {{/if}}
                   </section>
                 </div>
@@ -278,27 +330,36 @@
                   </header>
 
                   <section class="quickdeck-skills-section">
-                    <h4>Skills ({{skillsCount}})</h4>
+                    <h4>
+                      Skills (<span data-count="skills-visible">{{visibleSkillsCount}}</span> /
+                      <span data-count="skills-total">{{skillsCount}}</span>)
+                    </h4>
+                    <input
+                      type="search"
+                      class="quickdeck-drawer-search"
+                      value="{{skillsSearch}}"
+                      data-action="skills-search"
+                      placeholder="Search skills..."
+                      autocomplete="off"
+                    />
 
                     {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
                         {{#each indexedSkills as |skill|}}
-                          <article class="quickdeck-skill-row">
-                            <h5>{{skill.name}}</h5>
-                            <dl>
-                              <div>
-                                <dt>Level</dt>
-                                <dd>{{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</dd>
-                              </div>
-                              <div>
-                                <dt>Relative</dt>
-                                <dd>{{#if skill.relativeLevel}}{{skill.relativeLevel}}{{else}}—{{/if}}</dd>
-                              </div>
-                              <div>
-                                <dt>Points</dt>
-                                <dd>{{#if skill.points}}{{skill.points}}{{else}}—{{/if}}</dd>
-                              </div>
-                            </dl>
+                          <article class="quickdeck-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}" data-search-row="skills" data-search-text="{{skill.searchText}}">
+                            <label class="quickdeck-skill-checkbox" aria-label="Mark {{skill.name}} as Quick Skill">
+                              <input
+                                type="checkbox"
+                                data-action="toggle-quick-skill"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-skill-key="{{skill.quickSkillKey}}"
+                                {{#if skill.isQuickSkillSelected}}checked{{/if}}
+                              />
+                            </label>
+                            <div class="quickdeck-skill-main">
+                              <h5>{{skill.name}}</h5>
+                              <p>Level {{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</p>
+                            </div>
                             <button
                               type="button"
                               data-action="roll-skill"
@@ -312,19 +373,93 @@
                         {{/each}}
                       </div>
                     {{else}}
-                      <p class="quickdeck-empty">No skills found for this actor.</p>
+                      <p class="quickdeck-empty">No skills match this search.</p>
+                    {{/if}}
+                  </section>
+                </div>
+              {{/if}}
+
+              {{#if isQuickSkillsDrawerOpen}}
+                <div class="quickdeck-panel-content quickdeck-panel-skills">
+                  <header class="quickdeck-actor-header">
+                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+                    <div>
+                      <h3>{{activeActor.name}}</h3>
+                      <p>
+                        Quick Skills
+                        {{#if activeActor.actorType}}
+                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
+                        {{/if}}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      data-action="open-sheet"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-open-sheet-button"
+                    >
+                      Open Sheet
+                    </button>
+                  </header>
+
+                  <section class="quickdeck-skills-section">
+                    <h4>
+                      Quick Skills (<span data-count="quick-skills-visible">{{visibleQuickSkillsCount}}</span> /
+                      <span data-count="quick-skills-total">{{quickSkillsCount}}</span>)
+                    </h4>
+                    <input
+                      type="search"
+                      class="quickdeck-drawer-search"
+                      value="{{quickSkillsSearch}}"
+                      data-action="quick-skills-search"
+                      placeholder="Search quick skills..."
+                      autocomplete="off"
+                    />
+
+                    {{#if indexedQuickSkills.length}}
+                      <div class="quickdeck-skills-list">
+                        {{#each indexedQuickSkills as |skill|}}
+                          <article class="quickdeck-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}" data-search-row="quick-skills" data-search-text="{{skill.searchText}}">
+                            <label class="quickdeck-skill-checkbox" aria-label="Mark {{skill.name}} as Quick Skill">
+                              <input
+                                type="checkbox"
+                                data-action="toggle-quick-skill"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-skill-key="{{skill.quickSkillKey}}"
+                                {{#if skill.isQuickSkillSelected}}checked{{/if}}
+                              />
+                            </label>
+                            <div class="quickdeck-skill-main">
+                              <h5>{{skill.name}}</h5>
+                              <p>Level {{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</p>
+                            </div>
+                            <button
+                              type="button"
+                              data-action="roll-skill"
+                              data-actor-id="{{../activeActor.id}}"
+                              data-skill-index="{{skill.index}}"
+                              class="quickdeck-roll-button"
+                            >
+                              Roll Skill
+                            </button>
+                          </article>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      <p class="quickdeck-empty">Check skills in the Skills drawer to pin them here.</p>
                     {{/if}}
                   </section>
                 </div>
               {{/if}}
             {{else}}
               <div class="quickdeck-panel-content">
-                <p class="quickdeck-empty">Select an actor from the QuickDeck Roster first.</p>
+                <p class="quickdeck-empty">Select a roster actor to open a drawer.</p>
               </div>
             {{/if}}
           </section>
         {{/if}}
       </aside>
     </section>
+    <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
   </main>
 </section>

@@ -1,5 +1,12 @@
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const DEBUG = false;
+const MODULE_ID = "gurps-quickdeck";
+const SETTING_KEYS = {
+  ROSTER: "rosterActorIds",
+  QUICK_SKILLS: "quickSkillSelectionsByActor",
+  DEFAULT_DRAWER: "defaultDrawer"
+};
+const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills"]);
 
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
@@ -8,8 +15,14 @@ export class QuickDeckApp extends Application {
     this.activeActorId = null;
     this.activeDrawer = null;
     this.availableSearch = "";
+    this.combatSearch = "";
+    this.skillsSearch = "";
+    this.quickSkillsSearch = "";
+    this.quickSkillSelectionsByActor = {};
     this._actorSelectTimeout = null;
     this.isDragOverRoster = false;
+    this._stateLoadedFromSettings = false;
+    this.loadPersistedState();
   }
 
   static get defaultOptions() {
@@ -39,6 +52,7 @@ export class QuickDeckApp extends Application {
     if (!actorId || !game.actors.has(actorId)) return;
     if (!this.rosterActorIds.includes(actorId)) {
       this.rosterActorIds.push(actorId);
+      this.persistRosterState();
     }
     this.activeActorId = actorId;
   }
@@ -46,6 +60,7 @@ export class QuickDeckApp extends Application {
   clearRoster() {
     this.rosterActorIds = [];
     this.activeActorId = null;
+    this.persistRosterState();
   }
 
   removeActorFromRoster(actorId) {
@@ -58,6 +73,8 @@ export class QuickDeckApp extends Application {
     if (this.activeActorId === actorId) {
       this.activeActorId = this.rosterActorIds[0] ?? null;
     }
+
+    this.persistRosterState();
   }
 
   onActorDeleted(actorId) {
@@ -304,6 +321,250 @@ export class QuickDeckApp extends Application {
     }
 
     return skills;
+  }
+
+
+  getQuickSkillKey(skill) {
+    if (!skill || typeof skill !== "object") return null;
+    const raw = skill.raw;
+
+    const rawKey = this.getFirstDefinedValue(raw, [
+      "uuid",
+      "id",
+      "_id",
+      "itemid",
+      "itemId",
+      "key"
+    ]);
+    if (rawKey !== null) return String(rawKey);
+
+    const name = String(skill.name ?? "Unnamed Skill");
+    const level = String(skill.level ?? "—");
+    return `${name}::${level}`;
+  }
+
+  getQuickSkillSelection(actorId) {
+    if (!actorId) return new Set();
+    const selected = this.quickSkillSelectionsByActor[actorId];
+    if (selected instanceof Set) return selected;
+
+    const normalized = new Set(Array.isArray(selected) ? selected.map((entry) => String(entry)) : []);
+    this.quickSkillSelectionsByActor[actorId] = normalized;
+    return normalized;
+  }
+
+  setQuickSkillSelected(actorId, skillKey, isSelected) {
+    if (!actorId || !skillKey) return;
+    const selection = this.getQuickSkillSelection(actorId);
+    if (isSelected) selection.add(skillKey);
+    else selection.delete(skillKey);
+    this.persistQuickSkillsState();
+  }
+
+  parseJsonSetting(rawValue, fallbackValue) {
+    if (typeof rawValue !== "string") return fallbackValue;
+    try {
+      const parsed = JSON.parse(rawValue);
+      return parsed ?? fallbackValue;
+    } catch (_error) {
+      return fallbackValue;
+    }
+  }
+
+  loadPersistedState() {
+    if (!game?.settings) return;
+
+    const savedRoster = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.ROSTER),
+      []
+    );
+    this.rosterActorIds = Array.isArray(savedRoster)
+      ? savedRoster.map((id) => String(id))
+      : [];
+
+    const savedQuickSkills = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.QUICK_SKILLS),
+      {}
+    );
+    if (savedQuickSkills && typeof savedQuickSkills === "object") {
+      this.quickSkillSelectionsByActor = Object.fromEntries(
+        Object.entries(savedQuickSkills).map(([actorId, skillKeys]) => [
+          String(actorId),
+          new Set(Array.isArray(skillKeys) ? skillKeys.map((entry) => String(entry)) : [])
+        ])
+      );
+    } else {
+      this.quickSkillSelectionsByActor = {};
+    }
+
+    this._stateLoadedFromSettings = true;
+  }
+
+  serializeQuickSkillsState() {
+    return Object.fromEntries(
+      Object.entries(this.quickSkillSelectionsByActor).map(([actorId, skillSet]) => [
+        actorId,
+        Array.from(skillSet instanceof Set ? skillSet : new Set())
+      ])
+    );
+  }
+
+  persistRosterState() {
+    if (!game?.settings) return;
+    const roster = Array.from(new Set(this.rosterActorIds.map((id) => String(id))));
+    game.settings.set(MODULE_ID, SETTING_KEYS.ROSTER, JSON.stringify(roster));
+  }
+
+  persistQuickSkillsState() {
+    if (!game?.settings) return;
+    const serialized = this.serializeQuickSkillsState();
+    game.settings.set(MODULE_ID, SETTING_KEYS.QUICK_SKILLS, JSON.stringify(serialized));
+  }
+
+  applyDefaultDrawerIfNeeded() {
+    if (this.activeDrawer) return;
+    const configuredDrawer = game.settings.get(MODULE_ID, SETTING_KEYS.DEFAULT_DRAWER);
+    if (configuredDrawer === "none") return;
+    if (!VALID_DRAWERS.has(configuredDrawer)) return;
+    this.activeDrawer = configuredDrawer;
+  }
+
+  sanitizePersistentState() {
+    const allActors = this.getCombatActors();
+    const validActorIds = new Set(allActors.map((actor) => actor.id));
+    const originalRosterLength = this.rosterActorIds.length;
+    this.rosterActorIds = this.rosterActorIds.filter((id) => validActorIds.has(id));
+
+    let removedQuickSkills = false;
+    for (const actorId of Object.keys(this.quickSkillSelectionsByActor)) {
+      if (!validActorIds.has(actorId)) {
+        delete this.quickSkillSelectionsByActor[actorId];
+        removedQuickSkills = true;
+      }
+    }
+
+    if (this.activeActorId && !this.rosterActorIds.includes(this.activeActorId)) {
+      this.activeActorId = this.rosterActorIds[0] ?? null;
+    }
+    if (!this.activeActorId && this.rosterActorIds.length > 0) {
+      this.activeActorId = this.rosterActorIds[0];
+    }
+
+    if (this.rosterActorIds.length !== originalRosterLength) {
+      this.persistRosterState();
+    }
+    if (removedQuickSkills) {
+      this.persistQuickSkillsState();
+    }
+  }
+
+  filterAttacks(attacks, searchTerm) {
+    const search = String(searchTerm ?? "").trim().toLowerCase();
+    if (!search) return attacks;
+
+    return attacks.filter((attack) => {
+      const haystack = [
+        attack.name,
+        attack.type,
+        attack.damage,
+        attack.level,
+        attack.reachOrRange,
+        attack.parry,
+        attack.block
+      ]
+        .map((value) => String(value ?? "").toLowerCase())
+        .join(" ");
+      return haystack.includes(search);
+    });
+  }
+
+  filterSkills(skills, searchTerm) {
+    const search = String(searchTerm ?? "").trim().toLowerCase();
+    if (!search) return skills;
+
+    return skills.filter((skill) => {
+      const haystack = `${String(skill.name ?? "").toLowerCase()} ${String(skill.level ?? "").toLowerCase()}`;
+      return haystack.includes(search);
+    });
+  }
+
+  getVisibleCountBySearchText(entries, searchTerm) {
+    const search = this.normalizeSearchText(searchTerm);
+    if (!search) return entries.length;
+    return entries.filter((entry) =>
+      this.normalizeSearchText(entry?.searchText).includes(search)
+    ).length;
+  }
+
+  normalizeSearchText(value) {
+    return String(value ?? "").trim().toLowerCase();
+  }
+
+  buildSearchText(parts = []) {
+    return parts
+      .map((value) => String(value ?? "").trim().toLowerCase())
+      .filter(Boolean)
+      .join(" ");
+  }
+
+  updateCountText(html, countKey, value) {
+    const target = html.find(`[data-count='${countKey}']`)[0];
+    if (target) target.textContent = String(value);
+  }
+
+  applyDomFilterBySelector(html, rowSelector, searchTerm) {
+    const normalizedSearch = this.normalizeSearchText(searchTerm);
+    const rows = html.find(rowSelector).toArray();
+    let visible = 0;
+
+    for (const row of rows) {
+      const searchableText = this.normalizeSearchText(row.dataset.searchText);
+      const isVisible = !normalizedSearch || searchableText.includes(normalizedSearch);
+      row.hidden = !isVisible;
+      if (isVisible) visible += 1;
+    }
+
+    return { visible, total: rows.length };
+  }
+
+  applyAvailableActorFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='available']",
+      this.availableSearch
+    );
+    this.updateCountText(html, "available-visible", visible);
+    this.updateCountText(html, "available-total", total);
+  }
+
+  applyCombatFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='combat']",
+      this.combatSearch
+    );
+    this.updateCountText(html, "attacks-visible", visible);
+    this.updateCountText(html, "attacks-total", total);
+  }
+
+  applySkillsFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='skills']",
+      this.skillsSearch
+    );
+    this.updateCountText(html, "skills-visible", visible);
+    this.updateCountText(html, "skills-total", total);
+  }
+
+  applyQuickSkillsFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='quick-skills']",
+      this.quickSkillsSearch
+    );
+    this.updateCountText(html, "quick-skills-visible", visible);
+    this.updateCountText(html, "quick-skills-total", total);
   }
 
   toDisplayValue(value) {
@@ -561,8 +822,6 @@ export class QuickDeckApp extends Application {
     const speaker = ChatMessage.getSpeaker({ actor });
     const rawTargetLabel = rollContext.value ?? "—";
     const targetLabel = this.escapeHtml(rawTargetLabel);
-    const relativeLabel = rollContext.relativeLevel ?? null;
-    const pointsLabel = rollContext.points ?? null;
     const actorName = this.escapeHtml(actor?.name ?? "Unknown");
     const skillName = this.escapeHtml(rollContext.skillName ?? "—");
     const attackName = this.escapeHtml(rollContext.attackName ?? "—");
@@ -602,13 +861,19 @@ export class QuickDeckApp extends Application {
         <p><strong>Outcome:</strong> ${outcomeText}</p>
         <p><strong>${marginText}</strong></p>
         ${hasNumericTarget ? "" : "<p><em>No numeric target value found for comparison.</em></p>"}
-        ${relativeLabel !== null ? `<p><strong>Relative:</strong> ${relativeLabel}</p>` : ""}
-        ${pointsLabel !== null ? `<p><strong>Points:</strong> ${pointsLabel}</p>` : ""}
       </div>
     `;
+    const flavor = `${chatTitle}: ${this.escapeHtml(rollContext.label)}`;
+
+    if (roll && typeof roll.toMessage === "function") {
+      await roll.toMessage({ speaker, flavor, content });
+      return;
+    }
 
     await ChatMessage.create({
       speaker,
+      flavor,
+      rolls: roll ? [roll] : [],
       content
     });
   }
@@ -624,6 +889,94 @@ export class QuickDeckApp extends Application {
     const target = this.parseRollTarget(rollContext.value);
     const roll = await new Roll("3d6").evaluate();
     await this.createFallbackRollChat(actor, rollContext, roll, target);
+  }
+
+  async updateActorResource(actorId, resource, rawValue) {
+    if (!actorId || !resource) return;
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+
+    const trimmedValue = String(rawValue ?? "").trim();
+    if (!trimmedValue) return;
+
+    const parsed = Number(trimmedValue);
+    if (!Number.isFinite(parsed)) return;
+
+    const normalizedResource = String(resource).toLowerCase();
+    let path = null;
+    if (normalizedResource === "hp") path = "system.HP.value";
+    if (normalizedResource === "fp") path = "system.FP.value";
+    if (!path) return;
+
+    await actor.update({ [path]: parsed });
+  }
+
+  getCombatRosterState() {
+    const combat = game?.combat;
+    if (!combat) {
+      return {
+        combatantByActorId: new Map(),
+        currentCombatantId: null
+      };
+    }
+
+    const combatants = Array.from(combat.combatants ?? []);
+    const combatantByActorId = new Map();
+    for (const combatant of combatants) {
+      const actorId = combatant?.actor?.id ?? combatant?.actorId ?? null;
+      if (!actorId) continue;
+      combatantByActorId.set(actorId, combatant);
+    }
+
+    const currentCombatantId =
+      combat?.current?.combatantId ?? combat?.combatant?.id ?? null;
+
+    return {
+      combatantByActorId,
+      currentCombatantId
+    };
+  }
+
+  getCombatBadgeText(combatant) {
+    if (!combatant) return null;
+
+    const initiative = combatant?.initiative;
+    if (initiative !== undefined && initiative !== null && initiative !== "") {
+      return `Init ${initiative}`;
+    }
+
+    const turnIndex = combatant?.turn ?? combatant?.sort ?? null;
+    if (turnIndex === undefined || turnIndex === null || turnIndex === "") return null;
+    if (typeof turnIndex === "number" && Number.isFinite(turnIndex)) {
+      return `Turn ${turnIndex + 1}`;
+    }
+    return `Turn ${turnIndex}`;
+  }
+
+  getResourceValue(actor, resource) {
+    const normalized = String(resource ?? "").toUpperCase();
+    if (!["HP", "FP"].includes(normalized)) return null;
+
+    return this.getFirstDefinedValue(actor, [
+      `system.${normalized}.value`,
+      `data.data.${normalized}.value`
+    ]);
+  }
+
+  getResourceMax(actor, resource) {
+    const normalized = String(resource ?? "").toUpperCase();
+    if (!["HP", "FP"].includes(normalized)) return null;
+
+    return this.getFirstDefinedValue(actor, [
+      `system.${normalized}.max`,
+      `system.${normalized}.maxvalue`,
+      `system.${normalized}.maxValue`,
+      `system.${normalized}.value`,
+      `data.data.${normalized}.max`,
+      `data.data.${normalized}.maxvalue`,
+      `data.data.${normalized}.maxValue`,
+      `data.data.${normalized}.value`
+    ]);
   }
 
   parseDropPayload(rawText) {
@@ -671,38 +1024,64 @@ export class QuickDeckApp extends Application {
   }
 
   getData() {
-    const allActors = this.getCombatActors();
-    const allActorIds = new Set(allActors.map((actor) => actor.id));
-    this.rosterActorIds = this.rosterActorIds.filter((id) => allActorIds.has(id));
+    if (!this._stateLoadedFromSettings) this.loadPersistedState();
+    this.sanitizePersistentState();
+    this.applyDefaultDrawerIfNeeded();
 
-    if (this.activeActorId && !this.rosterActorIds.includes(this.activeActorId)) {
-      this.activeActorId = null;
-    }
-    if (!this.activeActorId && this.rosterActorIds.length > 0) {
-      this.activeActorId = this.rosterActorIds[0];
-    }
+    const allActors = this.getCombatActors();
+
+    const { combatantByActorId, currentCombatantId } = this.getCombatRosterState();
 
     const rosterActors = this.rosterActorIds
       .map((id) => game.actors.get(id))
       .filter((actor) => actor && actor.id);
 
-    const search = this.availableSearch.trim().toLowerCase();
-    const availableActors = allActors
-      .filter((actor) => {
-        if (!search) return true;
-        return (actor.name ?? "").toLowerCase().includes(search);
-      })
-      .map((actor) => ({
+    const availableActors = allActors.map((actor) => ({
         id: actor.id,
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
         actorType: actor.type ? String(actor.type) : null,
-        isInRoster: this.rosterActorIds.includes(actor.id)
+        isInRoster: this.rosterActorIds.includes(actor.id),
+        searchText: this.buildSearchText([actor.name, actor.type])
       }));
 
     const activeActor = this.getActiveActor();
     const attacks = this.extractAttacks(activeActor);
     const skills = this.extractSkills(activeActor);
+    const combatSearch = this.combatSearch;
+    const skillsSearch = this.skillsSearch;
+    const quickSkillsSearch = this.quickSkillsSearch;
+
+    const indexedAttacks = attacks.map((attack, index) => ({
+      ...attack,
+      index,
+      searchText: this.buildSearchText([
+        attack.name,
+        attack.type,
+        attack.damage,
+        attack.level,
+        attack.reachOrRange,
+        attack.parry,
+        attack.block
+      ])
+    }));
+    const filteredAttacks = this.filterAttacks(indexedAttacks, combatSearch);
+
+    const activeActorId = activeActor?.id ?? null;
+    const quickSelection = this.getQuickSkillSelection(activeActorId);
+    const indexedSkills = skills.map((skill, index) => {
+      const quickSkillKey = this.getQuickSkillKey(skill);
+      return {
+        ...skill,
+        index,
+        quickSkillKey,
+        isQuickSkillSelected: quickSkillKey ? quickSelection.has(quickSkillKey) : false,
+        searchText: this.buildSearchText([skill.name, skill.level, skill.relativeLevel, skill.points])
+      };
+    });
+    const filteredSkills = this.filterSkills(indexedSkills, skillsSearch);
+    const quickSkills = indexedSkills.filter((skill) => skill.isQuickSkillSelected);
+    const filteredQuickSkills = this.filterSkills(quickSkills, quickSkillsSearch);
     if (DEBUG) {
       const meleeCount = attacks.filter((attack) => attack.type === "Melee").length;
       const rangedCount = attacks.filter((attack) => attack.type === "Ranged").length;
@@ -722,9 +1101,16 @@ export class QuickDeckApp extends Application {
     const bestParry = this.getBestAttackDefense(attacks, "parry");
     const bestBlock = this.getBestAttackDefense(attacks, "block");
 
+    const currentHp = this.getResourceValue(activeActor, "HP");
+    const currentFp = this.getResourceValue(activeActor, "FP");
+    const maxHp = this.getResourceMax(activeActor, "HP");
+    const maxFp = this.getResourceMax(activeActor, "FP");
+
     const gurpsData = {
-      hp: foundry.utils.getProperty(activeActor, "system.HP.value") ?? null,
-      fp: foundry.utils.getProperty(activeActor, "system.FP.value") ?? null,
+      hp: currentHp ?? null,
+      fp: currentFp ?? null,
+      hpMax: maxHp ?? currentHp ?? null,
+      fpMax: maxFp ?? currentFp ?? null,
       move: foundry.utils.getProperty(activeActor, "system.basicmove.value") ?? null,
       dodge,
       defenses: {
@@ -735,8 +1121,10 @@ export class QuickDeckApp extends Application {
       attacks,
       skills,
       display: {
-        hp: this.toDisplayValue(foundry.utils.getProperty(activeActor, "system.HP.value")),
-        fp: this.toDisplayValue(foundry.utils.getProperty(activeActor, "system.FP.value")),
+        hp: this.toDisplayValue(currentHp),
+        fp: this.toDisplayValue(currentFp),
+        hpMax: this.toDisplayValue(maxHp ?? currentHp),
+        fpMax: this.toDisplayValue(maxFp ?? currentFp),
         move: this.toDisplayValue(
           foundry.utils.getProperty(activeActor, "system.basicmove.value")
         ),
@@ -748,7 +1136,11 @@ export class QuickDeckApp extends Application {
 
     return {
       availableSearch: this.availableSearch,
+      combatSearch,
+      skillsSearch,
+      quickSkillsSearch,
       availableActors,
+      visibleAvailableCount: this.getVisibleCountBySearchText(availableActors, this.availableSearch),
       rosterCount: rosterActors.length,
       availableCount: availableActors.length,
       rosterActors: rosterActors.map((actor) => ({
@@ -756,7 +1148,11 @@ export class QuickDeckApp extends Application {
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
         actorType: actor.type ? String(actor.type) : null,
-        isActive: actor.id === this.activeActorId
+        isActive: actor.id === this.activeActorId,
+        combatBadge: this.getCombatBadgeText(combatantByActorId.get(actor.id)),
+        isCurrentTurn:
+          combatantByActorId.get(actor.id)?.id &&
+          combatantByActorId.get(actor.id).id === currentCombatantId
       })),
       activeActor: activeActor
         ? {
@@ -772,18 +1168,18 @@ export class QuickDeckApp extends Application {
       activeDrawer: this.activeDrawer,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
+      isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
       isDebugMode: DEBUG,
       attackCount: attacks.length,
+      visibleAttackCount: filteredAttacks.length,
       skillsCount: skills.length,
+      visibleSkillsCount: filteredSkills.length,
+      quickSkillsCount: quickSkills.length,
+      visibleQuickSkillsCount: filteredQuickSkills.length,
       isDragOverRoster: this.isDragOverRoster,
-      indexedAttacks: attacks.map((attack, index) => ({
-        ...attack,
-        index
-      })),
-      indexedSkills: skills.map((skill, index) => ({
-        ...skill,
-        index
-      }))
+      indexedAttacks,
+      indexedSkills,
+      indexedQuickSkills: quickSkills
     };
   }
 
@@ -853,7 +1249,54 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='available-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.availableSearch = typeof searchValue === "string" ? searchValue : "";
+      this.applyAvailableActorFilter(html);
+    });
+
+
+    html.find("[data-action='combat-search']").on("input", (event) => {
+      const searchValue = event.currentTarget?.value;
+      this.combatSearch = typeof searchValue === "string" ? searchValue : "";
+      this.applyCombatFilter(html);
+    });
+
+    html.find("[data-action='skills-search']").on("input", (event) => {
+      const searchValue = event.currentTarget?.value;
+      this.skillsSearch = typeof searchValue === "string" ? searchValue : "";
+      this.applySkillsFilter(html);
+    });
+
+    html.find("[data-action='quick-skills-search']").on("input", (event) => {
+      const searchValue = event.currentTarget?.value;
+      this.quickSkillsSearch = typeof searchValue === "string" ? searchValue : "";
+      this.applyQuickSkillsFilter(html);
+    });
+
+    html.find("[data-action='toggle-quick-skill']").on("change", (event) => {
+      const actorId = event.currentTarget.dataset.actorId;
+      const skillKey = event.currentTarget.dataset.skillKey;
+      if (!actorId || !skillKey) return;
+
+      this.setQuickSkillSelected(actorId, skillKey, Boolean(event.currentTarget.checked));
       this.render();
+    });
+
+    const commitResourceUpdate = async (event) => {
+      const input = event.currentTarget;
+      const actorId = input?.dataset?.actorId;
+      const resource = input?.dataset?.resource;
+      if (!actorId || !resource) return;
+      if (input.dataset.lastCommittedValue === input.value) return;
+      input.dataset.lastCommittedValue = input.value;
+      await this.updateActorResource(actorId, resource, input.value);
+      this.render();
+    };
+
+    html.find("[data-action='update-resource']").on("change", commitResourceUpdate);
+    html.find("[data-action='update-resource']").on("blur", commitResourceUpdate);
+    html.find("[data-action='update-resource']").on("keydown", async (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      await commitResourceUpdate(event);
     });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
@@ -925,8 +1368,6 @@ export class QuickDeckApp extends Application {
         type: "skill",
         label: `Roll Skill (${skill.name})`,
         value,
-        relativeLevel: skill.relativeLevel ?? null,
-        points: skill.points ?? null,
         skillName: skill.name,
         skill
       });
@@ -965,5 +1406,10 @@ export class QuickDeckApp extends Application {
       }
       this.render();
     });
+
+    this.applyAvailableActorFilter(html);
+    this.applyCombatFilter(html);
+    this.applySkillsFilter(html);
+    this.applyQuickSkillsFilter(html);
   }
 }
