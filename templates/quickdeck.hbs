@@ -1,0 +1,330 @@
+<section class="quickdeck-shell">
+  <aside class="quickdeck-sidebar">
+    <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
+      <div class="quickdeck-block-title-row">
+        <h3>QuickDeck Roster <span class="quickdeck-badge">{{rosterCount}}</span></h3>
+        <button
+          type="button"
+          data-action="clear-roster"
+          class="quickdeck-clear-button"
+          title="Clear QuickDeck roster"
+        >
+          Clear Roster
+        </button>
+      </div>
+      <p class="quickdeck-hint">Click: select actor · Double-click: open full sheet</p>
+      <p class="quickdeck-drop-hint">Drag actors here from the Actor Directory.</p>
+
+      {{#if hasRosterActors}}
+        <ul class="quickdeck-roster-list">
+          {{#each rosterActors as |actor|}}
+            <li>
+              <button
+                type="button"
+                data-action="open-actor"
+                data-actor-id="{{actor.id}}"
+                class="quickdeck-roster-button {{#if actor.isActive}}is-active{{/if}}"
+              >
+                <img src="{{actor.img}}" alt="{{actor.name}}" />
+                <span class="quickdeck-roster-name">{{actor.name}}</span>
+                {{#if actor.actorType}}
+                  <span class="quickdeck-type-pill">{{actor.actorType}}</span>
+                {{/if}}
+              </button>
+              <button
+                type="button"
+                data-action="remove-actor"
+                data-actor-id="{{actor.id}}"
+                class="quickdeck-remove-button"
+                title="Remove from QuickDeck roster"
+                aria-label="Remove {{actor.name}} from QuickDeck roster"
+              >
+                <i class="fas fa-times"></i>
+              </button>
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p class="quickdeck-empty">No actors in roster. Add some from Available Actors.</p>
+      {{/if}}
+    </section>
+
+    <section class="quickdeck-sidebar-block quickdeck-sidebar-available">
+      <div class="quickdeck-available-header">
+        <h4>Available Actors <span class="quickdeck-badge">{{availableCount}}</span></h4>
+        <input
+          type="search"
+          value="{{availableSearch}}"
+          data-action="available-search"
+          placeholder="Search actors..."
+          autocomplete="off"
+        />
+      </div>
+
+      {{#if hasAvailableActors}}
+        <ul class="quickdeck-available-list">
+          {{#each availableActors as |actor|}}
+            <li>
+              <div class="quickdeck-available-actor">
+                <img src="{{actor.img}}" alt="{{actor.name}}" />
+                <span>{{actor.name}}</span>
+                {{#if actor.actorType}}
+                  <span class="quickdeck-type-pill">{{actor.actorType}}</span>
+                {{/if}}
+              </div>
+              <button
+                type="button"
+                data-action="add-actor"
+                data-actor-id="{{actor.id}}"
+                class="quickdeck-add-button"
+                {{#if actor.isInRoster}}disabled{{/if}}
+              >
+                {{#if actor.isInRoster}}Added{{else}}Add{{/if}}
+              </button>
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p class="quickdeck-empty">No available actors found.</p>
+      {{/if}}
+    </section>
+  </aside>
+
+  <main class="quickdeck-main">
+    <section class="quickdeck-content">
+      <div class="quickdeck-stage" aria-hidden="true"></div>
+
+      <aside class="quickdeck-drawer-stack">
+        <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck side drawers">
+          <button
+            type="button"
+            data-action="toggle-drawer"
+            data-drawer="combat"
+            class="quickdeck-drawer-tab {{#if isCombatDrawerOpen}}is-active{{/if}}"
+          >
+            Combat Burst
+          </button>
+          <button
+            type="button"
+            data-action="toggle-drawer"
+            data-drawer="skills"
+            class="quickdeck-drawer-tab {{#if isSkillsDrawerOpen}}is-active{{/if}}"
+          >
+            Skills
+          </button>
+        </nav>
+
+        {{#if activeDrawer}}
+          <section class="quickdeck-panel">
+            {{#if activeActor}}
+              {{#if isCombatDrawerOpen}}
+                <div class="quickdeck-panel-content quickdeck-panel-combat">
+                  <div class="quickdeck-panel-scroll-root">
+                    <header class="quickdeck-actor-header">
+                      <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+                      <div>
+                        <h3>{{activeActor.name}}</h3>
+                        <p>
+                          Combat snapshot
+                          {{#if activeActor.actorType}}
+                            <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
+                          {{/if}}
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        data-action="open-sheet"
+                        data-actor-id="{{activeActor.id}}"
+                        class="quickdeck-open-sheet-button"
+                      >
+                        Open Sheet
+                      </button>
+                    </header>
+
+                    <dl class="quickdeck-defenses">
+                      <div>
+                        <dt>Dodge</dt>
+                        <dd>{{gurpsData.display.dodge}}</dd>
+                        <button
+                          type="button"
+                          data-action="roll-defense"
+                          data-actor-id="{{activeActor.id}}"
+                          data-defense="Dodge"
+                          data-value="{{gurpsData.display.dodge}}"
+                          class="quickdeck-roll-button"
+                        >
+                          Roll Dodge
+                        </button>
+                      </div>
+                      <div>
+                        <dt>Parry</dt>
+                        <dd>{{gurpsData.display.parry}}</dd>
+                        <button
+                          type="button"
+                          data-action="roll-defense"
+                          data-actor-id="{{activeActor.id}}"
+                          data-defense="Parry"
+                          data-value="{{gurpsData.display.parry}}"
+                          class="quickdeck-roll-button"
+                        >
+                          Roll Parry
+                        </button>
+                      </div>
+                      <div>
+                        <dt>Block</dt>
+                        <dd>{{gurpsData.display.block}}</dd>
+                        <button
+                          type="button"
+                          data-action="roll-defense"
+                          data-actor-id="{{activeActor.id}}"
+                          data-defense="Block"
+                          data-value="{{gurpsData.display.block}}"
+                          class="quickdeck-roll-button"
+                        >
+                          Roll Block
+                        </button>
+                      </div>
+                    </dl>
+
+                    <dl class="quickdeck-stats">
+                      <div>
+                        <dt>HP</dt>
+                        <dd>{{gurpsData.display.hp}}</dd>
+                      </div>
+                      <div>
+                        <dt>FP</dt>
+                        <dd>{{gurpsData.display.fp}}</dd>
+                      </div>
+                      <div>
+                        <dt>Move</dt>
+                        <dd>{{gurpsData.display.move}}</dd>
+                      </div>
+                    </dl>
+                  </div>
+
+                  <section class="quickdeck-attacks-section">
+                    <h4>Attacks ({{attackCount}})</h4>
+
+                    {{#if indexedAttacks.length}}
+                      <div class="quickdeck-attacks-list">
+                        {{#each indexedAttacks as |attack|}}
+                          <article class="quickdeck-attack-card">
+                            <header>
+                              <h5>{{attack.name}}</h5>
+                              <span>{{attack.type}}</span>
+                            </header>
+                            <dl>
+                              <div>
+                                <dt>Level/Skill</dt>
+                                <dd>{{#if attack.level}}{{attack.level}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Damage</dt>
+                                <dd>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Reach/Range</dt>
+                                <dd>{{#if attack.reachOrRange}}{{attack.reachOrRange}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Parry</dt>
+                                <dd>{{#if attack.parry}}{{attack.parry}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Block</dt>
+                                <dd>{{#if attack.block}}{{attack.block}}{{else}}—{{/if}}</dd>
+                              </div>
+                            </dl>
+                            <button
+                              type="button"
+                              data-action="roll-attack"
+                              data-actor-id="{{../activeActor.id}}"
+                              data-attack-index="{{attack.index}}"
+                              class="quickdeck-roll-button"
+                            >
+                              Roll Attack
+                            </button>
+                          </article>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      <p class="quickdeck-empty">No attacks found for this actor.</p>
+                    {{/if}}
+                  </section>
+                </div>
+              {{/if}}
+
+              {{#if isSkillsDrawerOpen}}
+                <div class="quickdeck-panel-content quickdeck-panel-skills">
+                  <header class="quickdeck-actor-header">
+                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+                    <div>
+                      <h3>{{activeActor.name}}</h3>
+                      <p>
+                        Skills snapshot
+                        {{#if activeActor.actorType}}
+                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
+                        {{/if}}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      data-action="open-sheet"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-open-sheet-button"
+                    >
+                      Open Sheet
+                    </button>
+                  </header>
+
+                  <section class="quickdeck-skills-section">
+                    <h4>Skills ({{skillsCount}})</h4>
+
+                    {{#if indexedSkills.length}}
+                      <div class="quickdeck-skills-list">
+                        {{#each indexedSkills as |skill|}}
+                          <article class="quickdeck-skill-row">
+                            <h5>{{skill.name}}</h5>
+                            <dl>
+                              <div>
+                                <dt>Level</dt>
+                                <dd>{{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Relative</dt>
+                                <dd>{{#if skill.relativeLevel}}{{skill.relativeLevel}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Points</dt>
+                                <dd>{{#if skill.points}}{{skill.points}}{{else}}—{{/if}}</dd>
+                              </div>
+                            </dl>
+                            <button
+                              type="button"
+                              data-action="roll-skill"
+                              data-actor-id="{{../activeActor.id}}"
+                              data-skill-index="{{skill.index}}"
+                              class="quickdeck-roll-button"
+                            >
+                              Roll Skill
+                            </button>
+                          </article>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      <p class="quickdeck-empty">No skills found for this actor.</p>
+                    {{/if}}
+                  </section>
+                </div>
+              {{/if}}
+            {{else}}
+              <div class="quickdeck-panel-content">
+                <p class="quickdeck-empty">Select an actor from the QuickDeck Roster first.</p>
+              </div>
+            {{/if}}
+          </section>
+        {{/if}}
+      </aside>
+    </section>
+  </main>
+</section>
