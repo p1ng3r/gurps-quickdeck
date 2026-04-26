@@ -23,10 +23,13 @@
                 type="button"
                 data-action="open-actor"
                 data-actor-id="{{actor.id}}"
-                class="quickdeck-roster-button {{#if actor.isActive}}is-active{{/if}}"
+                class="quickdeck-roster-button {{#if actor.isActive}}is-active{{/if}} {{#if actor.isCurrentTurn}}is-current-turn{{/if}}"
               >
                 <img src="{{actor.img}}" alt="{{actor.name}}" />
                 <span class="quickdeck-roster-name">{{actor.name}}</span>
+                {{#if actor.combatBadge}}
+                  <span class="quickdeck-combat-pill">{{actor.combatBadge}}</span>
+                {{/if}}
                 {{#if actor.actorType}}
                   <span class="quickdeck-type-pill">{{actor.actorType}}</span>
                 {{/if}}
@@ -204,27 +207,33 @@
                       <div>
                         <dt>HP</dt>
                         <dd>
-                          <input
-                            type="number"
-                            value="{{gurpsData.hp}}"
-                            data-action="update-resource"
-                            data-actor-id="{{activeActor.id}}"
-                            data-resource="hp"
-                            aria-label="Edit HP for {{activeActor.name}}"
-                          />
+                          <div class="quickdeck-resource-row">
+                            <input
+                              type="number"
+                              value="{{gurpsData.hp}}"
+                              data-action="update-resource"
+                              data-actor-id="{{activeActor.id}}"
+                              data-resource="hp"
+                              aria-label="Edit HP for {{activeActor.name}}"
+                            />
+                            <span class="quickdeck-resource-max">/ {{gurpsData.display.hpMax}}</span>
+                          </div>
                         </dd>
                       </div>
                       <div>
                         <dt>FP</dt>
                         <dd>
-                          <input
-                            type="number"
-                            value="{{gurpsData.fp}}"
-                            data-action="update-resource"
-                            data-actor-id="{{activeActor.id}}"
-                            data-resource="fp"
-                            aria-label="Edit FP for {{activeActor.name}}"
-                          />
+                          <div class="quickdeck-resource-row">
+                            <input
+                              type="number"
+                              value="{{gurpsData.fp}}"
+                              data-action="update-resource"
+                              data-actor-id="{{activeActor.id}}"
+                              data-resource="fp"
+                              aria-label="Edit FP for {{activeActor.name}}"
+                            />
+                            <span class="quickdeck-resource-max">/ {{gurpsData.display.fpMax}}</span>
+                          </div>
                         </dd>
                       </div>
                       <div>
