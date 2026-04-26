@@ -112,6 +112,14 @@
           >
             Skills
           </button>
+          <button
+            type="button"
+            data-action="toggle-drawer"
+            data-drawer="quick-skills"
+            class="quickdeck-drawer-tab {{#if isQuickSkillsDrawerOpen}}is-active{{/if}}"
+          >
+            Quick Skills
+          </button>
         </nav>
 
         {{#if activeDrawer}}
@@ -203,7 +211,15 @@
                   </div>
 
                   <section class="quickdeck-attacks-section">
-                    <h4>Attacks ({{attackCount}})</h4>
+                    <h4>Attacks ({{visibleAttackCount}} / {{attackCount}})</h4>
+                    <input
+                      type="search"
+                      class="quickdeck-drawer-search"
+                      value="{{combatSearch}}"
+                      data-action="combat-search"
+                      placeholder="Search attacks..."
+                      autocomplete="off"
+                    />
 
                     {{#if indexedAttacks.length}}
                       <div class="quickdeck-attacks-list">
@@ -248,7 +264,7 @@
                         {{/each}}
                       </div>
                     {{else}}
-                      <p class="quickdeck-empty">No attacks found for this actor.</p>
+                      <p class="quickdeck-empty">No attacks match this search.</p>
                     {{/if}}
                   </section>
                 </div>
@@ -278,27 +294,33 @@
                   </header>
 
                   <section class="quickdeck-skills-section">
-                    <h4>Skills ({{skillsCount}})</h4>
+                    <h4>Skills ({{visibleSkillsCount}} / {{skillsCount}})</h4>
+                    <input
+                      type="search"
+                      class="quickdeck-drawer-search"
+                      value="{{skillsSearch}}"
+                      data-action="skills-search"
+                      placeholder="Search skills..."
+                      autocomplete="off"
+                    />
 
                     {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
                         {{#each indexedSkills as |skill|}}
                           <article class="quickdeck-skill-row">
-                            <h5>{{skill.name}}</h5>
-                            <dl>
-                              <div>
-                                <dt>Level</dt>
-                                <dd>{{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</dd>
-                              </div>
-                              <div>
-                                <dt>Relative</dt>
-                                <dd>{{#if skill.relativeLevel}}{{skill.relativeLevel}}{{else}}—{{/if}}</dd>
-                              </div>
-                              <div>
-                                <dt>Points</dt>
-                                <dd>{{#if skill.points}}{{skill.points}}{{else}}—{{/if}}</dd>
-                              </div>
-                            </dl>
+                            <label class="quickdeck-skill-checkbox" aria-label="Mark {{skill.name}} as Quick Skill">
+                              <input
+                                type="checkbox"
+                                data-action="toggle-quick-skill"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-skill-key="{{skill.quickSkillKey}}"
+                                {{#if skill.isQuickSkillSelected}}checked{{/if}}
+                              />
+                            </label>
+                            <div class="quickdeck-skill-main">
+                              <h5>{{skill.name}}</h5>
+                              <p>Level {{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</p>
+                            </div>
                             <button
                               type="button"
                               data-action="roll-skill"
@@ -312,7 +334,77 @@
                         {{/each}}
                       </div>
                     {{else}}
-                      <p class="quickdeck-empty">No skills found for this actor.</p>
+                      <p class="quickdeck-empty">No skills match this search.</p>
+                    {{/if}}
+                  </section>
+                </div>
+              {{/if}}
+
+              {{#if isQuickSkillsDrawerOpen}}
+                <div class="quickdeck-panel-content quickdeck-panel-skills">
+                  <header class="quickdeck-actor-header">
+                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+                    <div>
+                      <h3>{{activeActor.name}}</h3>
+                      <p>
+                        Quick Skills
+                        {{#if activeActor.actorType}}
+                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
+                        {{/if}}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      data-action="open-sheet"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-open-sheet-button"
+                    >
+                      Open Sheet
+                    </button>
+                  </header>
+
+                  <section class="quickdeck-skills-section">
+                    <h4>Quick Skills ({{visibleQuickSkillsCount}} / {{quickSkillsCount}})</h4>
+                    <input
+                      type="search"
+                      class="quickdeck-drawer-search"
+                      value="{{quickSkillsSearch}}"
+                      data-action="quick-skills-search"
+                      placeholder="Search quick skills..."
+                      autocomplete="off"
+                    />
+
+                    {{#if indexedQuickSkills.length}}
+                      <div class="quickdeck-skills-list">
+                        {{#each indexedQuickSkills as |skill|}}
+                          <article class="quickdeck-skill-row">
+                            <label class="quickdeck-skill-checkbox" aria-label="Mark {{skill.name}} as Quick Skill">
+                              <input
+                                type="checkbox"
+                                data-action="toggle-quick-skill"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-skill-key="{{skill.quickSkillKey}}"
+                                {{#if skill.isQuickSkillSelected}}checked{{/if}}
+                              />
+                            </label>
+                            <div class="quickdeck-skill-main">
+                              <h5>{{skill.name}}</h5>
+                              <p>Level {{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</p>
+                            </div>
+                            <button
+                              type="button"
+                              data-action="roll-skill"
+                              data-actor-id="{{../activeActor.id}}"
+                              data-skill-index="{{skill.index}}"
+                              class="quickdeck-roll-button"
+                            >
+                              Roll Skill
+                            </button>
+                          </article>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      <p class="quickdeck-empty">No Quick Skills selected for this actor.</p>
                     {{/if}}
                   </section>
                 </div>
