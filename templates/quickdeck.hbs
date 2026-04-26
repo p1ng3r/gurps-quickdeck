@@ -51,7 +51,13 @@
 
     <section class="quickdeck-sidebar-block quickdeck-sidebar-available">
       <div class="quickdeck-available-header">
-        <h4>Available Actors <span class="quickdeck-badge">{{availableCount}}</span></h4>
+        <h4>
+          Available Actors
+          <span class="quickdeck-badge">
+            <span data-count="available-visible">{{visibleAvailableCount}}</span> /
+            <span data-count="available-total">{{availableCount}}</span>
+          </span>
+        </h4>
         <input
           type="search"
           value="{{availableSearch}}"
@@ -64,7 +70,7 @@
       {{#if hasAvailableActors}}
         <ul class="quickdeck-available-list">
           {{#each availableActors as |actor|}}
-            <li>
+            <li data-search-row="available" data-search-text="{{actor.searchText}}">
               <div class="quickdeck-available-actor">
                 <img src="{{actor.img}}" alt="{{actor.name}}" />
                 <span>{{actor.name}}</span>
@@ -229,7 +235,10 @@
                   </div>
 
                   <section class="quickdeck-attacks-section">
-                    <h4>Attacks ({{visibleAttackCount}} / {{attackCount}})</h4>
+                    <h4>
+                      Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> /
+                      <span data-count="attacks-total">{{attackCount}}</span>)
+                    </h4>
                     <input
                       type="search"
                       class="quickdeck-drawer-search"
@@ -242,7 +251,7 @@
                     {{#if indexedAttacks.length}}
                       <div class="quickdeck-attacks-list">
                         {{#each indexedAttacks as |attack|}}
-                          <article class="quickdeck-attack-card">
+                          <article class="quickdeck-attack-card" data-search-row="combat" data-search-text="{{attack.searchText}}">
                             <header>
                               <h5>{{attack.name}}</h5>
                               <span>{{attack.type}}</span>
@@ -312,7 +321,10 @@
                   </header>
 
                   <section class="quickdeck-skills-section">
-                    <h4>Skills ({{visibleSkillsCount}} / {{skillsCount}})</h4>
+                    <h4>
+                      Skills (<span data-count="skills-visible">{{visibleSkillsCount}}</span> /
+                      <span data-count="skills-total">{{skillsCount}}</span>)
+                    </h4>
                     <input
                       type="search"
                       class="quickdeck-drawer-search"
@@ -325,7 +337,7 @@
                     {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
                         {{#each indexedSkills as |skill|}}
-                          <article class="quickdeck-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}">
+                          <article class="quickdeck-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}" data-search-row="skills" data-search-text="{{skill.searchText}}">
                             <label class="quickdeck-skill-checkbox" aria-label="Mark {{skill.name}} as Quick Skill">
                               <input
                                 type="checkbox"
@@ -382,7 +394,10 @@
                   </header>
 
                   <section class="quickdeck-skills-section">
-                    <h4>Quick Skills ({{visibleQuickSkillsCount}} / {{quickSkillsCount}})</h4>
+                    <h4>
+                      Quick Skills (<span data-count="quick-skills-visible">{{visibleQuickSkillsCount}}</span> /
+                      <span data-count="quick-skills-total">{{quickSkillsCount}}</span>)
+                    </h4>
                     <input
                       type="search"
                       class="quickdeck-drawer-search"
@@ -395,7 +410,7 @@
                     {{#if indexedQuickSkills.length}}
                       <div class="quickdeck-skills-list">
                         {{#each indexedQuickSkills as |skill|}}
-                          <article class="quickdeck-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}">
+                          <article class="quickdeck-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}" data-search-row="quick-skills" data-search-text="{{skill.searchText}}">
                             <label class="quickdeck-skill-checkbox" aria-label="Mark {{skill.name}} as Quick Skill">
                               <input
                                 type="checkbox"
