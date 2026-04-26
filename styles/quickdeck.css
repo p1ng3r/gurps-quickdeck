@@ -255,6 +255,20 @@
   color: rgba(243, 234, 213, 0.74);
 }
 
+.quickdeck-drawer-search {
+  width: 100%;
+  border: 1px solid rgba(208, 178, 116, 0.5);
+  border-radius: 6px;
+  height: 30px;
+  padding: 0.25rem 0.5rem;
+  background: rgba(7, 8, 12, 0.65);
+  color: #f7f0dd;
+}
+
+.quickdeck-drawer-search::placeholder {
+  color: rgba(238, 226, 201, 0.72);
+}
+
 .quickdeck-available-list {
   overflow-y: auto;
   min-height: 0;
@@ -534,28 +548,69 @@
   letter-spacing: 0.05em;
 }
 
-.quickdeck-attack-card dl,
-.quickdeck-skill-row dl {
+.quickdeck-attack-card dl {
   margin: 0;
   display: grid;
   gap: 0.22rem;
 }
 
-.quickdeck-attack-card dl div,
-.quickdeck-skill-row dl div {
+.quickdeck-attack-card dl div {
   display: grid;
   grid-template-columns: 92px 1fr;
   gap: 0.35rem;
 }
 
-.quickdeck-attack-card dt,
-.quickdeck-skill-row dt {
+.quickdeck-attack-card dt {
   color: rgba(223, 210, 184, 0.95);
 }
 
-.quickdeck-attack-card dd,
-.quickdeck-skill-row dd {
+.quickdeck-attack-card dd {
   color: #f5f0e2;
+}
+
+.quickdeck-skill-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.45rem 0.5rem;
+  border-radius: 999px;
+}
+
+.quickdeck-skill-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quickdeck-skill-checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: #e1b05f;
+}
+
+.quickdeck-skill-main {
+  min-width: 0;
+}
+
+.quickdeck-skill-main h5 {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quickdeck-skill-main p {
+  margin: 0.1rem 0 0;
+  font-size: 0.73rem;
+  color: rgba(241, 231, 209, 0.9);
+}
+
+.quickdeck-skill-row .quickdeck-roll-button {
+  margin-top: 0;
+  width: auto;
+  white-space: nowrap;
+  padding: 0.22rem 0.55rem;
 }
 
 .quickdeck-roll-button {
