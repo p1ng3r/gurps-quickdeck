@@ -42,8 +42,17 @@ export class QuickDeckApp extends Application {
   getCombatActors() {
     return game.actors
       .filter((actor) => {
-        if (!actor || !actor.id) return false;
-        return typeof actor.sheet?.render === "function";
+        if (!actor) return false;
+        if (!actor.id || !actor.name) return false;
+        if (actor.documentName && actor.documentName !== "Actor") return false;
+
+        if (actor.visible) return true;
+
+        if (typeof actor.testUserPermission === "function" && game?.user) {
+          return actor.testUserPermission(game.user, "OBSERVER");
+        }
+
+        return false;
       })
       .sort((a, b) => a.name.localeCompare(b.name));
   }
@@ -760,7 +769,6 @@ export class QuickDeckApp extends Application {
       ...this.getObjectMethodCandidates(attackRaw, [actor, rollContext, numericTarget]),
       ...this.getObjectMethodCandidates(skillRaw, [rollContext, numericTarget]),
       ...this.getObjectMethodCandidates(attackRaw, [rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(actor.sheet, [rollContext, numericTarget]),
       ...this.getObjectMethodCandidates(actor.system, [rollContext, numericTarget])
     ];
 
@@ -810,8 +818,7 @@ export class QuickDeckApp extends Application {
       console.warn("gurps-quickdeck | No GURPS-native skill roll method found, using 3d6 fallback.", {
         actor: actor?.name,
         skill: rollContext.skillName,
-        rawSkillKeys: skillRaw && typeof skillRaw === "object" ? Object.keys(skillRaw).slice(0, 20) : [],
-        hasActorSheet: Boolean(actor?.sheet)
+        rawSkillKeys: skillRaw && typeof skillRaw === "object" ? Object.keys(skillRaw).slice(0, 20) : []
       });
     }
 
@@ -990,36 +997,49 @@ export class QuickDeckApp extends Application {
 
   async resolveActorFromDropData(event) {
     const transfer = event?.dataTransfer;
-    if (!transfer) return null;
+    if (!transfer) {
+      console.warn("gurps-quickdeck | Ignored invalid drop: no dataTransfer.");
+      return null;
+    }
 
     const rawText = transfer.getData("text/plain");
     const parsedPayload = this.parseDropPayload(rawText);
     const payload = parsedPayload && typeof parsedPayload === "object" ? parsedPayload : null;
 
-    const rawLooksLikeUuid = typeof rawText === "string" && rawText.includes("Actor.");
+    const rawLooksLikeActorUuid = typeof rawText === "string" && /Actor\./.test(rawText);
     const type = payload?.type ?? payload?.documentName ?? payload?.data?.type ?? null;
+    const documentName =
+      payload?.documentName ?? payload?.data?.documentName ?? payload?.data?.documentType ?? type;
     const uuid = payload?.uuid ?? payload?.data?.uuid ?? payload?.actorUuid ?? null;
     const actorId = payload?.id ?? payload?.actorId ?? payload?.data?._id ?? payload?.data?.id ?? null;
 
-    const isActorPayload = !type || type === "Actor";
+    const isActorPayload = type === "Actor" || documentName === "Actor" || rawLooksLikeActorUuid;
+    if (!isActorPayload) {
+      console.warn("gurps-quickdeck | Ignored non-Actor drop payload.", payload ?? rawText);
+      return null;
+    }
 
-    if (typeof fromUuid === "function" && (uuid || rawLooksLikeUuid)) {
+    if (typeof fromUuid === "function" && (uuid || rawLooksLikeActorUuid)) {
       try {
         const uuidValue = uuid ?? rawText;
         const resolvedDocument = await fromUuid(uuidValue);
         if (resolvedDocument?.documentName === "Actor" || resolvedDocument instanceof Actor) {
           return resolvedDocument;
         }
+        console.warn("gurps-quickdeck | Ignored drop: UUID did not resolve to Actor.", {
+          uuid: uuidValue
+        });
       } catch (error) {
         console.warn("gurps-quickdeck | Failed to resolve dropped UUID.", error);
       }
     }
 
-    if (isActorPayload && actorId) {
+    if (actorId) {
       const actor = game.actors.get(actorId);
       if (actor) return actor;
     }
 
+    console.warn("gurps-quickdeck | Ignored invalid Actor drop payload.", payload ?? rawText);
     return null;
   }
 
@@ -1399,12 +1419,24 @@ export class QuickDeckApp extends Application {
 
     dropTarget.addEventListener("drop", async (event) => {
       event.preventDefault();
+      event.stopPropagation();
       this.isDragOverRoster = false;
-      const actor = await this.resolveActorFromDropData(event);
-      if (actor?.id) {
+
+      try {
+        const actor = await this.resolveActorFromDropData(event);
+        if (!actor?.id) return;
+
+        if (this.rosterActorIds.includes(actor.id)) {
+          console.warn("gurps-quickdeck | Ignored duplicate dropped actor.", actor.name);
+          return;
+        }
+
         this.ensureActorTab(actor.id);
+        console.log("gurps-quickdeck | Actor dropped", actor.name);
+        this.render();
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed to process dropped actor.", error);
       }
-      this.render();
     });
 
     this.applyAvailableActorFilter(html);
