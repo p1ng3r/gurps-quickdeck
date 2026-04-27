@@ -1,6 +1,22 @@
 # GURPS QuickDeck
 
-A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system.
+A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
+
+## What's New in v0.2.0
+
+- Forge safety hardening across drag/drop and token placement flows.
+- Fixed drag/drop freeze caused by accidental `actor.sheet` access.
+- Safer actor roster drop handling.
+- Added **Damage Roll** button in **Combat Burst**.
+- Added GURPS damage shorthand conversion in combat actions:
+  - `1d` → `1d6`
+  - `1d+2 cut` → `1d6+2`
+  - `2d-1 cr` → `2d6-1`
+- Added manual damage card support for `sw` / `thr` damage entries.
+- Added Forge-safe **Drop Token** click-to-place flow.
+- Added **Escape** key cancel for token placement.
+- Added QuickDeck **minimize/restore** controls.
+- Hardened roll/chat error handling.
 
 ## Features
 
@@ -15,7 +31,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Quick Skills selections persist per actor ID per client/user.
   - Missing/deleted actors are cleaned up defensively.
 - Drawer tools:
-  - **Combat Burst**: defenses, HP/FP edit, attacks, roll buttons.
+  - **Combat Burst**: defenses, HP/FP edit, attacks, roll buttons, and damage actions.
   - **Skills**: extracted nested GURPS skills + quick-pin checkboxes.
   - **Quick Skills**: pinned skills with independent search and roll actions.
 - Search UX:
@@ -64,4 +80,5 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 ## Compatibility Target
 
 - **Foundry VTT:** v13 target.
+- **Platform:** Forge VTT supported.
 - **System:** GURPS 4e Game Aid.
