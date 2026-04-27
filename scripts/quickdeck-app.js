@@ -23,6 +23,7 @@ export class QuickDeckApp extends Application {
     this.isDragOverRoster = false;
     this.pendingTokenDropActorId = null;
     this._pendingTokenDropCleanup = null;
+    this._tokenDropSceneId = null;
     this.isMinimized = false;
     this._stateLoadedFromSettings = false;
     this.loadPersistedState();
@@ -65,6 +66,9 @@ export class QuickDeckApp extends Application {
     if (!this.rosterActorIds.includes(actorId)) {
       this.rosterActorIds.push(actorId);
       this.persistRosterState();
+    }
+    if (this.activeActorId && this.activeActorId !== actorId) {
+      this.cancelTokenDrop({ render: false });
     }
     this.activeActorId = actorId;
   }
@@ -770,17 +774,6 @@ export class QuickDeckApp extends Application {
       target: numericTarget
     };
 
-    const contextualCandidates = [
-      ...this.getObjectMethodCandidates(skillRaw, [actor, rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(attackRaw, [actor, rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(skillRaw, [rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(attackRaw, [rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(actor.system, [rollContext, numericTarget])
-    ];
-
-    const usedContextualRoll = await this.callAnyMethod(contextualCandidates);
-    if (usedContextualRoll) return true;
-
     const actorPaths = [
       "rollSkill",
       "rollSkillCheck",
@@ -791,10 +784,7 @@ export class QuickDeckApp extends Application {
       "rollAttribute",
       "rollTest",
       "rollAgainst",
-      "roll",
-      "system.rollSkill",
-      "system.rollTest",
-      "system.rollAgainst"
+      "roll"
     ];
     const actorCandidates = actorPaths.flatMap((path) => [
       { context: actor, path, args: [rollContext, numericTarget] },
@@ -803,7 +793,7 @@ export class QuickDeckApp extends Application {
     ]);
     if (await this.callAnyMethod(actorCandidates)) return true;
 
-    const gurpsPaths = [
+    const gurpsSafePaths = [
       "performAction",
       "performItemAction",
       "handleRoll",
@@ -813,7 +803,7 @@ export class QuickDeckApp extends Application {
       "rollDefense",
       "doRoll"
     ];
-    const gurpsCandidates = gurpsPaths.flatMap((path) => [
+    const gurpsCandidates = gurpsSafePaths.flatMap((path) => [
       { context: game.GURPS, path, args: [actionPayload] },
       { context: game.GURPS, path, args: [actor, rollContext, numericTarget] },
       { context: game.GURPS, path, args: [actor, actionName, numericTarget] }
@@ -879,16 +869,24 @@ export class QuickDeckApp extends Application {
     const flavor = `${chatTitle}: ${this.escapeHtml(rollContext.label)}`;
 
     if (roll && typeof roll.toMessage === "function") {
-      await roll.toMessage({ speaker, flavor, content });
-      return;
+      try {
+        await roll.toMessage({ speaker, flavor, content });
+        return;
+      } catch (error) {
+        console.warn("gurps-quickdeck | roll.toMessage failed, falling back to ChatMessage.create.", error);
+      }
     }
 
-    await ChatMessage.create({
-      speaker,
-      flavor,
-      rolls: roll ? [roll] : [],
-      content
-    });
+    try {
+      await ChatMessage.create({
+        speaker,
+        flavor,
+        rolls: roll ? [roll] : [],
+        content
+      });
+    } catch (error) {
+      console.warn("gurps-quickdeck | ChatMessage.create failed for fallback roll.", error);
+    }
   }
 
   async triggerCombatRoll(actorId, rollContext) {
@@ -900,7 +898,24 @@ export class QuickDeckApp extends Application {
     if (usedSystemRoll) return;
 
     const target = this.parseRollTarget(rollContext.value);
-    const roll = await new Roll("3d6").evaluate();
+    let roll = null;
+    try {
+      roll = await new Roll("3d6").evaluate();
+    } catch (error) {
+      console.warn("gurps-quickdeck | 3d6 fallback evaluation failed.", error);
+      const message = error instanceof Error ? error.message : String(error);
+      try {
+        await ChatMessage.create({
+          speaker: ChatMessage.getSpeaker({ actor }),
+          flavor: "QuickDeck Roll Failed",
+          content: `<div class="gurps-quickdeck-roll-fallback"><h3>QuickDeck Roll Failed</h3><p><strong>Actor:</strong> ${this.escapeHtml(actor?.name ?? "Unknown")}</p><p><strong>Roll:</strong> ${this.escapeHtml(rollContext.label)}</p><p>${this.escapeHtml(message)}</p></div>`
+        });
+      } catch (chatError) {
+        console.warn("gurps-quickdeck | Failed to create roll-failed chat card.", chatError);
+      }
+      return;
+    }
+
     await this.createFallbackRollChat(actor, rollContext, roll, target);
   }
 
@@ -1286,10 +1301,9 @@ export class QuickDeckApp extends Application {
       return;
     }
 
-    if (typeof scene.canUserModify === "function" && game?.user) {
-      const canCreateToken =
-        scene.canUserModify(game.user, "update") || scene.canUserModify(game.user, "TOKEN_CREATE");
-      if (!canCreateToken) {
+    if (!game?.user?.isGM && typeof scene.canUserModify === "function" && game?.user) {
+      const canModify = scene.canUserModify(game.user, "update");
+      if (!canModify) {
         ui.notifications?.warn("QuickDeck: You do not have permission to create tokens in this scene.");
         return;
       }
@@ -1301,16 +1315,26 @@ export class QuickDeckApp extends Application {
       name: actor.name,
       img: actor.prototypeToken?.texture?.src ?? actor.img
     });
+    tokenData.actorId = actor.id;
+    tokenData.texture = tokenData.texture || {};
+    tokenData.texture.src = actor.prototypeToken?.texture?.src || tokenData.texture.src || actor.img;
+    tokenData.img = tokenData.texture.src || tokenData.img || actor.img;
     const snappedRequestedPosition = this.getSnappedCanvasPosition(requestedPosition);
     const fallbackPosition = this.getDropTokenPosition(scene);
     const { x, y } = snappedRequestedPosition ?? fallbackPosition;
     tokenData.x = x;
     tokenData.y = y;
 
-    await scene.createEmbeddedDocuments("Token", [tokenData]);
+    try {
+      await scene.createEmbeddedDocuments("Token", [tokenData]);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to create token document.", error);
+      ui.notifications?.warn("QuickDeck: Could not create token in this scene.");
+    }
   }
 
   cancelTokenDrop({ notify = false, render = true } = {}) {
+    const hadPendingDrop = Boolean(this.pendingTokenDropActorId || this._pendingTokenDropCleanup);
     if (typeof this._pendingTokenDropCleanup === "function") {
       try {
         this._pendingTokenDropCleanup();
@@ -1320,8 +1344,9 @@ export class QuickDeckApp extends Application {
     }
     this._pendingTokenDropCleanup = null;
     this.pendingTokenDropActorId = null;
+    this._tokenDropSceneId = null;
     if (notify) ui.notifications?.info("QuickDeck: Token placement cancelled.");
-    if (render) this.render(false);
+    if (render && hadPendingDrop) this.render(false);
   }
 
   armTokenDrop(actorId) {
@@ -1340,10 +1365,9 @@ export class QuickDeckApp extends Application {
       return;
     }
 
-    if (typeof scene.canUserModify === "function" && game?.user) {
-      const canCreateToken =
-        scene.canUserModify(game.user, "update") || scene.canUserModify(game.user, "TOKEN_CREATE");
-      if (!canCreateToken) {
+    if (!game?.user?.isGM && typeof scene.canUserModify === "function" && game?.user) {
+      const canModify = scene.canUserModify(game.user, "update");
+      if (!canModify) {
         ui.notifications?.warn("QuickDeck: You do not have permission to create tokens in this scene.");
         return;
       }
@@ -1356,12 +1380,28 @@ export class QuickDeckApp extends Application {
     }
 
     this.pendingTokenDropActorId = actorId;
+    this._tokenDropSceneId = scene.id ?? null;
     ui.notifications?.info("QuickDeck: Click the canvas to place token.");
+
+    const abortController = typeof AbortController === "function" ? new AbortController() : null;
+    let cleanedUp = false;
+    const cleanupListeners = () => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      if (abortController) {
+        abortController.abort();
+        return;
+      }
+      view.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+      Hooks.off("canvasReady", onCanvasReady);
+    };
 
     const onPointerDown = async (event) => {
       if (!this.pendingTokenDropActorId) return;
       const activeDropActorId = this.pendingTokenDropActorId;
       const pointerPosition = this.getCanvasPointFromEvent(event);
+      cleanupListeners();
 
       try {
         if (!pointerPosition) {
@@ -1383,11 +1423,21 @@ export class QuickDeckApp extends Application {
       this.cancelTokenDrop({ notify: true });
     };
 
-    view.addEventListener("pointerdown", onPointerDown, { once: true });
-    window.addEventListener("keydown", onKeyDown);
+    const onCanvasReady = (canvasInstance) => {
+      const nextSceneId = canvasInstance?.scene?.id ?? game?.scenes?.current?.id ?? null;
+      if (!this.pendingTokenDropActorId) return;
+      if (this._tokenDropSceneId && nextSceneId && this._tokenDropSceneId !== nextSceneId) {
+        this.cancelTokenDrop({ notify: true });
+      }
+    };
+
+    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+    view.addEventListener("pointerdown", onPointerDown, listenerOptions);
+    window.addEventListener("keydown", onKeyDown, listenerOptions);
+    Hooks.on("canvasReady", onCanvasReady);
     this._pendingTokenDropCleanup = () => {
-      view.removeEventListener("pointerdown", onPointerDown);
-      window.removeEventListener("keydown", onKeyDown);
+      cleanupListeners();
+      Hooks.off("canvasReady", onCanvasReady);
     };
 
     this.render(false);
@@ -1587,6 +1637,7 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='clear-roster']").on("click", (event) => {
       event.preventDefault();
+      this.cancelTokenDrop({ render: false });
       this.clearRoster();
       this.render();
     });
@@ -1622,6 +1673,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId;
       if (!actorId) return;
 
+      this.cancelTokenDrop({ render: false });
       this.removeActorFromRoster(actorId);
       this.render();
     });
@@ -1634,6 +1686,9 @@ export class QuickDeckApp extends Application {
 
       if (this._actorSelectTimeout) clearTimeout(this._actorSelectTimeout);
       this._actorSelectTimeout = window.setTimeout(() => {
+        if (this.activeActorId && this.activeActorId !== actorId) {
+          this.cancelTokenDrop({ render: false });
+        }
         this.activeActorId = actorId;
         this.render();
         this._actorSelectTimeout = null;
@@ -1649,6 +1704,9 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
+      if (this.activeActorId && this.activeActorId !== actorId) {
+        this.cancelTokenDrop({ render: false });
+      }
       this.activeActorId = actorId;
       this.openActorSheet(actorId);
       this.render();
