@@ -2,6 +2,15 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.3.0 (Draft)
+
+- Added a new **Spells** drawer/tab with defensive spell extraction across common GURPS/GCS actor data paths and spell-like actor items.
+- Added clickable **Skill** names (Skills + Quick Skills drawers) that open a lightweight **QuickDeck Reference** window.
+- Added clickable **Spell** names in the Spells drawer that open the same reference window.
+- Added a small Application v1 **QuickDeck Reference** pop-out with type/name/source/page-hint placeholders.
+- Added a **PDF import roadmap placeholder setting** and documentation for future user-provided local PDF indexing.
+- Copyright-safe approach: this module does **not** bundle GURPS rulebook text.
+
 ## What's New in v0.2.0
 
 - Forge safety hardening across drag/drop and token placement flows.
@@ -34,8 +43,12 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - **Combat Burst**: defenses, HP/FP edit, attacks, roll buttons, and damage actions.
   - **Skills**: extracted nested GURPS skills + quick-pin checkboxes.
   - **Quick Skills**: pinned skills with independent search and roll actions.
+  - **Spells**: spell extraction + searchable spell list.
+- Reference helpers:
+  - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
+  - Reference entries currently show placeholders/fallbacks until local reference indexing is implemented.
 - Search UX:
-  - Available actors, combat attacks, skills, and quick skills support continuous typing without focus loss.
+  - Available actors, combat attacks, skills, quick skills, and spells support continuous typing without focus loss.
 - Combat UX:
   - Initiative badge shown when combat data exists.
   - Current-turn actor pulse/glow preserved.
@@ -43,7 +56,15 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Fallback rolling:
   - If a native GURPS method is not available, visible 3d6 fallback chat roll is used.
 - Lightweight client setting:
-  - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`).
+  - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`, `spells`).
+  - PDF import roadmap placeholder toggle (no importer in this release).
+
+## PDF Import Roadmap (User-Provided Content Only)
+
+- Planned future feature: users can import/index their own legally owned PDFs locally.
+- QuickDeck should index local/client reference data only.
+- QuickDeck must not distribute copyrighted GURPS book text.
+- This draft release intentionally ships **foundation only**, not full PDF parsing/import.
 
 ## Installation / Local Development
 

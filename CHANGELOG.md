@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.3.0 draft
+
+### Added
+- Spells drawer/tab foundation with search + empty-state handling.
+- Spell extraction from common actor paths (`system.spells`, `system.magic`, `system.traits.spells`) plus spell-like actor items.
+- Clickable skill names in Skills and Quick Skills drawers that open QuickDeck Reference.
+- Clickable spell names in Spells drawer that open QuickDeck Reference.
+- New Application v1 QuickDeck Reference window (local placeholder content, no network calls).
+- PDF import roadmap placeholder setting for future user-provided local PDF indexing.
+
+### Changed
+- Default drawer choices now include `spells`.
+- README updated with spells/reference/PDF roadmap notes and copyright-safe policy.
+
 ## [0.2.0] - 2026-04-27
 
 ### Added
