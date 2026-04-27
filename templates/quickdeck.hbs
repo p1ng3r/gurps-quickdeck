@@ -1,4 +1,11 @@
-<section class="quickdeck-shell">
+<section class="quickdeck-shell {{#if isMinimized}}is-minimized{{/if}}">
+  {{#if isMinimized}}
+    <section class="quickdeck-minimized-pill">
+      <div class="quickdeck-minimized-title">GURPS QuickDeck</div>
+      <div class="quickdeck-minimized-actor">{{#if activeActorName}}{{activeActorName}}{{else}}No actor selected{{/if}}</div>
+      <button type="button" data-action="toggle-minimize" class="quickdeck-restore-button">Restore</button>
+    </section>
+  {{else}}
   <aside class="quickdeck-sidebar">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
@@ -100,6 +107,9 @@
   </aside>
 
   <main class="quickdeck-main">
+    <div class="quickdeck-window-actions">
+      <button type="button" data-action="toggle-minimize" class="quickdeck-minimize-button">Minimize</button>
+    </div>
     <section class="quickdeck-content">
       <div class="quickdeck-stage" aria-hidden="true"></div>
 
@@ -148,14 +158,24 @@
                           {{/if}}
                         </p>
                       </div>
-                      <button
-                        type="button"
-                        data-action="open-sheet"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-open-sheet-button"
-                      >
-                        Open Sheet
-                      </button>
+                      <div class="quickdeck-actor-header-actions">
+                        <button
+                          type="button"
+                          data-action="drop-token"
+                          data-actor-id="{{activeActor.id}}"
+                          class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                        >
+                          {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
+                        </button>
+                        <button
+                          type="button"
+                          data-action="open-sheet"
+                          data-actor-id="{{activeActor.id}}"
+                          class="quickdeck-open-sheet-button"
+                        >
+                          Open Sheet
+                        </button>
+                      </div>
                     </header>
 
                     <dl class="quickdeck-defenses">
@@ -272,7 +292,18 @@
                               </div>
                               <div>
                                 <dt>Damage</dt>
-                                <dd>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</dd>
+                                <dd class="quickdeck-attack-damage-row">
+                                  <span>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</span>
+                                  <button
+                                    type="button"
+                                    data-action="roll-damage"
+                                    data-actor-id="{{../activeActor.id}}"
+                                    data-attack-index="{{attack.index}}"
+                                    class="quickdeck-roll-button quickdeck-roll-button-secondary"
+                                  >
+                                    Roll Damage
+                                  </button>
+                                </dd>
                               </div>
                               <div>
                                 <dt>Reach/Range</dt>
@@ -319,14 +350,24 @@
                         {{/if}}
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      data-action="open-sheet"
-                      data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-open-sheet-button"
-                    >
-                      Open Sheet
-                    </button>
+                    <div class="quickdeck-actor-header-actions">
+                      <button
+                        type="button"
+                        data-action="drop-token"
+                        data-actor-id="{{activeActor.id}}"
+                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      >
+                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
+                      </button>
+                      <button
+                        type="button"
+                        data-action="open-sheet"
+                        data-actor-id="{{activeActor.id}}"
+                        class="quickdeck-open-sheet-button"
+                      >
+                        Open Sheet
+                      </button>
+                    </div>
                   </header>
 
                   <section class="quickdeck-skills-section">
@@ -392,14 +433,24 @@
                         {{/if}}
                       </p>
                     </div>
-                    <button
-                      type="button"
-                      data-action="open-sheet"
-                      data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-open-sheet-button"
-                    >
-                      Open Sheet
-                    </button>
+                    <div class="quickdeck-actor-header-actions">
+                      <button
+                        type="button"
+                        data-action="drop-token"
+                        data-actor-id="{{activeActor.id}}"
+                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      >
+                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
+                      </button>
+                      <button
+                        type="button"
+                        data-action="open-sheet"
+                        data-actor-id="{{activeActor.id}}"
+                        class="quickdeck-open-sheet-button"
+                      >
+                        Open Sheet
+                      </button>
+                    </div>
                   </header>
 
                   <section class="quickdeck-skills-section">
@@ -462,4 +513,5 @@
     </section>
     <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
   </main>
+  {{/if}}
 </section>

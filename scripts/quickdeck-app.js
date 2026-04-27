@@ -21,6 +21,10 @@ export class QuickDeckApp extends Application {
     this.quickSkillSelectionsByActor = {};
     this._actorSelectTimeout = null;
     this.isDragOverRoster = false;
+    this.pendingTokenDropActorId = null;
+    this._pendingTokenDropCleanup = null;
+    this._tokenDropSceneId = null;
+    this.isMinimized = false;
     this._stateLoadedFromSettings = false;
     this.loadPersistedState();
   }
@@ -42,8 +46,17 @@ export class QuickDeckApp extends Application {
   getCombatActors() {
     return game.actors
       .filter((actor) => {
-        if (!actor || !actor.id) return false;
-        return typeof actor.sheet?.render === "function";
+        if (!actor) return false;
+        if (!actor.id || !actor.name) return false;
+        if (actor.documentName && actor.documentName !== "Actor") return false;
+
+        if (actor.visible) return true;
+
+        if (typeof actor.testUserPermission === "function" && game?.user) {
+          return actor.testUserPermission(game.user, "OBSERVER");
+        }
+
+        return false;
       })
       .sort((a, b) => a.name.localeCompare(b.name));
   }
@@ -53,6 +66,9 @@ export class QuickDeckApp extends Application {
     if (!this.rosterActorIds.includes(actorId)) {
       this.rosterActorIds.push(actorId);
       this.persistRosterState();
+    }
+    if (this.activeActorId && this.activeActorId !== actorId) {
+      this.cancelTokenDrop({ render: false });
     }
     this.activeActorId = actorId;
   }
@@ -229,6 +245,9 @@ export class QuickDeckApp extends Application {
         "damage",
         "dmg",
         "calc.damage",
+        "calc.dmg",
+        "damage.formula",
+        "dmg.formula",
         "notes"
       ]),
       reachOrRange:
@@ -755,18 +774,6 @@ export class QuickDeckApp extends Application {
       target: numericTarget
     };
 
-    const contextualCandidates = [
-      ...this.getObjectMethodCandidates(skillRaw, [actor, rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(attackRaw, [actor, rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(skillRaw, [rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(attackRaw, [rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(actor.sheet, [rollContext, numericTarget]),
-      ...this.getObjectMethodCandidates(actor.system, [rollContext, numericTarget])
-    ];
-
-    const usedContextualRoll = await this.callAnyMethod(contextualCandidates);
-    if (usedContextualRoll) return true;
-
     const actorPaths = [
       "rollSkill",
       "rollSkillCheck",
@@ -777,10 +784,7 @@ export class QuickDeckApp extends Application {
       "rollAttribute",
       "rollTest",
       "rollAgainst",
-      "roll",
-      "system.rollSkill",
-      "system.rollTest",
-      "system.rollAgainst"
+      "roll"
     ];
     const actorCandidates = actorPaths.flatMap((path) => [
       { context: actor, path, args: [rollContext, numericTarget] },
@@ -789,7 +793,7 @@ export class QuickDeckApp extends Application {
     ]);
     if (await this.callAnyMethod(actorCandidates)) return true;
 
-    const gurpsPaths = [
+    const gurpsSafePaths = [
       "performAction",
       "performItemAction",
       "handleRoll",
@@ -799,7 +803,7 @@ export class QuickDeckApp extends Application {
       "rollDefense",
       "doRoll"
     ];
-    const gurpsCandidates = gurpsPaths.flatMap((path) => [
+    const gurpsCandidates = gurpsSafePaths.flatMap((path) => [
       { context: game.GURPS, path, args: [actionPayload] },
       { context: game.GURPS, path, args: [actor, rollContext, numericTarget] },
       { context: game.GURPS, path, args: [actor, actionName, numericTarget] }
@@ -810,8 +814,7 @@ export class QuickDeckApp extends Application {
       console.warn("gurps-quickdeck | No GURPS-native skill roll method found, using 3d6 fallback.", {
         actor: actor?.name,
         skill: rollContext.skillName,
-        rawSkillKeys: skillRaw && typeof skillRaw === "object" ? Object.keys(skillRaw).slice(0, 20) : [],
-        hasActorSheet: Boolean(actor?.sheet)
+        rawSkillKeys: skillRaw && typeof skillRaw === "object" ? Object.keys(skillRaw).slice(0, 20) : []
       });
     }
 
@@ -866,16 +869,24 @@ export class QuickDeckApp extends Application {
     const flavor = `${chatTitle}: ${this.escapeHtml(rollContext.label)}`;
 
     if (roll && typeof roll.toMessage === "function") {
-      await roll.toMessage({ speaker, flavor, content });
-      return;
+      try {
+        await roll.toMessage({ speaker, flavor, content });
+        return;
+      } catch (error) {
+        console.warn("gurps-quickdeck | roll.toMessage failed, falling back to ChatMessage.create.", error);
+      }
     }
 
-    await ChatMessage.create({
-      speaker,
-      flavor,
-      rolls: roll ? [roll] : [],
-      content
-    });
+    try {
+      await ChatMessage.create({
+        speaker,
+        flavor,
+        rolls: roll ? [roll] : [],
+        content
+      });
+    } catch (error) {
+      console.warn("gurps-quickdeck | ChatMessage.create failed for fallback roll.", error);
+    }
   }
 
   async triggerCombatRoll(actorId, rollContext) {
@@ -887,8 +898,167 @@ export class QuickDeckApp extends Application {
     if (usedSystemRoll) return;
 
     const target = this.parseRollTarget(rollContext.value);
-    const roll = await new Roll("3d6").evaluate();
+    let roll = null;
+    try {
+      roll = await new Roll("3d6").evaluate();
+    } catch (error) {
+      console.warn("gurps-quickdeck | 3d6 fallback evaluation failed.", error);
+      const message = error instanceof Error ? error.message : String(error);
+      try {
+        await ChatMessage.create({
+          speaker: ChatMessage.getSpeaker({ actor }),
+          flavor: "QuickDeck Roll Failed",
+          content: `<div class="gurps-quickdeck-roll-fallback"><h3>QuickDeck Roll Failed</h3><p><strong>Actor:</strong> ${this.escapeHtml(actor?.name ?? "Unknown")}</p><p><strong>Roll:</strong> ${this.escapeHtml(rollContext.label)}</p><p>${this.escapeHtml(message)}</p></div>`
+        });
+      } catch (chatError) {
+        console.warn("gurps-quickdeck | Failed to create roll-failed chat card.", chatError);
+      }
+      return;
+    }
+
     await this.createFallbackRollChat(actor, rollContext, roll, target);
+  }
+
+  getAttackDamageString(attack) {
+    if (!attack || typeof attack !== "object") return null;
+
+    const directDamage = this.getFirstDefinedValue(attack, [
+      "damage",
+      "dmg",
+      "calc.damage",
+      "calc.dmg",
+      "damage.formula",
+      "dmg.formula"
+    ]);
+    if (directDamage !== null) return String(directDamage);
+
+    const rawDamage = this.getFirstDefinedValue(attack.raw, [
+      "damage",
+      "dmg",
+      "calc.damage",
+      "calc.dmg",
+      "damage.formula",
+      "dmg.formula"
+    ]);
+    if (rawDamage !== null) return String(rawDamage);
+
+    return null;
+  }
+
+  extractConcreteDamageFormula(damageText) {
+    const normalizedDamage = String(damageText ?? "").trim();
+    if (!normalizedDamage) return null;
+    if (/^(sw|thr)\b/i.test(normalizedDamage)) return null;
+
+    const match = normalizedDamage.match(/(\d+)d(6)?(?:\s*([+-])\s*(\d+))?/i);
+    if (!match?.[1]) return null;
+
+    const diceCount = Number(match[1]);
+    if (!Number.isFinite(diceCount) || diceCount <= 0) return null;
+
+    const modifierSign = match[3] ?? "";
+    const modifierValue = match[4] ?? "";
+    const modifier = modifierSign && modifierValue ? `${modifierSign}${modifierValue}` : "";
+
+    return `${diceCount}d6${modifier}`;
+  }
+
+  async createDamageChatCard({
+    actor,
+    attackName,
+    damageText,
+    formula,
+    roll = null,
+    manualNeeded = false,
+    errorMessage = null
+  }) {
+    const speaker = ChatMessage.getSpeaker({ actor });
+    const actorName = this.escapeHtml(actor?.name ?? "Unknown");
+    const safeAttackName = this.escapeHtml(attackName ?? "Unnamed Attack");
+    const safeDamageText = this.escapeHtml(damageText ?? "—");
+    const safeFormula = this.escapeHtml(formula ?? "—");
+    const safeError = this.escapeHtml(errorMessage ?? "");
+    const total = Number.isFinite(roll?.total) ? roll.total : "—";
+
+    const content = `
+      <div class="gurps-quickdeck-roll-fallback">
+        <h3>QuickDeck Damage Roll</h3>
+        <p><strong>Actor:</strong> ${actorName}</p>
+        <p><strong>Attack:</strong> ${safeAttackName}</p>
+        <p><strong>Damage String:</strong> ${safeDamageText}</p>
+        <p><strong>Formula:</strong> ${safeFormula}</p>
+        ${errorMessage ? `<p><strong>Error:</strong> ${safeError}</p>` : ""}
+        ${manualNeeded ? "<p><strong>Manual damage needed.</strong></p>" : `<p><strong>Total:</strong> ${this.escapeHtml(String(total))}</p>`}
+      </div>
+    `;
+    const flavor = manualNeeded
+      ? `QuickDeck Damage: ${safeAttackName} (manual)`
+      : `QuickDeck Damage: ${safeAttackName}`;
+
+    if (roll && typeof roll.toMessage === "function") {
+      try {
+        await roll.toMessage({ speaker, flavor, content });
+        return;
+      } catch (error) {
+        console.warn("gurps-quickdeck | roll.toMessage failed, falling back to ChatMessage.create.", error);
+      }
+    }
+
+    await ChatMessage.create({
+      speaker,
+      flavor,
+      rolls: roll ? [roll] : [],
+      content
+    });
+  }
+
+  async triggerDamageRoll(actorId, attackIndex) {
+    if (!actorId || !Number.isFinite(attackIndex)) return;
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+
+    const attacks = this.extractAttacks(actor);
+    const attack = attacks[attackIndex];
+    if (!attack) return;
+
+    const damageText = this.getAttackDamageString(attack) ?? "—";
+    const formula = this.extractConcreteDamageFormula(damageText);
+
+    if (!formula) {
+      await this.createDamageChatCard({
+        actor,
+        attackName: attack.name,
+        damageText,
+        formula: null,
+        manualNeeded: true
+      });
+      return;
+    }
+
+    let roll = null;
+    try {
+      roll = await new Roll(formula).evaluate();
+    } catch (error) {
+      console.warn("gurps-quickdeck | Damage roll evaluation failed.", { formula, error });
+      const message = error instanceof Error ? error.message : String(error);
+      await this.createDamageChatCard({
+        actor,
+        attackName: attack.name,
+        damageText,
+        formula,
+        manualNeeded: true,
+        errorMessage: message
+      });
+      return;
+    }
+
+    await this.createDamageChatCard({
+      actor,
+      attackName: attack.name,
+      damageText,
+      formula,
+      roll
+    });
   }
 
   async updateActorResource(actorId, resource, rawValue) {
@@ -990,37 +1160,303 @@ export class QuickDeckApp extends Application {
 
   async resolveActorFromDropData(event) {
     const transfer = event?.dataTransfer;
-    if (!transfer) return null;
+    if (!transfer) {
+      console.warn("gurps-quickdeck | Ignored invalid drop: no dataTransfer.");
+      return null;
+    }
 
     const rawText = transfer.getData("text/plain");
     const parsedPayload = this.parseDropPayload(rawText);
     const payload = parsedPayload && typeof parsedPayload === "object" ? parsedPayload : null;
 
-    const rawLooksLikeUuid = typeof rawText === "string" && rawText.includes("Actor.");
+    const rawLooksLikeActorUuid = typeof rawText === "string" && /Actor\./.test(rawText);
     const type = payload?.type ?? payload?.documentName ?? payload?.data?.type ?? null;
+    const documentName =
+      payload?.documentName ?? payload?.data?.documentName ?? payload?.data?.documentType ?? type;
     const uuid = payload?.uuid ?? payload?.data?.uuid ?? payload?.actorUuid ?? null;
     const actorId = payload?.id ?? payload?.actorId ?? payload?.data?._id ?? payload?.data?.id ?? null;
 
-    const isActorPayload = !type || type === "Actor";
+    const isActorPayload = type === "Actor" || documentName === "Actor" || rawLooksLikeActorUuid;
+    if (!isActorPayload) {
+      console.warn("gurps-quickdeck | Ignored non-Actor drop payload.", payload ?? rawText);
+      return null;
+    }
 
-    if (typeof fromUuid === "function" && (uuid || rawLooksLikeUuid)) {
+    if (typeof fromUuid === "function" && (uuid || rawLooksLikeActorUuid)) {
       try {
         const uuidValue = uuid ?? rawText;
         const resolvedDocument = await fromUuid(uuidValue);
         if (resolvedDocument?.documentName === "Actor" || resolvedDocument instanceof Actor) {
           return resolvedDocument;
         }
+        console.warn("gurps-quickdeck | Ignored drop: UUID did not resolve to Actor.", {
+          uuid: uuidValue
+        });
       } catch (error) {
         console.warn("gurps-quickdeck | Failed to resolve dropped UUID.", error);
       }
     }
 
-    if (isActorPayload && actorId) {
+    if (actorId) {
       const actor = game.actors.get(actorId);
       if (actor) return actor;
     }
 
+    console.warn("gurps-quickdeck | Ignored invalid Actor drop payload.", payload ?? rawText);
     return null;
+  }
+
+  getDropTokenPosition(scene) {
+    let x = Number(scene?.dimensions?.width) / 2 || 0;
+    let y = Number(scene?.dimensions?.height) / 2 || 0;
+
+    const stage = canvas?.stage;
+    const scale = stage?.scale;
+    const pivot = stage?.pivot;
+    const screen = canvas?.app?.renderer?.screen;
+    if (
+      pivot &&
+      scale &&
+      Number.isFinite(pivot.x) &&
+      Number.isFinite(pivot.y) &&
+      Number.isFinite(scale.x) &&
+      Number.isFinite(scale.y) &&
+      scale.x !== 0 &&
+      scale.y !== 0 &&
+      screen
+    ) {
+      x = pivot.x + screen.width / (2 * scale.x);
+      y = pivot.y + screen.height / (2 * scale.y);
+    }
+
+    if (typeof canvas?.grid?.getSnappedPosition === "function") {
+      const snapped = canvas.grid.getSnappedPosition(x, y, 1);
+      if (snapped && Number.isFinite(snapped.x) && Number.isFinite(snapped.y)) {
+        x = snapped.x;
+        y = snapped.y;
+      }
+    }
+
+    return { x, y };
+  }
+
+  getClientPointFromEvent(event) {
+    const sourceEvent =
+      event?.data?.originalEvent ??
+      event?.originalEvent ??
+      event;
+    const clientX = Number(sourceEvent?.clientX);
+    const clientY = Number(sourceEvent?.clientY);
+    if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) return null;
+    return { clientX, clientY };
+  }
+
+  convertClientToCanvasPosition(clientX, clientY) {
+    if (!Number.isFinite(clientX) || !Number.isFinite(clientY)) return null;
+
+    if (typeof canvas?.canvasCoordinatesFromClient === "function") {
+      const converted = canvas.canvasCoordinatesFromClient(clientX, clientY);
+      if (converted && Number.isFinite(converted.x) && Number.isFinite(converted.y)) {
+        return { x: converted.x, y: converted.y };
+      }
+    }
+
+    const view = canvas?.app?.view;
+    const stage = canvas?.stage;
+    const inverseFn = stage?.worldTransform?.applyInverse;
+    if (!view || typeof view.getBoundingClientRect !== "function" || typeof inverseFn !== "function") {
+      return null;
+    }
+
+    const rect = view.getBoundingClientRect();
+    const localX = clientX - rect.left;
+    const localY = clientY - rect.top;
+    const point = new PIXI.Point(localX, localY);
+    const worldPoint = inverseFn.call(stage.worldTransform, point);
+    if (!worldPoint || !Number.isFinite(worldPoint.x) || !Number.isFinite(worldPoint.y)) return null;
+    return { x: worldPoint.x, y: worldPoint.y };
+  }
+
+  getCanvasPointFromEvent(event) {
+    const clientPoint = this.getClientPointFromEvent(event);
+    if (!clientPoint) return null;
+    return this.convertClientToCanvasPosition(clientPoint.clientX, clientPoint.clientY);
+  }
+
+  getSnappedCanvasPosition(point) {
+    if (!point || !Number.isFinite(point.x) || !Number.isFinite(point.y)) return null;
+    if (typeof canvas?.grid?.getSnappedPosition !== "function") return point;
+    const snapped = canvas.grid.getSnappedPosition(point.x, point.y, 1);
+    if (!snapped || !Number.isFinite(snapped.x) || !Number.isFinite(snapped.y)) return point;
+    return snapped;
+  }
+
+  async dropActorToken(actorId, requestedPosition = null) {
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+
+    const scene = canvas?.scene ?? game?.scenes?.current ?? null;
+    if (!scene || !canvas?.ready) {
+      ui.notifications?.warn("QuickDeck: No active scene/canvas ready for dropping a token.");
+      return;
+    }
+
+    if (!game?.user?.isGM && typeof scene.canUserModify === "function" && game?.user) {
+      const canModify = scene.canUserModify(game.user, "update");
+      if (!canModify) {
+        ui.notifications?.warn("QuickDeck: You do not have permission to create tokens in this scene.");
+        return;
+      }
+    }
+
+    const prototypeToken = actor.prototypeToken?.toObject?.() ?? {};
+    const tokenData = foundry.utils.mergeObject(prototypeToken, {
+      actorId: actor.id,
+      name: actor.name,
+      img: actor.prototypeToken?.texture?.src ?? actor.img
+    });
+    tokenData.actorId = actor.id;
+    tokenData.texture = tokenData.texture || {};
+    tokenData.texture.src = actor.prototypeToken?.texture?.src || tokenData.texture.src || actor.img;
+    tokenData.img = tokenData.texture.src || tokenData.img || actor.img;
+    const snappedRequestedPosition = this.getSnappedCanvasPosition(requestedPosition);
+    const fallbackPosition = this.getDropTokenPosition(scene);
+    const { x, y } = snappedRequestedPosition ?? fallbackPosition;
+    tokenData.x = x;
+    tokenData.y = y;
+
+    try {
+      await scene.createEmbeddedDocuments("Token", [tokenData]);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to create token document.", error);
+      ui.notifications?.warn("QuickDeck: Could not create token in this scene.");
+    }
+  }
+
+  cancelTokenDrop({ notify = false, render = true } = {}) {
+    const hadPendingDrop = Boolean(this.pendingTokenDropActorId || this._pendingTokenDropCleanup);
+    if (typeof this._pendingTokenDropCleanup === "function") {
+      try {
+        this._pendingTokenDropCleanup();
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed during token-drop cleanup.", error);
+      }
+    }
+    this._pendingTokenDropCleanup = null;
+    this.pendingTokenDropActorId = null;
+    this._tokenDropSceneId = null;
+    if (notify) ui.notifications?.info("QuickDeck: Token placement cancelled.");
+    if (render && hadPendingDrop) this.render(false);
+  }
+
+  armTokenDrop(actorId) {
+    if (!actorId || !game.actors.has(actorId)) return;
+
+    if (this.pendingTokenDropActorId === actorId) {
+      this.cancelTokenDrop({ notify: true });
+      return;
+    }
+
+    this.cancelTokenDrop({ render: false });
+
+    const scene = canvas?.scene ?? game?.scenes?.current ?? null;
+    if (!scene || !canvas?.ready) {
+      ui.notifications?.warn("QuickDeck: No active scene/canvas ready for dropping a token.");
+      return;
+    }
+
+    if (!game?.user?.isGM && typeof scene.canUserModify === "function" && game?.user) {
+      const canModify = scene.canUserModify(game.user, "update");
+      if (!canModify) {
+        ui.notifications?.warn("QuickDeck: You do not have permission to create tokens in this scene.");
+        return;
+      }
+    }
+
+    const view = canvas?.app?.view;
+    if (!view || typeof view.addEventListener !== "function") {
+      ui.notifications?.warn("QuickDeck: Canvas interaction is unavailable in this environment.");
+      return;
+    }
+
+    this.pendingTokenDropActorId = actorId;
+    this._tokenDropSceneId = scene.id ?? null;
+    ui.notifications?.info("QuickDeck: Click the canvas to place token.");
+
+    const abortController = typeof AbortController === "function" ? new AbortController() : null;
+    let cleanedUp = false;
+    const cleanupListeners = () => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      if (abortController) {
+        abortController.abort();
+        return;
+      }
+      view.removeEventListener("pointerdown", onPointerDown);
+      window.removeEventListener("keydown", onKeyDown);
+      Hooks.off("canvasReady", onCanvasReady);
+    };
+
+    const onPointerDown = async (event) => {
+      if (!this.pendingTokenDropActorId) return;
+      const activeDropActorId = this.pendingTokenDropActorId;
+      const pointerPosition = this.getCanvasPointFromEvent(event);
+      cleanupListeners();
+
+      try {
+        if (!pointerPosition) {
+          ui.notifications?.warn("QuickDeck: Could not detect pointer position, dropping at viewport center.");
+        }
+        await this.dropActorToken(activeDropActorId, pointerPosition);
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed to drop token from canvas click.", error);
+        ui.notifications?.warn("QuickDeck: Could not drop token for this actor.");
+      } finally {
+        this.cancelTokenDrop({ render: false });
+        this.render(false);
+      }
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      this.cancelTokenDrop({ notify: true });
+    };
+
+    const onCanvasReady = (canvasInstance) => {
+      const nextSceneId = canvasInstance?.scene?.id ?? game?.scenes?.current?.id ?? null;
+      if (!this.pendingTokenDropActorId) return;
+      if (this._tokenDropSceneId && nextSceneId && this._tokenDropSceneId !== nextSceneId) {
+        this.cancelTokenDrop({ notify: true });
+      }
+    };
+
+    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+    view.addEventListener("pointerdown", onPointerDown, listenerOptions);
+    window.addEventListener("keydown", onKeyDown, listenerOptions);
+    Hooks.on("canvasReady", onCanvasReady);
+    this._pendingTokenDropCleanup = () => {
+      cleanupListeners();
+      Hooks.off("canvasReady", onCanvasReady);
+    };
+
+    this.render(false);
+  }
+
+  toggleMinimizedState() {
+    this.isMinimized = !this.isMinimized;
+    if (this.isMinimized) this.cancelTokenDrop({ render: false });
+    this.render(false);
+  }
+
+  async minimize() {
+    this.cancelTokenDrop({ render: false });
+    return super.minimize();
+  }
+
+  async close(options) {
+    this.cancelTokenDrop({ render: false });
+    return super.close(options);
   }
 
   getData() {
@@ -1162,6 +1598,10 @@ export class QuickDeckApp extends Application {
             actorType: activeActor.type ? String(activeActor.type) : null
           }
         : null,
+      activeActorName: activeActor?.name ?? null,
+      isMinimized: this.isMinimized,
+      isTokenDropArmedForActive:
+        Boolean(activeActor?.id) && this.pendingTokenDropActorId === activeActor.id,
       gurpsData,
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
@@ -1197,6 +1637,7 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='clear-roster']").on("click", (event) => {
       event.preventDefault();
+      this.cancelTokenDrop({ render: false });
       this.clearRoster();
       this.render();
     });
@@ -1208,12 +1649,31 @@ export class QuickDeckApp extends Application {
       this.openActorSheet(actorId);
     });
 
+    html.find("[data-action='drop-token']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      if (!actorId || !game.actors.has(actorId)) return;
+
+      try {
+        this.armTokenDrop(actorId);
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed to drop token from QuickDeck.", error);
+        ui.notifications?.warn("QuickDeck: Could not drop token for this actor.");
+      }
+    });
+
+    html.find("[data-action='toggle-minimize']").on("click", (event) => {
+      event.preventDefault();
+      this.toggleMinimizedState();
+    });
+
     html.find("[data-action='remove-actor']").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
       const actorId = event.currentTarget.dataset.actorId;
       if (!actorId) return;
 
+      this.cancelTokenDrop({ render: false });
       this.removeActorFromRoster(actorId);
       this.render();
     });
@@ -1226,6 +1686,9 @@ export class QuickDeckApp extends Application {
 
       if (this._actorSelectTimeout) clearTimeout(this._actorSelectTimeout);
       this._actorSelectTimeout = window.setTimeout(() => {
+        if (this.activeActorId && this.activeActorId !== actorId) {
+          this.cancelTokenDrop({ render: false });
+        }
         this.activeActorId = actorId;
         this.render();
         this._actorSelectTimeout = null;
@@ -1241,6 +1704,9 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
+      if (this.activeActorId && this.activeActorId !== actorId) {
+        this.cancelTokenDrop({ render: false });
+      }
       this.activeActorId = actorId;
       this.openActorSheet(actorId);
       this.render();
@@ -1349,6 +1815,14 @@ export class QuickDeckApp extends Application {
       });
     });
 
+    html.find("[data-action='roll-damage']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      const attackIndex = Number(event.currentTarget.dataset.attackIndex);
+      if (!actorId || Number.isNaN(attackIndex)) return;
+      await this.triggerDamageRoll(actorId, attackIndex);
+    });
+
     html.find("[data-action='roll-skill']").on("click", async (event) => {
       event.preventDefault();
       const actorId = event.currentTarget.dataset.actorId;
@@ -1399,12 +1873,24 @@ export class QuickDeckApp extends Application {
 
     dropTarget.addEventListener("drop", async (event) => {
       event.preventDefault();
+      event.stopPropagation();
       this.isDragOverRoster = false;
-      const actor = await this.resolveActorFromDropData(event);
-      if (actor?.id) {
+
+      try {
+        const actor = await this.resolveActorFromDropData(event);
+        if (!actor?.id) return;
+
+        if (this.rosterActorIds.includes(actor.id)) {
+          console.warn("gurps-quickdeck | Ignored duplicate dropped actor.", actor.name);
+          return;
+        }
+
         this.ensureActorTab(actor.id);
+        console.log("gurps-quickdeck | Actor dropped", actor.name);
+        this.render();
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed to process dropped actor.", error);
       }
-      this.render();
     });
 
     this.applyAvailableActorFilter(html);
