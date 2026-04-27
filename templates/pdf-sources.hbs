@@ -2,6 +2,7 @@
   <header class="quickdeck-reference-panel quickdeck-pdf-sources-header">
     <h2>QuickDeck PDF Sources</h2>
     <p>Store local source metadata for future reference lookup. No PDFs are parsed in this release.</p>
+    <p class="quickdeck-pdf-offset-help">Use offset when the PDF page number differs from the printed book page.</p>
   </header>
 
   <section class="quickdeck-reference-panel quickdeck-pdf-sources-body">
@@ -29,8 +30,33 @@
               </label>
               <label>
                 <span>Page offset</span>
-                <input type="number" data-field="pageOffset" value="{{source.pageOffset}}" />
+                <div class="quickdeck-pdf-offset-controls">
+                  <input type="number" data-field="pageOffset" value="{{source.pageOffset}}" />
+                  <input
+                    type="range"
+                    data-helper="pageOffsetSlider"
+                    min="{{../pageOffsetSliderMin}}"
+                    max="{{../pageOffsetSliderMax}}"
+                    step="1"
+                    value="{{source.pageOffset}}"
+                  />
+                </div>
               </label>
+
+              <div class="quickdeck-pdf-offset-helper" aria-live="polite">
+                <label>
+                  <span>Sample displayed/book page</span>
+                  <input type="number" data-helper="sampleBookPage" value="{{../defaultSampleBookPage}}" />
+                </label>
+                <label>
+                  <span>Computed PDF page preview</span>
+                  <input type="number" data-helper="computedPdfPage" value="{{../defaultSampleBookPage}}" readonly />
+                </label>
+                <p class="quickdeck-pdf-offset-preview" data-helper="offsetPreviewText">
+                  Book page {{../defaultSampleBookPage}} + offset {{source.pageOffset}} = PDF page {{../defaultSampleBookPage}}
+                </p>
+              </div>
+
               <label class="quickdeck-pdf-source-notes">
                 <span>Notes</span>
                 <textarea data-field="notes" rows="2" placeholder="Optional personal note">{{source.notes}}</textarea>
