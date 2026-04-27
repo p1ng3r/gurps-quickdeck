@@ -20,7 +20,12 @@
               </label>
               <label>
                 <span>File/path hint</span>
-                <input type="text" data-field="fileHint" value="{{source.fileHint}}" placeholder="Data/pdfs/GURPS-Basic-Campaigns.pdf" />
+                <div class="quickdeck-pdf-file-hint-row">
+                  <input type="text" data-field="fileHint" value="{{source.fileHint}}" placeholder="Data/pdfs/GURPS-Basic-Campaigns.pdf" />
+                  <button type="button" class="quickdeck-open-sheet-button quickdeck-pdf-file-picker-button" data-action="pick-file-hint" data-index="{{source.index}}" title="Pick local PDF file">
+                    Pick
+                  </button>
+                </div>
               </label>
               <label>
                 <span>Page offset</span>

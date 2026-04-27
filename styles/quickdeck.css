@@ -954,9 +954,43 @@
   border-radius: 6px;
 }
 
+.gurps-quickdeck-pdf-sources .window-header,
+.gurps-quickdeck-reference .window-header {
+  background:
+    linear-gradient(120deg, rgba(125, 95, 42, 0.9), rgba(48, 44, 61, 0.92)),
+    radial-gradient(circle at 20% 20%, rgba(255, 220, 150, 0.25), transparent 45%);
+  border-bottom: 1px solid rgba(222, 181, 109, 0.45);
+}
+
 .gurps-quickdeck-pdf-sources .window-content,
 .gurps-quickdeck-reference .window-content {
   padding: 0.6rem;
+}
+
+.gurps-quickdeck-pdf-sources .window-content {
+  color: #f4ecdc;
+  background:
+    radial-gradient(circle at top right, rgba(125, 96, 44, 0.14), transparent 36%),
+    radial-gradient(circle at 15% 85%, rgba(113, 126, 148, 0.08), transparent 28%),
+    linear-gradient(145deg, rgba(10, 12, 18, 0.96), rgba(25, 24, 30, 0.95));
+}
+
+.quickdeck-pdf-sources-shell {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.quickdeck-pdf-sources-header h2 {
+  margin: 0;
+  font-size: 1rem;
+  color: #f7eed8;
+}
+
+.quickdeck-pdf-sources-header p {
+  margin: 0.42rem 0 0;
+  color: rgba(241, 231, 212, 0.92);
+  font-size: 0.78rem;
+  line-height: 1.3;
 }
 
 
@@ -974,11 +1008,15 @@
 }
 
 .quickdeck-pdf-source-row {
-  border: 1px solid rgba(203, 167, 101, 0.2);
+  border: 1px solid rgba(203, 167, 101, 0.3);
   border-radius: 8px;
   padding: 0.55rem;
   display: grid;
   gap: 0.5rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.14)),
+    radial-gradient(circle at 12% 0, rgba(222, 182, 108, 0.09), transparent 46%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
 
 .quickdeck-pdf-source-grid {
@@ -1000,4 +1038,41 @@
   margin-top: 0.65rem;
   display: flex;
   gap: 0.5rem;
+}
+
+
+.quickdeck-pdf-source-grid label > span {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(245, 217, 163, 0.88);
+}
+
+.quickdeck-pdf-source-grid input,
+.quickdeck-pdf-source-grid textarea {
+  border: 1px solid rgba(203, 167, 101, 0.38);
+  border-radius: 6px;
+  color: rgba(244, 235, 219, 0.96);
+  background: linear-gradient(180deg, rgba(23, 24, 32, 0.94), rgba(14, 15, 21, 0.98));
+}
+
+.quickdeck-pdf-source-grid input::placeholder,
+.quickdeck-pdf-source-grid textarea::placeholder {
+  color: rgba(231, 214, 177, 0.58);
+}
+
+.quickdeck-pdf-file-hint-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.quickdeck-pdf-file-picker-button {
+  min-width: 3.6rem;
+  justify-content: center;
+}
+
+.quickdeck-pdf-source-row .quickdeck-remove-button {
+  justify-self: end;
 }
