@@ -1120,3 +1120,53 @@
   border-color: rgba(244, 205, 138, 0.68);
   box-shadow: 0 0 0 1px rgba(222, 180, 105, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
+
+.quickdeck-reference-index-tools,
+.quickdeck-reference-index-import {
+  border: 1px solid rgba(203, 167, 101, 0.3);
+  border-radius: 8px;
+  padding: 0.55rem;
+  display: grid;
+  gap: 0.45rem;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.13));
+}
+
+.quickdeck-reference-index-search-label {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.quickdeck-reference-index-search-label > span,
+.quickdeck-reference-index-import h3 {
+  margin: 0;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: rgba(245, 217, 163, 0.88);
+}
+
+.quickdeck-reference-index-search-label input,
+.quickdeck-reference-index-import textarea {
+  border: 1px solid rgba(203, 167, 101, 0.38);
+  border-radius: 6px;
+  color: rgba(244, 235, 219, 0.96);
+  background: linear-gradient(180deg, rgba(23, 24, 32, 0.94), rgba(14, 15, 21, 0.98));
+}
+
+.quickdeck-reference-index-search-label input::placeholder,
+.quickdeck-reference-index-import textarea::placeholder {
+  color: rgba(231, 214, 177, 0.58);
+}
+
+.quickdeck-reference-index-tool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.quickdeck-reference-warning {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.3;
+  color: rgba(248, 212, 160, 0.96);
+}

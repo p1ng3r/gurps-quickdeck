@@ -12,6 +12,9 @@ All notable changes to this project will be documented in this file.
 - New Application v1 QuickDeck Reference window (local metadata matching, no network calls).
 - New Application v1 QuickDeck PDF Sources manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-themed panel styling.
 - New Application v1 QuickDeck Reference Index manager for manual entries (name, type, source/book key, displayed page, notes).
+- Reference Index manager now supports DOM-only search/filter by name/type/book key/displayed page/notes.
+- Reference Index manager now supports metadata-only JSON export to clipboard.
+- Reference Index manager now supports safe JSON import (merge or replace) with entry normalization/validation and non-fatal invalid JSON warnings.
 - QuickDeck Reference popup now includes a direct **Add to Reference Index** / **Edit Reference Index Entry** workflow with prefilled metadata.
 - Client-scoped PDF source metadata setting stored as safe JSON.
 - Client-scoped manual Reference Index metadata setting stored as safe JSON.
@@ -29,6 +32,7 @@ All notable changes to this project will be documented in this file.
 - QuickDeck Reference now shows match origin (Manual Index, Actor Data Hint, or No Match) and prioritizes manual Reference Index entries before actor source/page hints.
 - QuickDeck Reference now shows matched-source details (matched source, displayed page, PDF target page, file/path hint) with safe no-match fallback messaging.
 - QuickDeck Reference Index manager now supports duplicate-safe prefill/open behavior: exact name+type matches are focused for edit instead of creating duplicate rows.
+- Reference Index manager now includes an explicit import safety warning: “Only import metadata you created. Do not paste copyrighted rulebook text.”
 - README updated with spells/reference/PDF source manager/roadmap notes and copyright-safe policy.
 
 ## [0.2.0] - 2026-04-27
