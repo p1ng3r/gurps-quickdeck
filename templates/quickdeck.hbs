@@ -1,4 +1,11 @@
-<section class="quickdeck-shell">
+<section class="quickdeck-shell {{#if isMinimized}}is-minimized{{/if}}">
+  {{#if isMinimized}}
+    <section class="quickdeck-minimized-pill">
+      <div class="quickdeck-minimized-title">GURPS QuickDeck</div>
+      <div class="quickdeck-minimized-actor">{{#if activeActorName}}{{activeActorName}}{{else}}No actor selected{{/if}}</div>
+      <button type="button" data-action="toggle-minimize" class="quickdeck-restore-button">Restore</button>
+    </section>
+  {{else}}
   <aside class="quickdeck-sidebar">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
@@ -100,6 +107,9 @@
   </aside>
 
   <main class="quickdeck-main">
+    <div class="quickdeck-window-actions">
+      <button type="button" data-action="toggle-minimize" class="quickdeck-minimize-button">Minimize</button>
+    </div>
     <section class="quickdeck-content">
       <div class="quickdeck-stage" aria-hidden="true"></div>
 
@@ -153,9 +163,9 @@
                           type="button"
                           data-action="drop-token"
                           data-actor-id="{{activeActor.id}}"
-                          class="quickdeck-drop-token-button"
+                          class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
                         >
-                          Drop Token
+                          {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
                         </button>
                         <button
                           type="button"
@@ -345,9 +355,9 @@
                         type="button"
                         data-action="drop-token"
                         data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-drop-token-button"
+                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
                       >
-                        Drop Token
+                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
                       </button>
                       <button
                         type="button"
@@ -428,9 +438,9 @@
                         type="button"
                         data-action="drop-token"
                         data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-drop-token-button"
+                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
                       >
-                        Drop Token
+                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
                       </button>
                       <button
                         type="button"
@@ -503,4 +513,5 @@
     </section>
     <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
   </main>
+  {{/if}}
 </section>
