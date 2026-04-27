@@ -1,6 +1,6 @@
 import { QuickDeckPdfSourcesApp } from "./pdf-sources-app.js";
 import { QuickDeckReferenceApp } from "./reference-app.js";
-import { QuickDeckReferenceIndexApp } from "./reference-index-app.js";
+import { openReferenceIndexManager } from "./reference-index-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const DEBUG = false;
@@ -13,7 +13,6 @@ const SETTING_KEYS = {
 const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
 
 let pdfSourcesApp = null;
-let referenceIndexApp = null;
 
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
@@ -1226,13 +1225,7 @@ export class QuickDeckApp extends Application {
   }
 
   openReferenceIndexManager() {
-    try {
-      if (!referenceIndexApp) referenceIndexApp = new QuickDeckReferenceIndexApp();
-      referenceIndexApp.render(true);
-    } catch (error) {
-      console.warn("gurps-quickdeck | Failed to open reference index manager.", error);
-      ui.notifications?.warn("QuickDeck: Could not open Reference Index manager.");
-    }
+    openReferenceIndexManager();
   }
 
   getCombatRosterState() {

@@ -13,6 +13,10 @@ function asString(value) {
   return String(value).trim();
 }
 
+function asLookupText(value) {
+  return asString(value).toLowerCase();
+}
+
 function asType(value) {
   const normalized = asString(value).toLowerCase();
   if (ALLOWED_TYPES.has(normalized)) return normalized;
@@ -39,6 +43,17 @@ export function normalizeReferenceIndexEntry(entry = {}) {
     displayedPage: asDisplayedPage(entry.displayedPage),
     notes: asString(entry.notes)
   };
+}
+
+export function findReferenceIndexEntryIndex(entries = [], referenceData = {}) {
+  const normalizedEntries = Array.isArray(entries) ? entries : [];
+  const lookupName = asLookupText(referenceData?.name);
+  const lookupType = asLookupText(referenceData?.type);
+  if (!lookupName || !lookupType) return -1;
+
+  return normalizedEntries.findIndex((entry) => {
+    return asLookupText(entry?.name) === lookupName && asLookupText(entry?.type) === lookupType;
+  });
 }
 
 export function safeParseReferenceIndex(rawValue) {

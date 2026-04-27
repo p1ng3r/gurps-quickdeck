@@ -10,6 +10,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints, match-origin labeling (**Manual Index**, **Actor Data Hint**, **No Match**), PDF source matching metadata, and safe **Open PDF / Copy Path** actions for matched file hints.
 - Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-matching dark brass/steel styling and per-row PDF file picker button.
 - Added an Application v1 **QuickDeck Reference Index** manager for manual reference entries (name, type, source/book key, displayed page, notes) stored client-side as JSON metadata only.
+- Added a quick action in the **QuickDeck Reference** popup to **Add to Reference Index** (or **Edit Reference Index Entry** when an exact manual match already exists), opening the manager with a prefilled row and duplicate-safe exact name+type focus behavior.
 - Added a **PDF import roadmap placeholder setting** and documentation for future user-provided local PDF indexing.
 - Copyright-safe approach: this module does **not** bundle GURPS rulebook text.
 
@@ -52,6 +53,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Reference entries attempt local metadata matching against configured PDF sources (`bookKey`, `displayName`, and source hint text).
   - When a source matches and the page hint is numeric, the popup shows displayed page + computed PDF target page (`displayed + offset`).
   - If a matched source has a file/path hint, the popup provides **Open PDF** (new-tab attempt with `noopener,noreferrer`) and **Copy Path** fallback actions.
+  - The same popup now provides **Add to Reference Index** / **Edit Reference Index Entry** to jump directly into the Reference Index manager with prefilled metadata from the current reference.
   - If browser popup opening is blocked, QuickDeck warns and keeps the app stable with manual-copy fallback messaging.
   - If no metadata match is found, the popup shows a safe no-match fallback.
 - Search UX:
