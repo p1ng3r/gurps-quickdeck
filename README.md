@@ -7,8 +7,9 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added a new **Spells** drawer/tab with defensive spell extraction across common GURPS/GCS actor data paths and spell-like actor items.
 - Added clickable **Skill** names (Skills + Quick Skills drawers) that open a lightweight **QuickDeck Reference** window.
 - Added clickable **Spell** names in the Spells drawer that open the same reference window.
-- Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints, PDF source matching metadata, and safe **Open PDF / Copy Path** actions for matched file hints.
+- Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints, match-origin labeling (**Manual Index**, **Actor Data Hint**, **No Match**), PDF source matching metadata, and safe **Open PDF / Copy Path** actions for matched file hints.
 - Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-matching dark brass/steel styling and per-row PDF file picker button.
+- Added an Application v1 **QuickDeck Reference Index** manager for manual reference entries (name, type, source/book key, displayed page, notes) stored client-side as JSON metadata only.
 - Added a **PDF import roadmap placeholder setting** and documentation for future user-provided local PDF indexing.
 - Copyright-safe approach: this module does **not** bundle GURPS rulebook text.
 
@@ -47,6 +48,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - **Spells**: spell extraction + searchable spell list.
 - Reference helpers:
   - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
+  - Matching order is manual index exact name + type, then manual index exact name only, then actor source/page hints.
   - Reference entries attempt local metadata matching against configured PDF sources (`bookKey`, `displayName`, and source hint text).
   - When a source matches and the page hint is numeric, the popup shows displayed page + computed PDF target page (`displayed + offset`).
   - If a matched source has a file/path hint, the popup provides **Open PDF** (new-tab attempt with `noopener,noreferrer`) and **Copy Path** fallback actions.
@@ -64,6 +66,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`, `spells`).
   - PDF import roadmap placeholder toggle (no importer in this release).
   - Client-scoped JSON metadata store for PDF source definitions (path string only; no file parsing/rendering in this release).
+  - Client-scoped JSON metadata store for manual Reference Index entries (no PDF parsing, extraction, or embedded rulebook text).
 
 ## PDF Import Roadmap (User-Provided Content Only)
 
