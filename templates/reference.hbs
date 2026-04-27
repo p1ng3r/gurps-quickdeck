@@ -28,6 +28,32 @@
     {{/unless}}
 
     <div class="quickdeck-reference-sources">
+      <h3>Matched PDF Source</h3>
+      {{#if hasMatchedSource}}
+        <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+          <div>
+            <dt>Matched Source</dt>
+            <dd>{{matchedSource.displayName}}</dd>
+          </div>
+          <div>
+            <dt>Displayed Page</dt>
+            <dd>{{#if hasDisplayedPage}}{{displayedPage}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>PDF Page Target</dt>
+            <dd>{{#if hasPdfPageTarget}}{{pdfPageTarget}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>File/path hint</dt>
+            <dd>{{#if matchedSource.fileHint}}{{matchedSource.fileHint}}{{else}}—{{/if}}</dd>
+          </div>
+        </dl>
+      {{else}}
+        <p class="quickdeck-reference-empty"><em>{{noMatchText}}</em></p>
+      {{/if}}
+    </div>
+
+    <div class="quickdeck-reference-sources">
       <h3>Configured PDF Sources</h3>
       {{#if hasConfiguredSources}}
         <ul>

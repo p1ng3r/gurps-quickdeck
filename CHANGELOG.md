@@ -9,14 +9,16 @@ All notable changes to this project will be documented in this file.
 - Spell extraction from common actor paths (`system.spells`, `system.magic`, `system.traits.spells`) plus spell-like actor items.
 - Clickable skill names in Skills and Quick Skills drawers that open QuickDeck Reference.
 - Clickable spell names in Spells drawer that open QuickDeck Reference.
-- New Application v1 QuickDeck Reference window (local placeholder content, no network calls).
+- New Application v1 QuickDeck Reference window (local metadata matching, no network calls).
 - New Application v1 QuickDeck PDF Sources manager for local source metadata (display name, book key, file hint, page offset, notes).
 - Client-scoped PDF source metadata setting stored as safe JSON.
+- Reference source matching utility that compares source hints against configured PDF source `bookKey`/`displayName` values (exact + partial).
+- Reference popup now computes PDF page target when page hint is numeric (`pdfPage = displayed + pageOffset`).
 - PDF import roadmap placeholder setting for future user-provided local PDF indexing.
 
 ### Changed
 - Default drawer choices now include `spells`.
-- QuickDeck Reference now shows configured PDF source metadata and friendly empty-state text when none exists.
+- QuickDeck Reference now shows matched-source details (matched source, displayed page, PDF target page, file/path hint) with safe no-match fallback messaging.
 - README updated with spells/reference/PDF source manager/roadmap notes and copyright-safe policy.
 
 ## [0.2.0] - 2026-04-27
