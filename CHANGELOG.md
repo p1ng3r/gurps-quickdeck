@@ -10,11 +10,14 @@ All notable changes to this project will be documented in this file.
 - Clickable skill names in Skills and Quick Skills drawers that open QuickDeck Reference.
 - Clickable spell names in Spells drawer that open QuickDeck Reference.
 - New Application v1 QuickDeck Reference window (local placeholder content, no network calls).
+- New Application v1 QuickDeck PDF Sources manager for local source metadata (display name, book key, file hint, page offset, notes).
+- Client-scoped PDF source metadata setting stored as safe JSON.
 - PDF import roadmap placeholder setting for future user-provided local PDF indexing.
 
 ### Changed
 - Default drawer choices now include `spells`.
-- README updated with spells/reference/PDF roadmap notes and copyright-safe policy.
+- QuickDeck Reference now shows configured PDF source metadata and friendly empty-state text when none exists.
+- README updated with spells/reference/PDF source manager/roadmap notes and copyright-safe policy.
 
 ## [0.2.0] - 2026-04-27
 
