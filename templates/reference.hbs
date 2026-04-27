@@ -48,6 +48,27 @@
             <dd>{{#if matchedSource.fileHint}}{{matchedSource.fileHint}}{{else}}—{{/if}}</dd>
           </div>
         </dl>
+        {{#if hasMatchedSourcePath}}
+          <div class="quickdeck-reference-match-actions">
+            <button
+              type="button"
+              class="quickdeck-reference-open-button"
+              data-action="open-matched-pdf"
+              data-file-hint="{{matchedSourcePath}}"
+              data-pdf-page-target="{{#if hasPdfPageTarget}}{{pdfPageTarget}}{{/if}}"
+            >
+              Open PDF
+            </button>
+            <button
+              type="button"
+              class="quickdeck-reference-copy-button"
+              data-action="copy-matched-pdf-path"
+              data-file-hint="{{matchedSourcePath}}"
+            >
+              Copy Path
+            </button>
+          </div>
+        {{/if}}
       {{else}}
         <p class="quickdeck-reference-empty"><em>{{noMatchText}}</em></p>
       {{/if}}
