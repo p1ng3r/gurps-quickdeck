@@ -1,3 +1,4 @@
+import { QuickDeckPdfSourcesApp } from "./pdf-sources-app.js";
 import { QuickDeckReferenceApp } from "./reference-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
@@ -9,6 +10,8 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
+
+let pdfSourcesApp = null;
 
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
@@ -1210,6 +1213,16 @@ export class QuickDeckApp extends Application {
     }
   }
 
+  openPdfSourcesManager() {
+    try {
+      if (!pdfSourcesApp) pdfSourcesApp = new QuickDeckPdfSourcesApp();
+      pdfSourcesApp.render(true);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to open PDF sources manager.", error);
+      ui.notifications?.warn("QuickDeck: Could not open PDF Sources manager.");
+    }
+  }
+
   getCombatRosterState() {
     const combat = game?.combat;
     if (!combat) {
@@ -1815,6 +1828,11 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='toggle-minimize']").on("click", (event) => {
       event.preventDefault();
       this.toggleMinimizedState();
+    });
+
+    html.find("[data-action='open-pdf-sources']").on("click", (event) => {
+      event.preventDefault();
+      this.openPdfSourcesManager();
     });
 
     html.find("[data-action='remove-actor']").on("click", (event) => {

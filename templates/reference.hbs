@@ -26,5 +26,24 @@
     {{#unless hasLocalReference}}
       <p class="quickdeck-reference-empty"><em>No local reference found yet.</em></p>
     {{/unless}}
+
+    <div class="quickdeck-reference-sources">
+      <h3>Configured PDF Sources</h3>
+      {{#if hasConfiguredSources}}
+        <ul>
+          {{#each configuredSources as |pdfSource|}}
+            <li>
+              <strong>{{pdfSource.displayName}}</strong>
+              {{#if pdfSource.bookKey}}<span> · {{pdfSource.bookKey}}</span>{{/if}}
+              {{#if pdfSource.pageOffset}}<span> · offset {{pdfSource.pageOffset}}</span>{{/if}}
+              {{#if pdfSource.fileHint}}<div class="quickdeck-reference-muted">{{pdfSource.fileHint}}</div>{{/if}}
+              {{#if pdfSource.notes}}<div class="quickdeck-reference-muted">{{pdfSource.notes}}</div>{{/if}}
+            </li>
+          {{/each}}
+        </ul>
+      {{else}}
+        <p class="quickdeck-reference-empty"><em>{{sourcePlaceholderText}}</em></p>
+      {{/if}}
+    </div>
   </section>
 </section>
