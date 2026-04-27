@@ -1,3 +1,5 @@
+import { QuickDeckPdfSourcesApp } from "./pdf-sources-app.js";
+import { PDF_SOURCES_SETTING_KEY } from "./pdf-sources-store.js";
 import { QuickDeckApp } from "./quickdeck-app.js";
 
 const MODULE_ID = "gurps-quickdeck";
@@ -5,9 +7,20 @@ const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   DEFAULT_DRAWER: "defaultDrawer",
-  PDF_IMPORT_PLACEHOLDER: "pdfImportPlaceholder"
+  PDF_IMPORT_PLACEHOLDER: "pdfImportPlaceholder",
+  PDF_SOURCES: PDF_SOURCES_SETTING_KEY
 };
 let quickDeckApp = null;
+let pdfSourcesApp = null;
+
+function openPdfSourcesManager() {
+  if (!pdfSourcesApp) {
+    pdfSourcesApp = new QuickDeckPdfSourcesApp();
+  }
+
+  pdfSourcesApp.render(true);
+  return pdfSourcesApp;
+}
 
 function openQuickDeck() {
   if (!quickDeckApp) {
@@ -28,7 +41,8 @@ Hooks.once("ready", () => {
         return;
       }
       quickDeckApp.dumpActiveActorData();
-    }
+    },
+    openPdfSources: () => openPdfSourcesManager()
   };
 });
 
@@ -74,6 +88,15 @@ Hooks.once("init", () => {
     config: true,
     type: Boolean,
     default: false
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.PDF_SOURCES, {
+    name: "QuickDeck PDF Sources Metadata",
+    hint: "Client-side JSON list of local source metadata used by QuickDeck Reference.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "[]"
   });
 });
 

@@ -1,0 +1,49 @@
+<section class="quickdeck-pdf-sources-shell">
+  <header class="quickdeck-reference-panel quickdeck-pdf-sources-header">
+    <h2>QuickDeck PDF Sources</h2>
+    <p>Store local source metadata for future reference lookup. No PDFs are parsed in this release.</p>
+  </header>
+
+  <section class="quickdeck-reference-panel quickdeck-pdf-sources-body">
+    {{#if hasSources}}
+      <ol class="quickdeck-pdf-sources-list">
+        {{#each sources as |source|}}
+          <li class="quickdeck-pdf-source-row" data-source-row data-index="{{source.index}}">
+            <div class="quickdeck-pdf-source-grid">
+              <label>
+                <span>Display name</span>
+                <input type="text" data-field="displayName" value="{{source.displayName}}" placeholder="Basic Set Campaigns" />
+              </label>
+              <label>
+                <span>Book key / ID</span>
+                <input type="text" data-field="bookKey" value="{{source.bookKey}}" placeholder="basic-campaigns" />
+              </label>
+              <label>
+                <span>File/path hint</span>
+                <input type="text" data-field="fileHint" value="{{source.fileHint}}" placeholder="Data/pdfs/GURPS-Basic-Campaigns.pdf" />
+              </label>
+              <label>
+                <span>Page offset</span>
+                <input type="number" data-field="pageOffset" value="{{source.pageOffset}}" />
+              </label>
+              <label class="quickdeck-pdf-source-notes">
+                <span>Notes</span>
+                <textarea data-field="notes" rows="2" placeholder="Optional personal note">{{source.notes}}</textarea>
+              </label>
+            </div>
+            <button type="button" class="quickdeck-remove-button" data-action="remove-source" data-index="{{source.index}}">
+              Remove
+            </button>
+          </li>
+        {{/each}}
+      </ol>
+    {{else}}
+      <p class="quickdeck-reference-empty"><em>No sources configured yet. Add one to get started.</em></p>
+    {{/if}}
+
+    <footer class="quickdeck-pdf-sources-actions">
+      <button type="button" class="quickdeck-add-button" data-action="add-source">Add Source</button>
+      <button type="button" class="quickdeck-roll-button" data-action="save-sources">Save Sources</button>
+    </footer>
+  </section>
+</section>

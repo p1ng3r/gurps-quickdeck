@@ -945,3 +945,59 @@
   background: rgba(119, 87, 35, 0.13);
   color: rgba(250, 232, 194, 0.96);
 }
+
+.quickdeck-window-actions {
+  gap: 0.5rem;
+}
+
+.quickdeck-open-pdf-sources-button {
+  border-radius: 6px;
+}
+
+.gurps-quickdeck-pdf-sources .window-content,
+.gurps-quickdeck-reference .window-content {
+  padding: 0.6rem;
+}
+
+
+.quickdeck-reference-muted {
+  opacity: 0.8;
+  font-size: 0.85em;
+}
+
+.quickdeck-pdf-sources-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.quickdeck-pdf-source-row {
+  border: 1px solid rgba(203, 167, 101, 0.2);
+  border-radius: 8px;
+  padding: 0.55rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.quickdeck-pdf-source-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.quickdeck-pdf-source-grid label {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.quickdeck-pdf-source-notes {
+  grid-column: 1 / -1;
+}
+
+.quickdeck-pdf-sources-actions {
+  margin-top: 0.65rem;
+  display: flex;
+  gap: 0.5rem;
+}

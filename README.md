@@ -8,6 +8,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added clickable **Skill** names (Skills + Quick Skills drawers) that open a lightweight **QuickDeck Reference** window.
 - Added clickable **Spell** names in the Spells drawer that open the same reference window.
 - Added a small Application v1 **QuickDeck Reference** pop-out with type/name/source/page-hint placeholders.
+- Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes).
 - Added a **PDF import roadmap placeholder setting** and documentation for future user-provided local PDF indexing.
 - Copyright-safe approach: this module does **not** bundle GURPS rulebook text.
 
@@ -47,6 +48,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Reference helpers:
   - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
   - Reference entries currently show placeholders/fallbacks until local reference indexing is implemented.
+  - When configured, a local source summary area displays saved PDF source metadata.
 - Search UX:
   - Available actors, combat attacks, skills, quick skills, and spells support continuous typing without focus loss.
 - Combat UX:
@@ -55,9 +57,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - If no active combat, roster pills simply omit initiative badge.
 - Fallback rolling:
   - If a native GURPS method is not available, visible 3d6 fallback chat roll is used.
-- Lightweight client setting:
+- Lightweight client settings/state:
   - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`, `spells`).
   - PDF import roadmap placeholder toggle (no importer in this release).
+  - Client-scoped JSON metadata store for PDF source definitions.
 
 ## PDF Import Roadmap (User-Provided Content Only)
 
