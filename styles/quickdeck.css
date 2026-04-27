@@ -853,25 +853,95 @@
   color: #f0eadc;
 }
 
+.gurps-quickdeck-reference .window-header {
+  background:
+    linear-gradient(120deg, rgba(125, 95, 42, 0.9), rgba(48, 44, 61, 0.92)),
+    radial-gradient(circle at 20% 20%, rgba(255, 220, 150, 0.25), transparent 45%);
+  border-bottom: 1px solid rgba(222, 181, 109, 0.45);
+}
+
+.gurps-quickdeck-reference .window-title {
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.55);
+}
+
 .gurps-quickdeck-reference .window-content {
-  padding: 0.65rem;
+  padding: 0.7rem;
+  color: #f4ecdc;
+  background:
+    radial-gradient(circle at top right, rgba(125, 96, 44, 0.14), transparent 36%),
+    radial-gradient(circle at 15% 85%, rgba(113, 126, 148, 0.08), transparent 28%),
+    linear-gradient(145deg, rgba(10, 12, 18, 0.96), rgba(25, 24, 30, 0.95));
 }
 
 .quickdeck-reference-shell {
-  color: #f4ecdc;
+  display: grid;
+  gap: 0.55rem;
 }
 
-.quickdeck-reference-shell h2 {
-  margin: 0 0 0.4rem;
+.quickdeck-reference-panel {
+  border: 1px solid rgba(203, 167, 101, 0.3);
+  border-radius: 10px;
+  padding: 0.62rem 0.68rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.14)),
+    radial-gradient(circle at 12% 0, rgba(222, 182, 108, 0.09), transparent 46%);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.24), inset 0 0 0 1px rgba(255, 255, 255, 0.03);
+}
+
+.quickdeck-reference-header h2 {
+  margin: 0;
   font-size: 1rem;
+  letter-spacing: 0.02em;
+  color: #f7eed8;
 }
 
-.quickdeck-reference-shell p {
-  margin: 0.2rem 0;
+.quickdeck-reference-meta {
+  margin: 0.45rem 0 0;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.quickdeck-reference-meta div {
+  display: grid;
+  grid-template-columns: 6.1rem 1fr;
+  gap: 0.45rem;
+  align-items: start;
+}
+
+.quickdeck-reference-meta dt {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(245, 217, 163, 0.84);
+}
+
+.quickdeck-reference-meta dd {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.25;
+  color: rgba(244, 235, 219, 0.95);
+  overflow-wrap: anywhere;
 }
 
 .quickdeck-reference-body {
-  margin-top: 0.55rem;
-  border-top: 1px solid rgba(214, 175, 98, 0.35);
-  padding-top: 0.55rem;
+  display: grid;
+  gap: 0.45rem;
+}
+
+.quickdeck-reference-body p {
+  margin: 0;
+  font-size: 0.78rem;
+  line-height: 1.35;
+  color: rgba(241, 231, 212, 0.94);
+}
+
+.quickdeck-reference-empty {
+  padding: 0.4rem 0.5rem;
+  border: 1px dashed rgba(190, 151, 85, 0.46);
+  border-radius: 7px;
+  background: rgba(119, 87, 35, 0.13);
+  color: rgba(250, 232, 194, 0.96);
 }

@@ -1,19 +1,30 @@
 <section class="quickdeck-reference-shell">
-  <header>
+  <header class="quickdeck-reference-header quickdeck-reference-panel">
     <h2>{{title}}</h2>
-    <p><strong>Type:</strong> {{type}}</p>
-    {{#if source}}
-      <p><strong>Source hint:</strong> {{source}}</p>
-    {{/if}}
-    {{#if pageHint}}
-      <p><strong>Page hint:</strong> {{pageHint}}</p>
-    {{/if}}
+    <dl class="quickdeck-reference-meta">
+      <div>
+        <dt>Type</dt>
+        <dd>{{type}}</dd>
+      </div>
+      {{#if source}}
+        <div>
+          <dt>Source hint</dt>
+          <dd>{{source}}</dd>
+        </div>
+      {{/if}}
+      {{#if pageHint}}
+        <div>
+          <dt>Page hint</dt>
+          <dd>{{pageHint}}</dd>
+        </div>
+      {{/if}}
+    </dl>
   </header>
 
-  <section class="quickdeck-reference-body">
+  <section class="quickdeck-reference-body quickdeck-reference-panel">
     <p>{{placeholderText}}</p>
     {{#unless hasLocalReference}}
-      <p><em>No local reference found yet.</em></p>
+      <p class="quickdeck-reference-empty"><em>No local reference found yet.</em></p>
     {{/unless}}
   </section>
 </section>
