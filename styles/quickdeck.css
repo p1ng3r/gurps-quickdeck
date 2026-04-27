@@ -938,12 +938,41 @@
   color: rgba(241, 231, 212, 0.94);
 }
 
+.quickdeck-reference-help {
+  padding: 0.42rem 0.5rem;
+  border: 1px solid rgba(190, 151, 85, 0.46);
+  border-radius: 7px;
+  background: rgba(119, 87, 35, 0.12);
+  color: rgba(248, 233, 199, 0.98);
+}
+
+.quickdeck-reference-status {
+  padding: 0.38rem 0.5rem;
+  border: 1px solid rgba(203, 167, 101, 0.3);
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.14)),
+    radial-gradient(circle at 12% 0, rgba(222, 182, 108, 0.08), transparent 46%);
+  color: rgba(244, 235, 219, 0.95);
+}
+
 .quickdeck-reference-empty {
   padding: 0.4rem 0.5rem;
   border: 1px dashed rgba(190, 151, 85, 0.46);
   border-radius: 7px;
   background: rgba(119, 87, 35, 0.13);
   color: rgba(250, 232, 194, 0.96);
+}
+
+.quickdeck-reference-checklist p {
+  margin: 0 0 0.25rem;
+}
+
+.quickdeck-reference-checklist ul {
+  margin: 0;
+  padding-left: 1rem;
+  display: grid;
+  gap: 0.2rem;
 }
 
 .quickdeck-window-actions {
