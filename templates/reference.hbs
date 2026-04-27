@@ -27,6 +27,19 @@
 
   <section class="quickdeck-reference-body quickdeck-reference-panel">
     <p>{{placeholderText}}</p>
+    <div class="quickdeck-reference-index-actions">
+      <button
+        type="button"
+        class="quickdeck-reference-index-button"
+        data-action="open-reference-index-entry"
+        data-prefill-name="{{prefillEntryName}}"
+        data-prefill-type="{{prefillEntryType}}"
+        data-prefill-book-key="{{prefillEntryBookKey}}"
+        data-prefill-displayed-page="{{prefillEntryDisplayedPage}}"
+      >
+        {{referenceIndexButtonLabel}}
+      </button>
+    </div>
     {{#unless hasLocalReference}}
       <p class="quickdeck-reference-empty"><em>No local reference found yet.</em></p>
     {{/unless}}

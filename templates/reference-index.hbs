@@ -8,7 +8,7 @@
     {{#if hasEntries}}
       <ol class="quickdeck-pdf-sources-list quickdeck-reference-index-list">
         {{#each entries as |entry|}}
-          <li class="quickdeck-pdf-source-row quickdeck-reference-index-row" data-reference-index-row data-index="{{entry.index}}">
+          <li class="quickdeck-pdf-source-row quickdeck-reference-index-row {{#if entry.focusRow}}is-focus-row{{/if}}" data-reference-index-row data-index="{{entry.index}}">
             <div class="quickdeck-pdf-source-grid quickdeck-reference-index-grid">
               <label>
                 <span>Name</span>

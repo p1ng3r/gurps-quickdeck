@@ -1,6 +1,7 @@
 import { getPdfSources } from "./pdf-sources-store.js";
 import { matchReferenceSource } from "./reference-source-matcher.js";
 import { getReferenceIndex } from "./reference-index-store.js";
+import { openReferenceIndexManager } from "./reference-index-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/reference.hbs";
 
@@ -201,6 +202,15 @@ export class QuickDeckReferenceApp extends Application {
 
     const resolvedMatch = resolveReferenceMatch(this.referenceData, configuredSources);
     const matchedSourcePath = normalizePathHint(resolvedMatch?.matchedSource?.fileHint);
+    const numericPageHint = parseDisplayedPage(this.referenceData.pageHint);
+    const manualEntryPrefill = {
+      name: this.referenceData.name,
+      type: this.referenceData.type,
+      bookKey: resolvedMatch?.matchedSource?.bookKey || this.referenceData.source || "",
+      displayedPage: numericPageHint ? String(numericPageHint) : "",
+      notes: ""
+    };
+    const hasExactManualEntry = resolvedMatch?.manualMatchMode === "exact-name-type";
 
     return {
       title: this.referenceData.name,
@@ -223,6 +233,14 @@ export class QuickDeckReferenceApp extends Application {
       hasManualEntry: Boolean(resolvedMatch?.manualEntry),
       manualEntry: resolvedMatch?.manualEntry ?? null,
       manualMatchMode: resolvedMatch?.manualMatchMode ?? null,
+      hasExactManualEntry,
+      referenceIndexButtonLabel: hasExactManualEntry
+        ? "Edit Reference Index Entry"
+        : "Add to Reference Index",
+      prefillEntryName: manualEntryPrefill.name,
+      prefillEntryType: manualEntryPrefill.type,
+      prefillEntryBookKey: manualEntryPrefill.bookKey,
+      prefillEntryDisplayedPage: manualEntryPrefill.displayedPage,
       sourcePlaceholderText:
         "No PDF sources configured yet. Use QuickDeck → PDF Sources to add local metadata.",
       noMatchText: "No matching PDF source found.",
@@ -284,6 +302,26 @@ export class QuickDeckReferenceApp extends Application {
 
     html.find("[data-action='copy-matched-pdf-path']").on("click", async (event) => {
       await this._copyMatchedPath(event);
+    });
+
+    html.find("[data-action='open-reference-index-entry']").on("click", (event) => {
+      event.preventDefault();
+      const entryData = {
+        name: String(event.currentTarget?.dataset?.prefillName ?? ""),
+        type: String(event.currentTarget?.dataset?.prefillType ?? "rule"),
+        bookKey: String(event.currentTarget?.dataset?.prefillBookKey ?? ""),
+        displayedPage: String(event.currentTarget?.dataset?.prefillDisplayedPage ?? ""),
+        notes: ""
+      };
+
+      const result = openReferenceIndexManager(entryData);
+      if (!result) return;
+
+      const notificationText =
+        result.mode === "existing"
+          ? "QuickDeck: Opened existing Reference Index entry."
+          : "QuickDeck: Added a prefilled Reference Index row.";
+      ui.notifications?.info(notificationText);
     });
   }
 }

@@ -1,4 +1,5 @@
 import {
+  findReferenceIndexEntryIndex,
   getReferenceIndex,
   normalizeReferenceIndexEntry,
   setReferenceIndex
@@ -12,10 +13,13 @@ const ENTRY_TYPE_CHOICES = [
   { value: "rule", label: "Rule" }
 ];
 
+let referenceIndexApp = null;
+
 export class QuickDeckReferenceIndexApp extends Application {
   constructor(options = {}) {
     super(options);
     this.entries = getReferenceIndex();
+    this.pendingFocusIndex = null;
   }
 
   static get defaultOptions() {
@@ -38,6 +42,7 @@ export class QuickDeckReferenceIndexApp extends Application {
       return {
         index,
         ...normalized,
+        focusRow: Number.isInteger(this.pendingFocusIndex) && this.pendingFocusIndex === index,
         typeOptions: ENTRY_TYPE_CHOICES.map((choice) => ({
           ...choice,
           selected: choice.value === normalized.type
@@ -61,6 +66,35 @@ export class QuickDeckReferenceIndexApp extends Application {
         notes: ""
       })
     );
+  }
+
+  refreshEntriesFromSettings() {
+    this.entries = getReferenceIndex();
+  }
+
+  prepareEntryForEdit(entryData = {}) {
+    this.refreshEntriesFromSettings();
+    const normalized = normalizeReferenceIndexEntry(entryData);
+    if (!normalized.name) return null;
+
+    const existingIndex = findReferenceIndexEntryIndex(this.entries, normalized);
+    if (existingIndex >= 0) {
+      this.pendingFocusIndex = existingIndex;
+      return {
+        mode: "existing",
+        index: existingIndex
+      };
+    }
+
+    this.entries.push({
+      ...normalized,
+      notes: normalized.notes || ""
+    });
+    this.pendingFocusIndex = this.entries.length - 1;
+    return {
+      mode: "added",
+      index: this.pendingFocusIndex
+    };
   }
 
   removeEntry(index) {
@@ -93,6 +127,21 @@ export class QuickDeckReferenceIndexApp extends Application {
   activateListeners(html) {
     super.activateListeners(html);
 
+    if (Number.isInteger(this.pendingFocusIndex)) {
+      const selector = `[data-reference-index-row][data-index='${this.pendingFocusIndex}'] [data-field='name']`;
+      const focusTarget = html.find(selector)?.get(0);
+      if (focusTarget) {
+        window.setTimeout(() => {
+          try {
+            focusTarget.focus();
+            if (typeof focusTarget.select === "function") focusTarget.select();
+          } catch (error) {
+            console.warn("gurps-quickdeck | Failed to focus reference index row.", error);
+          }
+        }, 0);
+      }
+    }
+
     html.find("[data-action='add-reference-index-entry']").on("click", (event) => {
       event.preventDefault();
       this.readEntriesFromForm(html);
@@ -112,5 +161,28 @@ export class QuickDeckReferenceIndexApp extends Application {
       event.preventDefault();
       await this.saveEntries(html);
     });
+  }
+}
+
+export function openReferenceIndexManager(entryData = null) {
+  try {
+    if (!referenceIndexApp) referenceIndexApp = new QuickDeckReferenceIndexApp();
+    let result = null;
+    if (entryData) {
+      result = referenceIndexApp.prepareEntryForEdit(entryData);
+    } else {
+      referenceIndexApp.refreshEntriesFromSettings();
+      referenceIndexApp.pendingFocusIndex = null;
+    }
+    referenceIndexApp.render(true);
+    const safeResult = result ?? {};
+    return {
+      app: referenceIndexApp,
+      ...safeResult
+    };
+  } catch (error) {
+    console.warn("gurps-quickdeck | Failed to open reference index manager.", error);
+    ui.notifications?.warn("QuickDeck: Could not open Reference Index manager.");
+    return null;
   }
 }
