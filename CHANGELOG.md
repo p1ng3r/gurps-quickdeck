@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Reference Index manager now supports metadata-only JSON export to clipboard.
 - Reference Index manager now supports safe JSON import (merge or replace) with entry normalization/validation and non-fatal invalid JSON warnings.
 - QuickDeck Reference popup now includes a direct **Add to Reference Index** / **Edit Reference Index Entry** workflow with prefilled metadata.
+- QuickDeck Reference popup now includes inline help clarifying that **Add to Reference Index** creates a reusable skill/spell bookmark for source/page lookup.
 - Client-scoped PDF source metadata setting stored as safe JSON.
 - Client-scoped manual Reference Index metadata setting stored as safe JSON.
 - Reference source matching utility that compares source hints against configured PDF source `bookKey`/`displayName` values (exact + partial).
@@ -35,6 +36,8 @@ All notable changes to this project will be documented in this file.
 - QuickDeck window actions now include a Reference Index button next to PDF Sources.
 - QuickDeck Reference now shows match origin (Manual Index, Actor Data Hint, or No Match) and prioritizes manual Reference Index entries before actor source/page hints.
 - QuickDeck Reference now shows matched-source details (matched source, displayed page, PDF target page, file/path hint) with safe no-match fallback messaging.
+- QuickDeck Reference now shows explicit match-origin status text for manual bookmark and actor-hint matches.
+- QuickDeck Reference no-match state now includes a friendly checklist (add PDF source, add/edit Reference Index entry, verify book key).
 - QuickDeck Reference Index manager now supports duplicate-safe prefill/open behavior: exact name+type matches are focused for edit instead of creating duplicate rows.
 - Reference Index manager now includes an explicit import safety warning: “Only import metadata you created. Do not paste copyrighted rulebook text.”
 - README updated with spells/reference/PDF source manager/roadmap notes, new PDF offset helper guidance, and copyright-safe policy.
