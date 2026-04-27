@@ -10,11 +10,13 @@ All notable changes to this project will be documented in this file.
 - Clickable skill names in Skills and Quick Skills drawers that open QuickDeck Reference.
 - Clickable spell names in Spells drawer that open QuickDeck Reference.
 - New Application v1 QuickDeck Reference window (local metadata matching, no network calls).
-- New Application v1 QuickDeck PDF Sources manager for local source metadata (display name, book key, file hint, page offset, notes).
+- New Application v1 QuickDeck PDF Sources manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-themed panel styling.
 - Client-scoped PDF source metadata setting stored as safe JSON.
 - Reference source matching utility that compares source hints against configured PDF source `bookKey`/`displayName` values (exact + partial).
 - Reference popup now computes PDF page target when page hint is numeric (`pdfPage = displayed + pageOffset`).
 - PDF import roadmap placeholder setting for future user-provided local PDF indexing.
+- PDF source rows now include a safe per-row file picker button that uses Foundry's FilePicker when available and falls back to manual path entry with non-fatal warnings if unavailable/failing.
+- PDF path selection now validates `.pdf` extensions and stores only the selected hint/path string in existing metadata settings (no parsing/rendering).
 
 ### Changed
 - Default drawer choices now include `spells`.
