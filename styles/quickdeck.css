@@ -1155,7 +1155,8 @@
 
 .quickdeck-reference-index-button,
 .quickdeck-reference-open-button,
-.quickdeck-reference-copy-button {
+.quickdeck-reference-copy-button,
+.quickdeck-reference-search-button {
   border: 1px solid rgba(223, 184, 116, 0.35);
   border-radius: 6px;
   font-size: 0.75rem;
@@ -1166,11 +1167,42 @@
 
 .quickdeck-reference-index-button:hover,
 .quickdeck-reference-open-button:hover,
-.quickdeck-reference-copy-button:hover {
+.quickdeck-reference-copy-button:hover,
+.quickdeck-reference-search-button:hover {
   border-color: rgba(244, 205, 138, 0.72);
   box-shadow: 0 0 10px rgba(229, 187, 108, 0.14);
 }
 
+
+
+.quickdeck-reference-search-button[disabled] {
+  opacity: 0.72;
+  cursor: wait;
+}
+
+.quickdeck-reference-pdf-search {
+  margin-top: 0.45rem;
+  padding: 0.45rem 0.5rem;
+  border-radius: 7px;
+  border: 1px solid rgba(203, 167, 101, 0.3);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.13));
+}
+
+.quickdeck-reference-pdf-search p {
+  margin: 0 0 0.35rem;
+}
+
+.quickdeck-reference-pdf-search-warning {
+  border-color: rgba(212, 164, 84, 0.52);
+}
+
+.quickdeck-reference-pdf-search-error {
+  border-color: rgba(214, 109, 109, 0.55);
+}
+
+.quickdeck-reference-pdf-search-success {
+  border-color: rgba(129, 200, 127, 0.45);
+}
 
 .quickdeck-reference-index-grid {
   grid-template-columns: repeat(2, minmax(0, 1fr));

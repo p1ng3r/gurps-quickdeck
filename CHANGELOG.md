@@ -23,6 +23,9 @@ All notable changes to this project will be documented in this file.
 - Reference popup now computes PDF page target when page hint/displayed page is numeric (`pdfPage = displayed + pageOffset`).
 - Reference popup now adds safe **Open PDF** and **Copy Path** actions when a matched source includes a file/path hint, appending `#page=<target>` when available.
 - Open PDF flow now fails safely with non-fatal popup-block warning messaging and no iframe/PDF parsing behavior.
+- QuickDeck Reference popup now adds a **Search PDF Text** action that scans a matched local/world PDF source page-by-page for the current reference name and shows only a short snippet + matched page.
+- PDF text search now fails safely with explicit fallback message when PDF.js is unavailable: "PDF text search unavailable in this environment."
+- PDF text search MVP now enforces safe limits: single matched source, first-match stop, page scan cap, and no permanent full-text storage.
 - PDF import roadmap placeholder setting for future user-provided local PDF indexing.
 - PDF source rows now include a safe per-row file picker button that uses Foundry's FilePicker when available and falls back to manual path entry with non-fatal warnings if unavailable/failing.
 - PDF path selection now validates `.pdf` extensions and stores only the selected hint/path string in existing metadata settings (no parsing/rendering).
@@ -40,7 +43,7 @@ All notable changes to this project will be documented in this file.
 - QuickDeck Reference no-match state now includes a friendly checklist (add PDF source, add/edit Reference Index entry, verify book key).
 - QuickDeck Reference Index manager now supports duplicate-safe prefill/open behavior: exact name+type matches are focused for edit instead of creating duplicate rows.
 - Reference Index manager now includes an explicit import safety warning: “Only import metadata you created. Do not paste copyrighted rulebook text.”
-- README updated with spells/reference/PDF source manager/roadmap notes, new PDF offset helper guidance, and copyright-safe policy.
+- README updated with spells/reference/PDF source manager/roadmap notes, new PDF text-search MVP limits, PDF offset helper guidance, and copyright-safe policy.
 
 ## [0.2.0] - 2026-04-27
 
