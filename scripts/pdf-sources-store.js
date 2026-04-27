@@ -24,7 +24,7 @@ export function normalizePdfSource(source = {}) {
   const notes = asString(source.notes);
 
   return {
-    displayName: displayName || "Untitled Source",
+    displayName,
     bookKey,
     fileHint,
     pageOffset: asPageOffset(source.pageOffset),

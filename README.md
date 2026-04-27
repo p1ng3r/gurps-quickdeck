@@ -8,7 +8,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added clickable **Skill** names (Skills + Quick Skills drawers) that open a lightweight **QuickDeck Reference** window.
 - Added clickable **Spell** names in the Spells drawer that open the same reference window.
 - Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints, match-origin labeling (**Manual Index**, **Actor Data Hint**, **No Match**), PDF source matching metadata, and safe **Open PDF / Copy Path** actions for matched file hints.
-- Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-matching dark brass/steel styling and per-row PDF file picker button.
+- Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes) with filename-based auto-fill helpers and live page-offset preview tools.
 - Added an Application v1 **QuickDeck Reference Index** manager for manual reference entries (name, type, source/book key, displayed page, notes) stored client-side as JSON metadata only.
 - Enhanced the **QuickDeck Reference Index** manager with DOM-only search/filtering and metadata-only JSON export/import tools (merge or replace) with safe validation and warning-first error handling.
 - Added a quick action in the **QuickDeck Reference** popup to **Add to Reference Index** (or **Edit Reference Index Entry** when an exact manual match already exists), opening the manager with a prefilled row and duplicate-safe exact name+type focus behavior.
@@ -68,11 +68,19 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Lightweight client settings/state:
   - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`, `spells`).
   - PDF import roadmap placeholder toggle (no importer in this release).
-  - Client-scoped JSON metadata store for PDF source definitions (path string only; no file parsing/rendering in this release).
+  - Client-scoped JSON metadata store for PDF source definitions (path string only; no file parsing/rendering in this release), including filename cleanup for display name/book key suggestions and non-destructive auto-fill when using FilePicker.
   - Client-scoped JSON metadata store for manual Reference Index entries (no PDF parsing, extraction, or embedded rulebook text).
   - Reference Index manager can filter rows by name/type/book key/displayed page/notes without re-rendering on each keystroke.
   - Reference Index manager can export current metadata JSON directly to clipboard.
   - Reference Index manager supports merge/replace JSON import with safe validation and invalid-JSON warnings (no crash).
+
+
+## PDF Sources Page Offset Tips
+
+- Use offset when the PDF page number differs from the printed book page.
+- Picking a PDF file now auto-fills missing **Display name** and **Book key** values from a cleaned filename suggestion.
+- Auto-fill is non-destructive: existing user-entered values are preserved.
+- Use the sample displayed/book page helper to preview the computed PDF page (`book page + offset`).
 
 ## PDF Import Roadmap (User-Provided Content Only)
 

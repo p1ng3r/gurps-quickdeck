@@ -1077,6 +1077,37 @@
   justify-content: center;
 }
 
+
+.quickdeck-pdf-offset-help {
+  margin-top: 0.3rem !important;
+  color: rgba(250, 226, 175, 0.92) !important;
+}
+
+.quickdeck-pdf-offset-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 115px) minmax(0, 1fr);
+  gap: 0.45rem;
+  align-items: center;
+}
+
+.quickdeck-pdf-offset-helper {
+  grid-column: 1 / -1;
+  border: 1px solid rgba(203, 167, 101, 0.25);
+  border-radius: 6px;
+  padding: 0.45rem;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.quickdeck-pdf-offset-preview {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 0.74rem;
+  color: rgba(239, 227, 201, 0.94);
+}
+
 .quickdeck-pdf-source-row .quickdeck-remove-button {
   justify-self: end;
 }
