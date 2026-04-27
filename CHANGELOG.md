@@ -14,6 +14,8 @@ All notable changes to this project will be documented in this file.
 - Client-scoped PDF source metadata setting stored as safe JSON.
 - Reference source matching utility that compares source hints against configured PDF source `bookKey`/`displayName` values (exact + partial).
 - Reference popup now computes PDF page target when page hint is numeric (`pdfPage = displayed + pageOffset`).
+- Reference popup now adds safe **Open PDF** and **Copy Path** actions when a matched source includes a file/path hint, appending `#page=<target>` when available.
+- Open PDF flow now fails safely with non-fatal popup-block warning messaging and no iframe/PDF parsing behavior.
 - PDF import roadmap placeholder setting for future user-provided local PDF indexing.
 - PDF source rows now include a safe per-row file picker button that uses Foundry's FilePicker when available and falls back to manual path entry with non-fatal warnings if unavailable/failing.
 - PDF path selection now validates `.pdf` extensions and stores only the selected hint/path string in existing metadata settings (no parsing/rendering).
