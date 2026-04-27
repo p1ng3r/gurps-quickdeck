@@ -1,11 +1,118 @@
 import { getPdfSources } from "./pdf-sources-store.js";
 import { matchReferenceSource } from "./reference-source-matcher.js";
+import { getReferenceIndex } from "./reference-index-store.js";
+import { openReferenceIndexManager } from "./reference-index-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/reference.hbs";
 
 function normalizePathHint(pathHint) {
   if (typeof pathHint !== "string") return "";
   return pathHint.trim();
+}
+
+function normalizeText(value) {
+  if (value === null || value === undefined) return "";
+  return String(value).trim().toLowerCase();
+}
+
+function parseDisplayedPage(value) {
+  const raw = String(value ?? "").trim();
+  if (!/^\d+$/.test(raw)) return null;
+
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) return null;
+  const normalized = Math.trunc(parsed);
+  if (normalized <= 0) return null;
+  return normalized;
+}
+
+function getTypeLabel(type) {
+  if (type === "skill") return "Skill";
+  if (type === "spell") return "Spell";
+  return "Rule";
+}
+
+function findManualIndexMatch(referenceData = {}, entries = []) {
+  const normalizedName = normalizeText(referenceData.name);
+  const normalizedType = normalizeText(referenceData.type);
+
+  if (!normalizedName) return null;
+
+  const normalizedEntries = Array.isArray(entries) ? entries : [];
+
+  const exactTypeMatch = normalizedEntries.find((entry) => {
+    return normalizeText(entry?.name) === normalizedName && normalizeText(entry?.type) === normalizedType;
+  });
+  if (exactTypeMatch) {
+    return {
+      entry: exactTypeMatch,
+      mode: "exact-name-type"
+    };
+  }
+
+  const exactNameOnlyMatch = normalizedEntries.find((entry) => {
+    return normalizeText(entry?.name) === normalizedName;
+  });
+  if (exactNameOnlyMatch) {
+    return {
+      entry: exactNameOnlyMatch,
+      mode: "exact-name"
+    };
+  }
+
+  return null;
+}
+
+function resolveReferenceMatch(referenceData = {}, configuredSources = []) {
+  const manualIndex = getReferenceIndex();
+  const manualMatch = findManualIndexMatch(referenceData, manualIndex);
+
+  if (manualMatch?.entry) {
+    const entry = manualMatch.entry;
+    const manualReference = {
+      ...referenceData,
+      source: String(entry.bookKey ?? ""),
+      pageHint: String(entry.displayedPage ?? "")
+    };
+
+    const sourceMatch = matchReferenceSource(manualReference, configuredSources);
+
+    return {
+      matchOrigin: "manual-index",
+      matchOriginLabel: "Manual Index",
+      manualMatchMode: manualMatch.mode,
+      manualEntry: entry,
+      matchedSource: sourceMatch?.source ?? null,
+      displayedPage:
+        sourceMatch?.displayedPage ?? parseDisplayedPage(entry.displayedPage) ?? parseDisplayedPage(referenceData.pageHint),
+      pdfPageTarget:
+        sourceMatch?.pdfPageTarget ?? null
+    };
+  }
+
+  const actorHintMatch = matchReferenceSource(referenceData, configuredSources);
+
+  if (actorHintMatch?.source) {
+    return {
+      matchOrigin: "actor-data-hint",
+      matchOriginLabel: "Actor Data Hint",
+      manualMatchMode: null,
+      manualEntry: null,
+      matchedSource: actorHintMatch.source,
+      displayedPage: actorHintMatch.displayedPage,
+      pdfPageTarget: actorHintMatch.pdfPageTarget
+    };
+  }
+
+  return {
+    matchOrigin: "no-match",
+    matchOriginLabel: "No Match",
+    manualMatchMode: null,
+    manualEntry: null,
+    matchedSource: null,
+    displayedPage: parseDisplayedPage(referenceData.pageHint),
+    pdfPageTarget: null
+  };
 }
 
 function buildSafePdfOpenPath(pathHint, pdfPageTarget) {
@@ -83,12 +190,7 @@ export class QuickDeckReferenceApp extends Application {
   }
 
   getData() {
-    const typeLabel =
-      this.referenceData.type === "skill"
-        ? "Skill"
-        : this.referenceData.type === "spell"
-          ? "Spell"
-          : "Rule";
+    const typeLabel = getTypeLabel(this.referenceData.type);
 
     const configuredSources = getPdfSources().map((source) => ({
       displayName: source.displayName,
@@ -98,8 +200,17 @@ export class QuickDeckReferenceApp extends Application {
       notes: source.notes
     }));
 
-    const sourceMatch = matchReferenceSource(this.referenceData, configuredSources);
-    const matchedSourcePath = normalizePathHint(sourceMatch?.source?.fileHint);
+    const resolvedMatch = resolveReferenceMatch(this.referenceData, configuredSources);
+    const matchedSourcePath = normalizePathHint(resolvedMatch?.matchedSource?.fileHint);
+    const numericPageHint = parseDisplayedPage(this.referenceData.pageHint);
+    const manualEntryPrefill = {
+      name: this.referenceData.name,
+      type: this.referenceData.type,
+      bookKey: resolvedMatch?.matchedSource?.bookKey || this.referenceData.source || "",
+      displayedPage: numericPageHint ? String(numericPageHint) : "",
+      notes: ""
+    };
+    const hasExactManualEntry = resolvedMatch?.manualMatchMode === "exact-name-type";
 
     return {
       title: this.referenceData.name,
@@ -109,14 +220,27 @@ export class QuickDeckReferenceApp extends Application {
       hasLocalReference: false,
       hasConfiguredSources: configuredSources.length > 0,
       configuredSources,
-      hasMatchedSource: Boolean(sourceMatch?.source),
-      matchedSource: sourceMatch?.source ?? null,
-      displayedPage: sourceMatch?.displayedPage ?? null,
-      hasDisplayedPage: Number.isInteger(sourceMatch?.displayedPage),
-      pdfPageTarget: sourceMatch?.pdfPageTarget ?? null,
-      hasPdfPageTarget: Number.isInteger(sourceMatch?.pdfPageTarget),
+      hasMatchedSource: Boolean(resolvedMatch?.matchedSource),
+      matchedSource: resolvedMatch?.matchedSource ?? null,
+      displayedPage: resolvedMatch?.displayedPage ?? null,
+      hasDisplayedPage: Number.isInteger(resolvedMatch?.displayedPage),
+      pdfPageTarget: resolvedMatch?.pdfPageTarget ?? null,
+      hasPdfPageTarget: Number.isInteger(resolvedMatch?.pdfPageTarget),
       matchedSourcePath,
       hasMatchedSourcePath: Boolean(matchedSourcePath),
+      matchOrigin: resolvedMatch?.matchOrigin ?? "no-match",
+      matchOriginLabel: resolvedMatch?.matchOriginLabel ?? "No Match",
+      hasManualEntry: Boolean(resolvedMatch?.manualEntry),
+      manualEntry: resolvedMatch?.manualEntry ?? null,
+      manualMatchMode: resolvedMatch?.manualMatchMode ?? null,
+      hasExactManualEntry,
+      referenceIndexButtonLabel: hasExactManualEntry
+        ? "Edit Reference Index Entry"
+        : "Add to Reference Index",
+      prefillEntryName: manualEntryPrefill.name,
+      prefillEntryType: manualEntryPrefill.type,
+      prefillEntryBookKey: manualEntryPrefill.bookKey,
+      prefillEntryDisplayedPage: manualEntryPrefill.displayedPage,
       sourcePlaceholderText:
         "No PDF sources configured yet. Use QuickDeck → PDF Sources to add local metadata.",
       noMatchText: "No matching PDF source found.",
@@ -178,6 +302,26 @@ export class QuickDeckReferenceApp extends Application {
 
     html.find("[data-action='copy-matched-pdf-path']").on("click", async (event) => {
       await this._copyMatchedPath(event);
+    });
+
+    html.find("[data-action='open-reference-index-entry']").on("click", (event) => {
+      event.preventDefault();
+      const entryData = {
+        name: String(event.currentTarget?.dataset?.prefillName ?? ""),
+        type: String(event.currentTarget?.dataset?.prefillType ?? "rule"),
+        bookKey: String(event.currentTarget?.dataset?.prefillBookKey ?? ""),
+        displayedPage: String(event.currentTarget?.dataset?.prefillDisplayedPage ?? ""),
+        notes: ""
+      };
+
+      const result = openReferenceIndexManager(entryData);
+      if (!result) return;
+
+      const notificationText =
+        result.mode === "existing"
+          ? "QuickDeck: Opened existing Reference Index entry."
+          : "QuickDeck: Added a prefilled Reference Index row.";
+      ui.notifications?.info(notificationText);
     });
   }
 }

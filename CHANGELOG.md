@@ -11,9 +11,12 @@ All notable changes to this project will be documented in this file.
 - Clickable spell names in Spells drawer that open QuickDeck Reference.
 - New Application v1 QuickDeck Reference window (local metadata matching, no network calls).
 - New Application v1 QuickDeck PDF Sources manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-themed panel styling.
+- New Application v1 QuickDeck Reference Index manager for manual entries (name, type, source/book key, displayed page, notes).
+- QuickDeck Reference popup now includes a direct **Add to Reference Index** / **Edit Reference Index Entry** workflow with prefilled metadata.
 - Client-scoped PDF source metadata setting stored as safe JSON.
+- Client-scoped manual Reference Index metadata setting stored as safe JSON.
 - Reference source matching utility that compares source hints against configured PDF source `bookKey`/`displayName` values (exact + partial).
-- Reference popup now computes PDF page target when page hint is numeric (`pdfPage = displayed + pageOffset`).
+- Reference popup now computes PDF page target when page hint/displayed page is numeric (`pdfPage = displayed + pageOffset`).
 - Reference popup now adds safe **Open PDF** and **Copy Path** actions when a matched source includes a file/path hint, appending `#page=<target>` when available.
 - Open PDF flow now fails safely with non-fatal popup-block warning messaging and no iframe/PDF parsing behavior.
 - PDF import roadmap placeholder setting for future user-provided local PDF indexing.
@@ -22,7 +25,10 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Default drawer choices now include `spells`.
+- QuickDeck window actions now include a Reference Index button next to PDF Sources.
+- QuickDeck Reference now shows match origin (Manual Index, Actor Data Hint, or No Match) and prioritizes manual Reference Index entries before actor source/page hints.
 - QuickDeck Reference now shows matched-source details (matched source, displayed page, PDF target page, file/path hint) with safe no-match fallback messaging.
+- QuickDeck Reference Index manager now supports duplicate-safe prefill/open behavior: exact name+type matches are focused for edit instead of creating duplicate rows.
 - README updated with spells/reference/PDF source manager/roadmap notes and copyright-safe policy.
 
 ## [0.2.0] - 2026-04-27

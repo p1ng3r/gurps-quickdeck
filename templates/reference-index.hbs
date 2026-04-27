@@ -1,0 +1,53 @@
+<section class="quickdeck-pdf-sources-shell quickdeck-reference-index-shell">
+  <header class="quickdeck-reference-panel quickdeck-pdf-sources-header">
+    <h2>QuickDeck Reference Index</h2>
+    <p>Store manual reference metadata for skills, spells, and rules. No PDFs are parsed; only your local metadata is stored.</p>
+  </header>
+
+  <section class="quickdeck-reference-panel quickdeck-pdf-sources-body">
+    {{#if hasEntries}}
+      <ol class="quickdeck-pdf-sources-list quickdeck-reference-index-list">
+        {{#each entries as |entry|}}
+          <li class="quickdeck-pdf-source-row quickdeck-reference-index-row {{#if entry.focusRow}}is-focus-row{{/if}}" data-reference-index-row data-index="{{entry.index}}">
+            <div class="quickdeck-pdf-source-grid quickdeck-reference-index-grid">
+              <label>
+                <span>Name</span>
+                <input type="text" data-field="name" value="{{entry.name}}" placeholder="Lockpicking" />
+              </label>
+              <label>
+                <span>Type</span>
+                <select data-field="type">
+                  {{#each entry.typeOptions as |typeOption|}}
+                    <option value="{{typeOption.value}}" {{#if typeOption.selected}}selected{{/if}}>{{typeOption.label}}</option>
+                  {{/each}}
+                </select>
+              </label>
+              <label>
+                <span>Source / book key</span>
+                <input type="text" data-field="bookKey" value="{{entry.bookKey}}" placeholder="basic-campaigns" />
+              </label>
+              <label>
+                <span>Displayed page</span>
+                <input type="number" data-field="displayedPage" value="{{entry.displayedPage}}" min="1" step="1" placeholder="344" />
+              </label>
+              <label class="quickdeck-pdf-source-notes">
+                <span>Notes</span>
+                <textarea data-field="notes" rows="2" placeholder="Optional personal note">{{entry.notes}}</textarea>
+              </label>
+            </div>
+            <button type="button" class="quickdeck-remove-button" data-action="remove-reference-index-entry" data-index="{{entry.index}}">
+              Remove
+            </button>
+          </li>
+        {{/each}}
+      </ol>
+    {{else}}
+      <p class="quickdeck-reference-empty"><em>No reference index entries yet. Add one to get started.</em></p>
+    {{/if}}
+
+    <footer class="quickdeck-pdf-sources-actions">
+      <button type="button" class="quickdeck-add-button" data-action="add-reference-index-entry">Add Entry</button>
+      <button type="button" class="quickdeck-roll-button" data-action="save-reference-index">Save Index</button>
+    </footer>
+  </section>
+</section>

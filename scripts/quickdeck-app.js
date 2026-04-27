@@ -1,5 +1,6 @@
 import { QuickDeckPdfSourcesApp } from "./pdf-sources-app.js";
 import { QuickDeckReferenceApp } from "./reference-app.js";
+import { openReferenceIndexManager } from "./reference-index-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const DEBUG = false;
@@ -1223,6 +1224,10 @@ export class QuickDeckApp extends Application {
     }
   }
 
+  openReferenceIndexManager() {
+    openReferenceIndexManager();
+  }
+
   getCombatRosterState() {
     const combat = game?.combat;
     if (!combat) {
@@ -1833,6 +1838,11 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='open-pdf-sources']").on("click", (event) => {
       event.preventDefault();
       this.openPdfSourcesManager();
+    });
+
+    html.find("[data-action='open-reference-index']").on("click", (event) => {
+      event.preventDefault();
+      this.openReferenceIndexManager();
     });
 
     html.find("[data-action='remove-actor']").on("click", (event) => {

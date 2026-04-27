@@ -6,6 +6,10 @@
         <dt>Type</dt>
         <dd>{{type}}</dd>
       </div>
+      <div>
+        <dt>Match Origin</dt>
+        <dd>{{matchOriginLabel}}</dd>
+      </div>
       {{#if source}}
         <div>
           <dt>Source hint</dt>
@@ -23,9 +27,50 @@
 
   <section class="quickdeck-reference-body quickdeck-reference-panel">
     <p>{{placeholderText}}</p>
+    <div class="quickdeck-reference-index-actions">
+      <button
+        type="button"
+        class="quickdeck-reference-index-button"
+        data-action="open-reference-index-entry"
+        data-prefill-name="{{prefillEntryName}}"
+        data-prefill-type="{{prefillEntryType}}"
+        data-prefill-book-key="{{prefillEntryBookKey}}"
+        data-prefill-displayed-page="{{prefillEntryDisplayedPage}}"
+      >
+        {{referenceIndexButtonLabel}}
+      </button>
+    </div>
     {{#unless hasLocalReference}}
       <p class="quickdeck-reference-empty"><em>No local reference found yet.</em></p>
     {{/unless}}
+
+    {{#if hasManualEntry}}
+      <div class="quickdeck-reference-sources">
+        <h3>Manual Index Match</h3>
+        <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+          <div>
+            <dt>Name</dt>
+            <dd>{{manualEntry.name}}</dd>
+          </div>
+          <div>
+            <dt>Type</dt>
+            <dd>{{manualEntry.type}}</dd>
+          </div>
+          <div>
+            <dt>Book Key</dt>
+            <dd>{{#if manualEntry.bookKey}}{{manualEntry.bookKey}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Displayed Page</dt>
+            <dd>{{#if manualEntry.displayedPage}}{{manualEntry.displayedPage}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Notes</dt>
+            <dd>{{#if manualEntry.notes}}{{manualEntry.notes}}{{else}}—{{/if}}</dd>
+          </div>
+        </dl>
+      </div>
+    {{/if}}
 
     <div class="quickdeck-reference-sources">
       <h3>Matched PDF Source</h3>

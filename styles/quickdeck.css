@@ -955,6 +955,7 @@
 }
 
 .gurps-quickdeck-pdf-sources .window-header,
+.gurps-quickdeck-reference-index .window-header,
 .gurps-quickdeck-reference .window-header {
   background:
     linear-gradient(120deg, rgba(125, 95, 42, 0.9), rgba(48, 44, 61, 0.92)),
@@ -963,11 +964,13 @@
 }
 
 .gurps-quickdeck-pdf-sources .window-content,
+.gurps-quickdeck-reference-index .window-content,
 .gurps-quickdeck-reference .window-content {
   padding: 0.6rem;
 }
 
-.gurps-quickdeck-pdf-sources .window-content {
+.gurps-quickdeck-pdf-sources .window-content,
+.gurps-quickdeck-reference-index .window-content {
   color: #f4ecdc;
   background:
     radial-gradient(circle at top right, rgba(125, 96, 44, 0.14), transparent 36%),
@@ -1049,6 +1052,7 @@
 }
 
 .quickdeck-pdf-source-grid input,
+.quickdeck-pdf-source-grid select,
 .quickdeck-pdf-source-grid textarea {
   border: 1px solid rgba(203, 167, 101, 0.38);
   border-radius: 6px;
@@ -1084,6 +1088,12 @@
   gap: 0.45rem;
 }
 
+.quickdeck-reference-index-actions {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.quickdeck-reference-index-button,
 .quickdeck-reference-open-button,
 .quickdeck-reference-copy-button {
   border: 1px solid rgba(223, 184, 116, 0.35);
@@ -1094,8 +1104,19 @@
   padding: 0.28rem 0.55rem;
 }
 
+.quickdeck-reference-index-button:hover,
 .quickdeck-reference-open-button:hover,
 .quickdeck-reference-copy-button:hover {
   border-color: rgba(244, 205, 138, 0.72);
   box-shadow: 0 0 10px rgba(229, 187, 108, 0.14);
+}
+
+
+.quickdeck-reference-index-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.quickdeck-reference-index-row.is-focus-row {
+  border-color: rgba(244, 205, 138, 0.68);
+  box-shadow: 0 0 0 1px rgba(222, 180, 105, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
 }
