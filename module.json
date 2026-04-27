@@ -1,11 +1,11 @@
 {
-  "id": "gurps-quickdeck",
-  "title": "GURPS QuickDeck",
-  "description": "A lightweight tabbed viewer for GURPS characters.",
-  "version": "0.1.0",
+  "id": "epic-rolls-pf2e",
+  "title": "Epic Rolls PF2E",
+  "description": "Phase 0 foundation for cinematic group rolls in Pathfinder 2E.",
+  "version": "0.0.1",
   "authors": [
     {
-      "name": "p1ng3r"
+      "name": "Epic Rolls PF2E Team"
     }
   ],
   "compatibility": {
@@ -15,7 +15,7 @@
   "relationships": {
     "systems": [
       {
-        "id": "gurps",
+        "id": "pf2e",
         "type": "system"
       }
     ]
@@ -24,12 +24,8 @@
     "scripts/main.js"
   ],
   "styles": [
-    "styles/quickdeck.css"
+    "styles/epic-rolls-pf2e.css"
   ],
   "languages": [],
-  "url": "https://github.com/p1ng3r/gurps-quickdeck",
-  "manifest": "https://raw.githubusercontent.com/p1ng3r/gurps-quickdeck/main/module.json",
-  "download": "https://github.com/p1ng3r/gurps-quickdeck/releases/latest/download/module.zip",
-  "license": "LICENSE",
   "readme": "README.md"
 }
