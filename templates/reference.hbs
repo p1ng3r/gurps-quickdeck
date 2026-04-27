@@ -40,9 +40,24 @@
         {{referenceIndexButtonLabel}}
       </button>
     </div>
+    <p class="quickdeck-reference-help">
+      Add to Reference Index creates a bookmark for this skill/spell so QuickDeck knows which PDF source and page to use next time.
+    </p>
     {{#unless hasLocalReference}}
       <p class="quickdeck-reference-empty"><em>No local reference found yet.</em></p>
     {{/unless}}
+
+    {{#if isManualOrigin}}
+      <p class="quickdeck-reference-status">
+        This reference is using your manual bookmark.
+      </p>
+    {{/if}}
+
+    {{#if isActorHintOrigin}}
+      <p class="quickdeck-reference-status">
+        This reference is using source/page data found on the actor.
+      </p>
+    {{/if}}
 
     {{#if hasManualEntry}}
       <div class="quickdeck-reference-sources">
@@ -116,6 +131,16 @@
         {{/if}}
       {{else}}
         <p class="quickdeck-reference-empty"><em>{{noMatchText}}</em></p>
+        {{#if showNoMatchChecklist}}
+          <div class="quickdeck-reference-empty quickdeck-reference-checklist">
+            <p>Try this checklist:</p>
+            <ul>
+              <li>Add a PDF Source</li>
+              <li>Add or edit a Reference Index entry</li>
+              <li>Make sure the book key matches</li>
+            </ul>
+          </div>
+        {{/if}}
       {{/if}}
     </div>
 

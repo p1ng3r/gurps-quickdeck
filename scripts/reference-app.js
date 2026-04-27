@@ -244,6 +244,9 @@ export class QuickDeckReferenceApp extends Application {
       sourcePlaceholderText:
         "No PDF sources configured yet. Use QuickDeck → PDF Sources to add local metadata.",
       noMatchText: "No matching PDF source found.",
+      showNoMatchChecklist: !resolvedMatch?.matchedSource,
+      isManualOrigin: resolvedMatch?.matchOrigin === "manual-index",
+      isActorHintOrigin: resolvedMatch?.matchOrigin === "actor-data-hint",
       placeholderText:
         "QuickDeck reference notes are local placeholders for now. PDF import/indexing support is planned for user-provided content in a future update."
     };
