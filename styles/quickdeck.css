@@ -259,7 +259,8 @@
 }
 
 .quickdeck-clear-button,
-.quickdeck-open-sheet-button {
+.quickdeck-open-sheet-button,
+.quickdeck-drop-token-button {
   border: 1px solid rgba(174, 188, 209, 0.45);
   color: #e2edf9;
   background: linear-gradient(180deg, rgba(67, 78, 98, 0.72), rgba(45, 53, 67, 0.86));
@@ -270,7 +271,8 @@
 }
 
 .quickdeck-clear-button:hover,
-.quickdeck-open-sheet-button:hover {
+.quickdeck-open-sheet-button:hover,
+.quickdeck-drop-token-button:hover {
   border-color: rgba(208, 223, 244, 0.85);
 }
 
@@ -515,6 +517,13 @@
   gap: 0.75rem;
 }
 
+.quickdeck-actor-header-actions {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 .quickdeck-actor-header img {
   width: 56px;
   height: 56px;
@@ -661,6 +670,12 @@
   color: #f5f0e2;
 }
 
+.quickdeck-attack-damage-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 .quickdeck-skill-row {
   display: grid;
   grid-template-columns: auto minmax(0, 1fr) auto;
@@ -729,9 +744,18 @@
   box-shadow: 0 0 10px rgba(241, 198, 119, 0.2);
 }
 
+.quickdeck-roll-button-secondary {
+  margin-top: 0;
+  width: auto;
+  padding: 0.18rem 0.45rem;
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
 .quickdeck-add-button:hover,
 .quickdeck-clear-button:hover,
 .quickdeck-open-sheet-button:hover,
+.quickdeck-drop-token-button:hover,
 .quickdeck-remove-button:hover,
 .quickdeck-roll-button:hover,
 .quickdeck-drawer-tab:hover,

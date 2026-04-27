@@ -238,6 +238,9 @@ export class QuickDeckApp extends Application {
         "damage",
         "dmg",
         "calc.damage",
+        "calc.dmg",
+        "damage.formula",
+        "dmg.formula",
         "notes"
       ]),
       reachOrRange:
@@ -898,6 +901,120 @@ export class QuickDeckApp extends Application {
     await this.createFallbackRollChat(actor, rollContext, roll, target);
   }
 
+  getAttackDamageString(attack) {
+    if (!attack || typeof attack !== "object") return null;
+
+    const directDamage = this.getFirstDefinedValue(attack, [
+      "damage",
+      "dmg",
+      "calc.damage",
+      "calc.dmg",
+      "damage.formula",
+      "dmg.formula"
+    ]);
+    if (directDamage !== null) return String(directDamage);
+
+    const rawDamage = this.getFirstDefinedValue(attack.raw, [
+      "damage",
+      "dmg",
+      "calc.damage",
+      "calc.dmg",
+      "damage.formula",
+      "dmg.formula"
+    ]);
+    if (rawDamage !== null) return String(rawDamage);
+
+    return null;
+  }
+
+  extractConcreteDamageFormula(damageText) {
+    const normalizedDamage = String(damageText ?? "").trim();
+    if (!normalizedDamage) return null;
+
+    const match = normalizedDamage.match(/(\d+d(?:6)?(?:\s*[+-]\s*\d+)?)/i);
+    if (!match?.[1]) return null;
+    return match[1].replace(/\s+/g, "");
+  }
+
+  async createDamageChatCard({
+    actor,
+    attackName,
+    damageText,
+    formula,
+    roll = null,
+    manualNeeded = false
+  }) {
+    const speaker = ChatMessage.getSpeaker({ actor });
+    const actorName = this.escapeHtml(actor?.name ?? "Unknown");
+    const safeAttackName = this.escapeHtml(attackName ?? "Unnamed Attack");
+    const safeDamageText = this.escapeHtml(damageText ?? "—");
+    const safeFormula = this.escapeHtml(formula ?? "—");
+    const total = Number.isFinite(roll?.total) ? roll.total : "—";
+
+    const content = `
+      <div class="gurps-quickdeck-roll-fallback">
+        <h3>QuickDeck Damage Roll</h3>
+        <p><strong>Actor:</strong> ${actorName}</p>
+        <p><strong>Attack:</strong> ${safeAttackName}</p>
+        <p><strong>Damage String:</strong> ${safeDamageText}</p>
+        <p><strong>Formula:</strong> ${safeFormula}</p>
+        ${manualNeeded ? "<p><strong>Manual damage needed.</strong></p>" : `<p><strong>Total:</strong> ${this.escapeHtml(String(total))}</p>`}
+      </div>
+    `;
+    const flavor = manualNeeded
+      ? `QuickDeck Damage: ${safeAttackName} (manual)`
+      : `QuickDeck Damage: ${safeAttackName}`;
+
+    if (roll && typeof roll.toMessage === "function") {
+      try {
+        await roll.toMessage({ speaker, flavor, content });
+        return;
+      } catch (error) {
+        console.warn("gurps-quickdeck | roll.toMessage failed, falling back to ChatMessage.create.", error);
+      }
+    }
+
+    await ChatMessage.create({
+      speaker,
+      flavor,
+      rolls: roll ? [roll] : [],
+      content
+    });
+  }
+
+  async triggerDamageRoll(actorId, attackIndex) {
+    if (!actorId || !Number.isFinite(attackIndex)) return;
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+
+    const attacks = this.extractAttacks(actor);
+    const attack = attacks[attackIndex];
+    if (!attack) return;
+
+    const damageText = this.getAttackDamageString(attack) ?? "—";
+    const formula = this.extractConcreteDamageFormula(damageText);
+
+    if (!formula) {
+      await this.createDamageChatCard({
+        actor,
+        attackName: attack.name,
+        damageText,
+        formula: null,
+        manualNeeded: true
+      });
+      return;
+    }
+
+    const roll = await new Roll(formula).evaluate();
+    await this.createDamageChatCard({
+      actor,
+      attackName: attack.name,
+      damageText,
+      formula,
+      roll
+    });
+  }
+
   async updateActorResource(actorId, resource, rawValue) {
     if (!actorId || !resource) return;
     const actor = game.actors.get(actorId);
@@ -1041,6 +1158,72 @@ export class QuickDeckApp extends Application {
 
     console.warn("gurps-quickdeck | Ignored invalid Actor drop payload.", payload ?? rawText);
     return null;
+  }
+
+  getDropTokenPosition(scene) {
+    let x = Number(scene?.dimensions?.width) / 2 || 0;
+    let y = Number(scene?.dimensions?.height) / 2 || 0;
+
+    const stage = canvas?.stage;
+    const scale = stage?.scale;
+    const pivot = stage?.pivot;
+    const screen = canvas?.app?.renderer?.screen;
+    if (
+      pivot &&
+      scale &&
+      Number.isFinite(pivot.x) &&
+      Number.isFinite(pivot.y) &&
+      Number.isFinite(scale.x) &&
+      Number.isFinite(scale.y) &&
+      scale.x !== 0 &&
+      scale.y !== 0 &&
+      screen
+    ) {
+      x = pivot.x + screen.width / (2 * scale.x);
+      y = pivot.y + screen.height / (2 * scale.y);
+    }
+
+    if (typeof canvas?.grid?.getSnappedPosition === "function") {
+      const snapped = canvas.grid.getSnappedPosition(x, y, 1);
+      if (snapped && Number.isFinite(snapped.x) && Number.isFinite(snapped.y)) {
+        x = snapped.x;
+        y = snapped.y;
+      }
+    }
+
+    return { x, y };
+  }
+
+  async dropActorToken(actorId) {
+    const actor = game.actors.get(actorId);
+    if (!actor) return;
+
+    const scene = canvas?.scene ?? game?.scenes?.current ?? null;
+    if (!scene || !canvas?.ready) {
+      ui.notifications?.warn("QuickDeck: No active scene/canvas ready for dropping a token.");
+      return;
+    }
+
+    if (typeof scene.canUserModify === "function" && game?.user) {
+      const canCreateToken =
+        scene.canUserModify(game.user, "update") || scene.canUserModify(game.user, "TOKEN_CREATE");
+      if (!canCreateToken) {
+        ui.notifications?.warn("QuickDeck: You do not have permission to create tokens in this scene.");
+        return;
+      }
+    }
+
+    const prototypeToken = actor.prototypeToken?.toObject?.() ?? {};
+    const tokenData = foundry.utils.mergeObject(prototypeToken, {
+      actorId: actor.id,
+      name: actor.name,
+      img: actor.prototypeToken?.texture?.src ?? actor.img
+    });
+    const { x, y } = this.getDropTokenPosition(scene);
+    tokenData.x = x;
+    tokenData.y = y;
+
+    await scene.createEmbeddedDocuments("Token", [tokenData]);
   }
 
   getData() {
@@ -1228,6 +1411,19 @@ export class QuickDeckApp extends Application {
       this.openActorSheet(actorId);
     });
 
+    html.find("[data-action='drop-token']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      if (!actorId || !game.actors.has(actorId)) return;
+
+      try {
+        await this.dropActorToken(actorId);
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed to drop token from QuickDeck.", error);
+        ui.notifications?.warn("QuickDeck: Could not drop token for this actor.");
+      }
+    });
+
     html.find("[data-action='remove-actor']").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -1367,6 +1563,14 @@ export class QuickDeckApp extends Application {
         attackType: attack.type,
         attack
       });
+    });
+
+    html.find("[data-action='roll-damage']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      const attackIndex = Number(event.currentTarget.dataset.attackIndex);
+      if (!actorId || Number.isNaN(attackIndex)) return;
+      await this.triggerDamageRoll(actorId, attackIndex);
     });
 
     html.find("[data-action='roll-skill']").on("click", async (event) => {
