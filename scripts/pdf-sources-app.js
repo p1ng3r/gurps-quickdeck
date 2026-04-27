@@ -1,6 +1,69 @@
 import { getPdfSources, normalizePdfSource, setPdfSources } from "./pdf-sources-store.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/pdf-sources.hbs";
+const DEFAULT_SAMPLE_BOOK_PAGE = 10;
+const PAGE_OFFSET_SLIDER_MIN = -50;
+const PAGE_OFFSET_SLIDER_MAX = 50;
+
+function asString(value) {
+  if (value === null || value === undefined) return "";
+  return String(value).trim();
+}
+
+function getFilenameFromPath(pathHint) {
+  const normalized = asString(pathHint).replace(/\\+/g, "/");
+  if (!normalized) return "";
+
+  const parts = normalized.split("/").filter(Boolean);
+  return parts.at(-1) ?? "";
+}
+
+function normalizeFilenameBase(filename) {
+  return asString(filename)
+    .replace(/\.pdf$/i, "")
+    .replace(/[._-]+/g, " ")
+    .replace(/\bgurps\b/gi, " ")
+    .replace(/\b4(?:th)?\s*edition\b/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function toTitleCase(value) {
+  return asString(value)
+    .toLowerCase()
+    .replace(/\b([a-z0-9])([a-z0-9']*)/g, (_match, first, rest) => `${first.toUpperCase()}${rest}`)
+    .trim();
+}
+
+function toSlug(value) {
+  return asString(value)
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .trim();
+}
+
+function suggestMetadataFromPath(pathHint) {
+  const filename = getFilenameFromPath(pathHint);
+  const normalizedBase = normalizeFilenameBase(filename);
+  if (!normalizedBase) {
+    return {
+      displayName: "",
+      bookKey: ""
+    };
+  }
+
+  return {
+    displayName: toTitleCase(normalizedBase),
+    bookKey: toSlug(normalizedBase)
+  };
+}
+
+function parseInteger(value, fallback = 0) {
+  const numeric = Number(value);
+  if (!Number.isFinite(numeric)) return fallback;
+  return Math.trunc(numeric);
+}
 
 export class QuickDeckPdfSourcesApp extends Application {
   constructor(options = {}) {
@@ -30,7 +93,10 @@ export class QuickDeckPdfSourcesApp extends Application {
 
     return {
       sources: rows,
-      hasSources: rows.length > 0
+      hasSources: rows.length > 0,
+      defaultSampleBookPage: DEFAULT_SAMPLE_BOOK_PAGE,
+      pageOffsetSliderMin: PAGE_OFFSET_SLIDER_MIN,
+      pageOffsetSliderMax: PAGE_OFFSET_SLIDER_MAX
     };
   }
 
@@ -75,8 +141,12 @@ export class QuickDeckPdfSourcesApp extends Application {
     this.render(false);
   }
 
+  _getRowElement(row, html) {
+    return html.find(`[data-source-row][data-index='${row}']`)?.[0] ?? null;
+  }
+
   _getFileHintInput(row, html) {
-    const rowElement = html.find(`[data-source-row][data-index='${row}']`)?.[0];
+    const rowElement = this._getRowElement(row, html);
     return rowElement?.querySelector("[data-field='fileHint']") ?? null;
   }
 
@@ -88,9 +158,65 @@ export class QuickDeckPdfSourcesApp extends Application {
     return sanitized.slice(0, slashIndex);
   }
 
+  _autofillMetadataFromPath(rowElement, selectedPath) {
+    if (!rowElement) return;
+
+    const displayNameInput = rowElement.querySelector("[data-field='displayName']");
+    const bookKeyInput = rowElement.querySelector("[data-field='bookKey']");
+    if (!displayNameInput || !bookKeyInput) return;
+
+    const suggestion = suggestMetadataFromPath(selectedPath);
+    if (!asString(displayNameInput.value) && suggestion.displayName) {
+      displayNameInput.value = suggestion.displayName;
+      displayNameInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
+    if (!asString(bookKeyInput.value) && suggestion.bookKey) {
+      bookKeyInput.value = suggestion.bookKey;
+      bookKeyInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+  }
+
+  _syncOffsetInputs(rowElement, sourceField) {
+    const numberInput = rowElement?.querySelector("[data-field='pageOffset']");
+    const sliderInput = rowElement?.querySelector("[data-helper='pageOffsetSlider']");
+    if (!numberInput || !sliderInput) return;
+
+    const sourceValue = sourceField === "slider" ? sliderInput.value : numberInput.value;
+    const parsed = parseInteger(sourceValue, 0);
+    numberInput.value = String(parsed);
+    sliderInput.value = String(parsed);
+  }
+
+  _updateOffsetPreview(rowElement) {
+    if (!rowElement) return;
+
+    const numberInput = rowElement.querySelector("[data-field='pageOffset']");
+    const sampleInput = rowElement.querySelector("[data-helper='sampleBookPage']");
+    const previewText = rowElement.querySelector("[data-helper='offsetPreviewText']");
+    const previewValueInput = rowElement.querySelector("[data-helper='computedPdfPage']");
+    if (!numberInput || !sampleInput || !previewText || !previewValueInput) return;
+
+    const offset = parseInteger(numberInput.value, 0);
+    const sampleBookPage = parseInteger(sampleInput.value, DEFAULT_SAMPLE_BOOK_PAGE);
+    const pdfPage = sampleBookPage + offset;
+
+    previewText.textContent = `Book page ${sampleBookPage} + offset ${offset} = PDF page ${pdfPage}`;
+    previewValueInput.value = String(pdfPage);
+  }
+
+  _initializeOffsetHelpers(html) {
+    const rows = Array.from(html.find("[data-source-row]") ?? []);
+    for (const rowElement of rows) {
+      this._syncOffsetInputs(rowElement, "number");
+      this._updateOffsetPreview(rowElement);
+    }
+  }
+
   async pickFileHint(index, html) {
+    const rowElement = this._getRowElement(index, html);
     const fileHintInput = this._getFileHintInput(index, html);
-    if (!fileHintInput) {
+    if (!fileHintInput || !rowElement) {
       ui.notifications?.warn("QuickDeck: Unable to find file/path hint field for this row.");
       return;
     }
@@ -114,8 +240,10 @@ export class QuickDeckPdfSourcesApp extends Application {
             ui.notifications?.warn("QuickDeck: Please choose a .pdf file.");
             return;
           }
+
           fileHintInput.value = selectedPath;
           fileHintInput.dispatchEvent(new Event("change", { bubbles: true }));
+          this._autofillMetadataFromPath(rowElement, selectedPath);
         }
       });
 
@@ -159,5 +287,24 @@ export class QuickDeckPdfSourcesApp extends Application {
       }
       await this.pickFileHint(index, html);
     });
+
+    html.find("[data-field='pageOffset']").on("input", (event) => {
+      const rowElement = event.currentTarget.closest("[data-source-row]");
+      this._syncOffsetInputs(rowElement, "number");
+      this._updateOffsetPreview(rowElement);
+    });
+
+    html.find("[data-helper='pageOffsetSlider']").on("input", (event) => {
+      const rowElement = event.currentTarget.closest("[data-source-row]");
+      this._syncOffsetInputs(rowElement, "slider");
+      this._updateOffsetPreview(rowElement);
+    });
+
+    html.find("[data-helper='sampleBookPage']").on("input", (event) => {
+      const rowElement = event.currentTarget.closest("[data-source-row]");
+      this._updateOffsetPreview(rowElement);
+    });
+
+    this._initializeOffsetHelpers(html);
   }
 }

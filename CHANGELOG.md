@@ -25,6 +25,10 @@ All notable changes to this project will be documented in this file.
 - PDF import roadmap placeholder setting for future user-provided local PDF indexing.
 - PDF source rows now include a safe per-row file picker button that uses Foundry's FilePicker when available and falls back to manual path entry with non-fatal warnings if unavailable/failing.
 - PDF path selection now validates `.pdf` extensions and stores only the selected hint/path string in existing metadata settings (no parsing/rendering).
+- PDF source FilePicker flow now suggests cleaned metadata from selected filenames (strip `.pdf`, `GURPS`, `4th Edition`, normalize separators), title-cases display names, and slugs lowercase book keys.
+- Metadata auto-fill is non-destructive and only fills empty display name/book key fields.
+- PDF source rows now include a clearer page offset helper with number input, optional slider, sample displayed/book page field, computed PDF page preview field, and live formula text (`Book page X + offset Y = PDF page Z`).
+- PDF Sources window now explicitly explains page offset usage when PDF page numbering differs from printed book page numbers.
 
 ### Changed
 - Default drawer choices now include `spells`.
@@ -33,7 +37,7 @@ All notable changes to this project will be documented in this file.
 - QuickDeck Reference now shows matched-source details (matched source, displayed page, PDF target page, file/path hint) with safe no-match fallback messaging.
 - QuickDeck Reference Index manager now supports duplicate-safe prefill/open behavior: exact name+type matches are focused for edit instead of creating duplicate rows.
 - Reference Index manager now includes an explicit import safety warning: “Only import metadata you created. Do not paste copyrighted rulebook text.”
-- README updated with spells/reference/PDF source manager/roadmap notes and copyright-safe policy.
+- README updated with spells/reference/PDF source manager/roadmap notes, new PDF offset helper guidance, and copyright-safe policy.
 
 ## [0.2.0] - 2026-04-27
 
