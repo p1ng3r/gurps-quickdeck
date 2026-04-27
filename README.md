@@ -7,7 +7,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added a new **Spells** drawer/tab with defensive spell extraction across common GURPS/GCS actor data paths and spell-like actor items.
 - Added clickable **Skill** names (Skills + Quick Skills drawers) that open a lightweight **QuickDeck Reference** window.
 - Added clickable **Spell** names in the Spells drawer that open the same reference window.
-- Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints, match-origin labeling (**Manual Index**, **Actor Data Hint**, **No Match**), PDF source matching metadata, and safe **Open PDF / Copy Path** actions for matched file hints.
+- Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints, match-origin labeling (**Manual Index**, **Actor Data Hint**, **No Match**), PDF source matching metadata, safe **Open PDF / Copy Path** actions for matched file hints, and a first-pass **Search PDF Text** button for local snippet lookup.
 - Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes) with filename-based auto-fill helpers and live page-offset preview tools.
 - Added an Application v1 **QuickDeck Reference Index** manager for manual reference entries (name, type, source/book key, displayed page, notes) stored client-side as JSON metadata only.
 - Enhanced the **QuickDeck Reference Index** manager with DOM-only search/filtering and metadata-only JSON export/import tools (merge or replace) with safe validation and warning-first error handling.
@@ -53,6 +53,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
   - Matching order is manual index exact name + type, then manual index exact name only, then actor source/page hints.
   - Reference entries attempt local metadata matching against configured PDF sources (`bookKey`, `displayName`, and source hint text).
+  - Reference popup includes **Search PDF Text** for one matched local/world PDF source at a time, searching for the current reference name and returning only a short snippet with the matched page.
   - When a source matches and the page hint is numeric, the popup shows displayed page + computed PDF target page (`displayed + offset`).
   - If a matched source has a file/path hint, the popup provides **Open PDF** (new-tab attempt with `noopener,noreferrer`) and **Copy Path** fallback actions.
   - The same popup now provides **Add to Reference Index** / **Edit Reference Index Entry** to jump directly into the Reference Index manager with prefilled metadata from the current reference.
@@ -60,6 +61,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - If no PDF source match is found, the popup now shows a simple checklist: add a PDF source, add/edit a Reference Index entry, and verify the book key matches.
   - Match-origin messaging now explicitly confirms whether the popup is using your manual bookmark or actor-provided source/page hint data.
   - If browser popup opening is blocked, QuickDeck warns and keeps the app stable with manual-copy fallback messaging.
+  - If Foundry/browser PDF.js is unavailable, QuickDeck shows: **“PDF text search unavailable in this environment.”**
   - If no metadata match is found, the popup shows a safe no-match fallback.
 - Search UX:
   - Available actors, combat attacks, skills, quick skills, and spells support continuous typing without focus loss.
@@ -72,7 +74,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Lightweight client settings/state:
   - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`, `spells`).
   - PDF import roadmap placeholder toggle (no importer in this release).
-  - Client-scoped JSON metadata store for PDF source definitions (path string only; no file parsing/rendering in this release), including filename cleanup for display name/book key suggestions and non-destructive auto-fill when using FilePicker.
+  - Client-scoped JSON metadata store for PDF source definitions (path string only) including filename cleanup for display name/book key suggestions and non-destructive auto-fill when using FilePicker.
   - Client-scoped JSON metadata store for manual Reference Index entries (no PDF parsing, extraction, or embedded rulebook text).
   - Reference Index manager can filter rows by name/type/book key/displayed page/notes without re-rendering on each keystroke.
   - Reference Index manager can export current metadata JSON directly to clipboard.
@@ -85,6 +87,14 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Picking a PDF file now auto-fills missing **Display name** and **Book key** values from a cleaned filename suggestion.
 - Auto-fill is non-destructive: existing user-entered values are preserved.
 - Use the sample displayed/book page helper to preview the computed PDF page (`book page + offset`).
+
+## PDF Text Search MVP Limits (v0.3.0 Draft)
+
+- Searches only the first matched PDF source for the current reference popup.
+- Uses exact reference name matching first (no fuzzy full-text index yet).
+- Stops after first good match or safe page scan limit.
+- Shows short snippets only (about 1–3 sentences, max ~300 chars).
+- Does not persist full extracted PDF text and does not upload/network-send PDF content.
 
 ## PDF Import Roadmap (User-Provided Content Only)
 

@@ -127,7 +127,37 @@
             >
               Copy Path
             </button>
+            {{#if hasPdfTextSearch}}
+              <button
+                type="button"
+                class="quickdeck-reference-search-button"
+                data-action="search-matched-pdf-text"
+                data-file-hint="{{matchedSourcePath}}"
+                data-pdf-page-target="{{#if hasPdfPageTarget}}{{pdfPageTarget}}{{/if}}"
+                {{#if isPdfSearchLoading}}disabled{{/if}}
+              >
+                {{#if isPdfSearchLoading}}Searching…{{else}}Search PDF Text{{/if}}
+              </button>
+            {{/if}}
           </div>
+
+          {{#if hasPdfSearchMessage}}
+            <div class="quickdeck-reference-pdf-search quickdeck-reference-pdf-search-{{pdfSearchStatus}}">
+              <p>{{pdfSearchMessage}}</p>
+              {{#if hasPdfSearchResult}}
+                <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+                  <div>
+                    <dt>Matched Page</dt>
+                    <dd>{{pdfSearchResultPage}}</dd>
+                  </div>
+                  <div>
+                    <dt>Snippet</dt>
+                    <dd>{{pdfSearchSnippet}}</dd>
+                  </div>
+                </dl>
+              {{/if}}
+            </div>
+          {{/if}}
         {{/if}}
       {{else}}
         <p class="quickdeck-reference-empty"><em>{{noMatchText}}</em></p>

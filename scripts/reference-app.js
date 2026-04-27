@@ -2,6 +2,7 @@ import { getPdfSources } from "./pdf-sources-store.js";
 import { matchReferenceSource } from "./reference-source-matcher.js";
 import { getReferenceIndex } from "./reference-index-store.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
+import { isPdfTextSearchAvailable, searchPdfTextSnippet } from "./pdf-text-search.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/reference.hbs";
 
@@ -173,6 +174,12 @@ export class QuickDeckReferenceApp extends Application {
       source: String(referenceData?.source ?? ""),
       pageHint: String(referenceData?.pageHint ?? "")
     };
+    this.pdfSearchState = {
+      status: "idle",
+      message: "",
+      page: null,
+      snippet: ""
+    };
   }
 
   static get defaultOptions() {
@@ -228,6 +235,14 @@ export class QuickDeckReferenceApp extends Application {
       hasPdfPageTarget: Number.isInteger(resolvedMatch?.pdfPageTarget),
       matchedSourcePath,
       hasMatchedSourcePath: Boolean(matchedSourcePath),
+      hasPdfTextSearch: Boolean(resolvedMatch?.matchedSource && matchedSourcePath),
+      isPdfSearchLoading: this.pdfSearchState.status === "loading",
+      hasPdfSearchMessage: Boolean(this.pdfSearchState.message),
+      pdfSearchStatus: this.pdfSearchState.status,
+      pdfSearchMessage: this.pdfSearchState.message,
+      hasPdfSearchResult: this.pdfSearchState.status === "success",
+      pdfSearchResultPage: this.pdfSearchState.page,
+      pdfSearchSnippet: this.pdfSearchState.snippet,
       matchOrigin: resolvedMatch?.matchOrigin ?? "no-match",
       matchOriginLabel: resolvedMatch?.matchOriginLabel ?? "No Match",
       hasManualEntry: Boolean(resolvedMatch?.manualEntry),
@@ -296,6 +311,107 @@ export class QuickDeckReferenceApp extends Application {
     ui.notifications?.warn("QuickDeck: Could not copy path automatically. Copy the file path manually.");
   }
 
+
+  async _searchMatchedPdfText(event) {
+    event.preventDefault();
+
+    const pathHint = normalizePathHint(event.currentTarget?.dataset?.fileHint ?? "");
+    const pageTargetRaw = Number(event.currentTarget?.dataset?.pdfPageTarget);
+    const pageTarget = Number.isInteger(pageTargetRaw) && pageTargetRaw > 0 ? pageTargetRaw : null;
+    const referenceName = normalizePathHint(this.referenceData?.name ?? "");
+
+    if (!pathHint) {
+      this.pdfSearchState = {
+        status: "error",
+        message: "No valid PDF file path hint available for text search.",
+        page: null,
+        snippet: ""
+      };
+      this.render(false);
+      return;
+    }
+
+    if (!referenceName) {
+      this.pdfSearchState = {
+        status: "error",
+        message: "No reference name available for text search.",
+        page: null,
+        snippet: ""
+      };
+      this.render(false);
+      return;
+    }
+
+    if (!isPdfTextSearchAvailable()) {
+      this.pdfSearchState = {
+        status: "warning",
+        message: "PDF text search unavailable in this environment.",
+        page: null,
+        snippet: ""
+      };
+      this.render(false);
+      ui.notifications?.warn("QuickDeck: PDF text search unavailable in this environment.");
+      return;
+    }
+
+    this.pdfSearchState = {
+      status: "loading",
+      message: `Searching PDF text for “${referenceName}”…`,
+      page: null,
+      snippet: ""
+    };
+    this.render(false);
+
+    const result = await searchPdfTextSnippet(pathHint, referenceName, {
+      pageTarget,
+      maxPages: 60,
+      maxSnippetChars: 300
+    });
+
+    if (result?.ok) {
+      this.pdfSearchState = {
+        status: "success",
+        message: `Match found on PDF page ${result.page}.`,
+        page: result.page,
+        snippet: result.snippet || ""
+      };
+      this.render(false);
+      return;
+    }
+
+    if (result?.reason === "pdfjs-unavailable") {
+      this.pdfSearchState = {
+        status: "warning",
+        message: "PDF text search unavailable in this environment.",
+        page: null,
+        snippet: ""
+      };
+      this.render(false);
+      ui.notifications?.warn("QuickDeck: PDF text search unavailable in this environment.");
+      return;
+    }
+
+    if (result?.reason === "no-match") {
+      this.pdfSearchState = {
+        status: "warning",
+        message: "No matching text found within the current safe page scan limit.",
+        page: null,
+        snippet: ""
+      };
+      this.render(false);
+      return;
+    }
+
+    this.pdfSearchState = {
+      status: "error",
+      message: "PDF text search failed safely. You can still open the PDF manually.",
+      page: null,
+      snippet: ""
+    };
+    this.render(false);
+    ui.notifications?.warn("QuickDeck: PDF text search failed safely.");
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
 
@@ -305,6 +421,10 @@ export class QuickDeckReferenceApp extends Application {
 
     html.find("[data-action='copy-matched-pdf-path']").on("click", async (event) => {
       await this._copyMatchedPath(event);
+    });
+
+    html.find("[data-action='search-matched-pdf-text']").on("click", async (event) => {
+      await this._searchMatchedPdfText(event);
     });
 
     html.find("[data-action='open-reference-index-entry']").on("click", (event) => {
