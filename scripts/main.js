@@ -4,7 +4,8 @@ const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
-  DEFAULT_DRAWER: "defaultDrawer"
+  DEFAULT_DRAWER: "defaultDrawer",
+  PDF_IMPORT_PLACEHOLDER: "pdfImportPlaceholder"
 };
 let quickDeckApp = null;
 
@@ -60,9 +61,19 @@ Hooks.once("init", () => {
       none: "None",
       combat: "Combat",
       skills: "Skills",
-      "quick-skills": "Quick Skills"
+      "quick-skills": "Quick Skills",
+      spells: "Spells"
     },
     default: "none"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.PDF_IMPORT_PLACEHOLDER, {
+    name: "QuickDeck PDF Import (Roadmap Placeholder)",
+    hint: "Coming soon: users will import legally owned local PDFs for personal indexing. No copyrighted rulebook text is bundled.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: false
   });
 });
 
