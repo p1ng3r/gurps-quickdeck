@@ -8,7 +8,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added clickable **Skill** names (Skills + Quick Skills drawers) that open a lightweight **QuickDeck Reference** window.
 - Added clickable **Spell** names in the Spells drawer that open the same reference window.
 - Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints and PDF source matching metadata.
-- Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes).
+- Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-matching dark brass/steel styling and per-row PDF file picker button.
 - Added a **PDF import roadmap placeholder setting** and documentation for future user-provided local PDF indexing.
 - Copyright-safe approach: this module does **not** bundle GURPS rulebook text.
 
@@ -61,7 +61,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Lightweight client settings/state:
   - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`, `spells`).
   - PDF import roadmap placeholder toggle (no importer in this release).
-  - Client-scoped JSON metadata store for PDF source definitions.
+  - Client-scoped JSON metadata store for PDF source definitions (path string only; no file parsing/rendering in this release).
 
 ## PDF Import Roadmap (User-Provided Content Only)
 
