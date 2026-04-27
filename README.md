@@ -7,7 +7,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added a new **Spells** drawer/tab with defensive spell extraction across common GURPS/GCS actor data paths and spell-like actor items.
 - Added clickable **Skill** names (Skills + Quick Skills drawers) that open a lightweight **QuickDeck Reference** window.
 - Added clickable **Spell** names in the Spells drawer that open the same reference window.
-- Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints and PDF source matching metadata.
+- Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints, PDF source matching metadata, and safe **Open PDF / Copy Path** actions for matched file hints.
 - Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-matching dark brass/steel styling and per-row PDF file picker button.
 - Added a **PDF import roadmap placeholder setting** and documentation for future user-provided local PDF indexing.
 - Copyright-safe approach: this module does **not** bundle GURPS rulebook text.
@@ -49,6 +49,8 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
   - Reference entries attempt local metadata matching against configured PDF sources (`bookKey`, `displayName`, and source hint text).
   - When a source matches and the page hint is numeric, the popup shows displayed page + computed PDF target page (`displayed + offset`).
+  - If a matched source has a file/path hint, the popup provides **Open PDF** (new-tab attempt with `noopener,noreferrer`) and **Copy Path** fallback actions.
+  - If browser popup opening is blocked, QuickDeck warns and keeps the app stable with manual-copy fallback messaging.
   - If no metadata match is found, the popup shows a safe no-match fallback.
 - Search UX:
   - Available actors, combat attacks, skills, quick skills, and spells support continuous typing without focus loss.

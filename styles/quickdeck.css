@@ -1076,3 +1076,26 @@
 .quickdeck-pdf-source-row .quickdeck-remove-button {
   justify-self: end;
 }
+
+.quickdeck-reference-match-actions {
+  margin-top: 0.45rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+}
+
+.quickdeck-reference-open-button,
+.quickdeck-reference-copy-button {
+  border: 1px solid rgba(223, 184, 116, 0.35);
+  border-radius: 6px;
+  font-size: 0.75rem;
+  color: #f7efdc;
+  background: linear-gradient(180deg, rgba(38, 38, 46, 0.8), rgba(21, 22, 27, 0.92));
+  padding: 0.28rem 0.55rem;
+}
+
+.quickdeck-reference-open-button:hover,
+.quickdeck-reference-copy-button:hover {
+  border-color: rgba(244, 205, 138, 0.72);
+  box-shadow: 0 0 10px rgba(229, 187, 108, 0.14);
+}
