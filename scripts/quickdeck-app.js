@@ -1,3 +1,5 @@
+import { QuickDeckReferenceApp } from "./reference-app.js";
+
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
@@ -6,7 +8,7 @@ const SETTING_KEYS = {
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   DEFAULT_DRAWER: "defaultDrawer"
 };
-const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills"]);
+const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
 
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
@@ -18,6 +20,7 @@ export class QuickDeckApp extends Application {
     this.combatSearch = "";
     this.skillsSearch = "";
     this.quickSkillsSearch = "";
+    this.spellsSearch = "";
     this.quickSkillSelectionsByActor = {};
     this._actorSelectTimeout = null;
     this.isDragOverRoster = false;
@@ -285,7 +288,64 @@ export class QuickDeckApp extends Application {
         "relative_level"
       ]),
       points: this.getFirstDefinedValue(skill, ["points", "calc.points", "pts", "spent", "cp"]),
+      reference: this.getFirstDefinedValue(skill, ["reference", "ref", "pageRef", "pageref", "book"]),
+      pageHint: this.getFirstDefinedValue(skill, [
+        "pageRef",
+        "pageref",
+        "page",
+        "refPage",
+        "referencePage"
+      ]),
       raw: skill
+    };
+  }
+
+  isSpellLike(value) {
+    if (!value || typeof value !== "object") return false;
+    const hasName = this.objectHasAnyPath(value, ["name", "spell", "label", "title"]);
+    if (!hasName) return false;
+
+    return this.objectHasAnyPath(value, [
+      "class",
+      "college",
+      "cost",
+      "maintain",
+      "casting",
+      "castingtime",
+      "duration",
+      "resist",
+      "difficulty",
+      "level",
+      "import",
+      "spellClass",
+      "reference",
+      "pageRef",
+      "itemtype",
+      "type"
+    ]);
+  }
+
+  normalizeSpell(spell) {
+    if (!spell || typeof spell !== "object") return null;
+    const name =
+      this.getFirstDefinedValue(spell, ["name", "spell", "label", "title"]) ?? "Unnamed Spell";
+
+    return {
+      name,
+      level: this.getFirstDefinedValue(spell, ["level", "calc.level", "import", "value"]),
+      class: this.getFirstDefinedValue(spell, ["class", "spellClass", "category"]),
+      cost: this.getFirstDefinedValue(spell, ["cost", "casting.cost", "castCost"]),
+      maintain: this.getFirstDefinedValue(spell, ["maintain", "maintenance", "maint"]),
+      duration: this.getFirstDefinedValue(spell, ["duration"]),
+      reference: this.getFirstDefinedValue(spell, ["reference", "ref", "book"]),
+      pageHint: this.getFirstDefinedValue(spell, [
+        "pageRef",
+        "pageref",
+        "page",
+        "refPage",
+        "referencePage"
+      ]),
+      raw: spell
     };
   }
 
@@ -340,6 +400,55 @@ export class QuickDeckApp extends Application {
     }
 
     return skills;
+  }
+
+  extractSpells(actor) {
+    if (!actor) return [];
+
+    const spells = [];
+    const spellSources = [
+      "system.spells",
+      "data.data.spells",
+      "system.magic",
+      "data.data.magic",
+      "system.traits.spells",
+      "data.data.traits.spells"
+    ];
+
+    for (const path of spellSources) {
+      const collection = foundry.utils.getProperty(actor, path);
+      const entries = this.collectNestedMatches(collection, (entry) => this.isSpellLike(entry));
+      for (const entry of entries) {
+        const normalized = this.normalizeSpell(entry);
+        if (normalized) spells.push(normalized);
+      }
+    }
+
+    const actorItems = Array.from(actor.items ?? []);
+    for (const item of actorItems) {
+      const itemType = String(item?.type ?? "").toLowerCase();
+      const itemName = String(item?.name ?? "").toLowerCase();
+      const looksLikeSpell =
+        itemType.includes("spell") ||
+        itemName.includes("spell") ||
+        itemName.includes("ritual") ||
+        itemName.includes("magic");
+      if (!looksLikeSpell) continue;
+      const normalized = this.normalizeSpell(item?.system ?? item);
+      if (!normalized) continue;
+      if (!normalized.name || normalized.name === "Unnamed Spell") {
+        normalized.name = item?.name ?? normalized.name;
+      }
+      spells.push(normalized);
+    }
+
+    const dedupe = new Set();
+    return spells.filter((spell) => {
+      const key = `${String(spell.name ?? "").toLowerCase()}::${String(spell.level ?? "—")}`;
+      if (dedupe.has(key)) return false;
+      dedupe.add(key);
+      return true;
+    });
   }
 
 
@@ -584,6 +693,16 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "quick-skills-visible", visible);
     this.updateCountText(html, "quick-skills-total", total);
+  }
+
+  applySpellsFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='spells']",
+      this.spellsSearch
+    );
+    this.updateCountText(html, "spells-visible", visible);
+    this.updateCountText(html, "spells-total", total);
   }
 
   toDisplayValue(value) {
@@ -1081,6 +1200,16 @@ export class QuickDeckApp extends Application {
     await actor.update({ [path]: parsed });
   }
 
+  openReferenceEntry(referenceData = {}) {
+    try {
+      const app = new QuickDeckReferenceApp(referenceData);
+      app.render(true);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to open QuickDeck reference window.", error);
+      ui.notifications?.warn("QuickDeck: Could not open reference window.");
+    }
+  }
+
   getCombatRosterState() {
     const combat = game?.combat;
     if (!combat) {
@@ -1487,6 +1616,8 @@ export class QuickDeckApp extends Application {
     const combatSearch = this.combatSearch;
     const skillsSearch = this.skillsSearch;
     const quickSkillsSearch = this.quickSkillsSearch;
+    const spellsSearch = this.spellsSearch;
+    const spells = this.extractSpells(activeActor);
 
     const indexedAttacks = attacks.map((attack, index) => ({
       ...attack,
@@ -1518,6 +1649,20 @@ export class QuickDeckApp extends Application {
     const filteredSkills = this.filterSkills(indexedSkills, skillsSearch);
     const quickSkills = indexedSkills.filter((skill) => skill.isQuickSkillSelected);
     const filteredQuickSkills = this.filterSkills(quickSkills, quickSkillsSearch);
+    const indexedSpells = spells.map((spell, index) => ({
+      ...spell,
+      index,
+      searchText: this.buildSearchText([
+        spell.name,
+        spell.level,
+        spell.class,
+        spell.cost,
+        spell.duration,
+        spell.reference,
+        spell.pageHint
+      ])
+    }));
+    const filteredSpells = this.filterSkills(indexedSpells, spellsSearch);
     if (DEBUG) {
       const meleeCount = attacks.filter((attack) => attack.type === "Melee").length;
       const rangedCount = attacks.filter((attack) => attack.type === "Ranged").length;
@@ -1575,6 +1720,7 @@ export class QuickDeckApp extends Application {
       combatSearch,
       skillsSearch,
       quickSkillsSearch,
+      spellsSearch,
       availableActors,
       visibleAvailableCount: this.getVisibleCountBySearchText(availableActors, this.availableSearch),
       rosterCount: rosterActors.length,
@@ -1609,6 +1755,7 @@ export class QuickDeckApp extends Application {
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
+      isSpellsDrawerOpen: this.activeDrawer === "spells",
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
@@ -1616,10 +1763,13 @@ export class QuickDeckApp extends Application {
       visibleSkillsCount: filteredSkills.length,
       quickSkillsCount: quickSkills.length,
       visibleQuickSkillsCount: filteredQuickSkills.length,
+      spellsCount: spells.length,
+      visibleSpellsCount: filteredSpells.length,
       isDragOverRoster: this.isDragOverRoster,
       indexedAttacks,
       indexedSkills,
-      indexedQuickSkills: quickSkills
+      indexedQuickSkills: quickSkills,
+      indexedSpells
     };
   }
 
@@ -1737,6 +1887,12 @@ export class QuickDeckApp extends Application {
       this.applyQuickSkillsFilter(html);
     });
 
+    html.find("[data-action='spells-search']").on("input", (event) => {
+      const searchValue = event.currentTarget?.value;
+      this.spellsSearch = typeof searchValue === "string" ? searchValue : "";
+      this.applySpellsFilter(html);
+    });
+
     html.find("[data-action='toggle-quick-skill']").on("change", (event) => {
       const actorId = event.currentTarget.dataset.actorId;
       const skillKey = event.currentTarget.dataset.skillKey;
@@ -1847,6 +2003,16 @@ export class QuickDeckApp extends Application {
       });
     });
 
+    html.find("[data-action='open-reference']").on("click", (event) => {
+      event.preventDefault();
+      const element = event.currentTarget;
+      const type = String(element.dataset.refType ?? "rule");
+      const name = String(element.dataset.refName ?? "Reference");
+      const pageHint = element.dataset.refPage ?? "";
+      const source = element.dataset.refSource ?? "";
+      this.openReferenceEntry({ type, name, pageHint, source });
+    });
+
     const dropTarget = html.find("[data-drop-zone='roster']")[0];
     if (!dropTarget) return;
 
@@ -1897,5 +2063,6 @@ export class QuickDeckApp extends Application {
     this.applyCombatFilter(html);
     this.applySkillsFilter(html);
     this.applyQuickSkillsFilter(html);
+    this.applySpellsFilter(html);
   }
 }

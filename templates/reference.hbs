@@ -1,0 +1,19 @@
+<section class="quickdeck-reference-shell">
+  <header>
+    <h2>{{title}}</h2>
+    <p><strong>Type:</strong> {{type}}</p>
+    {{#if source}}
+      <p><strong>Source hint:</strong> {{source}}</p>
+    {{/if}}
+    {{#if pageHint}}
+      <p><strong>Page hint:</strong> {{pageHint}}</p>
+    {{/if}}
+  </header>
+
+  <section class="quickdeck-reference-body">
+    <p>{{placeholderText}}</p>
+    {{#unless hasLocalReference}}
+      <p><em>No local reference found yet.</em></p>
+    {{/unless}}
+  </section>
+</section>
