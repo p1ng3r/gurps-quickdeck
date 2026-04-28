@@ -6,12 +6,14 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 - QuickDeck Reference now uses bundled repo data from `data/reference-summaries.json` as the primary reference source.
 - Bundled reference loader also reads optional martial-arts packs from `data/martial-arts-techniques.reference-summaries.json` and `data/martial-arts-combat.reference-summaries.json`.
+- Bundled reference loader now also checks `data/basic-set-skills.reference-summaries.json` in the same pass (missing files warn and are skipped).
 - Bundled reference loader also reads optional magic spell data from `data/magic.reference-summaries.json`.
 - Reference popup keeps rich display sections for **Author Summary**, **Skill Details**, **Spell Details**, **Description**, **Notes**, **Source Name**, and **Displayed Page**.
 - Skills and spells remain clickable and still open the QuickDeck Reference popup.
 - Manual **Reference Index** is now positioned as optional **Local Overrides** for personal source/page bookmarks.
 - Removed legacy PDF/Text source manager workflows and related parsing/search UI from QuickDeck.
 - Copyright-safe and Forge-safe behavior remains unchanged (local metadata only; no actor sheet calls; no network dependency except module-local JSON fetch).
+- Extracted actor combat/skills/spells payloads are memoized by actor/version stamp and invalidated on actor/item updates for better large-roster responsiveness.
 
 ## What's New in v0.2.0
 
@@ -57,6 +59,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - The same popup provides **Add Local Override** / **Edit Local Override** to jump directly into the Local Overrides manager with prefilled metadata from the current reference.
 - Search UX:
   - Available actors, combat attacks, skills, quick skills, and spells support continuous typing without focus loss.
+  - Search filtering uses prebuilt lowercase row text to avoid repeated string rebuilding during typing.
 - Combat UX:
   - Initiative badge shown when combat data exists.
   - Current-turn actor pulse/glow preserved.
@@ -111,3 +114,11 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - **Foundry VTT:** v13 target.
 - **Platform:** Forge VTT supported.
 - **System:** GURPS 4e Game Aid.
+
+## Forge-Safe Guardrails
+
+- QuickDeck only opens `actor.sheet` through the explicit `openActorSheet(actorId)` path.
+- Token placement uses click-to-place canvas coordinates (no browser drag/drop to canvas).
+- Escape/cancel, close, minimize, and scene-switch paths always remove temporary pointer/window/canvas listeners.
+- Roll and token placement failures are warning-first and never intentionally crash the app.
+- Reference summaries load from module-local JSON files only; missing packs warn and continue.

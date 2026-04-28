@@ -3,6 +3,7 @@ import { buildReferenceLookupNames } from "./reference-lookup-name.js";
 const MODULE_ID = "gurps-quickdeck";
 const REFERENCE_SUMMARIES_PATHS = [
   `modules/${MODULE_ID}/data/reference-summaries.json`,
+  `modules/${MODULE_ID}/data/basic-set-skills.reference-summaries.json`,
   `modules/${MODULE_ID}/data/martial-arts-techniques.reference-summaries.json`,
   `modules/${MODULE_ID}/data/martial-arts-combat.reference-summaries.json`,
   `modules/${MODULE_ID}/data/magic.reference-summaries.json`
@@ -11,6 +12,8 @@ const ALLOWED_TYPES = new Set(["skill", "spell", "rule"]);
 
 let cachedSummaries = null;
 let loadAttempted = false;
+let loadingPromise = null;
+let cachedSummaryLookup = null;
 
 function asString(value) {
   if (value === null || value === undefined) return "";
@@ -129,13 +132,44 @@ function dedupeSummaries(entries = []) {
   return deduped;
 }
 
+function buildSummaryLookup(summaries = []) {
+  const byNameType = new Map();
+  const byName = new Map();
+
+  for (const entry of summaries) {
+    const name = asLookupText(entry?.name);
+    if (!name) continue;
+    const type = asLookupText(entry?.type);
+    const nameTypeKey = `${name}|${type}`;
+    if (!byNameType.has(nameTypeKey)) byNameType.set(nameTypeKey, entry);
+    if (!byName.has(name)) byName.set(name, entry);
+  }
+
+  return { byNameType, byName };
+}
+
 export async function loadBundledReferenceSummaries() {
   if (loadAttempted) return cachedSummaries ?? [];
+  if (loadingPromise) return loadingPromise;
   loadAttempted = true;
 
-  const loadedArrays = await Promise.all(REFERENCE_SUMMARIES_PATHS.map((path) => loadSummaryFile(path)));
-  cachedSummaries = dedupeSummaries(loadedArrays.flat());
-  return cachedSummaries;
+  loadingPromise = Promise.all(REFERENCE_SUMMARIES_PATHS.map((path) => loadSummaryFile(path)))
+    .then((loadedArrays) => {
+      cachedSummaries = dedupeSummaries(loadedArrays.flat());
+      cachedSummaryLookup = buildSummaryLookup(cachedSummaries);
+      return cachedSummaries;
+    })
+    .catch((error) => {
+      warnLoadIssue("Failed while loading bundled reference summaries; continuing with empty data.", error);
+      cachedSummaries = [];
+      cachedSummaryLookup = buildSummaryLookup([]);
+      return cachedSummaries;
+    })
+    .finally(() => {
+      loadingPromise = null;
+    });
+
+  return loadingPromise;
 }
 
 export function findBundledReferenceSummary(referenceData = {}, summaries = []) {
@@ -146,25 +180,21 @@ export function findBundledReferenceSummary(referenceData = {}, summaries = []) 
   if (!normalizedName) return null;
 
   const normalizedSummaries = Array.isArray(summaries) ? summaries : [];
+  const lookup =
+    normalizedSummaries === cachedSummaries && cachedSummaryLookup
+      ? cachedSummaryLookup
+      : buildSummaryLookup(normalizedSummaries);
 
-  const exactNameType = normalizedSummaries.find((entry) => {
-    return asLookupText(entry?.name) === normalizedName && asLookupText(entry?.type) === normalizedType;
-  });
+  const exactNameType = lookup.byNameType.get(`${normalizedName}|${normalizedType}`) ?? null;
   if (exactNameType) return { entry: exactNameType, mode: "exact-name-type" };
 
-  const exactNameOnly = normalizedSummaries.find((entry) => {
-    return asLookupText(entry?.name) === normalizedName;
-  });
+  const exactNameOnly = lookup.byName.get(normalizedName) ?? null;
   if (exactNameOnly) return { entry: exactNameOnly, mode: "exact-name" };
 
-  const baseNameType = normalizedSummaries.find((entry) => {
-    return asLookupText(entry?.name) === normalizedBaseName && asLookupText(entry?.type) === normalizedType;
-  });
+  const baseNameType = lookup.byNameType.get(`${normalizedBaseName}|${normalizedType}`) ?? null;
   if (baseNameType) return { entry: baseNameType, mode: "base-name-type", matchedBaseName: baseNameType.name };
 
-  const baseNameOnly = normalizedSummaries.find((entry) => {
-    return asLookupText(entry?.name) === normalizedBaseName;
-  });
+  const baseNameOnly = lookup.byName.get(normalizedBaseName) ?? null;
   if (baseNameOnly) return { entry: baseNameOnly, mode: "base-name", matchedBaseName: baseNameOnly.name };
 
   return null;

@@ -37,6 +37,7 @@ export class QuickDeckApp extends Application {
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
     this._stateLoadedFromSettings = false;
+    this._derivedActorDataCache = new Map();
     this.loadPersistedState();
   }
 
@@ -111,6 +112,14 @@ export class QuickDeckApp extends Application {
 
   getActiveActor() {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
+  }
+
+  invalidateDerivedActorData(actorId = null) {
+    if (!actorId) {
+      this._derivedActorDataCache.clear();
+      return;
+    }
+    this._derivedActorDataCache.delete(String(actorId));
   }
 
   getFirstDefinedValue(source, paths = []) {
@@ -459,6 +468,104 @@ export class QuickDeckApp extends Application {
     });
   }
 
+  getActorDataVersionStamp(actor) {
+    if (!actor) return "missing";
+    const modifiedTime =
+      actor?._stats?.modifiedTime ??
+      actor?._stats?.modified ??
+      actor?._source?._stats?.modifiedTime ??
+      "";
+    const itemSize = Number(actor?.items?.size ?? actor?.items?.length ?? 0);
+    return `${actor.id ?? "unknown"}::${String(modifiedTime)}::${itemSize}`;
+  }
+
+  filterEntriesBySearchText(entries, searchTerm) {
+    const search = this.normalizeSearchText(searchTerm);
+    if (!search) return entries;
+    return entries.filter((entry) => this.normalizeSearchText(entry?.searchText).includes(search));
+  }
+
+  getDerivedActorData(actor) {
+    if (!actor?.id) {
+      return {
+        attacks: [],
+        indexedAttacks: [],
+        skills: [],
+        indexedSkills: [],
+        spells: [],
+        indexedSpells: [],
+        dodge: null,
+        bestParry: null,
+        bestBlock: null,
+        currentHp: null,
+        currentFp: null,
+        maxHp: null,
+        maxFp: null,
+        move: null
+      };
+    }
+
+    const actorId = String(actor.id);
+    const stamp = this.getActorDataVersionStamp(actor);
+    const cached = this._derivedActorDataCache.get(actorId);
+    if (cached?.stamp === stamp) return cached.value;
+
+    const attacks = this.extractAttacks(actor);
+    const skills = this.extractSkills(actor);
+    const spells = this.extractSpells(actor);
+    const indexedAttacks = attacks.map((attack, index) => ({
+      ...attack,
+      index,
+      searchText: this.buildSearchText([
+        attack.name,
+        attack.type,
+        attack.damage,
+        attack.level,
+        attack.reachOrRange,
+        attack.parry,
+        attack.block
+      ])
+    }));
+    const indexedSkills = skills.map((skill, index) => ({
+      ...skill,
+      index,
+      searchText: this.buildSearchText([skill.name, skill.level, skill.relativeLevel, skill.points])
+    }));
+    const indexedSpells = spells.map((spell, index) => ({
+      ...spell,
+      index,
+      searchText: this.buildSearchText([
+        spell.name,
+        spell.level,
+        spell.class,
+        spell.cost,
+        spell.duration,
+        spell.reference,
+        spell.pageHint
+      ])
+    }));
+
+    const value = {
+      attacks,
+      indexedAttacks,
+      skills,
+      indexedSkills,
+      spells,
+      indexedSpells,
+      dodge: foundry.utils.getProperty(actor, "system.currentdodge") ?? null,
+      bestParry: this.getBestAttackDefense(attacks, "parry"),
+      bestBlock: this.getBestAttackDefense(attacks, "block"),
+      currentHp: this.getResourceValue(actor, "HP"),
+      currentFp: this.getResourceValue(actor, "FP"),
+      maxHp: this.getResourceMax(actor, "HP"),
+      maxFp: this.getResourceMax(actor, "FP"),
+      move: foundry.utils.getProperty(actor, "system.basicmove.value") ?? null
+    };
+
+    this._derivedActorDataCache.set(actorId, { stamp, value });
+    return value;
+  }
+
 
   getQuickSkillKey(skill) {
     if (!skill || typeof skill !== "object") return null;
@@ -618,36 +725,6 @@ export class QuickDeckApp extends Application {
     if (removedQuickSkills) {
       this.persistQuickSkillsState();
     }
-  }
-
-  filterAttacks(attacks, searchTerm) {
-    const search = String(searchTerm ?? "").trim().toLowerCase();
-    if (!search) return attacks;
-
-    return attacks.filter((attack) => {
-      const haystack = [
-        attack.name,
-        attack.type,
-        attack.damage,
-        attack.level,
-        attack.reachOrRange,
-        attack.parry,
-        attack.block
-      ]
-        .map((value) => String(value ?? "").toLowerCase())
-        .join(" ");
-      return haystack.includes(search);
-    });
-  }
-
-  filterSkills(skills, searchTerm) {
-    const search = String(searchTerm ?? "").trim().toLowerCase();
-    if (!search) return skills;
-
-    return skills.filter((skill) => {
-      const haystack = `${String(skill.name ?? "").toLowerCase()} ${String(skill.level ?? "").toLowerCase()}`;
-      return haystack.includes(search);
-    });
   }
 
   getVisibleCountBySearchText(entries, searchTerm) {
@@ -1630,6 +1707,11 @@ export class QuickDeckApp extends Application {
   async close(options) {
     this.cancelTokenDrop({ render: false });
     this.removeFloatingRestoreIcon();
+    if (this._actorSelectTimeout) {
+      clearTimeout(this._actorSelectTimeout);
+      this._actorSelectTimeout = null;
+    }
+    this.invalidateDerivedActorData();
     return super.close(options);
   }
 
@@ -1833,58 +1915,33 @@ export class QuickDeckApp extends Application {
       }));
 
     const activeActor = this.getActiveActor();
-    const attacks = this.extractAttacks(activeActor);
-    const skills = this.extractSkills(activeActor);
+    const derivedData = this.getDerivedActorData(activeActor);
+    const attacks = derivedData.attacks;
+    const skills = derivedData.skills;
     const combatSearch = this.combatSearch;
     const skillsSearch = this.skillsSearch;
     const quickSkillsSearch = this.quickSkillsSearch;
     const spellsSearch = this.spellsSearch;
-    const spells = this.extractSpells(activeActor);
+    const spells = derivedData.spells;
 
-    const indexedAttacks = attacks.map((attack, index) => ({
-      ...attack,
-      index,
-      searchText: this.buildSearchText([
-        attack.name,
-        attack.type,
-        attack.damage,
-        attack.level,
-        attack.reachOrRange,
-        attack.parry,
-        attack.block
-      ])
-    }));
-    const filteredAttacks = this.filterAttacks(indexedAttacks, combatSearch);
+    const indexedAttacks = derivedData.indexedAttacks;
+    const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
 
     const activeActorId = activeActor?.id ?? null;
     const quickSelection = this.getQuickSkillSelection(activeActorId);
-    const indexedSkills = skills.map((skill, index) => {
+    const indexedSkills = derivedData.indexedSkills.map((skill) => {
       const quickSkillKey = this.getQuickSkillKey(skill);
       return {
         ...skill,
-        index,
         quickSkillKey,
-        isQuickSkillSelected: quickSkillKey ? quickSelection.has(quickSkillKey) : false,
-        searchText: this.buildSearchText([skill.name, skill.level, skill.relativeLevel, skill.points])
+        isQuickSkillSelected: quickSkillKey ? quickSelection.has(quickSkillKey) : false
       };
     });
-    const filteredSkills = this.filterSkills(indexedSkills, skillsSearch);
+    const filteredSkills = this.filterEntriesBySearchText(indexedSkills, skillsSearch);
     const quickSkills = indexedSkills.filter((skill) => skill.isQuickSkillSelected);
-    const filteredQuickSkills = this.filterSkills(quickSkills, quickSkillsSearch);
-    const indexedSpells = spells.map((spell, index) => ({
-      ...spell,
-      index,
-      searchText: this.buildSearchText([
-        spell.name,
-        spell.level,
-        spell.class,
-        spell.cost,
-        spell.duration,
-        spell.reference,
-        spell.pageHint
-      ])
-    }));
-    const filteredSpells = this.filterSkills(indexedSpells, spellsSearch);
+    const filteredQuickSkills = this.filterEntriesBySearchText(quickSkills, quickSkillsSearch);
+    const indexedSpells = derivedData.indexedSpells;
+    const filteredSpells = this.filterEntriesBySearchText(indexedSpells, spellsSearch);
     if (DEBUG) {
       const meleeCount = attacks.filter((attack) => attack.type === "Melee").length;
       const rangedCount = attacks.filter((attack) => attack.type === "Ranged").length;
@@ -1900,21 +1957,21 @@ export class QuickDeckApp extends Application {
         firstSkills
       });
     }
-    const dodge = foundry.utils.getProperty(activeActor, "system.currentdodge") ?? null;
-    const bestParry = this.getBestAttackDefense(attacks, "parry");
-    const bestBlock = this.getBestAttackDefense(attacks, "block");
+    const dodge = derivedData.dodge;
+    const bestParry = derivedData.bestParry;
+    const bestBlock = derivedData.bestBlock;
 
-    const currentHp = this.getResourceValue(activeActor, "HP");
-    const currentFp = this.getResourceValue(activeActor, "FP");
-    const maxHp = this.getResourceMax(activeActor, "HP");
-    const maxFp = this.getResourceMax(activeActor, "FP");
+    const currentHp = derivedData.currentHp;
+    const currentFp = derivedData.currentFp;
+    const maxHp = derivedData.maxHp;
+    const maxFp = derivedData.maxFp;
 
     const gurpsData = {
       hp: currentHp ?? null,
       fp: currentFp ?? null,
       hpMax: maxHp ?? currentHp ?? null,
       fpMax: maxFp ?? currentFp ?? null,
-      move: foundry.utils.getProperty(activeActor, "system.basicmove.value") ?? null,
+      move: derivedData.move,
       dodge,
       defenses: {
         dodge,
@@ -1928,9 +1985,7 @@ export class QuickDeckApp extends Application {
         fp: this.toDisplayValue(currentFp),
         hpMax: this.toDisplayValue(maxHp ?? currentHp),
         fpMax: this.toDisplayValue(maxFp ?? currentFp),
-        move: this.toDisplayValue(
-          foundry.utils.getProperty(activeActor, "system.basicmove.value")
-        ),
+        move: this.toDisplayValue(derivedData.move),
         dodge: this.toDisplayValue(dodge),
         parry: this.toDisplayValue(bestParry),
         block: this.toDisplayValue(bestBlock)
@@ -2179,7 +2234,7 @@ export class QuickDeckApp extends Application {
       if (!actorId || Number.isNaN(attackIndex)) return;
 
       const actor = game.actors.get(actorId);
-      const attacks = this.extractAttacks(actor);
+      const attacks = this.getDerivedActorData(actor).attacks;
       const attack = attacks[attackIndex];
       if (!attack) return;
 
@@ -2212,7 +2267,7 @@ export class QuickDeckApp extends Application {
       if (!actorId || Number.isNaN(skillIndex)) return;
 
       const actor = game.actors.get(actorId);
-      const skills = this.extractSkills(actor);
+      const skills = this.getDerivedActorData(actor).skills;
       const skill = skills[skillIndex];
       if (!skill) return;
 
