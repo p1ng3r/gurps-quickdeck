@@ -87,6 +87,23 @@
       </div>
     {{/if}}
 
+
+    {{#if hasBundledSummary}}
+      <div class="quickdeck-reference-sources">
+        <h3>Author Summary</h3>
+        <p>{{bundledSummary}}</p>
+        {{#if hasBundledNotes}}
+          <p><strong>Notes:</strong> {{bundledNotes}}</p>
+        {{/if}}
+        {{#if hasBundledBookKey}}
+          <p><strong>Book Key:</strong> {{bundledBookKey}}</p>
+        {{/if}}
+        {{#if hasBundledDisplayedPage}}
+          <p><strong>Displayed Page:</strong> {{bundledDisplayedPage}}</p>
+        {{/if}}
+      </div>
+    {{/if}}
+
     <div class="quickdeck-reference-sources">
       <h3>Matched Source</h3>
       {{#if hasMatchedSource}}
