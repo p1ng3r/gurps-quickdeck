@@ -1,5 +1,6 @@
 import { QuickDeckPdfSourcesApp } from "./pdf-sources-app.js";
 import { QuickDeckReferenceApp } from "./reference-app.js";
+import { openTextSourcesManager } from "./text-sources-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
@@ -1224,6 +1225,10 @@ export class QuickDeckApp extends Application {
     }
   }
 
+  openTextSourcesManager() {
+    openTextSourcesManager();
+  }
+
   openReferenceIndexManager() {
     openReferenceIndexManager();
   }
@@ -1843,6 +1848,11 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='open-reference-index']").on("click", (event) => {
       event.preventDefault();
       this.openReferenceIndexManager();
+    });
+
+    html.find("[data-action='open-text-sources']").on("click", (event) => {
+      event.preventDefault();
+      this.openTextSourcesManager();
     });
 
     html.find("[data-action='remove-actor']").on("click", (event) => {

@@ -12,6 +12,13 @@ All notable changes to this project will be documented in this file.
 - New Application v1 QuickDeck Reference window (local metadata matching, no network calls).
 - New Application v1 QuickDeck PDF Sources manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-themed panel styling.
 - New Application v1 QuickDeck Reference Index manager for manual entries (name, type, source/book key, displayed page, notes).
+- New Application v1 QuickDeck Text Sources manager with Add/Edit/Delete for local text source records (`id`, `displayName`, `bookKey`, `rawText`, `createdAt`).
+- Text Sources UI now includes a large pasted-text editor, explicit local-storage copyright warning, and a one-click starter row for **Dungeon Fantasy Adventurers Skills** / `dungeon-fantasy-adventurers`.
+- Text Sources manager now adds **Build Index from Text Source** parsing and a review table with checkbox, name, type, book key, and confidence columns.
+- Added text parser for skill-like entries using two-line detection (`Skill Name` followed by `DX/Average`, `IQ/Hard`, etc.) with dagger support and obvious header/prose filtering.
+- Selected review rows now upsert into Reference Index via existing name+type semantics without storing full pasted descriptions.
+- Reference source matching now supports both PDF and Text source metadata and exposes matched source name in the QuickDeck Reference popup.
+- New client-scoped `textSourcesJson` setting for local text source storage (no network/export behavior).
 - Reference Index manager now supports DOM-only search/filter by name/type/book key/displayed page/notes.
 - Reference Index manager now supports metadata-only JSON export to clipboard.
 - Reference Index manager now supports safe JSON import (merge or replace) with entry normalization/validation and non-fatal invalid JSON warnings.
@@ -37,6 +44,7 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Default drawer choices now include `spells`.
 - QuickDeck window actions now include a Reference Index button next to PDF Sources.
+- QuickDeck window actions now include a Text Sources button for local text-based indexing workflows.
 - QuickDeck Reference now shows match origin (Manual Index, Actor Data Hint, or No Match) and prioritizes manual Reference Index entries before actor source/page hints.
 - QuickDeck Reference now shows matched-source details (matched source, displayed page, PDF target page, file/path hint) with safe no-match fallback messaging.
 - QuickDeck Reference now shows explicit match-origin status text for manual bookmark and actor-hint matches.
