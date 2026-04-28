@@ -1,6 +1,7 @@
 import { getPdfSources } from "./pdf-sources-store.js";
 import { matchReferenceSource } from "./reference-source-matcher.js";
 import { getReferenceIndex } from "./reference-index-store.js";
+import { getTextSources } from "./text-sources-store.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { isPdfTextSearchAvailable, searchPdfTextSnippet } from "./pdf-text-search.js";
 
@@ -199,16 +200,26 @@ export class QuickDeckReferenceApp extends Application {
   getData() {
     const typeLabel = getTypeLabel(this.referenceData.type);
 
-    const configuredSources = getPdfSources().map((source) => ({
+    const configuredPdfSources = getPdfSources().map((source) => ({
       displayName: source.displayName,
       bookKey: source.bookKey,
       fileHint: source.fileHint,
       pageOffset: source.pageOffset,
-      notes: source.notes
+      notes: source.notes,
+      sourceType: "pdf"
     }));
+    const configuredTextSources = getTextSources().map((source) => ({
+      displayName: source.displayName,
+      bookKey: source.bookKey,
+      sourceType: "text"
+    }));
+    const configuredSources = [...configuredPdfSources, ...configuredTextSources];
 
     const resolvedMatch = resolveReferenceMatch(this.referenceData, configuredSources);
-    const matchedSourcePath = normalizePathHint(resolvedMatch?.matchedSource?.fileHint);
+    const matchedSourcePath =
+      resolvedMatch?.matchedSource?.sourceType === "pdf"
+        ? normalizePathHint(resolvedMatch?.matchedSource?.fileHint)
+        : "";
     const numericPageHint = parseDisplayedPage(this.referenceData.pageHint);
     const manualEntryPrefill = {
       name: this.referenceData.name,
@@ -225,9 +236,10 @@ export class QuickDeckReferenceApp extends Application {
       source: this.referenceData.source || null,
       pageHint: this.referenceData.pageHint || null,
       hasLocalReference: false,
-      hasConfiguredSources: configuredSources.length > 0,
-      configuredSources,
+      hasConfiguredSources: configuredPdfSources.length > 0,
+      configuredSources: configuredPdfSources,
       hasMatchedSource: Boolean(resolvedMatch?.matchedSource),
+      matchedSourceType: resolvedMatch?.matchedSource?.sourceType ?? null,
       matchedSource: resolvedMatch?.matchedSource ?? null,
       displayedPage: resolvedMatch?.displayedPage ?? null,
       hasDisplayedPage: Number.isInteger(resolvedMatch?.displayedPage),
@@ -235,7 +247,7 @@ export class QuickDeckReferenceApp extends Application {
       hasPdfPageTarget: Number.isInteger(resolvedMatch?.pdfPageTarget),
       matchedSourcePath,
       hasMatchedSourcePath: Boolean(matchedSourcePath),
-      hasPdfTextSearch: Boolean(resolvedMatch?.matchedSource && matchedSourcePath),
+      hasPdfTextSearch: Boolean(resolvedMatch?.matchedSource?.sourceType === "pdf" && matchedSourcePath),
       isPdfSearchLoading: this.pdfSearchState.status === "loading",
       hasPdfSearchMessage: Boolean(this.pdfSearchState.message),
       pdfSearchStatus: this.pdfSearchState.status,

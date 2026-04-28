@@ -88,12 +88,16 @@
     {{/if}}
 
     <div class="quickdeck-reference-sources">
-      <h3>Matched PDF Source</h3>
+      <h3>Matched Source</h3>
       {{#if hasMatchedSource}}
         <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
           <div>
             <dt>Matched Source</dt>
             <dd>{{matchedSource.displayName}}</dd>
+          </div>
+          <div>
+            <dt>Source Type</dt>
+            <dd>{{matchedSourceType}}</dd>
           </div>
           <div>
             <dt>Displayed Page</dt>
