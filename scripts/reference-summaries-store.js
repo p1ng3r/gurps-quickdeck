@@ -1,7 +1,8 @@
 const MODULE_ID = "gurps-quickdeck";
 const REFERENCE_SUMMARIES_PATHS = [
   `modules/${MODULE_ID}/data/reference-summaries.json`,
-  `modules/${MODULE_ID}/data/martial-arts-techniques.reference-summaries.json`
+  `modules/${MODULE_ID}/data/martial-arts-techniques.reference-summaries.json`,
+  `modules/${MODULE_ID}/data/martial-arts-combat.reference-summaries.json`
 ];
 const ALLOWED_TYPES = new Set(["skill", "spell", "rule"]);
 
