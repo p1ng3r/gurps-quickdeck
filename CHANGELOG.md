@@ -24,6 +24,7 @@ All notable changes to this project will be documented in this file.
 - Reference Index manager now supports safe JSON import (merge or replace) with entry normalization/validation and non-fatal invalid JSON warnings.
 - QuickDeck Reference popup now includes a direct **Add to Reference Index** / **Edit Reference Index Entry** workflow with prefilled metadata.
 - Added bundled `data/reference-summaries.json` support for author-written summaries/notes (skill/spell/rule) with safe JSON fetch fallback and no-crash behavior.
+- Expanded bundled `data/reference-summaries.json` normalization/display support to preserve and render richer fields (`sourceName`, `attribute`, `difficulty`, `defaults`, `description`, `specialtyRequired`) in the QuickDeck Reference popup with missing-field-safe fallback.
 - QuickDeck Reference popup now includes inline help clarifying that **Add to Reference Index** creates a reusable skill/spell bookmark for source/page lookup.
 - Client-scoped PDF source metadata setting stored as safe JSON.
 - Client-scoped manual Reference Index metadata setting stored as safe JSON.

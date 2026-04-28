@@ -289,12 +289,32 @@ export class QuickDeckReferenceApp extends Application {
       isActorHintOrigin: resolvedMatch?.matchOrigin === "actor-data-hint",
       hasBundledSummary: Boolean(bundledSummaryEntry?.summary),
       bundledSummary: bundledSummaryEntry?.summary || null,
+      hasBundledDescription: Boolean(bundledSummaryEntry?.description),
+      bundledDescription: bundledSummaryEntry?.description || null,
       hasBundledNotes: Boolean(bundledSummaryEntry?.notes),
       bundledNotes: bundledSummaryEntry?.notes || null,
       bundledBookKey: bundledSummaryEntry?.bookKey || null,
+      bundledSourceName: bundledSummaryEntry?.sourceName || null,
       bundledDisplayedPage: bundledSummaryEntry?.displayedPage || null,
+      bundledAttribute: bundledSummaryEntry?.attribute || null,
+      bundledDifficulty: bundledSummaryEntry?.difficulty || null,
+      bundledDefaults: bundledSummaryEntry?.defaults || null,
+      bundledSpecialtyRequired: bundledSummaryEntry?.specialtyRequired || null,
       hasBundledBookKey: Boolean(bundledSummaryEntry?.bookKey),
+      hasBundledSourceName: Boolean(bundledSummaryEntry?.sourceName),
       hasBundledDisplayedPage: Boolean(bundledSummaryEntry?.displayedPage),
+      hasBundledAttribute: Boolean(bundledSummaryEntry?.attribute),
+      hasBundledDifficulty: Boolean(bundledSummaryEntry?.difficulty),
+      hasBundledDefaults: Boolean(bundledSummaryEntry?.defaults),
+      hasBundledSpecialtyRequired: Boolean(bundledSummaryEntry?.specialtyRequired),
+      hasBundledSkillDetails: Boolean(
+        bundledSummaryEntry?.attribute ||
+          bundledSummaryEntry?.difficulty ||
+          bundledSummaryEntry?.defaults ||
+          bundledSummaryEntry?.specialtyRequired ||
+          bundledSummaryEntry?.sourceName ||
+          bundledSummaryEntry?.displayedPage
+      ),
       bundledSummaryMatchMode: bundledSummaryMatch?.mode || null,
       placeholderText:
         "QuickDeck reference notes are local placeholders for now. PDF import/indexing support is planned for user-provided content in a future update."
