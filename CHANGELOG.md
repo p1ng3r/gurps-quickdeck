@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - Added memoized derived actor payloads (attacks/skills/spells/resources) with invalidation hooks on actor/item changes to reduce repeated nested scans on re-render.
 - Updated drawer filtering to reuse prebuilt search text values instead of rebuilding per-entry haystacks during every filter pass.
 - Hardened close cleanup to clear pending actor-select timers and purge derived cache state.
+- Improved bundled/manual reference matching to resolve parenthetical variants in both directions (e.g., `Shatter` <-> `Shatter (VH)`, `Counterattack (Two-Handed Sword)` <-> `Counterattack`) while preserving exact-name+type match priority and graceful missing-entry fallback.
 
 ### Removed
 - Legacy PDF Sources manager UI and store modules.

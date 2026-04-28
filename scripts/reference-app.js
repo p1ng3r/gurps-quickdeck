@@ -24,26 +24,30 @@ function findManualIndexMatch(referenceData = {}, entries = []) {
   if (!normalizedName) return null;
 
   const normalizedEntries = Array.isArray(entries) ? entries : [];
+  const entriesWithAliases = normalizedEntries.map((entry) => ({
+    entry,
+    lookupNames: buildReferenceLookupNames(entry?.name)
+  }));
 
-  const exactTypeMatch = normalizedEntries.find((entry) => {
-    return normalizeText(entry?.name) === normalizedName && normalizeText(entry?.type) === normalizedType;
+  const exactTypeMatch = entriesWithAliases.find(({ entry, lookupNames: entryLookup }) => {
+    return entryLookup.aliases.includes(normalizedName) && normalizeText(entry?.type) === normalizedType;
   });
-  if (exactTypeMatch) return { entry: exactTypeMatch, mode: "exact-name-type" };
+  if (exactTypeMatch) return { entry: exactTypeMatch.entry, mode: "exact-name-type" };
 
-  const exactNameOnlyMatch = normalizedEntries.find((entry) => {
-    return normalizeText(entry?.name) === normalizedName;
+  const exactNameOnlyMatch = entriesWithAliases.find(({ lookupNames: entryLookup }) => {
+    return entryLookup.aliases.includes(normalizedName);
   });
-  if (exactNameOnlyMatch) return { entry: exactNameOnlyMatch, mode: "exact-name" };
+  if (exactNameOnlyMatch) return { entry: exactNameOnlyMatch.entry, mode: "exact-name" };
 
-  const baseNameTypeMatch = normalizedEntries.find((entry) => {
-    return normalizeText(entry?.name) === normalizedBaseName && normalizeText(entry?.type) === normalizedType;
+  const baseNameTypeMatch = entriesWithAliases.find(({ entry, lookupNames: entryLookup }) => {
+    return entryLookup.aliases.includes(normalizedBaseName) && normalizeText(entry?.type) === normalizedType;
   });
-  if (baseNameTypeMatch) return { entry: baseNameTypeMatch, mode: "base-name-type", matchedBaseName: baseNameTypeMatch.name };
+  if (baseNameTypeMatch) return { entry: baseNameTypeMatch.entry, mode: "base-name-type", matchedBaseName: baseNameTypeMatch.entry.name };
 
-  const baseNameOnlyMatch = normalizedEntries.find((entry) => {
-    return normalizeText(entry?.name) === normalizedBaseName;
+  const baseNameOnlyMatch = entriesWithAliases.find(({ lookupNames: entryLookup }) => {
+    return entryLookup.aliases.includes(normalizedBaseName);
   });
-  if (baseNameOnlyMatch) return { entry: baseNameOnlyMatch, mode: "base-name", matchedBaseName: baseNameOnlyMatch.name };
+  if (baseNameOnlyMatch) return { entry: baseNameOnlyMatch.entry, mode: "base-name", matchedBaseName: baseNameOnlyMatch.entry.name };
 
   return null;
 }
