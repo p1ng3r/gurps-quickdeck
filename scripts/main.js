@@ -131,32 +131,32 @@ Hooks.on("deleteActor", (actor) => {
 Hooks.on("updateActor", (actor) => {
   if (!quickDeckApp) return;
   quickDeckApp.invalidateDerivedActorData(actor?.id);
-  if (quickDeckApp.rendered) quickDeckApp.render(false);
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
 });
 
 Hooks.on("createItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (quickDeckApp.rendered) quickDeckApp.render(false);
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
 });
 
 Hooks.on("updateItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (quickDeckApp.rendered) quickDeckApp.render(false);
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
 });
 
 Hooks.on("deleteItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (quickDeckApp.rendered) quickDeckApp.render(false);
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
 });
 
 function refreshQuickDeckOnCombatChange() {
-  if (!quickDeckApp?.rendered) return;
+  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
   quickDeckApp.render(false);
 }
 

@@ -485,7 +485,12 @@ export class QuickDeckApp extends Application {
     return entries.filter((entry) => this.normalizeSearchText(entry?.searchText).includes(search));
   }
 
-  getDerivedActorData(actor) {
+  getDerivedActorData(actor, options = {}) {
+    const includeAttacks = options.includeAttacks !== false;
+    const includeSkills = options.includeSkills !== false;
+    const includeSpells = options.includeSpells !== false;
+    const cacheScope = `${includeAttacks ? "1" : "0"}${includeSkills ? "1" : "0"}${includeSpells ? "1" : "0"}`;
+
     if (!actor?.id) {
       return {
         attacks: [],
@@ -507,12 +512,13 @@ export class QuickDeckApp extends Application {
 
     const actorId = String(actor.id);
     const stamp = this.getActorDataVersionStamp(actor);
-    const cached = this._derivedActorDataCache.get(actorId);
+    const actorCache = this._derivedActorDataCache.get(actorId);
+    const cached = actorCache?.get(cacheScope);
     if (cached?.stamp === stamp) return cached.value;
 
-    const attacks = this.extractAttacks(actor);
-    const skills = this.extractSkills(actor);
-    const spells = this.extractSpells(actor);
+    const attacks = includeAttacks ? this.extractAttacks(actor) : [];
+    const skills = includeSkills ? this.extractSkills(actor) : [];
+    const spells = includeSpells ? this.extractSpells(actor) : [];
     const indexedAttacks = attacks.map((attack, index) => ({
       ...attack,
       index,
@@ -552,9 +558,9 @@ export class QuickDeckApp extends Application {
       indexedSkills,
       spells,
       indexedSpells,
-      dodge: foundry.utils.getProperty(actor, "system.currentdodge") ?? null,
-      bestParry: this.getBestAttackDefense(attacks, "parry"),
-      bestBlock: this.getBestAttackDefense(attacks, "block"),
+      dodge: includeAttacks ? foundry.utils.getProperty(actor, "system.currentdodge") ?? null : null,
+      bestParry: includeAttacks ? this.getBestAttackDefense(attacks, "parry") : null,
+      bestBlock: includeAttacks ? this.getBestAttackDefense(attacks, "block") : null,
       currentHp: this.getResourceValue(actor, "HP"),
       currentFp: this.getResourceValue(actor, "FP"),
       maxHp: this.getResourceMax(actor, "HP"),
@@ -562,7 +568,9 @@ export class QuickDeckApp extends Application {
       move: foundry.utils.getProperty(actor, "system.basicmove.value") ?? null
     };
 
-    this._derivedActorDataCache.set(actorId, { stamp, value });
+    const nextActorCache = actorCache ?? new Map();
+    nextActorCache.set(cacheScope, { stamp, value });
+    this._derivedActorDataCache.set(actorId, nextActorCache);
     return value;
   }
 
@@ -1769,7 +1777,6 @@ export class QuickDeckApp extends Application {
     }
     this.isMinimized = false;
     this.persistMinimizedState();
-    this.syncMinimizedPresentation();
     this.render(false);
   };
 
@@ -1915,7 +1922,28 @@ export class QuickDeckApp extends Application {
       }));
 
     const activeActor = this.getActiveActor();
-    const derivedData = this.getDerivedActorData(activeActor);
+    const shouldHydrateDerivedData = Boolean(activeActor && this.activeDrawer);
+    const includeAttacks = this.activeDrawer === "combat";
+    const includeSkills = this.activeDrawer === "skills" || this.activeDrawer === "quick-skills";
+    const includeSpells = this.activeDrawer === "spells";
+    const derivedData = shouldHydrateDerivedData
+      ? this.getDerivedActorData(activeActor, { includeAttacks, includeSkills, includeSpells })
+      : {
+          attacks: [],
+          indexedAttacks: [],
+          skills: [],
+          indexedSkills: [],
+          spells: [],
+          indexedSpells: [],
+          dodge: null,
+          bestParry: null,
+          bestBlock: null,
+          currentHp: null,
+          currentFp: null,
+          maxHp: null,
+          maxFp: null,
+          move: null
+        };
     const attacks = derivedData.attacks;
     const skills = derivedData.skills;
     const combatSearch = this.combatSearch;
