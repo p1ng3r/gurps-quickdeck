@@ -59,6 +59,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Reference entries attempt local metadata matching against configured PDF sources (`bookKey`, `displayName`, and source hint text).
   - Reference popup includes **Search PDF Text** for one matched local/world PDF source at a time, searching for the current reference name and returning only a short snippet with the matched page.
   - Module authors can ship local reference summaries in `data/reference-summaries.json`; popup matching is exact `name + type` first, then exact `name`, and the popup displays **Author Summary**, optional notes, and optional source/page metadata.
+  - Bundled `reference-summaries.json` entries now support richer fields (`sourceName`, `attribute`, `difficulty`, `defaults`, `description`, `specialtyRequired`) and the popup renders them in dedicated **Skill Details**, **Description**, and **Notes** sections with safe fallback when fields are missing.
   - When a source matches and the page hint is numeric, the popup shows displayed page + computed PDF target page (`displayed + offset`).
   - If a matched source has a file/path hint, the popup provides **Open PDF** (new-tab attempt with `noopener,noreferrer`) and **Copy Path** fallback actions.
   - The same popup now provides **Add to Reference Index** / **Edit Reference Index Entry** to jump directly into the Reference Index manager with prefilled metadata from the current reference.
