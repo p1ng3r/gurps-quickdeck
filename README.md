@@ -14,6 +14,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added **Build Index from Text Source** workflow with a review table (checkbox, name, type, book key, confidence) and selected-row upsert into Reference Index by `name + type`.
 - Enhanced the **QuickDeck Reference Index** manager with DOM-only search/filtering and metadata-only JSON export/import tools (merge or replace) with safe validation and warning-first error handling.
 - Added a quick action in the **QuickDeck Reference** popup to **Add to Reference Index** (or **Edit Reference Index Entry** when an exact manual match already exists), opening the manager with a prefilled row and duplicate-safe exact name+type focus behavior.
+- Added repo-included `data/reference-summaries.json` loading for author-written skill/spell/rule summaries shown in the QuickDeck Reference popup with safe fallback behavior when the JSON is missing/invalid.
 - Reference popup source matching now supports both **PDF** and **Text** source metadata; text-indexed skills display their source name (for example, **Dungeon Fantasy Adventurers Skills**).
 - Polished the **QuickDeck Reference** popup guidance with inline help for **Add to Reference Index**, match-origin status messaging, and a friendly no-match checklist for linking source/page metadata.
 - Added a **PDF import roadmap placeholder setting** and documentation for future user-provided local PDF indexing.
@@ -54,9 +55,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - **Spells**: spell extraction + searchable spell list.
 - Reference helpers:
   - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
-  - Matching order is manual index exact name + type, then manual index exact name only, then actor source/page hints.
+  - Matching order is manual index exact name + type, then manual index exact name only, then actor source/page hints (with bundled summary book/page fallback when available).
   - Reference entries attempt local metadata matching against configured PDF sources (`bookKey`, `displayName`, and source hint text).
   - Reference popup includes **Search PDF Text** for one matched local/world PDF source at a time, searching for the current reference name and returning only a short snippet with the matched page.
+  - Module authors can ship local reference summaries in `data/reference-summaries.json`; popup matching is exact `name + type` first, then exact `name`, and the popup displays **Author Summary**, optional notes, and optional source/page metadata.
   - When a source matches and the page hint is numeric, the popup shows displayed page + computed PDF target page (`displayed + offset`).
   - If a matched source has a file/path hint, the popup provides **Open PDF** (new-tab attempt with `noopener,noreferrer`) and **Copy Path** fallback actions.
   - The same popup now provides **Add to Reference Index** / **Edit Reference Index Entry** to jump directly into the Reference Index manager with prefilled metadata from the current reference.

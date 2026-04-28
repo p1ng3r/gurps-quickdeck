@@ -1,6 +1,7 @@
 import { getPdfSources } from "./pdf-sources-store.js";
 import { matchReferenceSource } from "./reference-source-matcher.js";
 import { getReferenceIndex } from "./reference-index-store.js";
+import { loadBundledReferenceSummaries, findBundledReferenceSummary } from "./reference-summaries-store.js";
 import { getTextSources } from "./text-sources-store.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { isPdfTextSearchAvailable, searchPdfTextSnippet } from "./pdf-text-search.js";
@@ -65,7 +66,7 @@ function findManualIndexMatch(referenceData = {}, entries = []) {
   return null;
 }
 
-function resolveReferenceMatch(referenceData = {}, configuredSources = []) {
+function resolveReferenceMatch(referenceData = {}, configuredSources = [], bundledSummaryEntry = null) {
   const manualIndex = getReferenceIndex();
   const manualMatch = findManualIndexMatch(referenceData, manualIndex);
 
@@ -92,7 +93,13 @@ function resolveReferenceMatch(referenceData = {}, configuredSources = []) {
     };
   }
 
-  const actorHintMatch = matchReferenceSource(referenceData, configuredSources);
+  const fallbackReference = {
+    ...referenceData,
+    source: String(referenceData?.source || bundledSummaryEntry?.bookKey || ""),
+    pageHint: String(referenceData?.pageHint || bundledSummaryEntry?.displayedPage || "")
+  };
+
+  const actorHintMatch = matchReferenceSource(fallbackReference, configuredSources);
 
   if (actorHintMatch?.source) {
     return {
@@ -112,7 +119,8 @@ function resolveReferenceMatch(referenceData = {}, configuredSources = []) {
     manualMatchMode: null,
     manualEntry: null,
     matchedSource: null,
-    displayedPage: parseDisplayedPage(referenceData.pageHint),
+    displayedPage:
+      parseDisplayedPage(referenceData.pageHint) ?? parseDisplayedPage(bundledSummaryEntry?.displayedPage),
     pdfPageTarget: null
   };
 }
@@ -197,8 +205,12 @@ export class QuickDeckReferenceApp extends Application {
     });
   }
 
-  getData() {
+  async getData() {
     const typeLabel = getTypeLabel(this.referenceData.type);
+
+    const bundledSummaries = await loadBundledReferenceSummaries();
+    const bundledSummaryMatch = findBundledReferenceSummary(this.referenceData, bundledSummaries);
+    const bundledSummaryEntry = bundledSummaryMatch?.entry ?? null;
 
     const configuredPdfSources = getPdfSources().map((source) => ({
       displayName: source.displayName,
@@ -215,17 +227,18 @@ export class QuickDeckReferenceApp extends Application {
     }));
     const configuredSources = [...configuredPdfSources, ...configuredTextSources];
 
-    const resolvedMatch = resolveReferenceMatch(this.referenceData, configuredSources);
+    const resolvedMatch = resolveReferenceMatch(this.referenceData, configuredSources, bundledSummaryEntry);
     const matchedSourcePath =
       resolvedMatch?.matchedSource?.sourceType === "pdf"
         ? normalizePathHint(resolvedMatch?.matchedSource?.fileHint)
         : "";
     const numericPageHint = parseDisplayedPage(this.referenceData.pageHint);
+    const fallbackBundledPage = parseDisplayedPage(bundledSummaryEntry?.displayedPage);
     const manualEntryPrefill = {
       name: this.referenceData.name,
       type: this.referenceData.type,
-      bookKey: resolvedMatch?.matchedSource?.bookKey || this.referenceData.source || "",
-      displayedPage: numericPageHint ? String(numericPageHint) : "",
+      bookKey: resolvedMatch?.matchedSource?.bookKey || this.referenceData.source || bundledSummaryEntry?.bookKey || "",
+      displayedPage: numericPageHint ? String(numericPageHint) : fallbackBundledPage ? String(fallbackBundledPage) : "",
       notes: ""
     };
     const hasExactManualEntry = resolvedMatch?.manualMatchMode === "exact-name-type";
@@ -274,6 +287,15 @@ export class QuickDeckReferenceApp extends Application {
       showNoMatchChecklist: !resolvedMatch?.matchedSource,
       isManualOrigin: resolvedMatch?.matchOrigin === "manual-index",
       isActorHintOrigin: resolvedMatch?.matchOrigin === "actor-data-hint",
+      hasBundledSummary: Boolean(bundledSummaryEntry?.summary),
+      bundledSummary: bundledSummaryEntry?.summary || null,
+      hasBundledNotes: Boolean(bundledSummaryEntry?.notes),
+      bundledNotes: bundledSummaryEntry?.notes || null,
+      bundledBookKey: bundledSummaryEntry?.bookKey || null,
+      bundledDisplayedPage: bundledSummaryEntry?.displayedPage || null,
+      hasBundledBookKey: Boolean(bundledSummaryEntry?.bookKey),
+      hasBundledDisplayedPage: Boolean(bundledSummaryEntry?.displayedPage),
+      bundledSummaryMatchMode: bundledSummaryMatch?.mode || null,
       placeholderText:
         "QuickDeck reference notes are local placeholders for now. PDF import/indexing support is planned for user-provided content in a future update."
     };
