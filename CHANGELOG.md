@@ -6,8 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 - Simplified QuickDeck Reference to use bundled `data/reference-summaries.json` as the primary source of reference content.
-- Expanded bundled reference summary loading to include `data/martial-arts-combat.reference-summaries.json` alongside existing base and martial-arts-techniques files.
-- Expanded bundled reference summary loading to include optional spell data from `data/magic.reference-summaries.json`, with safe no-crash handling for missing or malformed files.
+- Expanded bundled reference summary loading to include `data/martial-arts-combat.reference-summaries.json`, `data/basic-set-skills.reference-summaries.json`, and `data/magic.reference-summaries.json`, all with safe warning-only fallback when a file is missing/unavailable or malformed.
 - Kept rich reference popup sections for Author Summary, Skill Details, Description, Notes, Source Name, and Displayed Page.
 - Added Spell Details rendering for bundled spell metadata fields (college, class, duration, cost, time to cast, prerequisites, item).
 - Kept clickable skills/spells and the reference popup workflow in QuickDeck.
@@ -17,6 +16,9 @@ All notable changes to this project will be documented in this file.
 - QuickDeck now persists minimized/restored state per client and restores the same presentation on reopen/reload.
 - Closing QuickDeck while minimized now reliably removes the floating restore pill and prevents duplicate restore icons across repeated minimize/restore cycles.
 - Updated floating restore pill controls: left-click restores QuickDeck, right-click drag moves the pill, context menu is suppressed on the pill, and final clamped `{ top, left }` position now persists per client.
+- Added memoized derived actor payloads (attacks/skills/spells/resources) with invalidation hooks on actor/item changes to reduce repeated nested scans on re-render.
+- Updated drawer filtering to reuse prebuilt search text values instead of rebuilding per-entry haystacks during every filter pass.
+- Hardened close cleanup to clear pending actor-select timers and purge derived cache state.
 
 ### Removed
 - Legacy PDF Sources manager UI and store modules.
