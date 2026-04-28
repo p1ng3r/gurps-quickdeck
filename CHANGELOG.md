@@ -16,6 +16,9 @@ All notable changes to this project will be documented in this file.
 - QuickDeck now persists minimized/restored state per client and restores the same presentation on reopen/reload.
 - Closing QuickDeck while minimized now reliably removes the floating restore pill and prevents duplicate restore icons across repeated minimize/restore cycles.
 - Updated floating restore pill controls: left-click restores QuickDeck, right-click drag moves the pill, context menu is suppressed on the pill, and final clamped `{ top, left }` position now persists per client.
+- Drop Token to Canvas now auto-minimizes QuickDeck but keeps token placement armed so canvas click placement still completes after minimization.
+- Improved floating restore pill drag responsiveness by using pointer capture and requestAnimationFrame updates, while keeping viewport clamping and suppressing context menu.
+- Restore pill position persistence now writes `{ top, left }` on drag release/window blur instead of during pointer move updates.
 - Added memoized derived actor payloads (attacks/skills/spells/resources) with invalidation hooks on actor/item changes to reduce repeated nested scans on re-render.
 - Updated drawer filtering to reuse prebuilt search text values instead of rebuilding per-entry haystacks during every filter pass.
 - Hardened close cleanup to clear pending actor-select timers and purge derived cache state.
