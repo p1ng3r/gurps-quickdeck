@@ -92,15 +92,52 @@
       <div class="quickdeck-reference-sources">
         <h3>Author Summary</h3>
         <p>{{bundledSummary}}</p>
-        {{#if hasBundledNotes}}
-          <p><strong>Notes:</strong> {{bundledNotes}}</p>
-        {{/if}}
-        {{#if hasBundledBookKey}}
-          <p><strong>Book Key:</strong> {{bundledBookKey}}</p>
-        {{/if}}
-        {{#if hasBundledDisplayedPage}}
-          <p><strong>Displayed Page:</strong> {{bundledDisplayedPage}}</p>
-        {{/if}}
+      </div>
+    {{/if}}
+
+    {{#if hasBundledSkillDetails}}
+      <div class="quickdeck-reference-sources">
+        <h3>Skill Details</h3>
+        <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+          <div>
+            <dt>Attribute</dt>
+            <dd>{{#if hasBundledAttribute}}{{bundledAttribute}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Difficulty</dt>
+            <dd>{{#if hasBundledDifficulty}}{{bundledDifficulty}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Defaults</dt>
+            <dd>{{#if hasBundledDefaults}}{{bundledDefaults}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Specialty Required</dt>
+            <dd>{{#if hasBundledSpecialtyRequired}}{{bundledSpecialtyRequired}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Source Name</dt>
+            <dd>{{#if hasBundledSourceName}}{{bundledSourceName}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Displayed Page</dt>
+            <dd>{{#if hasBundledDisplayedPage}}{{bundledDisplayedPage}}{{else}}—{{/if}}</dd>
+          </div>
+        </dl>
+      </div>
+    {{/if}}
+
+    {{#if hasBundledDescription}}
+      <div class="quickdeck-reference-sources">
+        <h3>Description</h3>
+        <p>{{bundledDescription}}</p>
+      </div>
+    {{/if}}
+
+    {{#if hasBundledNotes}}
+      <div class="quickdeck-reference-sources">
+        <h3>Notes</h3>
+        <p>{{bundledNotes}}</p>
       </div>
     {{/if}}
 

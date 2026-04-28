@@ -938,6 +938,22 @@
   color: rgba(241, 231, 212, 0.94);
 }
 
+.quickdeck-reference-sources {
+  border: 1px solid rgba(203, 167, 101, 0.28);
+  border-radius: 8px;
+  padding: 0.5rem 0.55rem;
+  background: rgba(0, 0, 0, 0.16);
+  display: grid;
+  gap: 0.35rem;
+}
+
+.quickdeck-reference-sources h3 {
+  margin: 0;
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+  color: #f7eed8;
+}
+
 .quickdeck-reference-help {
   padding: 0.42rem 0.5rem;
   border: 1px solid rgba(190, 151, 85, 0.46);

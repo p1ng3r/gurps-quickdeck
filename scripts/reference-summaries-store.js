@@ -32,14 +32,30 @@ function asDisplayedPage(value) {
   return String(normalized);
 }
 
+function asDefaults(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map((entry) => asString(entry))
+      .filter((entry) => Boolean(entry))
+      .join("; ");
+  }
+  return asString(value);
+}
+
 function normalizeReferenceSummaryEntry(entry = {}) {
   return {
     name: asString(entry.name),
     type: asType(entry.type),
     bookKey: asString(entry.bookKey),
+    sourceName: asString(entry.sourceName),
     displayedPage: asDisplayedPage(entry.displayedPage),
+    attribute: asString(entry.attribute),
+    difficulty: asString(entry.difficulty),
+    defaults: asDefaults(entry.defaults),
     summary: asString(entry.summary),
-    notes: asString(entry.notes)
+    description: asString(entry.description),
+    notes: asString(entry.notes),
+    specialtyRequired: asString(entry.specialtyRequired)
   };
 }
 
@@ -51,7 +67,7 @@ function normalizeSummaryArray(entries) {
   const normalizedEntries = Array.isArray(entries) ? entries : [];
   return normalizedEntries
     .map((entry) => normalizeReferenceSummaryEntry(entry))
-    .filter((entry) => entry.name && entry.summary);
+    .filter((entry) => entry.name);
 }
 
 export async function loadBundledReferenceSummaries() {
