@@ -36,6 +36,13 @@
       </button>
     </div>
 
+    {{#if hasBundledBaseMatch}}
+      <p class="quickdeck-reference-muted">Matched base reference: {{bundledMatchedBaseName}}</p>
+    {{/if}}
+    {{#if hasManualBaseMatch}}
+      <p class="quickdeck-reference-muted">Matched local override by base reference: {{manualMatchedBaseName}}</p>
+    {{/if}}
+
     {{#if hasBundledSummary}}
       <div class="quickdeck-reference-sources">
         <h3>Author Summary</h3>
