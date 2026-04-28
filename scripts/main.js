@@ -1,6 +1,8 @@
 import { QuickDeckPdfSourcesApp } from "./pdf-sources-app.js";
+import { openTextSourcesManager } from "./text-sources-app.js";
 import { PDF_SOURCES_SETTING_KEY } from "./pdf-sources-store.js";
 import { REFERENCE_INDEX_SETTING_KEY } from "./reference-index-store.js";
+import { TEXT_SOURCES_SETTING_KEY } from "./text-sources-store.js";
 import { QuickDeckApp } from "./quickdeck-app.js";
 
 const MODULE_ID = "gurps-quickdeck";
@@ -10,7 +12,8 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   PDF_IMPORT_PLACEHOLDER: "pdfImportPlaceholder",
   PDF_SOURCES: PDF_SOURCES_SETTING_KEY,
-  REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY
+  REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
+  TEXT_SOURCES: TEXT_SOURCES_SETTING_KEY
 };
 let quickDeckApp = null;
 let pdfSourcesApp = null;
@@ -44,7 +47,8 @@ Hooks.once("ready", () => {
       }
       quickDeckApp.dumpActiveActorData();
     },
-    openPdfSources: () => openPdfSourcesManager()
+    openPdfSources: () => openPdfSourcesManager(),
+    openTextSources: () => openTextSourcesManager()
   };
 });
 
@@ -104,6 +108,15 @@ Hooks.once("init", () => {
   game.settings.register(MODULE_ID, SETTING_KEYS.REFERENCE_INDEX, {
     name: "QuickDeck Reference Index Metadata",
     hint: "Client-side JSON list of manual reference index entries used by QuickDeck Reference.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "[]"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.TEXT_SOURCES, {
+    name: "QuickDeck Text Sources",
+    hint: "Client-side JSON list of local text sources used for manual index building.",
     scope: "client",
     config: false,
     type: String,

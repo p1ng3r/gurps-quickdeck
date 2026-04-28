@@ -40,7 +40,7 @@ function parseNumericPageHint(pageHint) {
 }
 
 function buildSourceSearchText(source) {
-  return [source?.displayName, source?.bookKey, source?.fileHint, source?.notes]
+  return [source?.displayName, source?.bookKey, source?.fileHint, source?.notes, source?.sourceType]
     .map((value) => normalizeText(value))
     .filter(Boolean)
     .join(" ");

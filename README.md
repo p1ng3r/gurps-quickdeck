@@ -9,9 +9,12 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added clickable **Spell** names in the Spells drawer that open the same reference window.
 - Added a small Application v1 **QuickDeck Reference** pop-out with source/page hints, match-origin labeling (**Manual Index**, **Actor Data Hint**, **No Match**), PDF source matching metadata, safe **Open PDF / Copy Path** actions for matched file hints, and a first-pass **Search PDF Text** button for local snippet lookup.
 - Added an Application v1 **QuickDeck PDF Sources** manager for local source metadata (display name, book key, file hint, page offset, notes) with filename-based auto-fill helpers and live page-offset preview tools.
+- Added an Application v1 **QuickDeck Text Sources** manager for local pasted-text sources (id, display name, book key, raw text, created-at), including Add/Edit/Delete flows and a dedicated copyright warning.
 - Added an Application v1 **QuickDeck Reference Index** manager for manual reference entries (name, type, source/book key, displayed page, notes) stored client-side as JSON metadata only.
+- Added **Build Index from Text Source** workflow with a review table (checkbox, name, type, book key, confidence) and selected-row upsert into Reference Index by `name + type`.
 - Enhanced the **QuickDeck Reference Index** manager with DOM-only search/filtering and metadata-only JSON export/import tools (merge or replace) with safe validation and warning-first error handling.
 - Added a quick action in the **QuickDeck Reference** popup to **Add to Reference Index** (or **Edit Reference Index Entry** when an exact manual match already exists), opening the manager with a prefilled row and duplicate-safe exact name+type focus behavior.
+- Reference popup source matching now supports both **PDF** and **Text** source metadata; text-indexed skills display their source name (for example, **Dungeon Fantasy Adventurers Skills**).
 - Polished the **QuickDeck Reference** popup guidance with inline help for **Add to Reference Index**, match-origin status messaging, and a friendly no-match checklist for linking source/page metadata.
 - Added a **PDF import roadmap placeholder setting** and documentation for future user-provided local PDF indexing.
 - Copyright-safe approach: this module does **not** bundle GURPS rulebook text.
@@ -76,10 +79,21 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - PDF import roadmap placeholder toggle (no importer in this release).
   - Client-scoped JSON metadata store for PDF source definitions (path string only) including filename cleanup for display name/book key suggestions and non-destructive auto-fill when using FilePicker.
   - Client-scoped JSON metadata store for manual Reference Index entries (no PDF parsing, extraction, or embedded rulebook text).
+  - Client-scoped JSON metadata store for text sources containing user-pasted text (local-only).
   - Reference Index manager can filter rows by name/type/book key/displayed page/notes without re-rendering on each keystroke.
   - Reference Index manager can export current metadata JSON directly to clipboard.
   - Reference Index manager supports merge/replace JSON import with safe validation and invalid-JSON warnings (no crash).
 
+
+## Text Sources Index Builder (v0.3.0 Draft)
+
+- Open **Text Sources** from the QuickDeck window actions.
+- Add/edit/delete named text sources with **Display name**, **Book key**, and a large **Pasted text** textarea.
+- Use **Add "Dungeon Fantasy Adventurers Skills"** to create a prefilled starter source quickly.
+- Click **Build Index from Text Source** to parse likely skill entries using a 2-line pattern: `Skill Name` followed by `DX/Average`, `IQ/Hard`, etc.
+- Parser supports dagger symbols (`†` / `‡`) in skill lines, ignores obvious prose/header lines, and produces a confidence value for review.
+- Review rows before save; selected rows upsert into Reference Index by `name + type` only.
+- QuickDeck does **not** auto-store long rule text in Reference Index and does **not** bundle GURPS text in this repository.
 
 ## PDF Sources Page Offset Tips
 
