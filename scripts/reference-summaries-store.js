@@ -4,7 +4,8 @@ const MODULE_ID = "gurps-quickdeck";
 const REFERENCE_SUMMARIES_PATHS = [
   `modules/${MODULE_ID}/data/reference-summaries.json`,
   `modules/${MODULE_ID}/data/martial-arts-techniques.reference-summaries.json`,
-  `modules/${MODULE_ID}/data/martial-arts-combat.reference-summaries.json`
+  `modules/${MODULE_ID}/data/martial-arts-combat.reference-summaries.json`,
+  `modules/${MODULE_ID}/data/magic.reference-summaries.json`
 ];
 const ALLOWED_TYPES = new Set(["skill", "spell", "rule"]);
 
@@ -61,7 +62,14 @@ function normalizeReferenceSummaryEntry(entry = {}) {
     summary: asString(entry.summary),
     description: asString(entry.description),
     notes: asString(entry.notes),
-    specialtyRequired: asString(entry.specialtyRequired)
+    specialtyRequired: asString(entry.specialtyRequired),
+    spellClass: asString(entry.spellClass),
+    college: asString(entry.college),
+    duration: asString(entry.duration),
+    cost: asString(entry.cost),
+    timeToCast: asString(entry.timeToCast),
+    prerequisites: asString(entry.prerequisites),
+    item: asString(entry.item)
   };
 }
 

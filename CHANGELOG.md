@@ -7,7 +7,9 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Simplified QuickDeck Reference to use bundled `data/reference-summaries.json` as the primary source of reference content.
 - Expanded bundled reference summary loading to include `data/martial-arts-combat.reference-summaries.json` alongside existing base and martial-arts-techniques files.
+- Expanded bundled reference summary loading to include optional spell data from `data/magic.reference-summaries.json`, with safe no-crash handling for missing or malformed files.
 - Kept rich reference popup sections for Author Summary, Skill Details, Description, Notes, Source Name, and Displayed Page.
+- Added Spell Details rendering for bundled spell metadata fields (college, class, duration, cost, time to cast, prerequisites, item).
 - Kept clickable skills/spells and the reference popup workflow in QuickDeck.
 - Renamed manual Reference Index UX to **Local Overrides** to clarify this metadata is optional and user-owned.
 - Removed QuickDeck window actions for PDF Sources and Text Sources.
