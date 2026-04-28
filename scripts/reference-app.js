@@ -1,6 +1,7 @@
 import { getReferenceIndex } from "./reference-index-store.js";
 import { loadBundledReferenceSummaries, findBundledReferenceSummary } from "./reference-summaries-store.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
+import { buildReferenceLookupNames } from "./reference-lookup-name.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/reference.hbs";
 
@@ -16,7 +17,9 @@ function getTypeLabel(type) {
 }
 
 function findManualIndexMatch(referenceData = {}, entries = []) {
-  const normalizedName = normalizeText(referenceData.name);
+  const lookupNames = buildReferenceLookupNames(referenceData.name);
+  const normalizedName = lookupNames.exact;
+  const normalizedBaseName = lookupNames.base;
   const normalizedType = normalizeText(referenceData.type);
   if (!normalizedName) return null;
 
@@ -31,6 +34,16 @@ function findManualIndexMatch(referenceData = {}, entries = []) {
     return normalizeText(entry?.name) === normalizedName;
   });
   if (exactNameOnlyMatch) return { entry: exactNameOnlyMatch, mode: "exact-name" };
+
+  const baseNameTypeMatch = normalizedEntries.find((entry) => {
+    return normalizeText(entry?.name) === normalizedBaseName && normalizeText(entry?.type) === normalizedType;
+  });
+  if (baseNameTypeMatch) return { entry: baseNameTypeMatch, mode: "base-name-type", matchedBaseName: baseNameTypeMatch.name };
+
+  const baseNameOnlyMatch = normalizedEntries.find((entry) => {
+    return normalizeText(entry?.name) === normalizedBaseName;
+  });
+  if (baseNameOnlyMatch) return { entry: baseNameOnlyMatch, mode: "base-name", matchedBaseName: baseNameOnlyMatch.name };
 
   return null;
 }
@@ -65,9 +78,11 @@ export class QuickDeckReferenceApp extends Application {
     const bundledSummaries = await loadBundledReferenceSummaries();
     const bundledSummaryMatch = findBundledReferenceSummary(this.referenceData, bundledSummaries);
     const bundledSummaryEntry = bundledSummaryMatch?.entry ?? null;
+    const bundledBaseMatched = Boolean(bundledSummaryMatch && bundledSummaryMatch.mode.startsWith("base-name"));
 
     const manualMatch = findManualIndexMatch(this.referenceData, getReferenceIndex());
     const manualEntry = manualMatch?.entry ?? null;
+    const manualBaseMatched = Boolean(manualMatch && manualMatch.mode.startsWith("base-name"));
     const hasExactManualEntry = manualMatch?.mode === "exact-name-type";
 
     const sourceName =
@@ -90,6 +105,8 @@ export class QuickDeckReferenceApp extends Application {
       pageHint: this.referenceData.pageHint || null,
       hasManualEntry: Boolean(manualEntry),
       manualEntry,
+      hasManualBaseMatch: manualBaseMatched,
+      manualMatchedBaseName: manualMatch?.matchedBaseName || null,
       referenceIndexButtonLabel: hasExactManualEntry ? "Edit Local Override" : "Add Local Override",
       prefillEntryName: manualEntryPrefill.name,
       prefillEntryType: manualEntryPrefill.type,
@@ -126,6 +143,8 @@ export class QuickDeckReferenceApp extends Application {
       hasSourceName: Boolean(sourceName),
       hasDisplayedPage: Boolean(displayedPage),
       hasBundledMatch: Boolean(bundledSummaryEntry),
+      hasBundledBaseMatch: bundledBaseMatched,
+      bundledMatchedBaseName: bundledSummaryMatch?.matchedBaseName || null,
       hasSummaryData: Boolean(bundledSummaryEntry?.summary || bundledSummaryEntry?.description || bundledSummaryEntry?.notes),
       emptyStateText: "No bundled summary matched this entry yet."
     };
