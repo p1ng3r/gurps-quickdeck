@@ -4,57 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - v0.3.0 draft
 
-### Added
-- Spells drawer/tab foundation with search + empty-state handling.
-- Spell extraction from common actor paths (`system.spells`, `system.magic`, `system.traits.spells`) plus spell-like actor items.
-- Clickable skill names in Skills and Quick Skills drawers that open QuickDeck Reference.
-- Clickable spell names in Spells drawer that open QuickDeck Reference.
-- New Application v1 QuickDeck Reference window (local metadata matching, no network calls).
-- New Application v1 QuickDeck PDF Sources manager for local source metadata (display name, book key, file hint, page offset, notes) with QuickDeck-themed panel styling.
-- New Application v1 QuickDeck Reference Index manager for manual entries (name, type, source/book key, displayed page, notes).
-- New Application v1 QuickDeck Text Sources manager with Add/Edit/Delete for local text source records (`id`, `displayName`, `bookKey`, `rawText`, `createdAt`).
-- Text Sources UI now includes a large pasted-text editor, explicit local-storage copyright warning, and a one-click starter row for **Dungeon Fantasy Adventurers Skills** / `dungeon-fantasy-adventurers`.
-- Text Sources manager now adds **Build Index from Text Source** parsing and a review table with checkbox, name, type, book key, and confidence columns.
-- Added text parser for skill-like entries using two-line detection (`Skill Name` followed by `DX/Average`, `IQ/Hard`, etc.) with dagger support and obvious header/prose filtering.
-- Selected review rows now upsert into Reference Index via existing name+type semantics without storing full pasted descriptions.
-- Reference source matching now supports both PDF and Text source metadata and exposes matched source name in the QuickDeck Reference popup.
-- New client-scoped `textSourcesJson` setting for local text source storage (no network/export behavior).
-- Reference Index manager now supports DOM-only search/filter by name/type/book key/displayed page/notes.
-- Reference Index manager now supports metadata-only JSON export to clipboard.
-- Reference Index manager now supports safe JSON import (merge or replace) with entry normalization/validation and non-fatal invalid JSON warnings.
-- QuickDeck Reference popup now includes a direct **Add to Reference Index** / **Edit Reference Index Entry** workflow with prefilled metadata.
-- Added bundled `data/reference-summaries.json` support for author-written summaries/notes (skill/spell/rule) with safe JSON fetch fallback and no-crash behavior.
-- Expanded bundled `data/reference-summaries.json` normalization/display support to preserve and render richer fields (`sourceName`, `attribute`, `difficulty`, `defaults`, `description`, `specialtyRequired`) in the QuickDeck Reference popup with missing-field-safe fallback.
-- QuickDeck Reference popup now includes inline help clarifying that **Add to Reference Index** creates a reusable skill/spell bookmark for source/page lookup.
-- Client-scoped PDF source metadata setting stored as safe JSON.
-- Client-scoped manual Reference Index metadata setting stored as safe JSON.
-- Reference source matching utility that compares source hints against configured PDF source `bookKey`/`displayName` values (exact + partial).
-- Reference popup now computes PDF page target when page hint/displayed page is numeric (`pdfPage = displayed + pageOffset`).
-- Reference popup now adds safe **Open PDF** and **Copy Path** actions when a matched source includes a file/path hint, appending `#page=<target>` when available.
-- Open PDF flow now fails safely with non-fatal popup-block warning messaging and no iframe/PDF parsing behavior.
-- QuickDeck Reference popup now adds a **Search PDF Text** action that scans a matched local/world PDF source page-by-page for the current reference name and shows only a short snippet + matched page.
-- PDF text search now fails safely with explicit fallback message when PDF.js is unavailable: "PDF text search unavailable in this environment."
-- PDF text search MVP now enforces safe limits: single matched source, first-match stop, page scan cap, and no permanent full-text storage.
-- PDF import roadmap placeholder setting for future user-provided local PDF indexing.
-- PDF source rows now include a safe per-row file picker button that uses Foundry's FilePicker when available and falls back to manual path entry with non-fatal warnings if unavailable/failing.
-- PDF path selection now validates `.pdf` extensions and stores only the selected hint/path string in existing metadata settings (no parsing/rendering).
-- PDF source FilePicker flow now suggests cleaned metadata from selected filenames (strip `.pdf`, `GURPS`, `4th Edition`, normalize separators), title-cases display names, and slugs lowercase book keys.
-- Metadata auto-fill is non-destructive and only fills empty display name/book key fields.
-- PDF source rows now include a clearer page offset helper with number input, optional slider, sample displayed/book page field, computed PDF page preview field, and live formula text (`Book page X + offset Y = PDF page Z`).
-- PDF Sources window now explicitly explains page offset usage when PDF page numbering differs from printed book page numbers.
-
 ### Changed
-- Default drawer choices now include `spells`.
-- QuickDeck window actions now include a Reference Index button next to PDF Sources.
-- QuickDeck window actions now include a Text Sources button for local text-based indexing workflows.
-- QuickDeck Reference now shows match origin (Manual Index, Actor Data Hint, or No Match) and prioritizes manual Reference Index entries before actor source/page hints.
-- Reference popup now layers bundled summary text onto existing source matching: manual Reference Index still controls source/page links, while bundled entries can supply fallback `bookKey`/`displayedPage` when no manual entry exists.
-- QuickDeck Reference now shows matched-source details (matched source, displayed page, PDF target page, file/path hint) with safe no-match fallback messaging.
-- QuickDeck Reference now shows explicit match-origin status text for manual bookmark and actor-hint matches.
-- QuickDeck Reference no-match state now includes a friendly checklist (add PDF source, add/edit Reference Index entry, verify book key).
-- QuickDeck Reference Index manager now supports duplicate-safe prefill/open behavior: exact name+type matches are focused for edit instead of creating duplicate rows.
-- Reference Index manager now includes an explicit import safety warning: “Only import metadata you created. Do not paste copyrighted rulebook text.”
-- README updated with spells/reference/PDF source manager/roadmap notes, new PDF text-search MVP limits, PDF offset helper guidance, and copyright-safe policy.
+- Simplified QuickDeck Reference to use bundled `data/reference-summaries.json` as the primary source of reference content.
+- Kept rich reference popup sections for Author Summary, Skill Details, Description, Notes, Source Name, and Displayed Page.
+- Kept clickable skills/spells and the reference popup workflow in QuickDeck.
+- Renamed manual Reference Index UX to **Local Overrides** to clarify this metadata is optional and user-owned.
+- Removed QuickDeck window actions for PDF Sources and Text Sources.
+
+### Removed
+- Legacy PDF Sources manager UI and store modules.
+- Legacy Text Sources manager UI and store modules.
+- PDF text-search helper and source matcher modules tied to configured PDF/Text sources.
+- PDF/Text source templates and related roadmap/help text that no longer applies to the bundled reference workflow.
 
 ## [0.2.0] - 2026-04-27
 

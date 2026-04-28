@@ -1,7 +1,7 @@
 <section class="quickdeck-pdf-sources-shell quickdeck-reference-index-shell">
   <header class="quickdeck-reference-panel quickdeck-pdf-sources-header">
-    <h2>QuickDeck Reference Index</h2>
-    <p>Store manual reference metadata for skills, spells, and rules. No PDFs are parsed; only your local metadata is stored.</p>
+    <h2>QuickDeck Local Overrides</h2>
+    <p>Store optional local override metadata for skills, spells, and rules. Bundled repo summaries remain the default reference content.</p>
   </header>
 
   <section class="quickdeck-reference-panel quickdeck-pdf-sources-body">
@@ -53,7 +53,7 @@
       </ol>
       <p class="quickdeck-reference-empty" data-reference-filter-empty hidden><em>No entries match the current search.</em></p>
     {{else}}
-      <p class="quickdeck-reference-empty"><em>No reference index entries yet. Add one to get started.</em></p>
+      <p class="quickdeck-reference-empty"><em>No local overrides yet. Add one to override source/page metadata.</em></p>
     {{/if}}
 
     <section class="quickdeck-reference-index-import">
@@ -68,7 +68,7 @@
 
     <footer class="quickdeck-pdf-sources-actions">
       <button type="button" class="quickdeck-add-button" data-action="add-reference-index-entry">Add Entry</button>
-      <button type="button" class="quickdeck-roll-button" data-action="save-reference-index">Save Index</button>
+      <button type="button" class="quickdeck-roll-button" data-action="save-reference-index">Save Overrides</button>
     </footer>
   </section>
 </section>

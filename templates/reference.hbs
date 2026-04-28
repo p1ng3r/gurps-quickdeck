@@ -6,10 +6,6 @@
         <dt>Type</dt>
         <dd>{{type}}</dd>
       </div>
-      <div>
-        <dt>Match Origin</dt>
-        <dd>{{matchOriginLabel}}</dd>
-      </div>
       {{#if source}}
         <div>
           <dt>Source hint</dt>
@@ -26,7 +22,6 @@
   </header>
 
   <section class="quickdeck-reference-body quickdeck-reference-panel">
-    <p>{{placeholderText}}</p>
     <div class="quickdeck-reference-index-actions">
       <button
         type="button"
@@ -40,53 +35,6 @@
         {{referenceIndexButtonLabel}}
       </button>
     </div>
-    <p class="quickdeck-reference-help">
-      Add to Reference Index creates a bookmark for this skill/spell so QuickDeck knows which PDF source and page to use next time.
-    </p>
-    {{#unless hasLocalReference}}
-      <p class="quickdeck-reference-empty"><em>No local reference found yet.</em></p>
-    {{/unless}}
-
-    {{#if isManualOrigin}}
-      <p class="quickdeck-reference-status">
-        This reference is using your manual bookmark.
-      </p>
-    {{/if}}
-
-    {{#if isActorHintOrigin}}
-      <p class="quickdeck-reference-status">
-        This reference is using source/page data found on the actor.
-      </p>
-    {{/if}}
-
-    {{#if hasManualEntry}}
-      <div class="quickdeck-reference-sources">
-        <h3>Manual Index Match</h3>
-        <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
-          <div>
-            <dt>Name</dt>
-            <dd>{{manualEntry.name}}</dd>
-          </div>
-          <div>
-            <dt>Type</dt>
-            <dd>{{manualEntry.type}}</dd>
-          </div>
-          <div>
-            <dt>Book Key</dt>
-            <dd>{{#if manualEntry.bookKey}}{{manualEntry.bookKey}}{{else}}—{{/if}}</dd>
-          </div>
-          <div>
-            <dt>Displayed Page</dt>
-            <dd>{{#if manualEntry.displayedPage}}{{manualEntry.displayedPage}}{{else}}—{{/if}}</dd>
-          </div>
-          <div>
-            <dt>Notes</dt>
-            <dd>{{#if manualEntry.notes}}{{manualEntry.notes}}{{else}}—{{/if}}</dd>
-          </div>
-        </dl>
-      </div>
-    {{/if}}
-
 
     {{#if hasBundledSummary}}
       <div class="quickdeck-reference-sources">
@@ -115,14 +63,6 @@
             <dt>Specialty Required</dt>
             <dd>{{#if hasBundledSpecialtyRequired}}{{bundledSpecialtyRequired}}{{else}}—{{/if}}</dd>
           </div>
-          <div>
-            <dt>Source Name</dt>
-            <dd>{{#if hasBundledSourceName}}{{bundledSourceName}}{{else}}—{{/if}}</dd>
-          </div>
-          <div>
-            <dt>Displayed Page</dt>
-            <dd>{{#if hasBundledDisplayedPage}}{{bundledDisplayedPage}}{{else}}—{{/if}}</dd>
-          </div>
         </dl>
       </div>
     {{/if}}
@@ -142,113 +82,49 @@
     {{/if}}
 
     <div class="quickdeck-reference-sources">
-      <h3>Matched Source</h3>
-      {{#if hasMatchedSource}}
+      <h3>Source Info</h3>
+      <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+        <div>
+          <dt>Source Name</dt>
+          <dd>{{#if hasSourceName}}{{sourceName}}{{else}}—{{/if}}</dd>
+        </div>
+        <div>
+          <dt>Displayed Page</dt>
+          <dd>{{#if hasDisplayedPage}}{{displayedPage}}{{else}}—{{/if}}</dd>
+        </div>
+      </dl>
+    </div>
+
+    {{#if hasManualEntry}}
+      <div class="quickdeck-reference-sources">
+        <h3>Local Override</h3>
         <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
           <div>
-            <dt>Matched Source</dt>
-            <dd>{{matchedSource.displayName}}</dd>
+            <dt>Name</dt>
+            <dd>{{manualEntry.name}}</dd>
           </div>
           <div>
-            <dt>Source Type</dt>
-            <dd>{{matchedSourceType}}</dd>
+            <dt>Type</dt>
+            <dd>{{manualEntry.type}}</dd>
+          </div>
+          <div>
+            <dt>Book Key</dt>
+            <dd>{{#if manualEntry.bookKey}}{{manualEntry.bookKey}}{{else}}—{{/if}}</dd>
           </div>
           <div>
             <dt>Displayed Page</dt>
-            <dd>{{#if hasDisplayedPage}}{{displayedPage}}{{else}}—{{/if}}</dd>
+            <dd>{{#if manualEntry.displayedPage}}{{manualEntry.displayedPage}}{{else}}—{{/if}}</dd>
           </div>
           <div>
-            <dt>PDF Page Target</dt>
-            <dd>{{#if hasPdfPageTarget}}{{pdfPageTarget}}{{else}}—{{/if}}</dd>
-          </div>
-          <div>
-            <dt>File/path hint</dt>
-            <dd>{{#if matchedSource.fileHint}}{{matchedSource.fileHint}}{{else}}—{{/if}}</dd>
+            <dt>Notes</dt>
+            <dd>{{#if manualEntry.notes}}{{manualEntry.notes}}{{else}}—{{/if}}</dd>
           </div>
         </dl>
-        {{#if hasMatchedSourcePath}}
-          <div class="quickdeck-reference-match-actions">
-            <button
-              type="button"
-              class="quickdeck-reference-open-button"
-              data-action="open-matched-pdf"
-              data-file-hint="{{matchedSourcePath}}"
-              data-pdf-page-target="{{#if hasPdfPageTarget}}{{pdfPageTarget}}{{/if}}"
-            >
-              Open PDF
-            </button>
-            <button
-              type="button"
-              class="quickdeck-reference-copy-button"
-              data-action="copy-matched-pdf-path"
-              data-file-hint="{{matchedSourcePath}}"
-            >
-              Copy Path
-            </button>
-            {{#if hasPdfTextSearch}}
-              <button
-                type="button"
-                class="quickdeck-reference-search-button"
-                data-action="search-matched-pdf-text"
-                data-file-hint="{{matchedSourcePath}}"
-                data-pdf-page-target="{{#if hasPdfPageTarget}}{{pdfPageTarget}}{{/if}}"
-                {{#if isPdfSearchLoading}}disabled{{/if}}
-              >
-                {{#if isPdfSearchLoading}}Searching…{{else}}Search PDF Text{{/if}}
-              </button>
-            {{/if}}
-          </div>
+      </div>
+    {{/if}}
 
-          {{#if hasPdfSearchMessage}}
-            <div class="quickdeck-reference-pdf-search quickdeck-reference-pdf-search-{{pdfSearchStatus}}">
-              <p>{{pdfSearchMessage}}</p>
-              {{#if hasPdfSearchResult}}
-                <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
-                  <div>
-                    <dt>Matched Page</dt>
-                    <dd>{{pdfSearchResultPage}}</dd>
-                  </div>
-                  <div>
-                    <dt>Snippet</dt>
-                    <dd>{{pdfSearchSnippet}}</dd>
-                  </div>
-                </dl>
-              {{/if}}
-            </div>
-          {{/if}}
-        {{/if}}
-      {{else}}
-        <p class="quickdeck-reference-empty"><em>{{noMatchText}}</em></p>
-        {{#if showNoMatchChecklist}}
-          <div class="quickdeck-reference-empty quickdeck-reference-checklist">
-            <p>Try this checklist:</p>
-            <ul>
-              <li>Add a PDF Source</li>
-              <li>Add or edit a Reference Index entry</li>
-              <li>Make sure the book key matches</li>
-            </ul>
-          </div>
-        {{/if}}
-      {{/if}}
-    </div>
-
-    <div class="quickdeck-reference-sources">
-      <h3>Configured PDF Sources</h3>
-      {{#if hasConfiguredSources}}
-        <ul>
-          {{#each configuredSources as |pdfSource|}}
-            <li>
-              <strong>{{pdfSource.displayName}}</strong>
-              {{#if pdfSource.bookKey}}<span> · {{pdfSource.bookKey}}</span>{{/if}}
-              {{#if pdfSource.pageOffset}}<span> · offset {{pdfSource.pageOffset}}</span>{{/if}}
-              {{#if pdfSource.fileHint}}<div class="quickdeck-reference-muted">{{pdfSource.fileHint}}</div>{{/if}}
-              {{#if pdfSource.notes}}<div class="quickdeck-reference-muted">{{pdfSource.notes}}</div>{{/if}}
-            </li>
-          {{/each}}
-        </ul>
-      {{else}}
-        <p class="quickdeck-reference-empty"><em>{{sourcePlaceholderText}}</em></p>
-      {{/if}}
-    </div>
+    {{#unless hasSummaryData}}
+      <p class="quickdeck-reference-empty"><em>{{emptyStateText}}</em></p>
+    {{/unless}}
   </section>
 </section>
