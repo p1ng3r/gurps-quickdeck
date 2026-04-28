@@ -6,6 +6,7 @@ const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   DEFAULT_DRAWER: "defaultDrawer",
+  MINIMIZED: "isMinimized",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY
 };
 let quickDeckApp = null;
@@ -65,6 +66,15 @@ Hooks.once("init", () => {
       spells: "Spells"
     },
     default: "none"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.MINIMIZED, {
+    name: "QuickDeck Minimized State",
+    hint: "Whether QuickDeck opens in minimized icon mode for this client.",
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false
   });
 
 

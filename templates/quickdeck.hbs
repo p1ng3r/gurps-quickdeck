@@ -1,11 +1,4 @@
-<section class="quickdeck-shell {{#if isMinimized}}is-minimized{{/if}}">
-  {{#if isMinimized}}
-    <section class="quickdeck-minimized-pill">
-      <div class="quickdeck-minimized-title">GURPS QuickDeck</div>
-      <div class="quickdeck-minimized-actor">{{#if activeActorName}}{{activeActorName}}{{else}}No actor selected{{/if}}</div>
-      <button type="button" data-action="toggle-minimize" class="quickdeck-restore-button">Restore</button>
-    </section>
-  {{else}}
+<section class="quickdeck-shell">
   <aside class="quickdeck-sidebar">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
@@ -627,5 +620,4 @@
     </section>
     <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
   </main>
-  {{/if}}
 </section>
