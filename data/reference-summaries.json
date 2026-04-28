@@ -1,0 +1,10 @@
+[
+  {
+    "name": "Lockpicking",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "80",
+    "summary": "Lets you open locks quickly and quietly using proper tools; difficult locks apply penalties and rushed attempts are harder.",
+    "notes": "GM: Apply extra penalties for poor tools or stressful time pressure."
+  }
+]

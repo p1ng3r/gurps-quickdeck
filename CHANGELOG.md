@@ -23,6 +23,7 @@ All notable changes to this project will be documented in this file.
 - Reference Index manager now supports metadata-only JSON export to clipboard.
 - Reference Index manager now supports safe JSON import (merge or replace) with entry normalization/validation and non-fatal invalid JSON warnings.
 - QuickDeck Reference popup now includes a direct **Add to Reference Index** / **Edit Reference Index Entry** workflow with prefilled metadata.
+- Added bundled `data/reference-summaries.json` support for author-written summaries/notes (skill/spell/rule) with safe JSON fetch fallback and no-crash behavior.
 - QuickDeck Reference popup now includes inline help clarifying that **Add to Reference Index** creates a reusable skill/spell bookmark for source/page lookup.
 - Client-scoped PDF source metadata setting stored as safe JSON.
 - Client-scoped manual Reference Index metadata setting stored as safe JSON.
@@ -46,6 +47,7 @@ All notable changes to this project will be documented in this file.
 - QuickDeck window actions now include a Reference Index button next to PDF Sources.
 - QuickDeck window actions now include a Text Sources button for local text-based indexing workflows.
 - QuickDeck Reference now shows match origin (Manual Index, Actor Data Hint, or No Match) and prioritizes manual Reference Index entries before actor source/page hints.
+- Reference popup now layers bundled summary text onto existing source matching: manual Reference Index still controls source/page links, while bundled entries can supply fallback `bookKey`/`displayedPage` when no manual entry exists.
 - QuickDeck Reference now shows matched-source details (matched source, displayed page, PDF target page, file/path hint) with safe no-match fallback messaging.
 - QuickDeck Reference now shows explicit match-origin status text for manual bookmark and actor-hint matches.
 - QuickDeck Reference no-match state now includes a friendly checklist (add PDF source, add/edit Reference Index entry, verify book key).
