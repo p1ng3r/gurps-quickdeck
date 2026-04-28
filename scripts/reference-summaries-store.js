@@ -1,5 +1,8 @@
 const MODULE_ID = "gurps-quickdeck";
-const REFERENCE_SUMMARIES_PATH = `modules/${MODULE_ID}/data/reference-summaries.json`;
+const REFERENCE_SUMMARIES_PATHS = [
+  `modules/${MODULE_ID}/data/reference-summaries.json`,
+  `modules/${MODULE_ID}/data/martial-arts-techniques.reference-summaries.json`
+];
 const ALLOWED_TYPES = new Set(["skill", "spell", "rule"]);
 
 let cachedSummaries = null;
@@ -70,35 +73,58 @@ function normalizeSummaryArray(entries) {
     .filter((entry) => entry.name);
 }
 
-export async function loadBundledReferenceSummaries() {
-  if (loadAttempted) return cachedSummaries ?? [];
-  loadAttempted = true;
+function makeDedupKey(entry = {}) {
+  const name = asLookupText(entry.name);
+  const type = asLookupText(entry.type);
+  const sourceOrBook = asLookupText(entry.bookKey || entry.sourceName);
+  return `${name}|${type}|${sourceOrBook}`;
+}
 
+async function loadSummaryFile(path) {
   try {
-    const response = await fetch(REFERENCE_SUMMARIES_PATH, { method: "GET" });
+    const response = await fetch(path, { method: "GET" });
     if (!response.ok) {
-      warnLoadIssue(`Bundled reference summaries unavailable at ${REFERENCE_SUMMARIES_PATH}; continuing without summaries.`, {
+      warnLoadIssue(`Bundled reference summaries unavailable at ${path}; continuing.`, {
         status: response.status,
         statusText: response.statusText
       });
-      cachedSummaries = [];
-      return cachedSummaries;
+      return [];
     }
 
     const parsed = await response.json();
     if (!Array.isArray(parsed)) {
-      warnLoadIssue("Bundled reference summaries JSON is not an array; continuing without summaries.");
-      cachedSummaries = [];
-      return cachedSummaries;
+      warnLoadIssue(`Bundled reference summaries JSON at ${path} is not an array; continuing.`);
+      return [];
     }
 
-    cachedSummaries = normalizeSummaryArray(parsed);
-    return cachedSummaries;
+    return normalizeSummaryArray(parsed);
   } catch (error) {
-    warnLoadIssue("Failed to load bundled reference summaries; continuing without summaries.", error);
-    cachedSummaries = [];
-    return cachedSummaries;
+    warnLoadIssue(`Failed to load bundled reference summaries from ${path}; continuing.`, error);
+    return [];
   }
+}
+
+function dedupeSummaries(entries = []) {
+  const deduped = [];
+  const seen = new Set();
+
+  for (const entry of entries) {
+    const key = makeDedupKey(entry);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(entry);
+  }
+
+  return deduped;
+}
+
+export async function loadBundledReferenceSummaries() {
+  if (loadAttempted) return cachedSummaries ?? [];
+  loadAttempted = true;
+
+  const loadedArrays = await Promise.all(REFERENCE_SUMMARIES_PATHS.map((path) => loadSummaryFile(path)));
+  cachedSummaries = dedupeSummaries(loadedArrays.flat());
+  return cachedSummaries;
 }
 
 export function findBundledReferenceSummary(referenceData = {}, summaries = []) {
