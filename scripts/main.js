@@ -127,6 +127,28 @@ Hooks.on("deleteActor", (actor) => {
   quickDeckApp.onActorDeleted(actor.id);
 });
 
+function invalidateQuickDeckActorCache(actorId) {
+  if (!quickDeckApp || !actorId) return;
+  quickDeckApp.invalidateActorCache(actorId);
+  if (quickDeckApp.rendered) quickDeckApp.render(false);
+}
+
+Hooks.on("updateActor", (actor) => {
+  invalidateQuickDeckActorCache(actor?.id);
+});
+
+Hooks.on("createItem", (item) => {
+  invalidateQuickDeckActorCache(item?.parent?.id);
+});
+
+Hooks.on("updateItem", (item) => {
+  invalidateQuickDeckActorCache(item?.parent?.id);
+});
+
+Hooks.on("deleteItem", (item) => {
+  invalidateQuickDeckActorCache(item?.parent?.id);
+});
+
 function refreshQuickDeckOnCombatChange() {
   if (!quickDeckApp?.rendered) return;
   quickDeckApp.render(false);

@@ -37,6 +37,7 @@ export class QuickDeckApp extends Application {
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
     this._stateLoadedFromSettings = false;
+    this._actorExtractionCache = new Map();
     this.loadPersistedState();
   }
 
@@ -105,12 +106,45 @@ export class QuickDeckApp extends Application {
   }
 
   onActorDeleted(actorId) {
+    this.invalidateActorCache(actorId);
     this.removeActorFromRoster(actorId);
     this.render();
   }
 
   getActiveActor() {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
+  }
+
+  getActorCacheVersion(actor) {
+    if (!actor?.id) return null;
+    const actorModified = foundry.utils.getProperty(actor, "_stats.modifiedTime") ?? "";
+    const itemsSize = Number(actor?.items?.size ?? actor?.items?.length ?? 0);
+    return `${actor.id}|${actorModified}|${itemsSize}`;
+  }
+
+  invalidateActorCache(actorId = null) {
+    if (!actorId) {
+      this._actorExtractionCache.clear();
+      return;
+    }
+    this._actorExtractionCache.delete(String(actorId));
+  }
+
+  getActorExtractedData(actor) {
+    if (!actor?.id) return { attacks: [], skills: [], spells: [] };
+
+    const cacheKey = String(actor.id);
+    const version = this.getActorCacheVersion(actor);
+    const cached = this._actorExtractionCache.get(cacheKey);
+    if (cached?.version === version) return cached.data;
+
+    const data = {
+      attacks: this.extractAttacks(actor),
+      skills: this.extractSkills(actor),
+      spells: this.extractSpells(actor)
+    };
+    this._actorExtractionCache.set(cacheKey, { version, data });
+    return data;
   }
 
   getFirstDefinedValue(source, paths = []) {
@@ -807,9 +841,10 @@ export class QuickDeckApp extends Application {
       return;
     }
 
-    const melee = this.extractAttacks(actor).filter((item) => item.type === "Melee").length;
-    const ranged = this.extractAttacks(actor).filter((item) => item.type === "Ranged").length;
-    const skills = this.extractSkills(actor).length;
+    const extracted = this.getActorExtractedData(actor);
+    const melee = extracted.attacks.filter((item) => item.type === "Melee").length;
+    const ranged = extracted.attacks.filter((item) => item.type === "Ranged").length;
+    const skills = extracted.skills.length;
 
     console.log("gurps-quickdeck | Active actor debug summary", {
       actor: actor.name,
@@ -1630,6 +1665,11 @@ export class QuickDeckApp extends Application {
   async close(options) {
     this.cancelTokenDrop({ render: false });
     this.removeFloatingRestoreIcon();
+    if (this._actorSelectTimeout) {
+      clearTimeout(this._actorSelectTimeout);
+      this._actorSelectTimeout = null;
+    }
+    this.invalidateActorCache();
     return super.close(options);
   }
 
@@ -1833,13 +1873,14 @@ export class QuickDeckApp extends Application {
       }));
 
     const activeActor = this.getActiveActor();
-    const attacks = this.extractAttacks(activeActor);
-    const skills = this.extractSkills(activeActor);
+    const extractedActorData = this.getActorExtractedData(activeActor);
+    const attacks = extractedActorData.attacks;
+    const skills = extractedActorData.skills;
     const combatSearch = this.combatSearch;
     const skillsSearch = this.skillsSearch;
     const quickSkillsSearch = this.quickSkillsSearch;
     const spellsSearch = this.spellsSearch;
-    const spells = this.extractSpells(activeActor);
+    const spells = extractedActorData.spells;
 
     const indexedAttacks = attacks.map((attack, index) => ({
       ...attack,
@@ -2179,7 +2220,7 @@ export class QuickDeckApp extends Application {
       if (!actorId || Number.isNaN(attackIndex)) return;
 
       const actor = game.actors.get(actorId);
-      const attacks = this.extractAttacks(actor);
+      const attacks = this.getActorExtractedData(actor).attacks;
       const attack = attacks[attackIndex];
       if (!attack) return;
 
@@ -2212,7 +2253,7 @@ export class QuickDeckApp extends Application {
       if (!actorId || Number.isNaN(skillIndex)) return;
 
       const actor = game.actors.get(actorId);
-      const skills = this.extractSkills(actor);
+      const skills = this.getActorExtractedData(actor).skills;
       const skill = skills[skillIndex];
       if (!skill) return;
 

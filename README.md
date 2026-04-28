@@ -6,6 +6,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 - QuickDeck Reference now uses bundled repo data from `data/reference-summaries.json` as the primary reference source.
 - Bundled reference loader also reads optional martial-arts packs from `data/martial-arts-techniques.reference-summaries.json` and `data/martial-arts-combat.reference-summaries.json`.
+- Bundled reference loader also reads optional basic-set skills data from `data/basic-set-skills.reference-summaries.json`.
 - Bundled reference loader also reads optional magic spell data from `data/magic.reference-summaries.json`.
 - Reference popup keeps rich display sections for **Author Summary**, **Skill Details**, **Spell Details**, **Description**, **Notes**, **Source Name**, and **Displayed Page**.
 - Skills and spells remain clickable and still open the QuickDeck Reference popup.
@@ -51,7 +52,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Reference helpers:
   - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
   - Matching order is bundled repo summary data first, with optional Local Override metadata applied for personal source/page replacements.
-  - Module authors can ship local reference summaries in `data/reference-summaries.json` and optional expansion packs in `data/martial-arts-techniques.reference-summaries.json`, `data/martial-arts-combat.reference-summaries.json`, and `data/magic.reference-summaries.json`; popup matching is exact `name + type` first, then exact `name`, and the popup displays **Author Summary**, optional notes, and optional source/page metadata.
+  - Module authors can ship local reference summaries in `data/reference-summaries.json` and optional expansion packs in `data/basic-set-skills.reference-summaries.json`, `data/martial-arts-techniques.reference-summaries.json`, `data/martial-arts-combat.reference-summaries.json`, and `data/magic.reference-summaries.json`; popup matching is exact `name + type` first, then exact `name`, then base-name fallback, and the popup displays **Author Summary**, optional notes, and optional source/page metadata.
   - Bundled `reference-summaries.json` entries now support richer fields (`sourceName`, `attribute`, `difficulty`, `defaults`, `description`, `specialtyRequired`) and the popup renders them in dedicated **Skill Details**, **Description**, and **Notes** sections with safe fallback when fields are missing.
   - Bundled spell entries support spell-specific metadata (`spellClass`, `college`, `duration`, `cost`, `timeToCast`, `prerequisites`, `item`) and render in a dedicated **Spell Details** section when present.
   - The same popup provides **Add Local Override** / **Edit Local Override** to jump directly into the Local Overrides manager with prefilled metadata from the current reference.
@@ -111,3 +112,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - **Foundry VTT:** v13 target.
 - **Platform:** Forge VTT supported.
 - **System:** GURPS 4e Game Aid.
+
+## Forge-Safe Behavior Notes
+
+- QuickDeck does not use browser drag/drop to the canvas for token placement; token placement uses an explicit click-to-place arming flow.
+- QuickDeck only opens actor sheets through the dedicated `openActorSheet(actorId)` flow.
+- Global pointer/window listeners used for token placement and restore-pill drag are cleaned up on cancel, minimize, restore, close, and scene changes.
+- Roll/token placement failures are warning-first and do not intentionally crash the app workflow.
