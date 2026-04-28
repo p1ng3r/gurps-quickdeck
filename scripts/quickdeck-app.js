@@ -7,7 +7,8 @@ const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
-  DEFAULT_DRAWER: "defaultDrawer"
+  DEFAULT_DRAWER: "defaultDrawer",
+  MINIMIZED: "isMinimized"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
 
@@ -30,6 +31,7 @@ export class QuickDeckApp extends Application {
     this._pendingTokenDropCleanup = null;
     this._tokenDropSceneId = null;
     this.isMinimized = false;
+    this._floatingRestoreIcon = null;
     this._stateLoadedFromSettings = false;
     this.loadPersistedState();
   }
@@ -526,6 +528,7 @@ export class QuickDeckApp extends Application {
     } else {
       this.quickSkillSelectionsByActor = {};
     }
+    this.isMinimized = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.MINIMIZED));
 
     this._stateLoadedFromSettings = true;
   }
@@ -549,6 +552,11 @@ export class QuickDeckApp extends Application {
     if (!game?.settings) return;
     const serialized = this.serializeQuickSkillsState();
     game.settings.set(MODULE_ID, SETTING_KEYS.QUICK_SKILLS, JSON.stringify(serialized));
+  }
+
+  persistMinimizedState() {
+    if (!game?.settings) return;
+    game.settings.set(MODULE_ID, SETTING_KEYS.MINIMIZED, Boolean(this.isMinimized));
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -1581,17 +1589,82 @@ export class QuickDeckApp extends Application {
   toggleMinimizedState() {
     this.isMinimized = !this.isMinimized;
     if (this.isMinimized) this.cancelTokenDrop({ render: false });
-    this.render(false);
+    this.persistMinimizedState();
+    this.syncMinimizedPresentation();
   }
 
   async minimize() {
     this.cancelTokenDrop({ render: false });
-    return super.minimize();
+    if (!this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState();
+    }
+    this.syncMinimizedPresentation();
+    return this;
   }
 
   async close(options) {
     this.cancelTokenDrop({ render: false });
+    this.removeFloatingRestoreIcon();
     return super.close(options);
+  }
+
+  async _render(force = false, options = {}) {
+    const result = await super._render(force, options);
+    this.syncMinimizedPresentation();
+    return result;
+  }
+
+  syncMinimizedPresentation() {
+    if (!this.rendered) return;
+    if (this.isMinimized) {
+      this.ensureFloatingRestoreIcon();
+      this.element?.hide();
+      return;
+    }
+
+    this.removeFloatingRestoreIcon();
+    this.element?.show();
+    this.bringToTop();
+  }
+
+  ensureFloatingRestoreIcon() {
+    const existing = document.getElementById(this.getFloatingRestoreIconId());
+    if (existing) {
+      this._floatingRestoreIcon = existing;
+      return;
+    }
+
+    const icon = document.createElement("button");
+    icon.type = "button";
+    icon.id = this.getFloatingRestoreIconId();
+    icon.className = "quickdeck-floating-restore";
+    icon.title = "Restore GURPS QuickDeck";
+    icon.setAttribute("aria-label", "Restore GURPS QuickDeck");
+    icon.innerHTML = '<span class="quickdeck-floating-restore-mark">QD</span><span class="quickdeck-floating-restore-label">QuickDeck</span>';
+    icon.addEventListener("click", this.onFloatingRestoreClick);
+    document.body.appendChild(icon);
+    this._floatingRestoreIcon = icon;
+  }
+
+  getFloatingRestoreIconId() {
+    return `quickdeck-floating-restore-${this.appId}`;
+  }
+
+  onFloatingRestoreClick = (event) => {
+    event.preventDefault();
+    this.isMinimized = false;
+    this.persistMinimizedState();
+    this.syncMinimizedPresentation();
+    this.render(false);
+  };
+
+  removeFloatingRestoreIcon() {
+    const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    if (!icon) return;
+    icon.removeEventListener("click", this.onFloatingRestoreClick);
+    icon.remove();
+    this._floatingRestoreIcon = null;
   }
 
   getData() {
@@ -1751,7 +1824,6 @@ export class QuickDeckApp extends Application {
           }
         : null,
       activeActorName: activeActor?.name ?? null,
-      isMinimized: this.isMinimized,
       isTokenDropArmedForActive:
         Boolean(activeActor?.id) && this.pendingTokenDropActorId === activeActor.id,
       gurpsData,
