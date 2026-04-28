@@ -27,6 +27,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Added Forge-safe **Drop Token** click-to-place flow.
 - Added **Escape** key cancel for token placement.
 - Added QuickDeck **minimize/restore** controls.
+- Minimized **QD QuickDeck** restore pill is now draggable and remembers its position per client.
 - Hardened roll/chat error handling.
 
 ## Features
@@ -41,6 +42,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Roster actor IDs persist per client/user.
   - Quick Skills selections persist per actor ID per client/user.
   - Minimized/expanded QuickDeck window state persists per client/user.
+  - Minimized restore pill position persists per client/user.
   - Missing/deleted actors are cleaned up defensively.
 - Drawer tools:
   - **Combat Burst**: defenses, HP/FP edit, attacks, roll buttons, and damage actions.
@@ -88,9 +90,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
    - **Skills** to browse and check skills you want pinned.
    - **Quick Skills** to use pinned skills quickly.
 5. Edit HP/FP directly in Combat Burst.
-6. Click **Minimize** to collapse QuickDeck into a compact top-screen **QD QuickDeck** restore pill.
-7. Click the floating restore pill to reopen QuickDeck with one click.
-8. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, and minimized state restore per client.
+6. Click **Minimize** to collapse QuickDeck into a compact **QD QuickDeck** restore pill.
+7. Drag the floating restore pill to place it anywhere on screen.
+8. Click the floating restore pill to reopen QuickDeck with one click.
+9. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, minimized state, and restore pill position restore per client.
 
 ## Branch Workflow
 

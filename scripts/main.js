@@ -7,6 +7,7 @@ const SETTING_KEYS = {
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
+  RESTORE_PILL_POSITION: "restorePillPosition",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY
 };
 let quickDeckApp = null;
@@ -75,6 +76,15 @@ Hooks.once("init", () => {
     config: false,
     type: Boolean,
     default: false
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, {
+    name: "QuickDeck Restore Pill Position",
+    hint: "Client-side restore pill position for minimized QuickDeck.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "null"
   });
 
 
