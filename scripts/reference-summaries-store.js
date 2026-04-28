@@ -137,12 +137,15 @@ function buildSummaryLookup(summaries = []) {
   const byName = new Map();
 
   for (const entry of summaries) {
-    const name = asLookupText(entry?.name);
-    if (!name) continue;
+    const lookupNames = buildReferenceLookupNames(entry?.name);
+    if (!lookupNames.exact) continue;
     const type = asLookupText(entry?.type);
-    const nameTypeKey = `${name}|${type}`;
-    if (!byNameType.has(nameTypeKey)) byNameType.set(nameTypeKey, entry);
-    if (!byName.has(name)) byName.set(name, entry);
+
+    for (const nameAlias of lookupNames.aliases) {
+      const nameTypeKey = `${nameAlias}|${type}`;
+      if (!byNameType.has(nameTypeKey)) byNameType.set(nameTypeKey, entry);
+      if (!byName.has(nameAlias)) byName.set(nameAlias, entry);
+    }
   }
 
   return { byNameType, byName };

@@ -21,14 +21,19 @@ export function buildReferenceLookupNames(name) {
     return {
       exact: "",
       base: "",
-      hasBaseVariant: false
+      hasBaseVariant: false,
+      aliases: []
     };
   }
 
   const base = asLookupText(getReferenceBaseName(name));
+  const aliases = [normalizedName];
+  if (base && base !== normalizedName) aliases.push(base);
+
   return {
     exact: normalizedName,
     base,
-    hasBaseVariant: Boolean(base && base !== normalizedName)
+    hasBaseVariant: Boolean(base && base !== normalizedName),
+    aliases
   };
 }
