@@ -8,7 +8,8 @@ const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   DEFAULT_DRAWER: "defaultDrawer",
-  MINIMIZED: "isMinimized"
+  MINIMIZED: "isMinimized",
+  RESTORE_PILL_POSITION: "restorePillPosition"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
 
@@ -32,6 +33,9 @@ export class QuickDeckApp extends Application {
     this._tokenDropSceneId = null;
     this.isMinimized = false;
     this._floatingRestoreIcon = null;
+    this._restorePillDragCleanup = null;
+    this._restorePillPreventClick = false;
+    this.restorePillPosition = null;
     this._stateLoadedFromSettings = false;
     this.loadPersistedState();
   }
@@ -529,6 +533,11 @@ export class QuickDeckApp extends Application {
       this.quickSkillSelectionsByActor = {};
     }
     this.isMinimized = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.MINIMIZED));
+    const savedRestorePillPosition = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION),
+      null
+    );
+    this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
 
     this._stateLoadedFromSettings = true;
   }
@@ -557,6 +566,21 @@ export class QuickDeckApp extends Application {
   persistMinimizedState() {
     if (!game?.settings) return;
     game.settings.set(MODULE_ID, SETTING_KEYS.MINIMIZED, Boolean(this.isMinimized));
+  }
+
+  normalizeRestorePillPosition(position) {
+    if (!position || typeof position !== "object") return null;
+    const top = Number(position.top);
+    const left = Number(position.left);
+    if (!Number.isFinite(top) || !Number.isFinite(left)) return null;
+    return { top, left };
+  }
+
+  persistRestorePillPosition(position) {
+    const normalized = this.normalizeRestorePillPosition(position);
+    this.restorePillPosition = normalized;
+    if (!game?.settings) return;
+    game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -1632,6 +1656,7 @@ export class QuickDeckApp extends Application {
     const existing = document.getElementById(this.getFloatingRestoreIconId());
     if (existing) {
       this._floatingRestoreIcon = existing;
+      this.applyRestorePillPosition(existing);
       return;
     }
 
@@ -1639,12 +1664,15 @@ export class QuickDeckApp extends Application {
     icon.type = "button";
     icon.id = this.getFloatingRestoreIconId();
     icon.className = "quickdeck-floating-restore";
-    icon.title = "Restore GURPS QuickDeck";
-    icon.setAttribute("aria-label", "Restore GURPS QuickDeck");
+    icon.title = "Left-click restore · Right-drag move";
+    icon.setAttribute("aria-label", "Left-click restore · Right-drag move");
     icon.innerHTML = '<span class="quickdeck-floating-restore-mark">QD</span><span class="quickdeck-floating-restore-label">QuickDeck</span>';
+    icon.addEventListener("contextmenu", this.onFloatingRestoreContextMenu);
+    icon.addEventListener("pointerdown", this.onFloatingRestorePointerDown);
     icon.addEventListener("click", this.onFloatingRestoreClick);
     document.body.appendChild(icon);
     this._floatingRestoreIcon = icon;
+    this.applyRestorePillPosition(icon);
   }
 
   getFloatingRestoreIconId() {
@@ -1653,15 +1681,130 @@ export class QuickDeckApp extends Application {
 
   onFloatingRestoreClick = (event) => {
     event.preventDefault();
+    if (this._restorePillPreventClick) {
+      this._restorePillPreventClick = false;
+      return;
+    }
     this.isMinimized = false;
     this.persistMinimizedState();
     this.syncMinimizedPresentation();
     this.render(false);
   };
 
-  removeFloatingRestoreIcon() {
+  onFloatingRestoreContextMenu = (event) => {
+    event.preventDefault();
+  };
+
+  onFloatingRestorePointerDown = (event) => {
+    if (event.button !== 2) return;
+
     const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
     if (!icon) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    this._restorePillPreventClick = true;
+    this.stopRestorePillDrag();
+
+    const startLeft = Number.parseFloat(icon.style.left) || icon.offsetLeft || 0;
+    const startTop = Number.parseFloat(icon.style.top) || icon.offsetTop || 0;
+    const startClientX = Number(event.clientX);
+    const startClientY = Number(event.clientY);
+    const dragThreshold = 3;
+    let didDrag = false;
+
+    const updatePosition = (nextLeft, nextTop) => {
+      const clamped = this.getClampedRestorePillPosition(nextLeft, nextTop, icon);
+      icon.style.left = `${clamped.left}px`;
+      icon.style.top = `${clamped.top}px`;
+      icon.style.right = "auto";
+      this.restorePillPosition = clamped;
+    };
+
+    const onPointerMove = (moveEvent) => {
+      const deltaX = Number(moveEvent.clientX) - startClientX;
+      const deltaY = Number(moveEvent.clientY) - startClientY;
+      if (!didDrag && (Math.abs(deltaX) >= dragThreshold || Math.abs(deltaY) >= dragThreshold)) {
+        didDrag = true;
+      }
+      updatePosition(startLeft + deltaX, startTop + deltaY);
+    };
+
+    const onPointerUp = () => {
+      if (!didDrag) {
+        this._restorePillPreventClick = false;
+      } else {
+        this.persistRestorePillPosition(this.restorePillPosition);
+      }
+      this.stopRestorePillDrag();
+    };
+
+    const onWindowBlur = () => {
+      if (didDrag) this.persistRestorePillPosition(this.restorePillPosition);
+      this.stopRestorePillDrag();
+    };
+
+    const abortController = typeof AbortController === "function" ? new AbortController() : null;
+    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+    window.addEventListener("pointermove", onPointerMove, listenerOptions);
+    window.addEventListener("pointerup", onPointerUp, listenerOptions);
+    window.addEventListener("blur", onWindowBlur, listenerOptions);
+
+    this._restorePillDragCleanup = () => {
+      if (abortController) {
+        abortController.abort();
+        return;
+      }
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("blur", onWindowBlur);
+    };
+  };
+
+  stopRestorePillDrag() {
+    if (typeof this._restorePillDragCleanup === "function") {
+      this._restorePillDragCleanup();
+    }
+    this._restorePillDragCleanup = null;
+  }
+
+  getClampedRestorePillPosition(left, top, icon) {
+    const pill = icon ?? this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    const rect = pill?.getBoundingClientRect?.();
+    const width = rect?.width ?? pill?.offsetWidth ?? 0;
+    const height = rect?.height ?? pill?.offsetHeight ?? 0;
+    const maxLeft = Math.max(0, window.innerWidth - width);
+    const maxTop = Math.max(0, window.innerHeight - height);
+    return {
+      left: Math.min(Math.max(0, Number(left) || 0), maxLeft),
+      top: Math.min(Math.max(0, Number(top) || 0), maxTop)
+    };
+  }
+
+  applyRestorePillPosition(icon) {
+    const pill = icon ?? this._floatingRestoreIcon;
+    if (!pill) return;
+
+    const fallbackRect = pill.getBoundingClientRect();
+    const fallbackPosition = {
+      left: fallbackRect.left,
+      top: fallbackRect.top
+    };
+    const desired = this.restorePillPosition ?? fallbackPosition;
+    const clamped = this.getClampedRestorePillPosition(desired.left, desired.top, pill);
+    pill.style.left = `${clamped.left}px`;
+    pill.style.top = `${clamped.top}px`;
+    pill.style.right = "auto";
+    this.restorePillPosition = clamped;
+    this.persistRestorePillPosition(clamped);
+  }
+
+  removeFloatingRestoreIcon() {
+    this.stopRestorePillDrag();
+    const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    if (!icon) return;
+    icon.removeEventListener("contextmenu", this.onFloatingRestoreContextMenu);
+    icon.removeEventListener("pointerdown", this.onFloatingRestorePointerDown);
     icon.removeEventListener("click", this.onFloatingRestoreClick);
     icon.remove();
     this._floatingRestoreIcon = null;
