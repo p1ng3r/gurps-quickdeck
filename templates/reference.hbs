@@ -74,6 +74,42 @@
       </div>
     {{/if}}
 
+    {{#if hasBundledSpellDetails}}
+      <div class="quickdeck-reference-sources">
+        <h3>Spell Details</h3>
+        <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+          <div>
+            <dt>College</dt>
+            <dd>{{#if hasBundledCollege}}{{bundledCollege}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Class</dt>
+            <dd>{{#if hasBundledSpellClass}}{{bundledSpellClass}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Duration</dt>
+            <dd>{{#if hasBundledDuration}}{{bundledDuration}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Cost</dt>
+            <dd>{{#if hasBundledCost}}{{bundledCost}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Time to Cast</dt>
+            <dd>{{#if hasBundledTimeToCast}}{{bundledTimeToCast}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Prerequisites</dt>
+            <dd>{{#if hasBundledPrerequisites}}{{bundledPrerequisites}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Item</dt>
+            <dd>{{#if hasBundledItem}}{{bundledItem}}{{else}}—{{/if}}</dd>
+          </div>
+        </dl>
+      </div>
+    {{/if}}
+
     {{#if hasBundledDescription}}
       <div class="quickdeck-reference-sources">
         <h3>Description</h3>

@@ -124,12 +124,26 @@ export class QuickDeckReferenceApp extends Application {
       bundledDifficulty: bundledSummaryEntry?.difficulty || null,
       bundledDefaults: bundledSummaryEntry?.defaults || null,
       bundledSpecialtyRequired: bundledSummaryEntry?.specialtyRequired || null,
+      bundledSpellClass: bundledSummaryEntry?.spellClass || null,
+      bundledCollege: bundledSummaryEntry?.college || null,
+      bundledDuration: bundledSummaryEntry?.duration || null,
+      bundledCost: bundledSummaryEntry?.cost || null,
+      bundledTimeToCast: bundledSummaryEntry?.timeToCast || null,
+      bundledPrerequisites: bundledSummaryEntry?.prerequisites || null,
+      bundledItem: bundledSummaryEntry?.item || null,
       hasBundledSourceName: Boolean(bundledSummaryEntry?.sourceName),
       hasBundledDisplayedPage: Boolean(bundledSummaryEntry?.displayedPage),
       hasBundledAttribute: Boolean(bundledSummaryEntry?.attribute),
       hasBundledDifficulty: Boolean(bundledSummaryEntry?.difficulty),
       hasBundledDefaults: Boolean(bundledSummaryEntry?.defaults),
       hasBundledSpecialtyRequired: Boolean(bundledSummaryEntry?.specialtyRequired),
+      hasBundledSpellClass: Boolean(bundledSummaryEntry?.spellClass),
+      hasBundledCollege: Boolean(bundledSummaryEntry?.college),
+      hasBundledDuration: Boolean(bundledSummaryEntry?.duration),
+      hasBundledCost: Boolean(bundledSummaryEntry?.cost),
+      hasBundledTimeToCast: Boolean(bundledSummaryEntry?.timeToCast),
+      hasBundledPrerequisites: Boolean(bundledSummaryEntry?.prerequisites),
+      hasBundledItem: Boolean(bundledSummaryEntry?.item),
       hasBundledSkillDetails: Boolean(
         bundledSummaryEntry?.attribute ||
           bundledSummaryEntry?.difficulty ||
@@ -137,6 +151,15 @@ export class QuickDeckReferenceApp extends Application {
           bundledSummaryEntry?.specialtyRequired ||
           bundledSummaryEntry?.sourceName ||
           bundledSummaryEntry?.displayedPage
+      ),
+      hasBundledSpellDetails: Boolean(
+        bundledSummaryEntry?.spellClass ||
+          bundledSummaryEntry?.college ||
+          bundledSummaryEntry?.duration ||
+          bundledSummaryEntry?.cost ||
+          bundledSummaryEntry?.timeToCast ||
+          bundledSummaryEntry?.prerequisites ||
+          bundledSummaryEntry?.item
       ),
       sourceName,
       displayedPage,
