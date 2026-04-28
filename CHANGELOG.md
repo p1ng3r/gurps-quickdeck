@@ -16,6 +16,7 @@ All notable changes to this project will be documented in this file.
 - Reworked QuickDeck minimize behavior so minimizing hides the full app window and shows a single floating top-screen `QD QuickDeck` restore pill.
 - QuickDeck now persists minimized/restored state per client and restores the same presentation on reopen/reload.
 - Closing QuickDeck while minimized now reliably removes the floating restore pill and prevents duplicate restore icons across repeated minimize/restore cycles.
+- Updated floating restore pill controls: left-click restores QuickDeck, right-click drag moves the pill, context menu is suppressed on the pill, and final clamped `{ top, left }` position now persists per client.
 
 ### Removed
 - Legacy PDF Sources manager UI and store modules.
