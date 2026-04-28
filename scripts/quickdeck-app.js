@@ -35,6 +35,7 @@ export class QuickDeckApp extends Application {
     this._floatingRestoreIcon = null;
     this._restorePillDragCleanup = null;
     this._restorePillPreventClick = false;
+    this._restorePillDragRafId = null;
     this.restorePillPosition = null;
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
@@ -1694,8 +1695,8 @@ export class QuickDeckApp extends Application {
     this.syncMinimizedPresentation();
   }
 
-  async minimize() {
-    this.cancelTokenDrop({ render: false });
+  async minimize({ cancelTokenDrop = true } = {}) {
+    if (cancelTokenDrop) this.cancelTokenDrop({ render: false });
     if (!this.isMinimized) {
       this.isMinimized = true;
       this.persistMinimizedState();
@@ -1787,13 +1788,17 @@ export class QuickDeckApp extends Application {
     event.stopPropagation();
     this._restorePillPreventClick = true;
     this.stopRestorePillDrag();
+    icon.classList.add("is-dragging");
 
     const startLeft = Number.parseFloat(icon.style.left) || icon.offsetLeft || 0;
     const startTop = Number.parseFloat(icon.style.top) || icon.offsetTop || 0;
     const startClientX = Number(event.clientX);
     const startClientY = Number(event.clientY);
+    const startPointerId = Number(event.pointerId);
     const dragThreshold = 3;
     let didDrag = false;
+    let latestLeft = startLeft;
+    let latestTop = startTop;
 
     const updatePosition = (nextLeft, nextTop) => {
       const clamped = this.getClampedRestorePillPosition(nextLeft, nextTop, icon);
@@ -1803,16 +1808,37 @@ export class QuickDeckApp extends Application {
       this.restorePillPosition = clamped;
     };
 
+    const flushDragFrame = () => {
+      this._restorePillDragRafId = null;
+      updatePosition(latestLeft, latestTop);
+    };
+
+    const queueDragFrame = () => {
+      if (this._restorePillDragRafId !== null) return;
+      this._restorePillDragRafId = window.requestAnimationFrame(flushDragFrame);
+    };
+
     const onPointerMove = (moveEvent) => {
+      if (Number(moveEvent.pointerId) !== startPointerId) return;
+      moveEvent.preventDefault();
       const deltaX = Number(moveEvent.clientX) - startClientX;
       const deltaY = Number(moveEvent.clientY) - startClientY;
       if (!didDrag && (Math.abs(deltaX) >= dragThreshold || Math.abs(deltaY) >= dragThreshold)) {
         didDrag = true;
       }
-      updatePosition(startLeft + deltaX, startTop + deltaY);
+      latestLeft = startLeft + deltaX;
+      latestTop = startTop + deltaY;
+      queueDragFrame();
     };
 
-    const onPointerUp = () => {
+    const onPointerUp = (upEvent) => {
+      if (Number(upEvent.pointerId) !== startPointerId) return;
+      upEvent.preventDefault();
+      if (this._restorePillDragRafId !== null) {
+        window.cancelAnimationFrame(this._restorePillDragRafId);
+        this._restorePillDragRafId = null;
+        updatePosition(latestLeft, latestTop);
+      }
       if (!didDrag) {
         this._restorePillPreventClick = false;
       } else {
@@ -1822,23 +1848,50 @@ export class QuickDeckApp extends Application {
     };
 
     const onWindowBlur = () => {
+      if (this._restorePillDragRafId !== null) {
+        window.cancelAnimationFrame(this._restorePillDragRafId);
+        this._restorePillDragRafId = null;
+        updatePosition(latestLeft, latestTop);
+      }
       if (didDrag) this.persistRestorePillPosition(this.restorePillPosition);
       this.stopRestorePillDrag();
     };
 
     const abortController = typeof AbortController === "function" ? new AbortController() : null;
     const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
-    window.addEventListener("pointermove", onPointerMove, listenerOptions);
-    window.addEventListener("pointerup", onPointerUp, listenerOptions);
+    let hasPointerCapture = false;
+    if (typeof icon.setPointerCapture === "function" && Number.isFinite(startPointerId)) {
+      try {
+        icon.setPointerCapture(startPointerId);
+        hasPointerCapture = true;
+      } catch (_error) {
+        hasPointerCapture = false;
+      }
+    }
+    const pointerEventTarget = hasPointerCapture ? icon : window;
+    pointerEventTarget.addEventListener("pointermove", onPointerMove, listenerOptions);
+    pointerEventTarget.addEventListener("pointerup", onPointerUp, listenerOptions);
     window.addEventListener("blur", onWindowBlur, listenerOptions);
 
     this._restorePillDragCleanup = () => {
+      icon.classList.remove("is-dragging");
+      if (hasPointerCapture && typeof icon.releasePointerCapture === "function" && Number.isFinite(startPointerId)) {
+        try {
+          icon.releasePointerCapture(startPointerId);
+        } catch (_error) {
+          // no-op
+        }
+      }
+      if (this._restorePillDragRafId !== null) {
+        window.cancelAnimationFrame(this._restorePillDragRafId);
+        this._restorePillDragRafId = null;
+      }
       if (abortController) {
         abortController.abort();
         return;
       }
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
+      pointerEventTarget.removeEventListener("pointermove", onPointerMove);
+      pointerEventTarget.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("blur", onWindowBlur);
     };
   };
@@ -1878,7 +1931,6 @@ export class QuickDeckApp extends Application {
     pill.style.top = `${clamped.top}px`;
     pill.style.right = "auto";
     this.restorePillPosition = clamped;
-    this.persistRestorePillPosition(clamped);
   }
 
   removeFloatingRestoreIcon() {
@@ -2082,6 +2134,9 @@ export class QuickDeckApp extends Application {
 
       try {
         this.armTokenDrop(actorId);
+        if (this.pendingTokenDropActorId === actorId) {
+          await this.minimize({ cancelTokenDrop: false });
+        }
       } catch (error) {
         console.warn("gurps-quickdeck | Failed to drop token from QuickDeck.", error);
         ui.notifications?.warn("QuickDeck: Could not drop token for this actor.");

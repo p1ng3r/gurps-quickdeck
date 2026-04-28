@@ -54,6 +54,13 @@
     0 2px 10px rgba(0, 0, 0, 0.45),
     0 0 0 1px rgba(255, 222, 162, 0.12) inset;
   cursor: pointer;
+  user-select: none;
+  touch-action: none;
+}
+
+.quickdeck-floating-restore.is-dragging {
+  transition: none !important;
+  cursor: grabbing;
 }
 
 .quickdeck-floating-restore-mark {
