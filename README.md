@@ -14,6 +14,8 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Removed legacy PDF/Text source manager workflows and related parsing/search UI from QuickDeck.
 - Copyright-safe and Forge-safe behavior remains unchanged (local metadata only; no actor sheet calls; no network dependency except module-local JSON fetch).
 - Extracted actor combat/skills/spells payloads are memoized by actor/version stamp and invalidated on actor/item updates for better large-roster responsiveness.
+- Drop Token to Canvas now auto-minimizes QuickDeck while keeping token placement armed so the next canvas click still places the token.
+- Restore pill drag now uses pointer capture + animation-frame updates for smoother pointer tracking and only persists position on release/blur.
 
 ## What's New in v0.2.0
 
@@ -94,8 +96,9 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 5. Edit HP/FP directly in Combat Burst.
 6. Click **Minimize** to collapse QuickDeck into a compact top-screen **QD QuickDeck** restore pill.
 7. **Left-click** the floating restore pill to reopen QuickDeck.
-8. **Right-click and drag** the floating restore pill to move it; release to save position.
-9. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, minimized state, and restore pill position restore per client.
+8. **Right-click and drag** the floating restore pill to move it; drag is clamped to viewport bounds and uses pointer capture for smoother tracking.
+9. Clicking **Drop Token** now auto-minimizes QuickDeck so the canvas stays visible while placement remains armed.
+10. Release/blur persists restore pill position once; close/reopen QuickDeck or refresh Foundry to confirm state restoration per client.
 
 ## Branch Workflow
 
@@ -119,6 +122,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 - QuickDeck only opens `actor.sheet` through the explicit `openActorSheet(actorId)` path.
 - Token placement uses click-to-place canvas coordinates (no browser drag/drop to canvas).
-- Escape/cancel, close, minimize, and scene-switch paths always remove temporary pointer/window/canvas listeners.
+- Escape/cancel, close, restore, and scene-switch paths always remove temporary pointer/window/canvas listeners.
+- Token placement remains armed while QuickDeck is minimized and only clears on cancel, placement success, scene change, or close.
 - Roll and token placement failures are warning-first and never intentionally crash the app.
 - Reference summaries load from module-local JSON files only; missing packs warn and continue.

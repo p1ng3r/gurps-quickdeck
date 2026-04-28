@@ -56,6 +56,13 @@
   cursor: pointer;
 }
 
+
+.quickdeck-floating-restore.is-dragging {
+  transition: none !important;
+  cursor: grabbing;
+  user-select: none;
+}
+
 .quickdeck-floating-restore-mark {
   width: 1.22rem;
   height: 1.22rem;

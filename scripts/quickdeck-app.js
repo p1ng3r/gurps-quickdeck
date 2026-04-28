@@ -34,6 +34,7 @@ export class QuickDeckApp extends Application {
     this.isMinimized = false;
     this._floatingRestoreIcon = null;
     this._restorePillDragCleanup = null;
+    this._restorePillDragPointerId = null;
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
     this._stateLoadedFromSettings = false;
@@ -1627,6 +1628,12 @@ export class QuickDeckApp extends Application {
     this._tokenDropSceneId = scene.id ?? null;
     ui.notifications?.info("QuickDeck: Click the canvas to place token.");
 
+    if (!this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState();
+      this.syncMinimizedPresentation();
+    }
+
     const abortController = typeof AbortController === "function" ? new AbortController() : null;
     let cleanedUp = false;
     const cleanupListeners = () => {
@@ -1689,13 +1696,12 @@ export class QuickDeckApp extends Application {
 
   toggleMinimizedState() {
     this.isMinimized = !this.isMinimized;
-    if (this.isMinimized) this.cancelTokenDrop({ render: false });
     this.persistMinimizedState();
     this.syncMinimizedPresentation();
   }
 
-  async minimize() {
-    this.cancelTokenDrop({ render: false });
+  async minimize({ preserveTokenDrop = true } = {}) {
+    if (!preserveTokenDrop) this.cancelTokenDrop({ render: false });
     if (!this.isMinimized) {
       this.isMinimized = true;
       this.persistMinimizedState();
@@ -1793,46 +1799,96 @@ export class QuickDeckApp extends Application {
     const startClientX = Number(event.clientX);
     const startClientY = Number(event.clientY);
     const dragThreshold = 3;
-    let didDrag = false;
+    const pointerId = Number.isFinite(event.pointerId) ? Number(event.pointerId) : null;
+    this._restorePillDragPointerId = pointerId;
 
-    const updatePosition = (nextLeft, nextTop) => {
-      const clamped = this.getClampedRestorePillPosition(nextLeft, nextTop, icon);
-      icon.style.left = `${clamped.left}px`;
-      icon.style.top = `${clamped.top}px`;
+    let didDrag = false;
+    let latestClientX = startClientX;
+    let latestClientY = startClientY;
+    let lastClampedPosition = this.getClampedRestorePillPosition(startLeft, startTop, icon);
+    let frameId = null;
+
+    const flushPosition = () => {
+      frameId = null;
+      const deltaX = latestClientX - startClientX;
+      const deltaY = latestClientY - startClientY;
+      if (!didDrag && (Math.abs(deltaX) >= dragThreshold || Math.abs(deltaY) >= dragThreshold)) {
+        didDrag = true;
+        icon.classList.add("is-dragging");
+      }
+      lastClampedPosition = this.getClampedRestorePillPosition(startLeft + deltaX, startTop + deltaY, icon);
+      icon.style.left = `${lastClampedPosition.left}px`;
+      icon.style.top = `${lastClampedPosition.top}px`;
       icon.style.right = "auto";
-      this.restorePillPosition = clamped;
+    };
+
+    const schedulePositionFlush = () => {
+      if (frameId !== null) return;
+      frameId = window.requestAnimationFrame(flushPosition);
     };
 
     const onPointerMove = (moveEvent) => {
-      const deltaX = Number(moveEvent.clientX) - startClientX;
-      const deltaY = Number(moveEvent.clientY) - startClientY;
-      if (!didDrag && (Math.abs(deltaX) >= dragThreshold || Math.abs(deltaY) >= dragThreshold)) {
-        didDrag = true;
-      }
-      updatePosition(startLeft + deltaX, startTop + deltaY);
+      if (pointerId !== null && moveEvent.pointerId !== pointerId) return;
+      latestClientX = Number(moveEvent.clientX);
+      latestClientY = Number(moveEvent.clientY);
+      schedulePositionFlush();
     };
 
-    const onPointerUp = () => {
+    const finalizeDrag = ({ persist = false } = {}) => {
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+        frameId = null;
+        flushPosition();
+      }
+      icon.classList.remove("is-dragging");
+      this.restorePillPosition = lastClampedPosition;
       if (!didDrag) {
         this._restorePillPreventClick = false;
-      } else {
-        this.persistRestorePillPosition(this.restorePillPosition);
+      } else if (persist) {
+        this.persistRestorePillPosition(lastClampedPosition);
       }
       this.stopRestorePillDrag();
+    };
+
+    const onPointerUp = (upEvent) => {
+      if (pointerId !== null && upEvent.pointerId !== pointerId) return;
+      finalizeDrag({ persist: didDrag });
     };
 
     const onWindowBlur = () => {
-      if (didDrag) this.persistRestorePillPosition(this.restorePillPosition);
-      this.stopRestorePillDrag();
+      finalizeDrag({ persist: didDrag });
     };
 
     const abortController = typeof AbortController === "function" ? new AbortController() : null;
     const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+
+    if (pointerId !== null && typeof icon.setPointerCapture === "function") {
+      try {
+        icon.setPointerCapture(pointerId);
+      } catch (_error) {
+        // noop: pointer capture can fail in some environments.
+      }
+    }
+
     window.addEventListener("pointermove", onPointerMove, listenerOptions);
     window.addEventListener("pointerup", onPointerUp, listenerOptions);
     window.addEventListener("blur", onWindowBlur, listenerOptions);
 
     this._restorePillDragCleanup = () => {
+      icon.classList.remove("is-dragging");
+      if (frameId !== null) {
+        window.cancelAnimationFrame(frameId);
+        frameId = null;
+      }
+      const activePointerId = this._restorePillDragPointerId;
+      if (activePointerId !== null && typeof icon.releasePointerCapture === "function" && typeof icon.hasPointerCapture === "function") {
+        try {
+          if (icon.hasPointerCapture(activePointerId)) icon.releasePointerCapture(activePointerId);
+        } catch (_error) {
+          // noop: release can fail if capture is already lost.
+        }
+      }
+      this._restorePillDragPointerId = null;
       if (abortController) {
         abortController.abort();
         return;
