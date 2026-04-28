@@ -32,7 +32,7 @@ export class QuickDeckReferenceIndexApp extends Application {
       resizable: true,
       width: 760,
       height: 580,
-      title: "QuickDeck Reference Index",
+      title: "QuickDeck Local Overrides",
       template: TEMPLATE_PATH
     });
   }
@@ -149,7 +149,7 @@ export class QuickDeckReferenceIndexApp extends Application {
     this.readEntriesFromForm(html);
     const saved = await setReferenceIndex(this.entries);
     if (!saved) return;
-    ui.notifications?.info("QuickDeck: Reference Index metadata saved.");
+    ui.notifications?.info("QuickDeck: Local Overrides saved.");
     this.render(false);
   }
 
@@ -235,15 +235,15 @@ export class QuickDeckReferenceIndexApp extends Application {
     this.readEntriesFromForm(html);
     const serialized = safeSerializeReferenceIndex(this.entries);
     if (serialized === null) {
-      ui.notifications?.warn("QuickDeck: Could not serialize Reference Index metadata for export.");
+      ui.notifications?.warn("QuickDeck: Could not serialize Local Overrides for export.");
       return;
     }
 
     const copied = await this.copyToClipboard(serialized);
     if (copied) {
-      ui.notifications?.info("QuickDeck: Reference Index metadata JSON copied to clipboard.");
+      ui.notifications?.info("QuickDeck: Local Overrides JSON copied to clipboard.");
     } else {
-      ui.notifications?.warn("QuickDeck: Could not copy Reference Index JSON automatically.");
+      ui.notifications?.warn("QuickDeck: Could not copy Local Overrides JSON automatically.");
     }
   }
 
@@ -382,7 +382,7 @@ export function openReferenceIndexManager(entryData = null) {
     };
   } catch (error) {
     console.warn("gurps-quickdeck | Failed to open reference index manager.", error);
-    ui.notifications?.warn("QuickDeck: Could not open Reference Index manager.");
+    ui.notifications?.warn("QuickDeck: Could not open Local Overrides manager.");
     return null;
   }
 }

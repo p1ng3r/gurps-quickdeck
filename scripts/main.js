@@ -1,8 +1,4 @@
-import { QuickDeckPdfSourcesApp } from "./pdf-sources-app.js";
-import { openTextSourcesManager } from "./text-sources-app.js";
-import { PDF_SOURCES_SETTING_KEY } from "./pdf-sources-store.js";
 import { REFERENCE_INDEX_SETTING_KEY } from "./reference-index-store.js";
-import { TEXT_SOURCES_SETTING_KEY } from "./text-sources-store.js";
 import { QuickDeckApp } from "./quickdeck-app.js";
 
 const MODULE_ID = "gurps-quickdeck";
@@ -10,23 +6,9 @@ const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   DEFAULT_DRAWER: "defaultDrawer",
-  PDF_IMPORT_PLACEHOLDER: "pdfImportPlaceholder",
-  PDF_SOURCES: PDF_SOURCES_SETTING_KEY,
-  REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
-  TEXT_SOURCES: TEXT_SOURCES_SETTING_KEY
+  REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY
 };
 let quickDeckApp = null;
-let pdfSourcesApp = null;
-
-function openPdfSourcesManager() {
-  if (!pdfSourcesApp) {
-    pdfSourcesApp = new QuickDeckPdfSourcesApp();
-  }
-
-  pdfSourcesApp.render(true);
-  return pdfSourcesApp;
-}
-
 function openQuickDeck() {
   if (!quickDeckApp) {
     quickDeckApp = new QuickDeckApp();
@@ -47,8 +29,6 @@ Hooks.once("ready", () => {
       }
       quickDeckApp.dumpActiveActorData();
     },
-    openPdfSources: () => openPdfSourcesManager(),
-    openTextSources: () => openTextSourcesManager()
   };
 });
 
@@ -87,41 +67,17 @@ Hooks.once("init", () => {
     default: "none"
   });
 
-  game.settings.register(MODULE_ID, SETTING_KEYS.PDF_IMPORT_PLACEHOLDER, {
-    name: "QuickDeck PDF Import (Roadmap Placeholder)",
-    hint: "Coming soon: users will import legally owned local PDFs for personal indexing. No copyrighted rulebook text is bundled.",
-    scope: "client",
-    config: true,
-    type: Boolean,
-    default: false
-  });
 
-  game.settings.register(MODULE_ID, SETTING_KEYS.PDF_SOURCES, {
-    name: "QuickDeck PDF Sources Metadata",
-    hint: "Client-side JSON list of local source metadata used by QuickDeck Reference.",
-    scope: "client",
-    config: false,
-    type: String,
-    default: "[]"
-  });
 
   game.settings.register(MODULE_ID, SETTING_KEYS.REFERENCE_INDEX, {
-    name: "QuickDeck Reference Index Metadata",
-    hint: "Client-side JSON list of manual reference index entries used by QuickDeck Reference.",
+    name: "QuickDeck Local Overrides Metadata",
+    hint: "Client-side JSON list of manual local override entries used by QuickDeck Reference.",
     scope: "client",
     config: false,
     type: String,
     default: "[]"
   });
 
-  game.settings.register(MODULE_ID, SETTING_KEYS.TEXT_SOURCES, {
-    name: "QuickDeck Text Sources",
-    hint: "Client-side JSON list of local text sources used for manual index building.",
-    scope: "client",
-    config: false,
-    type: String,
-    default: "[]"
-  });
 });
 
 Hooks.on("renderActorDirectory", (app, html) => {
