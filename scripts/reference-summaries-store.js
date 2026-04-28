@@ -1,3 +1,5 @@
+import { buildReferenceLookupNames } from "./reference-lookup-name.js";
+
 const MODULE_ID = "gurps-quickdeck";
 const REFERENCE_SUMMARIES_PATHS = [
   `modules/${MODULE_ID}/data/reference-summaries.json`,
@@ -129,7 +131,9 @@ export async function loadBundledReferenceSummaries() {
 }
 
 export function findBundledReferenceSummary(referenceData = {}, summaries = []) {
-  const normalizedName = asLookupText(referenceData?.name);
+  const lookupNames = buildReferenceLookupNames(referenceData?.name);
+  const normalizedName = lookupNames.exact;
+  const normalizedBaseName = lookupNames.base;
   const normalizedType = asLookupText(referenceData?.type);
   if (!normalizedName) return null;
 
@@ -144,6 +148,16 @@ export function findBundledReferenceSummary(referenceData = {}, summaries = []) 
     return asLookupText(entry?.name) === normalizedName;
   });
   if (exactNameOnly) return { entry: exactNameOnly, mode: "exact-name" };
+
+  const baseNameType = normalizedSummaries.find((entry) => {
+    return asLookupText(entry?.name) === normalizedBaseName && asLookupText(entry?.type) === normalizedType;
+  });
+  if (baseNameType) return { entry: baseNameType, mode: "base-name-type", matchedBaseName: baseNameType.name };
+
+  const baseNameOnly = normalizedSummaries.find((entry) => {
+    return asLookupText(entry?.name) === normalizedBaseName;
+  });
+  if (baseNameOnly) return { entry: baseNameOnly, mode: "base-name", matchedBaseName: baseNameOnly.name };
 
   return null;
 }
