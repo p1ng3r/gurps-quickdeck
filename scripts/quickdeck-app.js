@@ -36,6 +36,7 @@ export class QuickDeckApp extends Application {
     this._restorePillDragCleanup = null;
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
+    this._pendingAttackGuidance = null;
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
@@ -1299,6 +1300,90 @@ export class QuickDeckApp extends Application {
     });
   }
 
+  async waitForTargetSelection({ timeoutMs = 30000 } = {}) {
+    return new Promise((resolve) => {
+      let resolved = false;
+      const complete = (token = null) => {
+        if (resolved) return;
+        resolved = true;
+        cleanup();
+        resolve(token);
+      };
+      const onTargetToken = (user, token, targeted) => {
+        if (!targeted) return;
+        if (user?.id !== game.user?.id) return;
+        complete(token ?? null);
+      };
+      const onControlToken = (token, controlled) => {
+        if (!controlled) return;
+        complete(token ?? null);
+      };
+      const timeoutId = window.setTimeout(() => complete(null), Math.max(2500, timeoutMs));
+      const cleanup = () => {
+        Hooks.off("targetToken", onTargetToken);
+        Hooks.off("controlToken", onControlToken);
+        window.clearTimeout(timeoutId);
+      };
+      Hooks.on("targetToken", onTargetToken);
+      Hooks.on("controlToken", onControlToken);
+    });
+  }
+
+  async runGuidedAttack(actor, attack, attackIndex, setup = {}) {
+    const gurps = game.GURPS;
+    if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+    const modifiers = [];
+    const addModifier = (value, label) => {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric) || numeric === 0) return;
+      modifiers.push({ value: numeric, label });
+      if (gurps?.ModifierBucket?.addModifier) gurps.ModifierBucket.addModifier(numeric, label);
+    };
+    addModifier(setup.coverMod, `QuickDeck Cover (${setup.coverLabel || "custom"})`);
+    addModifier(setup.postureMod, `QuickDeck Posture (${setup.postureLabel || "custom"})`);
+    addModifier(setup.rangeSpeedMod, `QuickDeck Range/Speed (${setup.rangeSpeedLabel || "custom"})`);
+    addModifier(setup.customMod, `QuickDeck Custom (${setup.customLabel || "modifier"})`);
+    if (setup.hitLocation) addModifier(setup.hitLocationMod, `QuickDeck Hit Location (${setup.hitLocation})`);
+
+    const wasMinimized = this.isMinimized;
+    if (!wasMinimized) this.minimizeQuickDeckWindow();
+    ui.notifications?.info("QuickDeck: Target a token (T) or click-select one.");
+    const token = await this.waitForTargetSelection();
+    if (!wasMinimized) this.restoreQuickDeckWindow();
+    if (!token) {
+      ui.notifications?.warn("QuickDeck: No target selected. Attack cancelled.");
+      return;
+    }
+
+    const otfName = String(attack?.name ?? "").trim().replaceAll(" ", "*");
+    let usedOtF = false;
+    try {
+      if (otfName && typeof gurps?.executeOTF === "function") {
+        await gurps.executeOTF(`[A:${otfName}]`);
+        usedOtF = true;
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Guided attack OTF failed, falling back.", error);
+    }
+    if (!usedOtF) {
+      await this.triggerCombatRoll(actor.id, {
+        type: "attack",
+        label: `Attack (${attack.name})`,
+        value: attack.level,
+        attackName: attack.name,
+        attackType: attack.type,
+        attack
+      });
+    }
+
+    const lastRoll = gurps?.lastTargetedRoll ?? (gurps?.lastTargetedRolls && actor?.id ? gurps.lastTargetedRolls[actor.id] : null);
+    const success = Boolean(lastRoll && (lastRoll.isCritSuccess || (!lastRoll.failure && !lastRoll.isCritFailure)));
+    const outcomeLabel = lastRoll?.isCritSuccess ? "Critical Success" : lastRoll?.isCritFailure ? "Critical Failure" : lastRoll?.failure ? "Failure" : "Success";
+    ui.notifications?.info(`QuickDeck: Attack outcome: ${outcomeLabel}.`);
+    if (success) this._pendingAttackGuidance = { actorId: actor.id, attackIndex };
+    this.render(false);
+  }
+
   async updateActorResource(actorId, resource, rawValue) {
     if (!actorId || !resource) return;
     const actor = game.actors.get(actorId);
@@ -2063,6 +2148,10 @@ export class QuickDeckApp extends Application {
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
+      meleeAttacks: filteredAttacks.filter((entry) => entry.type === "Melee"),
+      rangedAttacks: filteredAttacks.filter((entry) => entry.type === "Ranged"),
+      pendingDamageActorId: this._pendingAttackGuidance?.actorId ?? null,
+      pendingDamageAttackIndex: Number.isFinite(this._pendingAttackGuidance?.attackIndex) ? this._pendingAttackGuidance.attackIndex : null,
       skillsCount: skills.length,
       visibleSkillsCount: filteredSkills.length,
       quickSkillsCount: quickSkills.length,
@@ -2270,13 +2359,31 @@ export class QuickDeckApp extends Application {
         attack.level ??
         this.getFirstDefinedValue(attack.raw, ["skill", "level", "roll", "import"]);
 
-      await this.triggerCombatRoll(actorId, {
-        type: "attack",
-        label: `Roll Attack (${attack.name})`,
-        value,
-        attackName: attack.name,
-        attackType: attack.type,
-        attack
+      const dialogHtml = `
+        <form class="quickdeck-attack-setup-form">
+          <label>Hit Location <input type="text" name="hitLocation" placeholder="Torso"/></label>
+          <label>Hit Location Mod <input type="number" name="hitLocationMod" value="0"/></label>
+          <label>Cover Mod <input type="number" name="coverMod" value="0"/></label>
+          <label>Posture Mod <input type="number" name="postureMod" value="0"/></label>
+          <label>Range/Speed Mod <input type="number" name="rangeSpeedMod" value="0"/></label>
+          <label>Custom Mod <input type="number" name="customMod" value="0"/></label>
+          <label>Custom Label <input type="text" name="customLabel" placeholder="Situation"/></label>
+        </form>`;
+      new Dialog({
+        title: `QuickDeck Attack Setup: ${attack.name}`,
+        content: dialogHtml,
+        buttons: {
+          cancel: { label: "Cancel" },
+          attack: {
+            label: "Attack",
+            callback: async (htmlContent) => {
+              const form = htmlContent[0]?.querySelector("form");
+              const formData = new FormData(form);
+              await this.runGuidedAttack(actor, attack, attackIndex, Object.fromEntries(formData.entries()));
+            }
+          }
+        },
+        default: "attack"
       });
     });
 

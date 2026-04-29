@@ -266,10 +266,7 @@
                   </div>
 
                   <section class="quickdeck-attacks-section">
-                    <h4>
-                      Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> /
-                      <span data-count="attacks-total">{{attackCount}}</span>)
-                    </h4>
+                    <h4>Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> / <span data-count="attacks-total">{{attackCount}}</span>)</h4>
                     <input
                       type="search"
                       class="quickdeck-drawer-search"
@@ -280,8 +277,9 @@
                     />
 
                     {{#if indexedAttacks.length}}
+                      <h5 class="quickdeck-subsection-title">Melee</h5>
                       <div class="quickdeck-attacks-list">
-                        {{#each indexedAttacks as |attack|}}
+                        {{#each meleeAttacks as |attack|}}
                           <article class="quickdeck-attack-card" data-search-row="combat" data-search-text="{{attack.searchText}}">
                             <header>
                               <h5>{{attack.name}}</h5>
@@ -327,8 +325,18 @@
                               data-attack-index="{{attack.index}}"
                               class="quickdeck-roll-button"
                             >
-                              Roll Attack
+                              Attack
                             </button>
+                          </article>
+                        {{/each}}
+                      </div>
+                      <h5 class="quickdeck-subsection-title">Ranged</h5>
+                      <div class="quickdeck-attacks-list">
+                        {{#each rangedAttacks as |attack|}}
+                          <article class="quickdeck-attack-card" data-search-row="combat" data-search-text="{{attack.searchText}}">
+                            <header><h5>{{attack.name}}</h5><span>{{attack.type}}</span></header>
+                            <dl><div><dt>Level/Skill</dt><dd>{{#if attack.level}}{{attack.level}}{{else}}—{{/if}}</dd></div><div><dt>Damage</dt><dd>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</dd></div></dl>
+                            <button type="button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-roll-button">Attack</button>
                           </article>
                         {{/each}}
                       </div>

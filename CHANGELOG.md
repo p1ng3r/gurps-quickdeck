@@ -2,7 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - v0.3.0 draft
+## [Unreleased] - v0.4.0 draft
+
+### Added
+- Guided Attack MVP flow in Combat drawer: clicking **Attack** opens a setup dialog, applies optional modifiers to the GURPS Modifier Bucket, minimizes QuickDeck for target selection, restores afterward, executes attack via GURPS OTF when possible, and tracks outcome for follow-up damage rolling.
+- Combat attack list layout now separates melee and ranged attacks into distinct sections for readability.
+
+### Changed
+- Combat attack buttons now use **Attack** labeling and guided flow instead of direct quick roll.
+- Version metadata updated for v0.4.0 draft.
 
 ### Changed
 - Simplified QuickDeck Reference to use bundled `data/reference-summaries.json` as the primary source of reference content.
