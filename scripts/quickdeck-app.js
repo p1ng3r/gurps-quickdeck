@@ -1329,31 +1329,19 @@ export class QuickDeckApp extends Application {
     });
   }
 
-  async runGuidedAttack(actor, attack, attackIndex, setup = {}) {
-    const gurps = globalThis.GURPS ?? game.GURPS;
-    if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
-    const modifiers = [];
-    const addModifier = (value, label) => {
-      const numeric = Number(value);
-      if (!Number.isFinite(numeric) || numeric === 0) return;
-      modifiers.push({ value: numeric, label });
-      if (gurps?.ModifierBucket?.addModifier) gurps.ModifierBucket.addModifier(numeric, label);
-    };
-    addModifier(setup.coverMod, `QuickDeck Cover (${setup.coverLabel || "custom"})`);
-    addModifier(setup.postureMod, `QuickDeck Posture (${setup.postureLabel || "custom"})`);
-    addModifier(setup.rangeSpeedMod, `QuickDeck Range/Speed (${setup.rangeSpeedLabel || "custom"})`);
-    addModifier(setup.customMod, `QuickDeck Custom (${setup.customLabel || "modifier"})`);
-    if (setup.hitLocation) addModifier(setup.hitLocationMod, `QuickDeck Hit Location (${setup.hitLocation})`);
-
+  async runAttackTargetFlow(actor, attack, attackIndex) {
+    console.warn("QD ATTACK TARGET FLOW START", { actorId: actor?.id, attackIndex });
     const wasMinimized = this.isMinimized;
     if (!wasMinimized) this.minimizeQuickDeckWindow();
     ui.notifications?.info("QuickDeck: Target a token (T) or click-select one.");
     const token = await this.waitForTargetSelection();
     if (!wasMinimized) this.restoreQuickDeckWindow();
     if (!token) {
-      ui.notifications?.warn("QuickDeck: No target selected. Attack cancelled.");
+      ui.notifications?.warn("QuickDeck: No target selected.");
+      this._pendingAttackGuidance = null;
       return;
     }
+    console.warn("QD ATTACK TARGET SELECTED", { tokenId: token?.id, tokenName: token?.name });
     try {
       if (game.user && token?.setTarget) token.setTarget(true, { user: game.user, releaseOthers: true, groupSelection: false });
       else if (game.user?.targets instanceof Set) {
@@ -1362,43 +1350,14 @@ export class QuickDeckApp extends Application {
       }
     } catch (error) {
       console.warn("gurps-quickdeck | Failed to set selected token as target.", error);
+      ui.notifications?.warn("QuickDeck: Could not set target token.");
     }
 
-    const otfName = String(attack?.name ?? "").trim().replaceAll(" ", "*");
-    let usedOtF = false;
-    try {
-      if (otfName && typeof gurps?.executeOTF === "function") {
-        await gurps.executeOTF(`[A:${otfName}]`);
-        usedOtF = true;
-      }
-    } catch (error) {
-      console.warn("gurps-quickdeck | Guided attack OTF failed, falling back.", error);
-    }
-    if (!usedOtF) {
-      await this.triggerCombatRoll(actor.id, {
-        type: "attack",
-        label: `Attack (${attack.name})`,
-        value: attack.level,
-        attackName: attack.name,
-        attackType: attack.type,
-        attack
-      });
-    }
-
-    const lastRoll = gurps?.lastTargetedRoll ?? (gurps?.lastTargetedRolls && actor?.id ? gurps.lastTargetedRolls[actor.id] : null);
-    const hasRollResult = Boolean(lastRoll);
-    const success = Boolean(hasRollResult && (lastRoll.isCritSuccess || (!lastRoll.failure && !lastRoll.isCritFailure)));
-    const outcomeLabel = !hasRollResult
-      ? "Unknown (no GURPS roll result)"
-      : lastRoll?.isCritSuccess
-        ? "Critical Success"
-        : lastRoll?.isCritFailure
-          ? "Critical Failure"
-          : lastRoll?.failure
-            ? "Failure"
-            : "Success";
-    ui.notifications?.info(`QuickDeck: Attack outcome: ${outcomeLabel}.`);
-    this._pendingAttackGuidance = success ? { actorId: actor.id, attackIndex } : null;
+    const gurps = globalThis.GURPS ?? game.GURPS;
+    if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+    console.warn("QD OPEN GURPS MODIFIER BUCKET", { actorName: actor.name, attackName: attack.name });
+    if (gurps?.ModifierBucket?.editor?.render) gurps.ModifierBucket.editor.render(true);
+    else ui.notifications?.warn("QuickDeck: GURPS Modifier Bucket is unavailable.");
     this.render(false);
   }
 
@@ -2397,38 +2356,14 @@ export class QuickDeckApp extends Application {
         console.warn("gurps-quickdeck | Attack click ignored: attack not found.", { actorId, attackIndex });
         return;
       }
-      if (typeof Dialog !== "function") {
-        console.warn("gurps-quickdeck | Attack click ignored: Dialog is unavailable.", { actorId, attackIndex });
-        return;
-      }
-
-      const dialogHtml = `
-        <form class="quickdeck-attack-setup-form">
-          <label>Hit Location <input type="text" name="hitLocation" placeholder="Torso"/></label>
-          <label>Hit Location Mod <input type="number" name="hitLocationMod" value="0"/></label>
-          <label>Cover Mod <input type="number" name="coverMod" value="0"/></label>
-          <label>Posture Mod <input type="number" name="postureMod" value="0"/></label>
-          <label>Range/Speed Mod <input type="number" name="rangeSpeedMod" value="0"/></label>
-          <label>Custom Mod <input type="number" name="customMod" value="0"/></label>
-          <label>Custom Label <input type="text" name="customLabel" placeholder="Situation"/></label>
-        </form>`;
-      console.warn("QD OPEN ATTACK DIALOG", { actorName: actor.name, attack });
-      new Dialog({
-        title: `QuickDeck Attack Setup: ${attack.name}`,
-        content: dialogHtml,
-        buttons: {
-          cancel: { label: "Cancel" },
-          attack: {
-            label: "Attack",
-            callback: async (htmlContent) => {
-              const form = htmlContent?.[0]?.querySelector("form");
-              const formData = form ? new FormData(form) : new FormData();
-              await this.runGuidedAttack(actor, attack, attackIndex, Object.fromEntries(formData.entries()));
-            }
-          }
-        },
-        default: "attack"
-      }).render(true);
+      const selectedTargetToken = game.user?.targets?.values ? game.user.targets.values().next().value ?? null : null;
+      this._pendingAttackGuidance = {
+        actorId,
+        attackIndex,
+        attackName: attack.name,
+        targetTokenId: selectedTargetToken?.id ?? null
+      };
+      await this.runAttackTargetFlow(actor, attack, attackIndex);
     });
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {
