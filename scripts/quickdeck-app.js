@@ -1128,13 +1128,30 @@ export class QuickDeckApp extends Application {
     }
   }
 
+  clearCurrentUserTargets() {
+    try {
+      if (!game.user?.targets) return;
+      for (const target of game.user.targets) {
+        target?.setTarget?.(false, { user: game.user, releaseOthers: false });
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to clear current user targets after attack roll.", error);
+      ui.notifications?.warn("QuickDeck: Could not clear your selected targets.");
+    }
+  }
+
   async triggerCombatRoll(actorId, rollContext) {
     const actor = game.actors.get(actorId);
     if (!actor) return;
     if (!rollContext?.label) return;
 
+    const shouldClearTargets = rollContext?.type === "attack";
+
     const usedSystemRoll = await this.tryGurpsRoll(actor, rollContext);
-    if (usedSystemRoll) return;
+    if (usedSystemRoll) {
+      if (shouldClearTargets) this.clearCurrentUserTargets();
+      return;
+    }
 
     const target = this.parseRollTarget(rollContext.value);
     let roll = null;
@@ -1156,6 +1173,7 @@ export class QuickDeckApp extends Application {
     }
 
     await this.createFallbackRollChat(actor, rollContext, roll, target);
+    if (shouldClearTargets) this.clearCurrentUserTargets();
   }
 
   getAttackDamageString(attack) {
