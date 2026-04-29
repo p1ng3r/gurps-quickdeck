@@ -2,6 +2,14 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.4.0 (Draft)
+
+- Combat drawer weapon buttons now launch a guided **Attack** flow (MVP).
+- Guided flow can apply common situational modifiers through the existing GURPS Modifier Bucket API where available.
+- QuickDeck minimizes while waiting for in-game target selection and restores automatically after selection/timeout.
+- Guided flow attempts GURPS attack OTF execution first, then falls back to existing QuickDeck roll fallback behavior.
+- Attack list readability improved with separate melee and ranged sections.
+
 ## What's New in v0.3.0 (Draft)
 
 - QuickDeck Reference now uses bundled repo data from `data/reference-summaries.json` as the primary reference source.
