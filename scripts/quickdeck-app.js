@@ -2066,6 +2066,28 @@ export class QuickDeckApp extends Application {
 
     const indexedAttacks = derivedData.indexedAttacks;
     const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
+    const pendingActorId = this._pendingAttackGuidance?.actorId ?? null;
+    const pendingAttackIndex = Number.isFinite(this._pendingAttackGuidance?.attackIndex)
+      ? this._pendingAttackGuidance.attackIndex
+      : null;
+
+    const meleeAttacks = filteredAttacks
+      .filter((entry) => entry.type === "Melee")
+      .map((entry) => ({
+        ...entry,
+        showDamageFollowup:
+          pendingActorId === activeActor?.id &&
+          pendingAttackIndex === entry.index
+      }));
+
+    const rangedAttacks = filteredAttacks
+      .filter((entry) => entry.type === "Ranged")
+      .map((entry) => ({
+        ...entry,
+        showDamageFollowup:
+          pendingActorId === activeActor?.id &&
+          pendingAttackIndex === entry.index
+      }));
 
     const activeActorId = activeActor?.id ?? null;
     const quickSelection = this.getQuickSkillSelection(activeActorId);
