@@ -2373,12 +2373,23 @@ export class QuickDeckApp extends Application {
       event.preventDefault();
       const actorId = event.currentTarget.dataset.actorId;
       const attackIndex = Number(event.currentTarget.dataset.attackIndex);
+      console.warn("QD ATTACK CLICK", { actorId, attackIndex });
       if (!actorId || Number.isNaN(attackIndex)) return;
 
       const actor = game.actors.get(actorId);
+      if (!actor) {
+        ui.notifications?.warn("QuickDeck: Actor not found for attack.");
+        return;
+      }
+
       const attacks = this.getDerivedActorData(actor).attacks;
       const attack = attacks[attackIndex];
-      if (!attack) return;
+      if (!attack) {
+        ui.notifications?.warn("QuickDeck: Attack not found.");
+        return;
+      }
+
+      console.warn("QD OPEN ATTACK DIALOG", { actorName: actor.name, attack });
 
       const value =
         attack.level ??
@@ -2394,22 +2405,42 @@ export class QuickDeckApp extends Application {
           <label>Custom Mod <input type="number" name="customMod" value="0"/></label>
           <label>Custom Label <input type="text" name="customLabel" placeholder="Situation"/></label>
         </form>`;
-      new Dialog({
-        title: `QuickDeck Attack Setup: ${attack.name}`,
-        content: dialogHtml,
-        buttons: {
-          cancel: { label: "Cancel" },
-          attack: {
-            label: "Attack",
-            callback: async (htmlContent) => {
-              const form = htmlContent[0]?.querySelector("form");
-              const formData = new FormData(form);
-              await this.runGuidedAttack(actor, attack, attackIndex, Object.fromEntries(formData.entries()));
+
+      try {
+        if (typeof Dialog !== "function") {
+          ui.notifications?.error("QuickDeck: Foundry Dialog API unavailable.");
+          console.error("gurps-quickdeck | Dialog API unavailable when opening attack setup.", {
+            actorId,
+            actorName: actor.name,
+            attackIndex
+          });
+          return;
+        }
+
+        new Dialog({
+          title: `QuickDeck Attack Setup: ${attack.name}`,
+          content: dialogHtml,
+          buttons: {
+            cancel: { label: "Cancel" },
+            attack: {
+              label: "Attack",
+              callback: async (htmlContent) => {
+                const form = htmlContent[0]?.querySelector("form");
+                if (!form) {
+                  ui.notifications?.warn("QuickDeck: Attack setup form missing. Attack cancelled.");
+                  return;
+                }
+                const formData = new FormData(form);
+                await this.runGuidedAttack(actor, attack, attackIndex, Object.fromEntries(formData.entries()));
+              }
             }
-          }
-        },
-        default: "attack"
-      }).render(true);
+          },
+          default: "attack"
+        }).render(true);
+      } catch (error) {
+        ui.notifications?.warn("QuickDeck: Could not open attack setup dialog.");
+        console.error("gurps-quickdeck | Failed to open attack setup dialog.", error);
+      }
     });
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {
