@@ -252,15 +252,6 @@ export class QuickDeckApp extends Application {
       "defence.block"
     ]);
 
-    const pendingActorId = this._pendingAttackGuidance?.actorId ?? null;
-    const pendingAttackIndex = Number.isFinite(this._pendingAttackGuidance?.attackIndex) ? this._pendingAttackGuidance.attackIndex : null;
-    const meleeAttacks = filteredAttacks
-      .filter((entry) => entry.type === "Melee")
-      .map((entry) => ({ ...entry, showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index }));
-    const rangedAttacks = filteredAttacks
-      .filter((entry) => entry.type === "Ranged")
-      .map((entry) => ({ ...entry, showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index }));
-
     return {
       name,
       type,
@@ -2066,8 +2057,24 @@ export class QuickDeckApp extends Application {
 
     const indexedAttacks = derivedData.indexedAttacks;
     const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
-
     const activeActorId = activeActor?.id ?? null;
+    const pendingActorId = this._pendingAttackGuidance?.actorId ?? null;
+    const pendingAttackIndex = Number.isFinite(this._pendingAttackGuidance?.attackIndex)
+      ? this._pendingAttackGuidance.attackIndex
+      : null;
+    const meleeAttacks = filteredAttacks
+      .filter((entry) => entry.type === "Melee")
+      .map((entry) => ({
+        ...entry,
+        showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
+      }));
+    const rangedAttacks = filteredAttacks
+      .filter((entry) => entry.type === "Ranged")
+      .map((entry) => ({
+        ...entry,
+        showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
+      }));
+
     const quickSelection = this.getQuickSkillSelection(activeActorId);
     const indexedSkills = derivedData.indexedSkills.map((skill) => {
       const quickSkillKey = this.getQuickSkillKey(skill);
@@ -2373,16 +2380,27 @@ export class QuickDeckApp extends Application {
       event.preventDefault();
       const actorId = event.currentTarget.dataset.actorId;
       const attackIndex = Number(event.currentTarget.dataset.attackIndex);
-      if (!actorId || Number.isNaN(attackIndex)) return;
+      console.warn("QD ATTACK CLICK", { actorId, attackIndex });
+      if (!actorId || Number.isNaN(attackIndex)) {
+        console.warn("gurps-quickdeck | Missing actorId or attackIndex for attack click.", { actorId, attackIndex });
+        return;
+      }
 
       const actor = game.actors.get(actorId);
+      if (!actor) {
+        console.warn("gurps-quickdeck | Attack click ignored: actor not found.", { actorId, attackIndex });
+        return;
+      }
       const attacks = this.getDerivedActorData(actor).attacks;
       const attack = attacks[attackIndex];
-      if (!attack) return;
-
-      const value =
-        attack.level ??
-        this.getFirstDefinedValue(attack.raw, ["skill", "level", "roll", "import"]);
+      if (!attack) {
+        console.warn("gurps-quickdeck | Attack click ignored: attack not found.", { actorId, attackIndex });
+        return;
+      }
+      if (typeof Dialog !== "function") {
+        console.warn("gurps-quickdeck | Attack click ignored: Dialog is unavailable.", { actorId, attackIndex });
+        return;
+      }
 
       const dialogHtml = `
         <form class="quickdeck-attack-setup-form">
@@ -2394,6 +2412,7 @@ export class QuickDeckApp extends Application {
           <label>Custom Mod <input type="number" name="customMod" value="0"/></label>
           <label>Custom Label <input type="text" name="customLabel" placeholder="Situation"/></label>
         </form>`;
+      console.warn("QD OPEN ATTACK DIALOG", { actorName: actor.name, attack });
       new Dialog({
         title: `QuickDeck Attack Setup: ${attack.name}`,
         content: dialogHtml,
@@ -2402,8 +2421,8 @@ export class QuickDeckApp extends Application {
           attack: {
             label: "Attack",
             callback: async (htmlContent) => {
-              const form = htmlContent[0]?.querySelector("form");
-              const formData = new FormData(form);
+              const form = htmlContent?.[0]?.querySelector("form");
+              const formData = form ? new FormData(form) : new FormData();
               await this.runGuidedAttack(actor, attack, attackIndex, Object.fromEntries(formData.entries()));
             }
           }
