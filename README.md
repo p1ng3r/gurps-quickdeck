@@ -2,6 +2,19 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.3.0 (Draft)
+
+- QuickDeck Reference now uses bundled repo data from `data/reference-summaries.json` as the primary reference source.
+- Bundled reference loader also reads optional martial-arts packs from `data/martial-arts-techniques.reference-summaries.json` and `data/martial-arts-combat.reference-summaries.json`.
+- Bundled reference loader now also checks `data/basic-set-skills.reference-summaries.json` in the same pass (missing files warn and are skipped).
+- Bundled reference loader also reads optional magic spell data from `data/magic.reference-summaries.json`.
+- Reference popup keeps rich display sections for **Author Summary**, **Skill Details**, **Spell Details**, **Description**, **Notes**, **Source Name**, and **Displayed Page**.
+- Skills and spells remain clickable and still open the QuickDeck Reference popup.
+- Manual **Reference Index** is now positioned as optional **Local Overrides** for personal source/page bookmarks.
+- Removed legacy PDF/Text source manager workflows and related parsing/search UI from QuickDeck.
+- Copyright-safe and Forge-safe behavior remains unchanged (local metadata only; no actor sheet calls; no network dependency except module-local JSON fetch).
+- Extracted actor combat/skills/spells payloads are memoized by actor/version stamp and invalidated on actor/item updates for better large-roster responsiveness.
+
 ## What's New in v0.2.0
 
 - Forge safety hardening across drag/drop and token placement flows.
@@ -29,21 +42,37 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Client-side persistence:
   - Roster actor IDs persist per client/user.
   - Quick Skills selections persist per actor ID per client/user.
+  - Minimized/expanded QuickDeck window state persists per client/user.
+  - Minimized `QD QuickDeck` restore pill position persists per client/user.
   - Missing/deleted actors are cleaned up defensively.
 - Drawer tools:
   - **Combat Burst**: defenses, HP/FP edit, attacks, roll buttons, and damage actions.
   - **Skills**: extracted nested GURPS skills + quick-pin checkboxes.
   - **Quick Skills**: pinned skills with independent search and roll actions.
+  - **Spells**: spell extraction + searchable spell list.
+- Reference helpers:
+  - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
+  - Matching order is bundled repo summary data first, with optional Local Override metadata applied for personal source/page replacements.
+  - Module authors can ship local reference summaries in `data/reference-summaries.json` and optional expansion packs in `data/martial-arts-techniques.reference-summaries.json`, `data/martial-arts-combat.reference-summaries.json`, and `data/magic.reference-summaries.json`; popup matching is exact `name + type` first, then exact `name`, and the popup displays **Author Summary**, optional notes, and optional source/page metadata.
+  - Bundled `reference-summaries.json` entries now support richer fields (`sourceName`, `attribute`, `difficulty`, `defaults`, `description`, `specialtyRequired`) and the popup renders them in dedicated **Skill Details**, **Description**, and **Notes** sections with safe fallback when fields are missing.
+  - Bundled spell entries support spell-specific metadata (`spellClass`, `college`, `duration`, `cost`, `timeToCast`, `prerequisites`, `item`) and render in a dedicated **Spell Details** section when present.
+  - The same popup provides **Add Local Override** / **Edit Local Override** to jump directly into the Local Overrides manager with prefilled metadata from the current reference.
 - Search UX:
-  - Available actors, combat attacks, skills, and quick skills support continuous typing without focus loss.
+  - Available actors, combat attacks, skills, quick skills, and spells support continuous typing without focus loss.
+  - Search filtering uses prebuilt lowercase row text to avoid repeated string rebuilding during typing.
 - Combat UX:
   - Initiative badge shown when combat data exists.
   - Current-turn actor pulse/glow preserved.
   - If no active combat, roster pills simply omit initiative badge.
 - Fallback rolling:
   - If a native GURPS method is not available, visible 3d6 fallback chat roll is used.
-- Lightweight client setting:
-  - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`).
+- Lightweight client settings/state:
+  - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`, `spells`).
+  - Client-scoped JSON metadata store for manual Local Override entries (no PDF parsing/extraction).
+  - Local Overrides manager can filter rows by name/type/book key/displayed page/notes without re-rendering on each keystroke.
+  - Local Overrides manager can export current metadata JSON directly to clipboard.
+  - Local Overrides manager supports merge/replace JSON import with safe validation and invalid-JSON warnings (no crash).
+
 
 ## Installation / Local Development
 
@@ -63,7 +92,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
    - **Skills** to browse and check skills you want pinned.
    - **Quick Skills** to use pinned skills quickly.
 5. Edit HP/FP directly in Combat Burst.
-6. Close/reopen QuickDeck or refresh Foundry—roster and Quick Skills should restore for your client.
+6. Click **Minimize** to collapse QuickDeck into a compact top-screen **QD QuickDeck** restore pill.
+7. **Left-click** the floating restore pill to reopen QuickDeck.
+8. **Right-click and drag** the floating restore pill to move it; release to save position.
+9. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, minimized state, and restore pill position restore per client.
 
 ## Branch Workflow
 
@@ -82,3 +114,11 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - **Foundry VTT:** v13 target.
 - **Platform:** Forge VTT supported.
 - **System:** GURPS 4e Game Aid.
+
+## Forge-Safe Guardrails
+
+- QuickDeck only opens `actor.sheet` through the explicit `openActorSheet(actorId)` path.
+- Token placement uses click-to-place canvas coordinates (no browser drag/drop to canvas).
+- Escape/cancel, close, minimize, and scene-switch paths always remove temporary pointer/window/canvas listeners.
+- Roll and token placement failures are warning-first and never intentionally crash the app.
+- Reference summaries load from module-local JSON files only; missing packs warn and continue.

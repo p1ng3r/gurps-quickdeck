@@ -1,11 +1,4 @@
-<section class="quickdeck-shell {{#if isMinimized}}is-minimized{{/if}}">
-  {{#if isMinimized}}
-    <section class="quickdeck-minimized-pill">
-      <div class="quickdeck-minimized-title">GURPS QuickDeck</div>
-      <div class="quickdeck-minimized-actor">{{#if activeActorName}}{{activeActorName}}{{else}}No actor selected{{/if}}</div>
-      <button type="button" data-action="toggle-minimize" class="quickdeck-restore-button">Restore</button>
-    </section>
-  {{else}}
+<section class="quickdeck-shell">
   <aside class="quickdeck-sidebar">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
@@ -108,6 +101,7 @@
 
   <main class="quickdeck-main">
     <div class="quickdeck-window-actions">
+      <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button">Local Overrides</button>
       <button type="button" data-action="toggle-minimize" class="quickdeck-minimize-button">Minimize</button>
     </div>
     <section class="quickdeck-content">
@@ -138,6 +132,14 @@
             class="quickdeck-drawer-tab {{#if isQuickSkillsDrawerOpen}}is-active{{/if}}"
           >
             Quick Skills
+          </button>
+          <button
+            type="button"
+            data-action="toggle-drawer"
+            data-drawer="spells"
+            class="quickdeck-drawer-tab {{#if isSpellsDrawerOpen}}is-active{{/if}}"
+          >
+            Spells
           </button>
         </nav>
 
@@ -398,7 +400,19 @@
                               />
                             </label>
                             <div class="quickdeck-skill-main">
-                              <h5>{{skill.name}}</h5>
+                              <h5>
+                                <button
+                                  type="button"
+                                  class="quickdeck-link-button"
+                                  data-action="open-reference"
+                                  data-ref-type="skill"
+                                  data-ref-name="{{skill.name}}"
+                                  data-ref-page="{{skill.pageHint}}"
+                                  data-ref-source="{{skill.reference}}"
+                                >
+                                  {{skill.name}}
+                                </button>
+                              </h5>
                               <p>Level {{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</p>
                             </div>
                             <button
@@ -481,7 +495,19 @@
                               />
                             </label>
                             <div class="quickdeck-skill-main">
-                              <h5>{{skill.name}}</h5>
+                              <h5>
+                                <button
+                                  type="button"
+                                  class="quickdeck-link-button"
+                                  data-action="open-reference"
+                                  data-ref-type="skill"
+                                  data-ref-name="{{skill.name}}"
+                                  data-ref-page="{{skill.pageHint}}"
+                                  data-ref-source="{{skill.reference}}"
+                                >
+                                  {{skill.name}}
+                                </button>
+                              </h5>
                               <p>Level {{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</p>
                             </div>
                             <button
@@ -502,6 +528,87 @@
                   </section>
                 </div>
               {{/if}}
+
+              {{#if isSpellsDrawerOpen}}
+                <div class="quickdeck-panel-content quickdeck-panel-skills">
+                  <header class="quickdeck-actor-header">
+                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+                    <div>
+                      <h3>{{activeActor.name}}</h3>
+                      <p>
+                        Spells snapshot
+                        {{#if activeActor.actorType}}
+                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
+                        {{/if}}
+                      </p>
+                    </div>
+                    <div class="quickdeck-actor-header-actions">
+                      <button
+                        type="button"
+                        data-action="drop-token"
+                        data-actor-id="{{activeActor.id}}"
+                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      >
+                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
+                      </button>
+                      <button
+                        type="button"
+                        data-action="open-sheet"
+                        data-actor-id="{{activeActor.id}}"
+                        class="quickdeck-open-sheet-button"
+                      >
+                        Open Sheet
+                      </button>
+                    </div>
+                  </header>
+
+                  <section class="quickdeck-skills-section">
+                    <h4>
+                      Spells (<span data-count="spells-visible">{{visibleSpellsCount}}</span> /
+                      <span data-count="spells-total">{{spellsCount}}</span>)
+                    </h4>
+                    <input
+                      type="search"
+                      class="quickdeck-drawer-search"
+                      value="{{spellsSearch}}"
+                      data-action="spells-search"
+                      placeholder="Search spells..."
+                      autocomplete="off"
+                    />
+
+                    {{#if indexedSpells.length}}
+                      <div class="quickdeck-skills-list">
+                        {{#each indexedSpells as |spell|}}
+                          <article class="quickdeck-skill-row quickdeck-spell-row" data-search-row="spells" data-search-text="{{spell.searchText}}">
+                            <div class="quickdeck-skill-main">
+                              <h5>
+                                <button
+                                  type="button"
+                                  class="quickdeck-link-button"
+                                  data-action="open-reference"
+                                  data-ref-type="spell"
+                                  data-ref-name="{{spell.name}}"
+                                  data-ref-page="{{spell.pageHint}}"
+                                  data-ref-source="{{spell.reference}}"
+                                >
+                                  {{spell.name}}
+                                </button>
+                              </h5>
+                              <p>
+                                Level {{#if spell.level}}{{spell.level}}{{else}}—{{/if}}
+                                {{#if spell.class}} · {{spell.class}}{{/if}}
+                                {{#if spell.cost}} · Cost {{spell.cost}}{{/if}}
+                              </p>
+                            </div>
+                          </article>
+                        {{/each}}
+                      </div>
+                    {{else}}
+                      <p class="quickdeck-empty">No spells found for this actor yet.</p>
+                    {{/if}}
+                  </section>
+                </div>
+              {{/if}}
             {{else}}
               <div class="quickdeck-panel-content">
                 <p class="quickdeck-empty">Select a roster actor to open a drawer.</p>
@@ -513,5 +620,4 @@
     </section>
     <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
   </main>
-  {{/if}}
 </section>

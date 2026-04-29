@@ -1,13 +1,16 @@
+import { REFERENCE_INDEX_SETTING_KEY } from "./reference-index-store.js";
 import { QuickDeckApp } from "./quickdeck-app.js";
 
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
-  DEFAULT_DRAWER: "defaultDrawer"
+  DEFAULT_DRAWER: "defaultDrawer",
+  MINIMIZED: "isMinimized",
+  RESTORE_PILL_POSITION: "restorePillPosition",
+  REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY
 };
 let quickDeckApp = null;
-
 function openQuickDeck() {
   if (!quickDeckApp) {
     quickDeckApp = new QuickDeckApp();
@@ -27,7 +30,7 @@ Hooks.once("ready", () => {
         return;
       }
       quickDeckApp.dumpActiveActorData();
-    }
+    },
   };
 });
 
@@ -60,10 +63,41 @@ Hooks.once("init", () => {
       none: "None",
       combat: "Combat",
       skills: "Skills",
-      "quick-skills": "Quick Skills"
+      "quick-skills": "Quick Skills",
+      spells: "Spells"
     },
     default: "none"
   });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.MINIMIZED, {
+    name: "QuickDeck Minimized State",
+    hint: "Whether QuickDeck opens in minimized icon mode for this client.",
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, {
+    name: "QuickDeck Restore Pill Position",
+    hint: "Client-side saved top/left position for the minimized QuickDeck restore pill.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "null"
+  });
+
+
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.REFERENCE_INDEX, {
+    name: "QuickDeck Local Overrides Metadata",
+    hint: "Client-side JSON list of manual local override entries used by QuickDeck Reference.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "[]"
+  });
+
 });
 
 Hooks.on("renderActorDirectory", (app, html) => {
@@ -90,11 +124,39 @@ Hooks.on("renderActorDirectory", (app, html) => {
 
 Hooks.on("deleteActor", (actor) => {
   if (!quickDeckApp) return;
+  quickDeckApp.invalidateDerivedActorData(actor?.id);
   quickDeckApp.onActorDeleted(actor.id);
 });
 
+Hooks.on("updateActor", (actor) => {
+  if (!quickDeckApp) return;
+  quickDeckApp.invalidateDerivedActorData(actor?.id);
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
+});
+
+Hooks.on("createItem", (item) => {
+  const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
+  if (!quickDeckApp || !actorId) return;
+  quickDeckApp.invalidateDerivedActorData(actorId);
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
+});
+
+Hooks.on("updateItem", (item) => {
+  const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
+  if (!quickDeckApp || !actorId) return;
+  quickDeckApp.invalidateDerivedActorData(actorId);
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
+});
+
+Hooks.on("deleteItem", (item) => {
+  const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
+  if (!quickDeckApp || !actorId) return;
+  quickDeckApp.invalidateDerivedActorData(actorId);
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
+});
+
 function refreshQuickDeckOnCombatChange() {
-  if (!quickDeckApp?.rendered) return;
+  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
   quickDeckApp.render(false);
 }
 

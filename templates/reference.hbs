@@ -1,0 +1,173 @@
+<section class="quickdeck-reference-shell">
+  <header class="quickdeck-reference-header quickdeck-reference-panel">
+    <h2>{{title}}</h2>
+    <dl class="quickdeck-reference-meta">
+      <div>
+        <dt>Type</dt>
+        <dd>{{type}}</dd>
+      </div>
+      {{#if source}}
+        <div>
+          <dt>Source hint</dt>
+          <dd>{{source}}</dd>
+        </div>
+      {{/if}}
+      {{#if pageHint}}
+        <div>
+          <dt>Page hint</dt>
+          <dd>{{pageHint}}</dd>
+        </div>
+      {{/if}}
+    </dl>
+  </header>
+
+  <section class="quickdeck-reference-body quickdeck-reference-panel">
+    <div class="quickdeck-reference-index-actions">
+      <button
+        type="button"
+        class="quickdeck-reference-index-button"
+        data-action="open-reference-index-entry"
+        data-prefill-name="{{prefillEntryName}}"
+        data-prefill-type="{{prefillEntryType}}"
+        data-prefill-book-key="{{prefillEntryBookKey}}"
+        data-prefill-displayed-page="{{prefillEntryDisplayedPage}}"
+      >
+        {{referenceIndexButtonLabel}}
+      </button>
+    </div>
+
+    {{#if hasBundledBaseMatch}}
+      <p class="quickdeck-reference-muted">Matched base reference: {{bundledMatchedBaseName}}</p>
+    {{/if}}
+    {{#if hasManualBaseMatch}}
+      <p class="quickdeck-reference-muted">Matched local override by base reference: {{manualMatchedBaseName}}</p>
+    {{/if}}
+
+    {{#if hasBundledSummary}}
+      <div class="quickdeck-reference-sources">
+        <h3>Author Summary</h3>
+        <p>{{bundledSummary}}</p>
+      </div>
+    {{/if}}
+
+    {{#if hasBundledSkillDetails}}
+      <div class="quickdeck-reference-sources">
+        <h3>Skill Details</h3>
+        <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+          <div>
+            <dt>Attribute</dt>
+            <dd>{{#if hasBundledAttribute}}{{bundledAttribute}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Difficulty</dt>
+            <dd>{{#if hasBundledDifficulty}}{{bundledDifficulty}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Defaults</dt>
+            <dd>{{#if hasBundledDefaults}}{{bundledDefaults}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Specialty Required</dt>
+            <dd>{{#if hasBundledSpecialtyRequired}}{{bundledSpecialtyRequired}}{{else}}—{{/if}}</dd>
+          </div>
+        </dl>
+      </div>
+    {{/if}}
+
+    {{#if hasBundledSpellDetails}}
+      <div class="quickdeck-reference-sources">
+        <h3>Spell Details</h3>
+        <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+          <div>
+            <dt>College</dt>
+            <dd>{{#if hasBundledCollege}}{{bundledCollege}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Class</dt>
+            <dd>{{#if hasBundledSpellClass}}{{bundledSpellClass}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Duration</dt>
+            <dd>{{#if hasBundledDuration}}{{bundledDuration}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Cost</dt>
+            <dd>{{#if hasBundledCost}}{{bundledCost}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Time to Cast</dt>
+            <dd>{{#if hasBundledTimeToCast}}{{bundledTimeToCast}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Prerequisites</dt>
+            <dd>{{#if hasBundledPrerequisites}}{{bundledPrerequisites}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Item</dt>
+            <dd>{{#if hasBundledItem}}{{bundledItem}}{{else}}—{{/if}}</dd>
+          </div>
+        </dl>
+      </div>
+    {{/if}}
+
+    {{#if hasBundledDescription}}
+      <div class="quickdeck-reference-sources">
+        <h3>Description</h3>
+        <p>{{bundledDescription}}</p>
+      </div>
+    {{/if}}
+
+    {{#if hasBundledNotes}}
+      <div class="quickdeck-reference-sources">
+        <h3>Notes</h3>
+        <p>{{bundledNotes}}</p>
+      </div>
+    {{/if}}
+
+    <div class="quickdeck-reference-sources">
+      <h3>Source Info</h3>
+      <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+        <div>
+          <dt>Source Name</dt>
+          <dd>{{#if hasSourceName}}{{sourceName}}{{else}}—{{/if}}</dd>
+        </div>
+        <div>
+          <dt>Displayed Page</dt>
+          <dd>{{#if hasDisplayedPage}}{{displayedPage}}{{else}}—{{/if}}</dd>
+        </div>
+      </dl>
+    </div>
+
+    {{#if hasManualEntry}}
+      <div class="quickdeck-reference-sources">
+        <h3>Local Override</h3>
+        <dl class="quickdeck-reference-meta quickdeck-reference-match-meta">
+          <div>
+            <dt>Name</dt>
+            <dd>{{manualEntry.name}}</dd>
+          </div>
+          <div>
+            <dt>Type</dt>
+            <dd>{{manualEntry.type}}</dd>
+          </div>
+          <div>
+            <dt>Book Key</dt>
+            <dd>{{#if manualEntry.bookKey}}{{manualEntry.bookKey}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Displayed Page</dt>
+            <dd>{{#if manualEntry.displayedPage}}{{manualEntry.displayedPage}}{{else}}—{{/if}}</dd>
+          </div>
+          <div>
+            <dt>Notes</dt>
+            <dd>{{#if manualEntry.notes}}{{manualEntry.notes}}{{else}}—{{/if}}</dd>
+          </div>
+        </dl>
+      </div>
+    {{/if}}
+
+    {{#unless hasSummaryData}}
+      <p class="quickdeck-reference-empty"><em>{{emptyStateText}}</em></p>
+    {{/unless}}
+  </section>
+</section>

@@ -1,0 +1,122 @@
+[
+  {
+    "name": "Acrobatics",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "34",
+    "summary": "Covers balance, controlled falls, tumbling, and agile movement in tight or unstable situations.",
+    "notes": "Useful for keeping your feet on hazardous terrain and recovering from sudden stumbles."
+  },
+  {
+    "name": "Acting",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "34",
+    "summary": "Lets you perform convincingly, mimic expected behavior, and sell a believable role.",
+    "notes": "Helps with disguises, bluffs, and social scenes where confidence matters."
+  },
+  {
+    "name": "Alchemy",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "34",
+    "summary": "Used to identify ingredients, prepare mixtures, and brew alchemical items with proper facilities.",
+    "notes": "Time, tools, and high-quality components improve outcomes."
+  },
+  {
+    "name": "Animal Handling",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "35",
+    "summary": "Lets you calm, direct, train, and care for animals in travel or dangerous conditions.",
+    "notes": "Applies to practical control of beasts, not magical influence."
+  },
+  {
+    "name": "Armory",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "35",
+    "summary": "Covers maintenance, repair, and evaluation of weapons and armor.",
+    "notes": "Pick the appropriate specialty for the gear being worked on."
+  },
+  {
+    "name": "Boating",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "37",
+    "summary": "Used to handle small boats, read water conditions, and maneuver safely.",
+    "notes": "Rough water, poor visibility, and load issues can raise difficulty."
+  },
+  {
+    "name": "Body Sense",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "37",
+    "summary": "Represents awareness of orientation and movement when spinning, falling, or disoriented.",
+    "notes": "Useful after knockback, aerial movement, or sudden position changes."
+  },
+  {
+    "name": "Camouflage",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "38",
+    "summary": "Lets you hide people or objects by blending shapes, colors, and shadows with surroundings.",
+    "notes": "Preparation time and suitable materials strongly affect success."
+  },
+  {
+    "name": "Climbing",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "39",
+    "summary": "Covers ascent and descent of walls, cliffs, ropes, and similar surfaces.",
+    "notes": "Surface quality, weather, and encumbrance are key modifiers."
+  },
+  {
+    "name": "Fast-Draw",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "53",
+    "summary": "Lets you ready a specific class of weapon or item instantly in combat.",
+    "notes": "Requires the matching specialty for each weapon or item type."
+  },
+  {
+    "name": "First Aid",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "54",
+    "summary": "Provides immediate treatment to stabilize injuries and prevent a patient from getting worse.",
+    "notes": "Best for urgent care in the field before longer-term healing."
+  },
+  {
+    "name": "Lockpicking",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "80",
+    "summary": "Lets you open locks quickly and quietly using proper tools; difficult locks apply penalties and rushed attempts are harder.",
+    "notes": "GM: Apply extra penalties for poor tools or stressful time pressure."
+  },
+  {
+    "name": "Merchant",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "83",
+    "summary": "Used to judge value, negotiate prices, and conduct profitable buying or selling.",
+    "notes": "Strong roleplaying and local market knowledge can support better deals."
+  },
+  {
+    "name": "Navigation",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "84",
+    "summary": "Lets you plot routes, keep bearings, and avoid getting lost overland or underground.",
+    "notes": "Choose a specialty that matches terrain or travel method."
+  },
+  {
+    "name": "Observation",
+    "type": "skill",
+    "bookKey": "dungeon-fantasy-adventurers",
+    "displayedPage": "84",
+    "summary": "Represents careful watching to notice suspicious details, patterns, or behavior over time.",
+    "notes": "Great for stakeouts, sentry duty, and tracking subtle changes."
+  }
+]

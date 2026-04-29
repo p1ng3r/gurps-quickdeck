@@ -1,12 +1,18 @@
+import { QuickDeckReferenceApp } from "./reference-app.js";
+import { openReferenceIndexManager } from "./reference-index-app.js";
+
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
-  DEFAULT_DRAWER: "defaultDrawer"
+  DEFAULT_DRAWER: "defaultDrawer",
+  MINIMIZED: "isMinimized",
+  RESTORE_PILL_POSITION: "restorePillPosition"
 };
-const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills"]);
+const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
+
 
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
@@ -18,6 +24,7 @@ export class QuickDeckApp extends Application {
     this.combatSearch = "";
     this.skillsSearch = "";
     this.quickSkillsSearch = "";
+    this.spellsSearch = "";
     this.quickSkillSelectionsByActor = {};
     this._actorSelectTimeout = null;
     this.isDragOverRoster = false;
@@ -25,7 +32,12 @@ export class QuickDeckApp extends Application {
     this._pendingTokenDropCleanup = null;
     this._tokenDropSceneId = null;
     this.isMinimized = false;
+    this._floatingRestoreIcon = null;
+    this._restorePillDragCleanup = null;
+    this._restorePillPreventClick = false;
+    this.restorePillPosition = null;
     this._stateLoadedFromSettings = false;
+    this._derivedActorDataCache = new Map();
     this.loadPersistedState();
   }
 
@@ -100,6 +112,14 @@ export class QuickDeckApp extends Application {
 
   getActiveActor() {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
+  }
+
+  invalidateDerivedActorData(actorId = null) {
+    if (!actorId) {
+      this._derivedActorDataCache.clear();
+      return;
+    }
+    this._derivedActorDataCache.delete(String(actorId));
   }
 
   getFirstDefinedValue(source, paths = []) {
@@ -285,7 +305,64 @@ export class QuickDeckApp extends Application {
         "relative_level"
       ]),
       points: this.getFirstDefinedValue(skill, ["points", "calc.points", "pts", "spent", "cp"]),
+      reference: this.getFirstDefinedValue(skill, ["reference", "ref", "pageRef", "pageref", "book"]),
+      pageHint: this.getFirstDefinedValue(skill, [
+        "pageRef",
+        "pageref",
+        "page",
+        "refPage",
+        "referencePage"
+      ]),
       raw: skill
+    };
+  }
+
+  isSpellLike(value) {
+    if (!value || typeof value !== "object") return false;
+    const hasName = this.objectHasAnyPath(value, ["name", "spell", "label", "title"]);
+    if (!hasName) return false;
+
+    return this.objectHasAnyPath(value, [
+      "class",
+      "college",
+      "cost",
+      "maintain",
+      "casting",
+      "castingtime",
+      "duration",
+      "resist",
+      "difficulty",
+      "level",
+      "import",
+      "spellClass",
+      "reference",
+      "pageRef",
+      "itemtype",
+      "type"
+    ]);
+  }
+
+  normalizeSpell(spell) {
+    if (!spell || typeof spell !== "object") return null;
+    const name =
+      this.getFirstDefinedValue(spell, ["name", "spell", "label", "title"]) ?? "Unnamed Spell";
+
+    return {
+      name,
+      level: this.getFirstDefinedValue(spell, ["level", "calc.level", "import", "value"]),
+      class: this.getFirstDefinedValue(spell, ["class", "spellClass", "category"]),
+      cost: this.getFirstDefinedValue(spell, ["cost", "casting.cost", "castCost"]),
+      maintain: this.getFirstDefinedValue(spell, ["maintain", "maintenance", "maint"]),
+      duration: this.getFirstDefinedValue(spell, ["duration"]),
+      reference: this.getFirstDefinedValue(spell, ["reference", "ref", "book"]),
+      pageHint: this.getFirstDefinedValue(spell, [
+        "pageRef",
+        "pageref",
+        "page",
+        "refPage",
+        "referencePage"
+      ]),
+      raw: spell
     };
   }
 
@@ -340,6 +417,161 @@ export class QuickDeckApp extends Application {
     }
 
     return skills;
+  }
+
+  extractSpells(actor) {
+    if (!actor) return [];
+
+    const spells = [];
+    const spellSources = [
+      "system.spells",
+      "data.data.spells",
+      "system.magic",
+      "data.data.magic",
+      "system.traits.spells",
+      "data.data.traits.spells"
+    ];
+
+    for (const path of spellSources) {
+      const collection = foundry.utils.getProperty(actor, path);
+      const entries = this.collectNestedMatches(collection, (entry) => this.isSpellLike(entry));
+      for (const entry of entries) {
+        const normalized = this.normalizeSpell(entry);
+        if (normalized) spells.push(normalized);
+      }
+    }
+
+    const actorItems = Array.from(actor.items ?? []);
+    for (const item of actorItems) {
+      const itemType = String(item?.type ?? "").toLowerCase();
+      const itemName = String(item?.name ?? "").toLowerCase();
+      const looksLikeSpell =
+        itemType.includes("spell") ||
+        itemName.includes("spell") ||
+        itemName.includes("ritual") ||
+        itemName.includes("magic");
+      if (!looksLikeSpell) continue;
+      const normalized = this.normalizeSpell(item?.system ?? item);
+      if (!normalized) continue;
+      if (!normalized.name || normalized.name === "Unnamed Spell") {
+        normalized.name = item?.name ?? normalized.name;
+      }
+      spells.push(normalized);
+    }
+
+    const dedupe = new Set();
+    return spells.filter((spell) => {
+      const key = `${String(spell.name ?? "").toLowerCase()}::${String(spell.level ?? "—")}`;
+      if (dedupe.has(key)) return false;
+      dedupe.add(key);
+      return true;
+    });
+  }
+
+  getActorDataVersionStamp(actor) {
+    if (!actor) return "missing";
+    const modifiedTime =
+      actor?._stats?.modifiedTime ??
+      actor?._stats?.modified ??
+      actor?._source?._stats?.modifiedTime ??
+      "";
+    const itemSize = Number(actor?.items?.size ?? actor?.items?.length ?? 0);
+    return `${actor.id ?? "unknown"}::${String(modifiedTime)}::${itemSize}`;
+  }
+
+  filterEntriesBySearchText(entries, searchTerm) {
+    const search = this.normalizeSearchText(searchTerm);
+    if (!search) return entries;
+    return entries.filter((entry) => this.normalizeSearchText(entry?.searchText).includes(search));
+  }
+
+  getDerivedActorData(actor, options = {}) {
+    const includeAttacks = options.includeAttacks !== false;
+    const includeSkills = options.includeSkills !== false;
+    const includeSpells = options.includeSpells !== false;
+    const cacheScope = `${includeAttacks ? "1" : "0"}${includeSkills ? "1" : "0"}${includeSpells ? "1" : "0"}`;
+
+    if (!actor?.id) {
+      return {
+        attacks: [],
+        indexedAttacks: [],
+        skills: [],
+        indexedSkills: [],
+        spells: [],
+        indexedSpells: [],
+        dodge: null,
+        bestParry: null,
+        bestBlock: null,
+        currentHp: null,
+        currentFp: null,
+        maxHp: null,
+        maxFp: null,
+        move: null
+      };
+    }
+
+    const actorId = String(actor.id);
+    const stamp = this.getActorDataVersionStamp(actor);
+    const actorCache = this._derivedActorDataCache.get(actorId);
+    const cached = actorCache?.get(cacheScope);
+    if (cached?.stamp === stamp) return cached.value;
+
+    const attacks = includeAttacks ? this.extractAttacks(actor) : [];
+    const skills = includeSkills ? this.extractSkills(actor) : [];
+    const spells = includeSpells ? this.extractSpells(actor) : [];
+    const indexedAttacks = attacks.map((attack, index) => ({
+      ...attack,
+      index,
+      searchText: this.buildSearchText([
+        attack.name,
+        attack.type,
+        attack.damage,
+        attack.level,
+        attack.reachOrRange,
+        attack.parry,
+        attack.block
+      ])
+    }));
+    const indexedSkills = skills.map((skill, index) => ({
+      ...skill,
+      index,
+      searchText: this.buildSearchText([skill.name, skill.level, skill.relativeLevel, skill.points])
+    }));
+    const indexedSpells = spells.map((spell, index) => ({
+      ...spell,
+      index,
+      searchText: this.buildSearchText([
+        spell.name,
+        spell.level,
+        spell.class,
+        spell.cost,
+        spell.duration,
+        spell.reference,
+        spell.pageHint
+      ])
+    }));
+
+    const value = {
+      attacks,
+      indexedAttacks,
+      skills,
+      indexedSkills,
+      spells,
+      indexedSpells,
+      dodge: includeAttacks ? foundry.utils.getProperty(actor, "system.currentdodge") ?? null : null,
+      bestParry: includeAttacks ? this.getBestAttackDefense(attacks, "parry") : null,
+      bestBlock: includeAttacks ? this.getBestAttackDefense(attacks, "block") : null,
+      currentHp: this.getResourceValue(actor, "HP"),
+      currentFp: this.getResourceValue(actor, "FP"),
+      maxHp: this.getResourceMax(actor, "HP"),
+      maxFp: this.getResourceMax(actor, "FP"),
+      move: foundry.utils.getProperty(actor, "system.basicmove.value") ?? null
+    };
+
+    const nextActorCache = actorCache ?? new Map();
+    nextActorCache.set(cacheScope, { stamp, value });
+    this._derivedActorDataCache.set(actorId, nextActorCache);
+    return value;
   }
 
 
@@ -415,6 +647,12 @@ export class QuickDeckApp extends Application {
     } else {
       this.quickSkillSelectionsByActor = {};
     }
+    this.isMinimized = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.MINIMIZED));
+    const savedRestorePillPosition = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION),
+      null
+    );
+    this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
 
     this._stateLoadedFromSettings = true;
   }
@@ -438,6 +676,26 @@ export class QuickDeckApp extends Application {
     if (!game?.settings) return;
     const serialized = this.serializeQuickSkillsState();
     game.settings.set(MODULE_ID, SETTING_KEYS.QUICK_SKILLS, JSON.stringify(serialized));
+  }
+
+  persistMinimizedState() {
+    if (!game?.settings) return;
+    game.settings.set(MODULE_ID, SETTING_KEYS.MINIMIZED, Boolean(this.isMinimized));
+  }
+
+  normalizeRestorePillPosition(position) {
+    if (!position || typeof position !== "object") return null;
+    const top = Number(position.top);
+    const left = Number(position.left);
+    if (!Number.isFinite(top) || !Number.isFinite(left)) return null;
+    return { top, left };
+  }
+
+  persistRestorePillPosition(position) {
+    const normalized = this.normalizeRestorePillPosition(position);
+    this.restorePillPosition = normalized;
+    if (!game?.settings) return;
+    game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -475,36 +733,6 @@ export class QuickDeckApp extends Application {
     if (removedQuickSkills) {
       this.persistQuickSkillsState();
     }
-  }
-
-  filterAttacks(attacks, searchTerm) {
-    const search = String(searchTerm ?? "").trim().toLowerCase();
-    if (!search) return attacks;
-
-    return attacks.filter((attack) => {
-      const haystack = [
-        attack.name,
-        attack.type,
-        attack.damage,
-        attack.level,
-        attack.reachOrRange,
-        attack.parry,
-        attack.block
-      ]
-        .map((value) => String(value ?? "").toLowerCase())
-        .join(" ");
-      return haystack.includes(search);
-    });
-  }
-
-  filterSkills(skills, searchTerm) {
-    const search = String(searchTerm ?? "").trim().toLowerCase();
-    if (!search) return skills;
-
-    return skills.filter((skill) => {
-      const haystack = `${String(skill.name ?? "").toLowerCase()} ${String(skill.level ?? "").toLowerCase()}`;
-      return haystack.includes(search);
-    });
   }
 
   getVisibleCountBySearchText(entries, searchTerm) {
@@ -584,6 +812,16 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "quick-skills-visible", visible);
     this.updateCountText(html, "quick-skills-total", total);
+  }
+
+  applySpellsFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='spells']",
+      this.spellsSearch
+    );
+    this.updateCountText(html, "spells-visible", visible);
+    this.updateCountText(html, "spells-total", total);
   }
 
   toDisplayValue(value) {
@@ -1081,6 +1319,20 @@ export class QuickDeckApp extends Application {
     await actor.update({ [path]: parsed });
   }
 
+  openReferenceEntry(referenceData = {}) {
+    try {
+      const app = new QuickDeckReferenceApp(referenceData);
+      app.render(true);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to open QuickDeck reference window.", error);
+      ui.notifications?.warn("QuickDeck: Could not open reference window.");
+    }
+  }
+
+  openReferenceIndexManager() {
+    openReferenceIndexManager();
+  }
+
   getCombatRosterState() {
     const combat = game?.combat;
     if (!combat) {
@@ -1446,17 +1698,205 @@ export class QuickDeckApp extends Application {
   toggleMinimizedState() {
     this.isMinimized = !this.isMinimized;
     if (this.isMinimized) this.cancelTokenDrop({ render: false });
-    this.render(false);
+    this.persistMinimizedState();
+    this.syncMinimizedPresentation();
   }
 
   async minimize() {
     this.cancelTokenDrop({ render: false });
-    return super.minimize();
+    if (!this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState();
+    }
+    this.syncMinimizedPresentation();
+    return this;
   }
 
   async close(options) {
     this.cancelTokenDrop({ render: false });
+    this.removeFloatingRestoreIcon();
+    if (this._actorSelectTimeout) {
+      clearTimeout(this._actorSelectTimeout);
+      this._actorSelectTimeout = null;
+    }
+    this.invalidateDerivedActorData();
     return super.close(options);
+  }
+
+  async _render(force = false, options = {}) {
+    const result = await super._render(force, options);
+    this.syncMinimizedPresentation();
+    return result;
+  }
+
+  syncMinimizedPresentation() {
+    if (!this.rendered) return;
+    if (this.isMinimized) {
+      this.ensureFloatingRestoreIcon();
+      this.element?.hide();
+      return;
+    }
+
+    this.removeFloatingRestoreIcon();
+    this.element?.show();
+    this.bringToTop();
+  }
+
+  ensureFloatingRestoreIcon() {
+    const existing = document.getElementById(this.getFloatingRestoreIconId());
+    if (existing) {
+      this._floatingRestoreIcon = existing;
+      this.applyRestorePillPosition(existing);
+      return;
+    }
+
+    const icon = document.createElement("button");
+    icon.type = "button";
+    icon.id = this.getFloatingRestoreIconId();
+    icon.className = "quickdeck-floating-restore";
+    icon.title = "Left-click restore · Right-drag move";
+    icon.setAttribute("aria-label", "Left-click restore · Right-drag move");
+    icon.innerHTML = '<span class="quickdeck-floating-restore-mark">QD</span><span class="quickdeck-floating-restore-label">QuickDeck</span>';
+    icon.addEventListener("contextmenu", this.onFloatingRestoreContextMenu);
+    icon.addEventListener("pointerdown", this.onFloatingRestorePointerDown);
+    icon.addEventListener("click", this.onFloatingRestoreClick);
+    document.body.appendChild(icon);
+    this._floatingRestoreIcon = icon;
+    this.applyRestorePillPosition(icon);
+  }
+
+  getFloatingRestoreIconId() {
+    return `quickdeck-floating-restore-${this.appId}`;
+  }
+
+  onFloatingRestoreClick = (event) => {
+    event.preventDefault();
+    if (this._restorePillPreventClick) {
+      this._restorePillPreventClick = false;
+      return;
+    }
+    this.isMinimized = false;
+    this.persistMinimizedState();
+    this.render(false);
+  };
+
+  onFloatingRestoreContextMenu = (event) => {
+    event.preventDefault();
+  };
+
+  onFloatingRestorePointerDown = (event) => {
+    if (event.button !== 2) return;
+
+    const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    if (!icon) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    this._restorePillPreventClick = true;
+    this.stopRestorePillDrag();
+
+    const startLeft = Number.parseFloat(icon.style.left) || icon.offsetLeft || 0;
+    const startTop = Number.parseFloat(icon.style.top) || icon.offsetTop || 0;
+    const startClientX = Number(event.clientX);
+    const startClientY = Number(event.clientY);
+    const dragThreshold = 3;
+    let didDrag = false;
+
+    const updatePosition = (nextLeft, nextTop) => {
+      const clamped = this.getClampedRestorePillPosition(nextLeft, nextTop, icon);
+      icon.style.left = `${clamped.left}px`;
+      icon.style.top = `${clamped.top}px`;
+      icon.style.right = "auto";
+      this.restorePillPosition = clamped;
+    };
+
+    const onPointerMove = (moveEvent) => {
+      const deltaX = Number(moveEvent.clientX) - startClientX;
+      const deltaY = Number(moveEvent.clientY) - startClientY;
+      if (!didDrag && (Math.abs(deltaX) >= dragThreshold || Math.abs(deltaY) >= dragThreshold)) {
+        didDrag = true;
+      }
+      updatePosition(startLeft + deltaX, startTop + deltaY);
+    };
+
+    const onPointerUp = () => {
+      if (!didDrag) {
+        this._restorePillPreventClick = false;
+      } else {
+        this.persistRestorePillPosition(this.restorePillPosition);
+      }
+      this.stopRestorePillDrag();
+    };
+
+    const onWindowBlur = () => {
+      if (didDrag) this.persistRestorePillPosition(this.restorePillPosition);
+      this.stopRestorePillDrag();
+    };
+
+    const abortController = typeof AbortController === "function" ? new AbortController() : null;
+    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+    window.addEventListener("pointermove", onPointerMove, listenerOptions);
+    window.addEventListener("pointerup", onPointerUp, listenerOptions);
+    window.addEventListener("blur", onWindowBlur, listenerOptions);
+
+    this._restorePillDragCleanup = () => {
+      if (abortController) {
+        abortController.abort();
+        return;
+      }
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("blur", onWindowBlur);
+    };
+  };
+
+  stopRestorePillDrag() {
+    if (typeof this._restorePillDragCleanup === "function") {
+      this._restorePillDragCleanup();
+    }
+    this._restorePillDragCleanup = null;
+  }
+
+  getClampedRestorePillPosition(left, top, icon) {
+    const pill = icon ?? this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    const rect = pill?.getBoundingClientRect?.();
+    const width = rect?.width ?? pill?.offsetWidth ?? 0;
+    const height = rect?.height ?? pill?.offsetHeight ?? 0;
+    const maxLeft = Math.max(0, window.innerWidth - width);
+    const maxTop = Math.max(0, window.innerHeight - height);
+    return {
+      left: Math.min(Math.max(0, Number(left) || 0), maxLeft),
+      top: Math.min(Math.max(0, Number(top) || 0), maxTop)
+    };
+  }
+
+  applyRestorePillPosition(icon) {
+    const pill = icon ?? this._floatingRestoreIcon;
+    if (!pill) return;
+
+    const fallbackRect = pill.getBoundingClientRect();
+    const fallbackPosition = {
+      left: fallbackRect.left,
+      top: fallbackRect.top
+    };
+    const desired = this.restorePillPosition ?? fallbackPosition;
+    const clamped = this.getClampedRestorePillPosition(desired.left, desired.top, pill);
+    pill.style.left = `${clamped.left}px`;
+    pill.style.top = `${clamped.top}px`;
+    pill.style.right = "auto";
+    this.restorePillPosition = clamped;
+    this.persistRestorePillPosition(clamped);
+  }
+
+  removeFloatingRestoreIcon() {
+    this.stopRestorePillDrag();
+    const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    if (!icon) return;
+    icon.removeEventListener("contextmenu", this.onFloatingRestoreContextMenu);
+    icon.removeEventListener("pointerdown", this.onFloatingRestorePointerDown);
+    icon.removeEventListener("click", this.onFloatingRestoreClick);
+    icon.remove();
+    this._floatingRestoreIcon = null;
   }
 
   getData() {
@@ -1482,42 +1922,54 @@ export class QuickDeckApp extends Application {
       }));
 
     const activeActor = this.getActiveActor();
-    const attacks = this.extractAttacks(activeActor);
-    const skills = this.extractSkills(activeActor);
+    const shouldHydrateDerivedData = Boolean(activeActor && this.activeDrawer);
+    const includeAttacks = this.activeDrawer === "combat";
+    const includeSkills = this.activeDrawer === "skills" || this.activeDrawer === "quick-skills";
+    const includeSpells = this.activeDrawer === "spells";
+    const derivedData = shouldHydrateDerivedData
+      ? this.getDerivedActorData(activeActor, { includeAttacks, includeSkills, includeSpells })
+      : {
+          attacks: [],
+          indexedAttacks: [],
+          skills: [],
+          indexedSkills: [],
+          spells: [],
+          indexedSpells: [],
+          dodge: null,
+          bestParry: null,
+          bestBlock: null,
+          currentHp: null,
+          currentFp: null,
+          maxHp: null,
+          maxFp: null,
+          move: null
+        };
+    const attacks = derivedData.attacks;
+    const skills = derivedData.skills;
     const combatSearch = this.combatSearch;
     const skillsSearch = this.skillsSearch;
     const quickSkillsSearch = this.quickSkillsSearch;
+    const spellsSearch = this.spellsSearch;
+    const spells = derivedData.spells;
 
-    const indexedAttacks = attacks.map((attack, index) => ({
-      ...attack,
-      index,
-      searchText: this.buildSearchText([
-        attack.name,
-        attack.type,
-        attack.damage,
-        attack.level,
-        attack.reachOrRange,
-        attack.parry,
-        attack.block
-      ])
-    }));
-    const filteredAttacks = this.filterAttacks(indexedAttacks, combatSearch);
+    const indexedAttacks = derivedData.indexedAttacks;
+    const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
 
     const activeActorId = activeActor?.id ?? null;
     const quickSelection = this.getQuickSkillSelection(activeActorId);
-    const indexedSkills = skills.map((skill, index) => {
+    const indexedSkills = derivedData.indexedSkills.map((skill) => {
       const quickSkillKey = this.getQuickSkillKey(skill);
       return {
         ...skill,
-        index,
         quickSkillKey,
-        isQuickSkillSelected: quickSkillKey ? quickSelection.has(quickSkillKey) : false,
-        searchText: this.buildSearchText([skill.name, skill.level, skill.relativeLevel, skill.points])
+        isQuickSkillSelected: quickSkillKey ? quickSelection.has(quickSkillKey) : false
       };
     });
-    const filteredSkills = this.filterSkills(indexedSkills, skillsSearch);
+    const filteredSkills = this.filterEntriesBySearchText(indexedSkills, skillsSearch);
     const quickSkills = indexedSkills.filter((skill) => skill.isQuickSkillSelected);
-    const filteredQuickSkills = this.filterSkills(quickSkills, quickSkillsSearch);
+    const filteredQuickSkills = this.filterEntriesBySearchText(quickSkills, quickSkillsSearch);
+    const indexedSpells = derivedData.indexedSpells;
+    const filteredSpells = this.filterEntriesBySearchText(indexedSpells, spellsSearch);
     if (DEBUG) {
       const meleeCount = attacks.filter((attack) => attack.type === "Melee").length;
       const rangedCount = attacks.filter((attack) => attack.type === "Ranged").length;
@@ -1533,21 +1985,21 @@ export class QuickDeckApp extends Application {
         firstSkills
       });
     }
-    const dodge = foundry.utils.getProperty(activeActor, "system.currentdodge") ?? null;
-    const bestParry = this.getBestAttackDefense(attacks, "parry");
-    const bestBlock = this.getBestAttackDefense(attacks, "block");
+    const dodge = derivedData.dodge;
+    const bestParry = derivedData.bestParry;
+    const bestBlock = derivedData.bestBlock;
 
-    const currentHp = this.getResourceValue(activeActor, "HP");
-    const currentFp = this.getResourceValue(activeActor, "FP");
-    const maxHp = this.getResourceMax(activeActor, "HP");
-    const maxFp = this.getResourceMax(activeActor, "FP");
+    const currentHp = derivedData.currentHp;
+    const currentFp = derivedData.currentFp;
+    const maxHp = derivedData.maxHp;
+    const maxFp = derivedData.maxFp;
 
     const gurpsData = {
       hp: currentHp ?? null,
       fp: currentFp ?? null,
       hpMax: maxHp ?? currentHp ?? null,
       fpMax: maxFp ?? currentFp ?? null,
-      move: foundry.utils.getProperty(activeActor, "system.basicmove.value") ?? null,
+      move: derivedData.move,
       dodge,
       defenses: {
         dodge,
@@ -1561,9 +2013,7 @@ export class QuickDeckApp extends Application {
         fp: this.toDisplayValue(currentFp),
         hpMax: this.toDisplayValue(maxHp ?? currentHp),
         fpMax: this.toDisplayValue(maxFp ?? currentFp),
-        move: this.toDisplayValue(
-          foundry.utils.getProperty(activeActor, "system.basicmove.value")
-        ),
+        move: this.toDisplayValue(derivedData.move),
         dodge: this.toDisplayValue(dodge),
         parry: this.toDisplayValue(bestParry),
         block: this.toDisplayValue(bestBlock)
@@ -1575,6 +2025,7 @@ export class QuickDeckApp extends Application {
       combatSearch,
       skillsSearch,
       quickSkillsSearch,
+      spellsSearch,
       availableActors,
       visibleAvailableCount: this.getVisibleCountBySearchText(availableActors, this.availableSearch),
       rosterCount: rosterActors.length,
@@ -1599,7 +2050,6 @@ export class QuickDeckApp extends Application {
           }
         : null,
       activeActorName: activeActor?.name ?? null,
-      isMinimized: this.isMinimized,
       isTokenDropArmedForActive:
         Boolean(activeActor?.id) && this.pendingTokenDropActorId === activeActor.id,
       gurpsData,
@@ -1609,6 +2059,7 @@ export class QuickDeckApp extends Application {
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
+      isSpellsDrawerOpen: this.activeDrawer === "spells",
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
@@ -1616,10 +2067,13 @@ export class QuickDeckApp extends Application {
       visibleSkillsCount: filteredSkills.length,
       quickSkillsCount: quickSkills.length,
       visibleQuickSkillsCount: filteredQuickSkills.length,
+      spellsCount: spells.length,
+      visibleSpellsCount: filteredSpells.length,
       isDragOverRoster: this.isDragOverRoster,
       indexedAttacks,
       indexedSkills,
-      indexedQuickSkills: quickSkills
+      indexedQuickSkills: quickSkills,
+      indexedSpells
     };
   }
 
@@ -1665,6 +2119,11 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='toggle-minimize']").on("click", (event) => {
       event.preventDefault();
       this.toggleMinimizedState();
+    });
+
+    html.find("[data-action='open-reference-index']").on("click", (event) => {
+      event.preventDefault();
+      this.openReferenceIndexManager();
     });
 
     html.find("[data-action='remove-actor']").on("click", (event) => {
@@ -1737,6 +2196,12 @@ export class QuickDeckApp extends Application {
       this.applyQuickSkillsFilter(html);
     });
 
+    html.find("[data-action='spells-search']").on("input", (event) => {
+      const searchValue = event.currentTarget?.value;
+      this.spellsSearch = typeof searchValue === "string" ? searchValue : "";
+      this.applySpellsFilter(html);
+    });
+
     html.find("[data-action='toggle-quick-skill']").on("change", (event) => {
       const actorId = event.currentTarget.dataset.actorId;
       const skillKey = event.currentTarget.dataset.skillKey;
@@ -1797,7 +2262,7 @@ export class QuickDeckApp extends Application {
       if (!actorId || Number.isNaN(attackIndex)) return;
 
       const actor = game.actors.get(actorId);
-      const attacks = this.extractAttacks(actor);
+      const attacks = this.getDerivedActorData(actor).attacks;
       const attack = attacks[attackIndex];
       if (!attack) return;
 
@@ -1830,7 +2295,7 @@ export class QuickDeckApp extends Application {
       if (!actorId || Number.isNaN(skillIndex)) return;
 
       const actor = game.actors.get(actorId);
-      const skills = this.extractSkills(actor);
+      const skills = this.getDerivedActorData(actor).skills;
       const skill = skills[skillIndex];
       if (!skill) return;
 
@@ -1845,6 +2310,16 @@ export class QuickDeckApp extends Application {
         skillName: skill.name,
         skill
       });
+    });
+
+    html.find("[data-action='open-reference']").on("click", (event) => {
+      event.preventDefault();
+      const element = event.currentTarget;
+      const type = String(element.dataset.refType ?? "rule");
+      const name = String(element.dataset.refName ?? "Reference");
+      const pageHint = element.dataset.refPage ?? "";
+      const source = element.dataset.refSource ?? "";
+      this.openReferenceEntry({ type, name, pageHint, source });
     });
 
     const dropTarget = html.find("[data-drop-zone='roster']")[0];
@@ -1897,5 +2372,6 @@ export class QuickDeckApp extends Application {
     this.applyCombatFilter(html);
     this.applySkillsFilter(html);
     this.applyQuickSkillsFilter(html);
+    this.applySpellsFilter(html);
   }
 }
