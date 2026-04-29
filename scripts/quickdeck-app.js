@@ -1332,10 +1332,14 @@ export class QuickDeckApp extends Application {
   async runAttackTargetFlow(actor, attack, attackIndex) {
     console.warn("QD ATTACK TARGET FLOW START", { actorId: actor?.id, attackIndex });
     const wasMinimized = this.isMinimized;
-    if (!wasMinimized) this.minimizeQuickDeckWindow();
+    if (!wasMinimized) await this.minimize();
     ui.notifications?.info("QuickDeck: Target a token (T) or click-select one.");
     const token = await this.waitForTargetSelection();
-    if (!wasMinimized) this.restoreQuickDeckWindow();
+    if (!wasMinimized) {
+      this.isMinimized = false;
+      this.persistMinimizedState();
+      this.render(false);
+    }
     if (!token) {
       ui.notifications?.warn("QuickDeck: No target selected.");
       this._pendingAttackGuidance = null;
