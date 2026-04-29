@@ -327,6 +327,17 @@
                             >
                               Attack
                             </button>
+                            {{#if attack.showDamageFollowup}}
+                              <button
+                                type="button"
+                                data-action="roll-damage"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-attack-index="{{attack.index}}"
+                                class="quickdeck-roll-button quickdeck-roll-button-secondary"
+                              >
+                                Roll Damage (Follow-up)
+                              </button>
+                            {{/if}}
                           </article>
                         {{/each}}
                       </div>
@@ -337,6 +348,9 @@
                             <header><h5>{{attack.name}}</h5><span>{{attack.type}}</span></header>
                             <dl><div><dt>Level/Skill</dt><dd>{{#if attack.level}}{{attack.level}}{{else}}—{{/if}}</dd></div><div><dt>Damage</dt><dd>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</dd></div></dl>
                             <button type="button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-roll-button">Attack</button>
+                            {{#if attack.showDamageFollowup}}
+                              <button type="button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-roll-button quickdeck-roll-button-secondary">Roll Damage (Follow-up)</button>
+                            {{/if}}
                           </article>
                         {{/each}}
                       </div>

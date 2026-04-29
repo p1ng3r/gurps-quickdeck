@@ -252,6 +252,15 @@ export class QuickDeckApp extends Application {
       "defence.block"
     ]);
 
+    const pendingActorId = this._pendingAttackGuidance?.actorId ?? null;
+    const pendingAttackIndex = Number.isFinite(this._pendingAttackGuidance?.attackIndex) ? this._pendingAttackGuidance.attackIndex : null;
+    const meleeAttacks = filteredAttacks
+      .filter((entry) => entry.type === "Melee")
+      .map((entry) => ({ ...entry, showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index }));
+    const rangedAttacks = filteredAttacks
+      .filter((entry) => entry.type === "Ranged")
+      .map((entry) => ({ ...entry, showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index }));
+
     return {
       name,
       type,
@@ -1330,7 +1339,7 @@ export class QuickDeckApp extends Application {
   }
 
   async runGuidedAttack(actor, attack, attackIndex, setup = {}) {
-    const gurps = game.GURPS;
+    const gurps = globalThis.GURPS ?? game.GURPS;
     if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
     const modifiers = [];
     const addModifier = (value, label) => {
@@ -1353,6 +1362,15 @@ export class QuickDeckApp extends Application {
     if (!token) {
       ui.notifications?.warn("QuickDeck: No target selected. Attack cancelled.");
       return;
+    }
+    try {
+      if (game.user && token?.setTarget) token.setTarget(true, { user: game.user, releaseOthers: true, groupSelection: false });
+      else if (game.user?.targets instanceof Set) {
+        game.user.targets.clear();
+        game.user.targets.add(token);
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to set selected token as target.", error);
     }
 
     const otfName = String(attack?.name ?? "").trim().replaceAll(" ", "*");
@@ -1377,10 +1395,19 @@ export class QuickDeckApp extends Application {
     }
 
     const lastRoll = gurps?.lastTargetedRoll ?? (gurps?.lastTargetedRolls && actor?.id ? gurps.lastTargetedRolls[actor.id] : null);
-    const success = Boolean(lastRoll && (lastRoll.isCritSuccess || (!lastRoll.failure && !lastRoll.isCritFailure)));
-    const outcomeLabel = lastRoll?.isCritSuccess ? "Critical Success" : lastRoll?.isCritFailure ? "Critical Failure" : lastRoll?.failure ? "Failure" : "Success";
+    const hasRollResult = Boolean(lastRoll);
+    const success = Boolean(hasRollResult && (lastRoll.isCritSuccess || (!lastRoll.failure && !lastRoll.isCritFailure)));
+    const outcomeLabel = !hasRollResult
+      ? "Unknown (no GURPS roll result)"
+      : lastRoll?.isCritSuccess
+        ? "Critical Success"
+        : lastRoll?.isCritFailure
+          ? "Critical Failure"
+          : lastRoll?.failure
+            ? "Failure"
+            : "Success";
     ui.notifications?.info(`QuickDeck: Attack outcome: ${outcomeLabel}.`);
-    if (success) this._pendingAttackGuidance = { actorId: actor.id, attackIndex };
+    this._pendingAttackGuidance = success ? { actorId: actor.id, attackIndex } : null;
     this.render(false);
   }
 
@@ -2148,10 +2175,8 @@ export class QuickDeckApp extends Application {
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
-      meleeAttacks: filteredAttacks.filter((entry) => entry.type === "Melee"),
-      rangedAttacks: filteredAttacks.filter((entry) => entry.type === "Ranged"),
-      pendingDamageActorId: this._pendingAttackGuidance?.actorId ?? null,
-      pendingDamageAttackIndex: Number.isFinite(this._pendingAttackGuidance?.attackIndex) ? this._pendingAttackGuidance.attackIndex : null,
+      meleeAttacks,
+      rangedAttacks,
       skillsCount: skills.length,
       visibleSkillsCount: filteredSkills.length,
       quickSkillsCount: quickSkills.length,
@@ -2384,7 +2409,7 @@ export class QuickDeckApp extends Application {
           }
         },
         default: "attack"
-      });
+      }).render(true);
     });
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {
