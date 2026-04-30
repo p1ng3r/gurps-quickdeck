@@ -277,6 +277,15 @@
                     />
 
                     {{#if indexedAttacks.length}}
+                      {{#if pendingAttackEntry}}
+                        <button
+                          type="button"
+                          data-action="roll-pending-attack"
+                          class="quickdeck-roll-button"
+                        >
+                          Roll Attack
+                        </button>
+                      {{/if}}
                       <h5 class="quickdeck-subsection-title">Melee</h5>
                       <div class="quickdeck-attacks-list">
                         {{#each meleeAttacks as |attack|}}
