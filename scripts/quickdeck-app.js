@@ -2404,7 +2404,25 @@ export class QuickDeckApp extends Application {
       let usedOtF = false;
       try {
         if (otfName && typeof gurps?.executeOTF === "function") {
-          await gurps.executeOTF(`[A:${otfName}]`, false, event, actor);
+          const actorToken = actor.getActiveTokens?.()[0] ?? null;
+          const previouslyControlled = canvas.tokens?.controlled?.map((tokenDoc) => tokenDoc.id) ?? [];
+          try {
+            if (actorToken && !actorToken.controlled) actorToken.control({ releaseOthers: true });
+          } catch (error) {
+            console.warn("gurps-quickdeck | Failed to control attacking actor token before attack OTF.", error);
+          }
+          try {
+            await gurps.executeOTF(`[A:${otfName}]`, false, event, actor);
+          } finally {
+            try {
+              canvas.tokens?.releaseAll?.();
+              for (const tokenId of previouslyControlled) {
+                canvas.tokens?.get(tokenId)?.control({ releaseOthers: false });
+              }
+            } catch (error) {
+              console.warn("gurps-quickdeck | Failed to restore controlled token state after attack OTF.", error);
+            }
+          }
           usedOtF = true;
         }
       } catch (error) {
