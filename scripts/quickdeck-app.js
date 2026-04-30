@@ -2043,6 +2043,10 @@ export class QuickDeckApp extends Application {
     const pendingAttackIndex = Number.isFinite(this._pendingAttackGuidance?.attackIndex)
       ? this._pendingAttackGuidance.attackIndex
       : null;
+    const pendingAttackEntry =
+      pendingActorId === activeActorId && Number.isFinite(pendingAttackIndex)
+        ? indexedAttacks.find((entry) => entry.index === pendingAttackIndex) ?? null
+        : null;
     const meleeAttacks = filteredAttacks
       .filter((entry) => entry.type === "Melee")
       .map((entry) => ({
@@ -2165,6 +2169,7 @@ export class QuickDeckApp extends Application {
       visibleAttackCount: filteredAttacks.length,
       meleeAttacks,
       rangedAttacks,
+      pendingAttackEntry,
       skillsCount: skills.length,
       visibleSkillsCount: filteredSkills.length,
       quickSkillsCount: quickSkills.length,
@@ -2386,6 +2391,47 @@ export class QuickDeckApp extends Application {
         targetTokenId: selectedTargetToken?.id ?? null
       };
       await this.runAttackTargetFlow(actor, attack, attackIndex);
+    });
+
+    html.find("[data-action='roll-pending-attack']").on("click", async (event) => {
+      event.preventDefault();
+      const guidance = this._pendingAttackGuidance;
+      const actorId = guidance?.actorId;
+      const attackIndex = Number(guidance?.attackIndex);
+      if (!actorId || Number.isNaN(attackIndex)) {
+        this._pendingAttackGuidance = null;
+        this.render(false);
+        return;
+      }
+
+      const actor = game.actors.get(actorId);
+      if (!actor) {
+        this._pendingAttackGuidance = null;
+        this.render(false);
+        return;
+      }
+
+      const attacks = this.getDerivedActorData(actor).attacks;
+      const attack = attacks[attackIndex];
+      if (!attack) {
+        this._pendingAttackGuidance = null;
+        this.render(false);
+        return;
+      }
+
+      try {
+        await this.triggerCombatRoll(actorId, {
+          type: "attack",
+          label: `Attack (${attack.name})`,
+          value: attack.level,
+          attackName: attack.name,
+          attackType: attack.type,
+          attack
+        });
+      } finally {
+        this._pendingAttackGuidance = null;
+        this.render(false);
+      }
     });
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {
