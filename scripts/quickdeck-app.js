@@ -2380,7 +2380,6 @@ export class QuickDeckApp extends Application {
       event.preventDefault();
       const actorId = event.currentTarget.dataset.actorId;
       const attackIndex = Number(event.currentTarget.dataset.attackIndex);
-      console.warn("QD ATTACK CLICK", { actorId, attackIndex });
       if (!actorId || Number.isNaN(attackIndex)) {
         console.warn("gurps-quickdeck | Missing actorId or attackIndex for attack click.", { actorId, attackIndex });
         return;
@@ -2397,38 +2396,32 @@ export class QuickDeckApp extends Application {
         console.warn("gurps-quickdeck | Attack click ignored: attack not found.", { actorId, attackIndex });
         return;
       }
-      if (typeof Dialog !== "function") {
-        console.warn("gurps-quickdeck | Attack click ignored: Dialog is unavailable.", { actorId, attackIndex });
-        return;
+
+      const gurps = globalThis.GURPS ?? game.GURPS;
+      if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+      const otfName = String(attack.name ?? "").trim().replaceAll(" ", "*");
+      let usedOtF = false;
+      try {
+        if (otfName && typeof gurps?.executeOTF === "function") {
+          await gurps.executeOTF(`[A:${otfName}]`, false, event, actor);
+          usedOtF = true;
+        }
+      } catch (error) {
+        console.warn("gurps-quickdeck | Attack OTF failed, falling back.", error);
       }
 
-      const dialogHtml = `
-        <form class="quickdeck-attack-setup-form">
-          <label>Hit Location <input type="text" name="hitLocation" placeholder="Torso"/></label>
-          <label>Hit Location Mod <input type="number" name="hitLocationMod" value="0"/></label>
-          <label>Cover Mod <input type="number" name="coverMod" value="0"/></label>
-          <label>Posture Mod <input type="number" name="postureMod" value="0"/></label>
-          <label>Range/Speed Mod <input type="number" name="rangeSpeedMod" value="0"/></label>
-          <label>Custom Mod <input type="number" name="customMod" value="0"/></label>
-          <label>Custom Label <input type="text" name="customLabel" placeholder="Situation"/></label>
-        </form>`;
-      console.warn("QD OPEN ATTACK DIALOG", { actorName: actor.name, attack });
-      new Dialog({
-        title: `QuickDeck Attack Setup: ${attack.name}`,
-        content: dialogHtml,
-        buttons: {
-          cancel: { label: "Cancel" },
-          attack: {
-            label: "Attack",
-            callback: async (htmlContent) => {
-              const form = htmlContent?.[0]?.querySelector("form");
-              const formData = form ? new FormData(form) : new FormData();
-              await this.runGuidedAttack(actor, attack, attackIndex, Object.fromEntries(formData.entries()));
-            }
-          }
-        },
-        default: "attack"
-      }).render(true);
+      if (!usedOtF) {
+        ui.notifications?.warn("QuickDeck: Could not route attack through GURPS OTF. Falling back to QuickDeck roll.");
+        await this.triggerCombatRoll(actor.id, {
+          type: "attack",
+          label: `Attack (${attack.name})`,
+          value: attack.level,
+          attackName: attack.name,
+          attackType: attack.type,
+          attack
+        });
+      }
     });
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {
