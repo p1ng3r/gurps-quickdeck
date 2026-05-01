@@ -2433,6 +2433,15 @@ export class QuickDeckApp extends Application {
         return;
       }
 
+      console.warn("QD ATTACK CLICK PAYLOAD", {
+        actorId,
+        attackIndex,
+        attack,
+        raw: attack?.raw,
+        attackKeys: attack && typeof attack === "object" ? Object.keys(attack) : [],
+        rawKeys: attack?.raw && typeof attack.raw === "object" ? Object.keys(attack.raw) : []
+      });
+
       const gurps = globalThis.GURPS ?? game.GURPS;
       if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
 
