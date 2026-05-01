@@ -102,8 +102,9 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 5. Edit HP/FP directly in Combat Burst.
 6. Click **Minimize** to collapse QuickDeck into a compact top-screen **QD QuickDeck** restore pill.
 7. **Left-click** the floating restore pill to reopen QuickDeck.
-8. **Right-click and drag** the floating restore pill to move it; release to save position.
-9. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, minimized state, and restore pill position restore per client.
+8. **Right-click and drag** the floating restore pill to move it; movement tracks pointer smoothly and saves on release (or window blur), with browser context menu suppressed.
+9. Click **Drop Token to Canvas** to arm placement and auto-minimize QuickDeck; the click-to-place action stays armed while minimized until placement succeeds or you press **Escape**.
+10. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, minimized state, and restore pill position restore per client.
 
 ## Branch Workflow
 
@@ -127,6 +128,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 - QuickDeck only opens `actor.sheet` through the explicit `openActorSheet(actorId)` path.
 - Token placement uses click-to-place canvas coordinates (no browser drag/drop to canvas).
+- Clicking **Drop Token to Canvas** auto-minimizes QuickDeck without cancelling the armed placement state.
 - Escape/cancel, close, minimize, and scene-switch paths always remove temporary pointer/window/canvas listeners.
 - Roll and token placement failures are warning-first and never intentionally crash the app.
 - Reference summaries load from module-local JSON files only; missing packs warn and continue.
