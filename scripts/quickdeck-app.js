@@ -998,6 +998,29 @@ export class QuickDeckApp extends Application {
     }));
   }
 
+  getDebugPayloadPreview(payload) {
+    if (!payload || typeof payload !== "object") return {};
+
+    const preview = {};
+    for (const [key, value] of Object.entries(payload)) {
+      if (value === null || ["string", "number", "boolean"].includes(typeof value)) {
+        preview[key] = value;
+        continue;
+      }
+
+      if (Array.isArray(value)) {
+        preview[key] = `[Array(${value.length})]`;
+        continue;
+      }
+
+      if (typeof value === "object") {
+        preview[key] = `{${Object.keys(value).join(", ")}}`;
+      }
+    }
+
+    return preview;
+  }
+
   async tryGurpsRoll(actor, rollContext) {
     const numericTarget = this.parseRollTarget(rollContext.value);
     const skillRaw = rollContext.skill?.raw ?? null;
@@ -1055,6 +1078,19 @@ export class QuickDeckApp extends Application {
         skill: rollContext.skillName,
         rawSkillKeys: skillRaw && typeof skillRaw === "object" ? Object.keys(skillRaw).slice(0, 20) : []
       });
+    }
+    if (rollContext.type === "attack") {
+      const attack = rollContext.attack ?? null;
+      const attackAction = this.getFirstDefinedValue(attack, ["action", "raw.action"]);
+      const attackOtf = this.getFirstDefinedValue(attack, ["otf", "raw.otf"]);
+      if (attackAction === null && attackOtf === null) {
+        console.warn("QD ATTACK PAYLOAD INSPECT", {
+          attackKeys: attack && typeof attack === "object" ? Object.keys(attack).slice(0, 50) : [],
+          rawKeys: attackRaw && typeof attackRaw === "object" ? Object.keys(attackRaw).slice(0, 50) : [],
+          rawPreview: this.getDebugPayloadPreview(attackRaw),
+          attackPreview: this.getDebugPayloadPreview(attack)
+        });
+      }
     }
 
     return false;
