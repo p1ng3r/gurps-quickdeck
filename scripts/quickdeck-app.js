@@ -931,70 +931,6 @@ export class QuickDeckApp extends Application {
     actor.sheet.render(true);
   }
 
-  async findSheetAttackControl(actor, attack) {
-    if (!actor || !attack) return null;
-    if (typeof actor.sheet?.render !== "function") return null;
-
-    actor.sheet.render(true);
-    if (typeof actor.sheet?.maximize === "function") actor.sheet.maximize();
-
-    try {
-      await actor.sheet._renderPromise;
-    } catch (_error) {
-      // Ignore render promise failures and fall back to direct DOM inspection.
-    }
-
-    const root = actor.sheet.element?.[0] ?? null;
-    if (!root) return null;
-
-    const attackName = String(attack.name ?? "").trim().toLowerCase();
-    const attackType = String(attack.type ?? "").trim().toLowerCase();
-    const attackMode = String(attack.raw?.mode ?? "").trim().toLowerCase();
-
-    const clickableSelector = [
-      "button",
-      "a",
-      "[role='button']",
-      ".rollable",
-      "[data-otf]",
-      "[data-action]"
-    ].join(",");
-
-    const controls = Array.from(root.querySelectorAll(clickableSelector)).filter((el) => {
-      const text = String(el.textContent ?? "").trim().toLowerCase();
-      const datasetValues = Object.values(el.dataset ?? {})
-        .map((value) => String(value).toLowerCase())
-        .join(" ");
-      const otf = String(el.getAttribute("data-otf") ?? "").toLowerCase();
-      const title = String(el.getAttribute("title") ?? "").toLowerCase();
-      const ariaLabel = String(el.getAttribute("aria-label") ?? "").toLowerCase();
-      const haystack = `${text} ${datasetValues} ${otf} ${title} ${ariaLabel}`.trim();
-
-      if (!haystack) return false;
-      if (attackName && haystack.includes(attackName)) return true;
-      if (attackMode && haystack.includes(attackMode)) return true;
-      return false;
-    });
-
-    const scored = controls
-      .map((el) => {
-        const text = String(el.textContent ?? "").trim().toLowerCase();
-        const rowText = String(el.closest("li,tr,.item,.melee,.ranged,.combatant,article")?.textContent ?? "")
-          .trim()
-          .toLowerCase();
-        const haystack = `${text} ${rowText}`;
-        let score = 0;
-        if (attackName && haystack.includes(attackName)) score += 5;
-        if (attackMode && haystack.includes(attackMode)) score += 3;
-        if (attackType === "melee" && haystack.includes("melee")) score += 1;
-        if (attackType === "ranged" && haystack.includes("ranged")) score += 1;
-        return { el, score };
-      })
-      .sort((a, b) => b.score - a.score);
-
-    return scored[0]?.score > 0 ? scored[0].el : null;
-  }
-
   parseRollTarget(value) {
     if (value === undefined || value === null || value === "") return null;
     const match = String(value).match(/-?\d+/);
@@ -2461,13 +2397,49 @@ export class QuickDeckApp extends Application {
         return;
       }
 
-      const control = await this.findSheetAttackControl(actor, attack);
-      if (!control) {
-        ui.notifications?.warn("QuickDeck: Could not find matching GURPS sheet attack control.");
-        return;
+      const gurps = globalThis.GURPS ?? game.GURPS;
+      if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+      const otfName = String(attack.name ?? "").trim().replaceAll(" ", "*");
+      let usedOtF = false;
+      try {
+        if (otfName && typeof gurps?.executeOTF === "function") {
+          const actorToken = actor.getActiveTokens?.()[0] ?? null;
+          const previouslyControlled = canvas.tokens?.controlled?.map((tokenDoc) => tokenDoc.id) ?? [];
+          try {
+            if (actorToken && !actorToken.controlled) actorToken.control({ releaseOthers: true });
+          } catch (error) {
+            console.warn("gurps-quickdeck | Failed to control attacking actor token before attack OTF.", error);
+          }
+          try {
+            await gurps.executeOTF(`[A:${otfName}]`, false, event, actor);
+          } finally {
+            try {
+              canvas.tokens?.releaseAll?.();
+              for (const tokenId of previouslyControlled) {
+                canvas.tokens?.get(tokenId)?.control({ releaseOthers: false });
+              }
+            } catch (error) {
+              console.warn("gurps-quickdeck | Failed to restore controlled token state after attack OTF.", error);
+            }
+          }
+          usedOtF = true;
+        }
+      } catch (error) {
+        console.warn("gurps-quickdeck | Attack OTF failed, falling back.", error);
       }
 
-      control.click();
+      if (!usedOtF) {
+        ui.notifications?.warn("QuickDeck: Could not route attack through GURPS OTF. Falling back to QuickDeck roll.");
+        await this.triggerCombatRoll(actor.id, {
+          type: "attack",
+          label: `Attack (${attack.name})`,
+          value: attack.level,
+          attackName: attack.name,
+          attackType: attack.type,
+          attack
+        });
+      }
     });
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {
