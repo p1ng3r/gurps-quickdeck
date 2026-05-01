@@ -227,7 +227,7 @@ export class QuickDeckApp extends Application {
     return true;
   }
 
-  normalizeAttack(attack, type) {
+  normalizeAttack(attack, type, sourceMeta = {}) {
     if (!attack || typeof attack !== "object") return null;
 
     const name =
@@ -284,6 +284,9 @@ export class QuickDeckApp extends Application {
         parry ??
         block ??
         this.getFirstDefinedValue(attack, ["defense", "defence"]),
+      sourcePath: sourceMeta.sourcePath ?? null,
+      sourceKey: sourceMeta.sourceKey ?? null,
+      sourceCollection: sourceMeta.sourceCollection ?? null,
       raw: attack
     };
   }
@@ -371,23 +374,38 @@ export class QuickDeckApp extends Application {
     if (!actor) return [];
 
     const attackSources = [
-      { path: "system.melee", type: "Melee" },
-      { path: "system.ranged", type: "Ranged" },
-      { path: "data.data.melee", type: "Melee" },
-      { path: "data.data.ranged", type: "Ranged" }
+      { path: "system.melee", type: "Melee", collection: "melee" },
+      { path: "system.ranged", type: "Ranged", collection: "ranged" },
+      { path: "data.data.melee", type: "Melee", collection: "melee" },
+      { path: "data.data.ranged", type: "Ranged", collection: "ranged" }
     ];
 
     const attacks = [];
 
     for (const source of attackSources) {
       const collection = foundry.utils.getProperty(actor, source.path);
-      const entries = this.collectNestedMatches(collection, (entry) =>
-        this.isAttackLike(entry)
-      );
+      if (!collection || typeof collection !== "object") continue;
 
-      for (const entry of entries) {
-        const normalized = this.normalizeAttack(entry, source.type);
-        if (normalized) attacks.push(normalized);
+      for (const [entryKey, entryValue] of Object.entries(collection)) {
+        if (!entryValue || typeof entryValue !== "object") continue;
+        const sourcePath = `${source.path}.${entryKey}`;
+        const sourceMeta = {
+          sourcePath,
+          sourceKey: String(entryKey),
+          sourceCollection: source.collection
+        };
+
+        if (this.isAttackLike(entryValue)) {
+          const normalized = this.normalizeAttack(entryValue, source.type, sourceMeta);
+          if (normalized) attacks.push(normalized);
+          continue;
+        }
+
+        const entries = this.collectNestedMatches(entryValue, (entry) => this.isAttackLike(entry));
+        for (const entry of entries) {
+          const normalized = this.normalizeAttack(entry, source.type, sourceMeta);
+          if (normalized) attacks.push(normalized);
+        }
       }
     }
 
@@ -2442,13 +2460,40 @@ export class QuickDeckApp extends Application {
         rawKeys: attack?.raw && typeof attack.raw === "object" ? Object.keys(attack.raw) : []
       });
 
+      console.warn("QD ATTACK SOURCE PATH", {
+        attackName: attack.name,
+        sourcePath: attack.sourcePath,
+        sourceKey: attack.sourceKey,
+        sourceCollection: attack.sourceCollection,
+        raw: attack.raw
+      });
+
       const gurps = globalThis.GURPS ?? game.GURPS;
       if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+      const action = {
+        type: "attack",
+        name: attack.name,
+        isMelee: attack.sourceCollection === "melee",
+        isRanged: attack.sourceCollection === "ranged",
+        path: attack.sourcePath,
+        obj: attack.raw
+      };
+
+      let handledByPerformAction = false;
+      try {
+        if (typeof gurps?.performAction === "function") {
+          await gurps.performAction(action, actor, event);
+          handledByPerformAction = true;
+        }
+      } catch (error) {
+        console.warn("gurps-quickdeck | Attack performAction failed, falling back.", error);
+      }
 
       const otfName = String(attack.name ?? "").trim().replaceAll(" ", "*");
       let usedOtF = false;
       try {
-        if (otfName && typeof gurps?.executeOTF === "function") {
+        if (!handledByPerformAction && otfName && typeof gurps?.executeOTF === "function") {
           const actorToken = actor.getActiveTokens?.()[0] ?? null;
           const previouslyControlled = canvas.tokens?.controlled?.map((tokenDoc) => tokenDoc.id) ?? [];
           try {
@@ -2474,7 +2519,7 @@ export class QuickDeckApp extends Application {
         console.warn("gurps-quickdeck | Attack OTF failed, falling back.", error);
       }
 
-      if (!usedOtF) {
+      if (!handledByPerformAction && !usedOtF) {
         ui.notifications?.warn("QuickDeck: Could not route attack through GURPS OTF. Falling back to QuickDeck roll.");
         await this.triggerCombatRoll(actor.id, {
           type: "attack",
