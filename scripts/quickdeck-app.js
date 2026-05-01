@@ -1128,59 +1128,6 @@ export class QuickDeckApp extends Application {
     }
   }
 
-
-
-  getAttackActionPayload(attack) {
-    const raw = attack?.raw;
-    if (!raw || typeof raw !== "object") return { action: null, otf: null };
-
-    const action = this.getFirstDefinedValue(raw, [
-      "action",
-      "contains.action",
-      "otf.action",
-      "roll.action"
-    ]);
-
-    const otf = this.getFirstDefinedValue(raw, [
-      "otf",
-      "otfCommand",
-      "otf.command",
-      "contains.otf",
-      "contains.usage.otf",
-      "roll.otf",
-      "usage.otf"
-    ]);
-
-    return {
-      action: action && typeof action === "object" ? action : null,
-      otf: typeof otf === "string" ? otf : null
-    };
-  }
-
-  async triggerNativeGurpsAttackAction(actor, attack, event) {
-    const gurps = globalThis.GURPS ?? game.GURPS;
-    if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
-
-    const { action, otf } = this.getAttackActionPayload(attack);
-    console.warn("QD GURPS ACTION PASSTHROUGH", { attack, raw: attack?.raw, action, otf });
-
-    if (action && typeof gurps?.performAction === "function") {
-      await gurps.performAction(action, actor, event);
-      return true;
-    }
-
-    if (action && typeof gurps?.doRoll === "function") {
-      await gurps.doRoll(actor, action, event);
-      return true;
-    }
-
-    if (otf && typeof gurps?.executeOTF === "function") {
-      await gurps.executeOTF(otf, false, event, actor);
-      return true;
-    }
-
-    return false;
-  }
   async triggerCombatRoll(actorId, rollContext) {
     const actor = game.actors.get(actorId);
     if (!actor) return;
@@ -2450,14 +2397,39 @@ export class QuickDeckApp extends Application {
         return;
       }
 
-      let usedNativeAction = false;
+      const gurps = globalThis.GURPS ?? game.GURPS;
+      if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+      const otfName = String(attack.name ?? "").trim().replaceAll(" ", "*");
+      let usedOtF = false;
       try {
-        usedNativeAction = await this.triggerNativeGurpsAttackAction(actor, attack, event);
+        if (otfName && typeof gurps?.executeOTF === "function") {
+          const actorToken = actor.getActiveTokens?.()[0] ?? null;
+          const previouslyControlled = canvas.tokens?.controlled?.map((tokenDoc) => tokenDoc.id) ?? [];
+          try {
+            if (actorToken && !actorToken.controlled) actorToken.control({ releaseOthers: true });
+          } catch (error) {
+            console.warn("gurps-quickdeck | Failed to control attacking actor token before attack OTF.", error);
+          }
+          try {
+            await gurps.executeOTF(`[A:${otfName}]`, false, event, actor);
+          } finally {
+            try {
+              canvas.tokens?.releaseAll?.();
+              for (const tokenId of previouslyControlled) {
+                canvas.tokens?.get(tokenId)?.control({ releaseOthers: false });
+              }
+            } catch (error) {
+              console.warn("gurps-quickdeck | Failed to restore controlled token state after attack OTF.", error);
+            }
+          }
+          usedOtF = true;
+        }
       } catch (error) {
-        console.warn("gurps-quickdeck | Native GURPS attack action failed, falling back.", error);
+        console.warn("gurps-quickdeck | Attack OTF failed, falling back.", error);
       }
 
-      if (!usedNativeAction) {
+      if (!usedOtF) {
         ui.notifications?.warn("QuickDeck: Could not route attack through GURPS OTF. Falling back to QuickDeck roll.");
         await this.triggerCombatRoll(actor.id, {
           type: "attack",
