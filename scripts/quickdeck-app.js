@@ -2471,7 +2471,50 @@ export class QuickDeckApp extends Application {
       const gurps = globalThis.GURPS ?? game.GURPS;
       if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
 
-      const otf = `[A:${String(attack.name ?? "").trim()}]`;
+      const attackName = String(attack.name ?? "").trim();
+      const attackLevel = attack.level;
+      const sourcePath = String(attack.sourcePath ?? "").trim();
+      const sourceCollection = String(attack.sourceCollection ?? "").trim();
+
+      if (sourcePath) {
+        const candidates = [
+          `[A:${attackName}]`,
+          `[A:${attackName}=${attackLevel}]`,
+          `[M:${attackName}]`,
+          `[M:${attackName}=${attackLevel}]`,
+          `[R:${attackName}]`,
+          `[R:${attackName}=${attackLevel}]`,
+          `@m:${attackName}`,
+          `@m:${attackName}=${attackLevel}`,
+          `@r:${attackName}`,
+          `@r:${attackName}=${attackLevel}`,
+          `@${sourcePath}`,
+          `${sourcePath}`,
+          `[${sourcePath}]`
+        ];
+
+        const candidateResults = candidates.map((candidate) => {
+          const parsed = gurps?.parselink?.(candidate);
+          return {
+            candidate,
+            hasParsed: Boolean(parsed),
+            hasAction: Boolean(parsed?.action),
+            actionType: parsed?.action?.type ?? null,
+            actionName: parsed?.action?.name ?? null,
+            actionKeys: parsed?.action ? Object.keys(parsed.action) : []
+          };
+        });
+
+        console.warn("QD OTF CANDIDATE PARSE", {
+          attackName,
+          attackLevel,
+          sourcePath,
+          sourceCollection,
+          candidates: candidateResults
+        });
+      }
+
+      const otf = `[A:${attackName}]`;
       const parsed = gurps?.parselink?.(otf);
       const action = parsed?.action;
 
