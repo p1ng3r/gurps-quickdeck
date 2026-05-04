@@ -2480,6 +2480,34 @@ export class QuickDeckApp extends Application {
         obj: attack.raw
       };
 
+      const otfName = String(attack.name ?? "").trim().replaceAll(" ", "*");
+
+      console.warn("QD TARGET EFFECT CONTEXT", {
+        actorId,
+        actorName: actor?.name,
+        attackName: attack?.name,
+        sourcePath: attack?.sourcePath,
+        sourceKey: attack?.sourceKey,
+        sourceCollection: attack?.sourceCollection,
+        lastActorId: (globalThis.GURPS ?? game.GURPS)?.LastActor?.id,
+        lastActorName: (globalThis.GURPS ?? game.GURPS)?.LastActor?.name,
+        controlledTokenIds: canvas.tokens?.controlled?.map((t) => t.id) ?? [],
+        controlledTokenNames: canvas.tokens?.controlled?.map((t) => t.name) ?? [],
+        userTargetIds: Array.from(game.user?.targets ?? []).map((t) => t.id),
+        userTargetNames: Array.from(game.user?.targets ?? []).map((t) => t.name),
+        userTargetActorIds: Array.from(game.user?.targets ?? []).map((t) => t.actor?.id ?? null),
+        userTargetActorNames: Array.from(game.user?.targets ?? []).map((t) => t.actor?.name ?? null),
+        action,
+        raw: attack?.raw
+      });
+
+      console.warn("QD ATTACK CALL PATH", {
+        usingPerformAction: Boolean(action && typeof gurps?.performAction === "function"),
+        usingExecuteOTF: Boolean(otfName && typeof gurps?.executeOTF === "function"),
+        action,
+        otfName
+      });
+
       let handledByPerformAction = false;
       try {
         if (typeof gurps?.performAction === "function") {
@@ -2490,7 +2518,6 @@ export class QuickDeckApp extends Application {
         console.warn("gurps-quickdeck | Attack performAction failed, falling back.", error);
       }
 
-      const otfName = String(attack.name ?? "").trim().replaceAll(" ", "*");
       let usedOtF = false;
       try {
         if (!handledByPerformAction && otfName && typeof gurps?.executeOTF === "function") {
