@@ -2515,8 +2515,20 @@ export class QuickDeckApp extends Application {
       }
 
       const otf = `[A:${attackName}]`;
-      const parsed = gurps?.parselink?.(otf);
-      const action = parsed?.action;
+      const targets = Array.from(game.user?.targets ?? []);
+      const fakeEvent = {
+        preventDefault: () => {},
+        stopPropagation: () => {},
+        currentTarget: {
+          dataset: {
+            key: sourcePath || attack.sourceKey || "",
+            path: sourcePath || "",
+            name: attackName,
+            type: String(attack.type ?? ""),
+            sourceCollection
+          }
+        }
+      };
 
       console.warn("QD TARGET EFFECT CONTEXT", {
         actorId,
@@ -2529,59 +2541,43 @@ export class QuickDeckApp extends Application {
         lastActorName: (globalThis.GURPS ?? game.GURPS)?.LastActor?.name,
         controlledTokenIds: canvas.tokens?.controlled?.map((t) => t.id) ?? [],
         controlledTokenNames: canvas.tokens?.controlled?.map((t) => t.name) ?? [],
-        userTargetIds: Array.from(game.user?.targets ?? []).map((t) => t.id),
-        userTargetNames: Array.from(game.user?.targets ?? []).map((t) => t.name),
-        userTargetActorIds: Array.from(game.user?.targets ?? []).map((t) => t.actor?.id ?? null),
-        userTargetActorNames: Array.from(game.user?.targets ?? []).map((t) => t.actor?.name ?? null),
-        action,
+        userTargetIds: targets.map((t) => t.id),
+        userTargetNames: targets.map((t) => t.name),
+        userTargetActorIds: targets.map((t) => t.actor?.id ?? null),
+        userTargetActorNames: targets.map((t) => t.actor?.name ?? null),
         raw: attack?.raw
       });
 
-      console.warn("QD ATTACK CALL PATH", {
-        usingPerformAction: Boolean(action && typeof gurps?.performAction === "function"),
-        usingExecuteOTF: Boolean(!action && otf && typeof gurps?.executeOTF === "function"),
-        action,
-        otf
+      console.warn("QD HANDLE ROLL ATTACK", {
+        attackName: attack.name,
+        sourcePath: attack.sourcePath,
+        sourceCollection: attack.sourceCollection,
+        targets: targets.map((t) => t.name),
+        dataset: fakeEvent.currentTarget.dataset
       });
 
+      let handledByHandleRoll = false;
       try {
-        if (action && typeof gurps?.performAction === "function") {
-          await gurps.performAction(action, actor, event);
+        if (typeof gurps?.handleRoll === "function") {
+          await gurps.handleRoll(fakeEvent, actor, { targets });
+          handledByHandleRoll = true;
         }
       } catch (error) {
-        console.warn("gurps-quickdeck | Attack performAction failed.", error);
+        console.warn("gurps-quickdeck | Attack handleRoll failed, falling back.", error);
       }
 
       let usedOtF = false;
       try {
-        if (!action && otf && typeof gurps?.executeOTF === "function") {
-          const actorToken = actor.getActiveTokens?.()[0] ?? null;
-          const previouslyControlled = canvas.tokens?.controlled?.map((tokenDoc) => tokenDoc.id) ?? [];
-          try {
-            if (actorToken && !actorToken.controlled) actorToken.control({ releaseOthers: true });
-          } catch (error) {
-            console.warn("gurps-quickdeck | Failed to control attacking actor token before attack OTF.", error);
-          }
-          try {
-            await gurps.executeOTF(otf, false, event, actor);
-          } finally {
-            try {
-              canvas.tokens?.releaseAll?.();
-              for (const tokenId of previouslyControlled) {
-                canvas.tokens?.get(tokenId)?.control({ releaseOthers: false });
-              }
-            } catch (error) {
-              console.warn("gurps-quickdeck | Failed to restore controlled token state after attack OTF.", error);
-            }
-          }
+        if (!handledByHandleRoll && otf && typeof gurps?.executeOTF === "function") {
+          await gurps.executeOTF(otf, false, event, actor);
           usedOtF = true;
         }
       } catch (error) {
         console.warn("gurps-quickdeck | Attack OTF failed, falling back.", error);
       }
 
-      if (!handledByPerformAction && !usedOtF) {
-        ui.notifications?.warn("QuickDeck: Could not route attack through GURPS OTF. Falling back to QuickDeck roll.");
+      if (!handledByHandleRoll && !usedOtF) {
+        ui.notifications?.warn("QuickDeck: Could not route attack through GURPS handleRoll/OTF. Falling back to QuickDeck roll.");
         await this.triggerCombatRoll(actor.id, {
           type: "attack",
           label: `Attack (${attack.name})`,
