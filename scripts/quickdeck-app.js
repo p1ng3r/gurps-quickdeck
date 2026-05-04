@@ -2471,16 +2471,9 @@ export class QuickDeckApp extends Application {
       const gurps = globalThis.GURPS ?? game.GURPS;
       if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
 
-      const action = {
-        type: "attack",
-        name: attack.name,
-        isMelee: attack.sourceCollection === "melee",
-        isRanged: attack.sourceCollection === "ranged",
-        path: attack.sourcePath,
-        obj: attack.raw
-      };
-
-      const otfName = String(attack.name ?? "").trim().replaceAll(" ", "*");
+      const otf = `[A:${String(attack.name ?? "").trim()}]`;
+      const parsed = gurps?.parselink?.(otf);
+      const action = parsed?.action;
 
       console.warn("QD TARGET EFFECT CONTEXT", {
         actorId,
@@ -2503,24 +2496,22 @@ export class QuickDeckApp extends Application {
 
       console.warn("QD ATTACK CALL PATH", {
         usingPerformAction: Boolean(action && typeof gurps?.performAction === "function"),
-        usingExecuteOTF: Boolean(otfName && typeof gurps?.executeOTF === "function"),
+        usingExecuteOTF: Boolean(!action && otf && typeof gurps?.executeOTF === "function"),
         action,
-        otfName
+        otf
       });
 
-      let handledByPerformAction = false;
       try {
-        if (typeof gurps?.performAction === "function") {
+        if (action && typeof gurps?.performAction === "function") {
           await gurps.performAction(action, actor, event);
-          handledByPerformAction = true;
         }
       } catch (error) {
-        console.warn("gurps-quickdeck | Attack performAction failed, falling back.", error);
+        console.warn("gurps-quickdeck | Attack performAction failed.", error);
       }
 
       let usedOtF = false;
       try {
-        if (!handledByPerformAction && otfName && typeof gurps?.executeOTF === "function") {
+        if (!action && otf && typeof gurps?.executeOTF === "function") {
           const actorToken = actor.getActiveTokens?.()[0] ?? null;
           const previouslyControlled = canvas.tokens?.controlled?.map((tokenDoc) => tokenDoc.id) ?? [];
           try {
@@ -2529,7 +2520,7 @@ export class QuickDeckApp extends Application {
             console.warn("gurps-quickdeck | Failed to control attacking actor token before attack OTF.", error);
           }
           try {
-            await gurps.executeOTF(`[A:${otfName}]`, false, event, actor);
+            await gurps.executeOTF(otf, false, event, actor);
           } finally {
             try {
               canvas.tokens?.releaseAll?.();
