@@ -1015,6 +1015,53 @@ export class QuickDeckApp extends Application {
     };
   }
 
+  openNativeModifierBucket(actorId = null, event = null) {
+    const gurps = globalThis.GURPS ?? globalThis.game?.GURPS;
+    const bucket = gurps?.ModifierBucket;
+    if (!bucket || typeof bucket !== "object") {
+      ui.notifications?.warn("QuickDeck: Native GURPS ModifierBucket is unavailable.");
+      return false;
+    }
+
+    const actor = actorId ? game.actors.get(actorId) : this.getActiveActor();
+    if (actor && typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+    const focusNativeBucket = () => {
+      bucket.editor?.bringToTop?.();
+      bucket.bringToTop?.();
+    };
+
+    try {
+      if (typeof bucket._onenter === "function") {
+        bucket._onenter(event);
+        focusNativeBucket();
+        setTimeout(focusNativeBucket, 0);
+        return true;
+      }
+
+      if (typeof bucket.editor?.render === "function") {
+        bucket.editor.render(true);
+        bucket.SHOWING = true;
+        focusNativeBucket();
+        setTimeout(focusNativeBucket, 0);
+        return true;
+      }
+
+      if (typeof bucket.render === "function") {
+        bucket.render(true);
+        focusNativeBucket();
+        setTimeout(focusNativeBucket, 0);
+        return true;
+      }
+    } catch (_error) {
+      ui.notifications?.warn("QuickDeck: Could not open the native GURPS ModifierBucket UI.");
+      return false;
+    }
+
+    ui.notifications?.warn("QuickDeck: Native GURPS ModifierBucket UI API is unavailable.");
+    return false;
+  }
+
   parseDefenseScore(value) {
     if (value === undefined || value === null || value === "") return null;
     const match = String(value).match(/-?\d+/);
@@ -2918,6 +2965,11 @@ export class QuickDeckApp extends Application {
         this.cancelTargetOpponentMode({ render: false, restore: true });
         ui.notifications?.warn("QuickDeck: Could not start targeting mode.");
       }
+    });
+
+    html.find("[data-action='open-modifier-bucket']").on("click", (event) => {
+      event.preventDefault();
+      this.openNativeModifierBucket(event.currentTarget.dataset.actorId, event);
     });
 
     html.find("[data-action='roll-attack']").on("click", async (event) => {

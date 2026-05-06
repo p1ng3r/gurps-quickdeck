@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - Combat attack list layout now separates melee and ranged attacks into distinct sections for readability.
 - Combat window layout refactor adds tactical attack-card hierarchy plus stable target, modifier bucket, and combat modifier icon placeholder anchors for upcoming v0.4.0 UX improvements.
 - Skills and spells now use native GURPS sheet-style passthrough handling where possible.
-- Combat attack pills now surface native GURPS ModifierBucket status in the modifier area, including the current total such as `+0`, `+2`, or `-3`, with a safe neutral fallback when unavailable.
+- Combat attack pills now surface native GURPS ModifierBucket status in the modifier area, including the current total such as `+0`, `+2`, or `-3`, and the modifier area can now open the native GURPS ModifierBucket UI while preserving a safe neutral fallback when unavailable.
 
 ### Changed
 - Combat attack buttons now use **Attack** labeling and guided flow instead of direct quick roll.
