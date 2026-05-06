@@ -291,6 +291,21 @@ export class QuickDeckApp extends Application {
     };
   }
 
+
+  getSheetAttackDisplayName(attack) {
+    const raw = attack?.raw && typeof attack.raw === "object" ? attack.raw : {};
+    const name = String(this.getFirstDefinedValue(raw, ["name"]) ?? attack?.name ?? "").trim();
+    const mode = String(this.getFirstDefinedValue(raw, ["mode", "usage"]) ?? "").trim();
+    return `${name} (${mode})`;
+  }
+
+  getSheetAttackOtf(attack) {
+    const attackType = String(attack?.type ?? "").toLowerCase();
+    const prefix = attackType === "ranged" ? "R" : "M";
+    const displayName = this.getSheetAttackDisplayName(attack).replace(/"/g, '\\"');
+    return `${prefix}:"${displayName}"`;
+  }
+
   normalizeSkill(skill) {
     if (!skill || typeof skill !== "object") return null;
 
@@ -2521,11 +2536,9 @@ export class QuickDeckApp extends Application {
         stopPropagation: () => {},
         currentTarget: {
           dataset: {
-            key: sourcePath || attack.sourceKey || "",
-            path: sourcePath || "",
-            name: attackName,
-            type: String(attack.type ?? ""),
-            sourceCollection
+            name: this.getSheetAttackDisplayName(attack),
+            key: sourcePath,
+            otf: this.getSheetAttackOtf(attack)
           }
         }
       };
