@@ -7,8 +7,9 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Combat drawer weapon buttons now launch a guided **Attack** flow (MVP).
 - Guided flow can apply common situational modifiers through the existing GURPS Modifier Bucket API where available.
 - QuickDeck minimizes while waiting for in-game target selection and restores automatically after selection/timeout.
-- Guided flow attempts GURPS attack OTF execution first, then falls back to existing QuickDeck roll fallback behavior.
+- Attack, skill, and spell actions prefer native GURPS sheet-style handling where available, with OTF/QuickDeck fallback paths for unsupported cases.
 - Attack list readability improved with separate melee and ranged sections.
+- Skills and spells now use native GURPS sheet-style passthrough handling where possible, matching the sheet click path before falling back to OTF.
 
 ## What's New in v0.3.0 (Draft)
 
@@ -55,9 +56,9 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Missing/deleted actors are cleaned up defensively.
 - Drawer tools:
   - **Combat Burst**: defenses, HP/FP edit, attacks, roll buttons, and damage actions.
-  - **Skills**: extracted nested GURPS skills + quick-pin checkboxes.
-  - **Quick Skills**: pinned skills with independent search and roll actions.
-  - **Spells**: spell extraction + searchable spell list.
+  - **Skills**: extracted nested GURPS skills + quick-pin checkboxes; roll buttons route through native GURPS sheet-style skill handling where possible.
+  - **Quick Skills**: pinned skills with independent search and native sheet-style roll actions.
+  - **Spells**: spell extraction + searchable spell list; cast buttons route through native GURPS sheet-style spell handling where possible.
 - Reference helpers:
   - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
   - Matching order is bundled repo summary data first, with optional Local Override metadata applied for personal source/page replacements.

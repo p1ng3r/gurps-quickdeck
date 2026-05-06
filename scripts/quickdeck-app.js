@@ -166,6 +166,44 @@ export class QuickDeckApp extends Application {
     return results;
   }
 
+  collectNestedMatchesWithPaths(root, matcher, basePath) {
+    if (!root || typeof root !== "object" || typeof matcher !== "function" || !basePath) return [];
+
+    const results = [];
+    const visited = new WeakSet();
+    const stack = Object.entries(root).map(([key, value]) => ({
+      value,
+      path: `${basePath}.${key}`,
+      key: String(key)
+    }));
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+      const value = current?.value;
+      if (!value || typeof value !== "object") continue;
+      if (visited.has(value)) continue;
+      visited.add(value);
+
+      if (matcher(value)) {
+        results.push({ value, path: current.path, key: current.key });
+      }
+
+      const childEntries = Array.isArray(value)
+        ? value.map((child, index) => [String(index), child])
+        : Object.entries(value);
+      for (const [childKey, childValue] of childEntries) {
+        if (!childValue || typeof childValue !== "object") continue;
+        stack.push({
+          value: childValue,
+          path: `${current.path}.${childKey}`,
+          key: String(childKey)
+        });
+      }
+    }
+
+    return results;
+  }
+
   objectHasAnyPath(source, paths = []) {
     if (!source || typeof source !== "object") return false;
     return paths.some((path) => foundry.utils.getProperty(source, path) !== undefined);
@@ -299,10 +337,14 @@ export class QuickDeckApp extends Application {
     return mode ? `${name} (${mode})` : name;
   }
 
+  escapeGurpsOtfName(name) {
+    return String(name ?? "").trim().replace(/"/g, '\\"');
+  }
+
   getSheetAttackOtf(attack) {
     const attackType = String(attack?.type ?? "").toLowerCase();
     const prefix = attackType === "ranged" ? "R" : "M";
-    const displayName = this.getSheetAttackDisplayName(attack).replace(/"/g, '\\"');
+    const displayName = this.escapeGurpsOtfName(this.getSheetAttackDisplayName(attack));
     return `${prefix}:"${displayName}"`;
   }
 
@@ -314,6 +356,30 @@ export class QuickDeckApp extends Application {
     };
   }
 
+  getSheetSkillOtf(skill) {
+    return `Sk:"${this.escapeGurpsOtfName(skill?.name)}"`;
+  }
+
+  getSheetSkillDataset(skill) {
+    return {
+      name: skill?.name,
+      key: skill?.sourcePath,
+      otf: this.getSheetSkillOtf(skill)
+    };
+  }
+
+  getSheetSpellOtf(spell) {
+    return `Sp:"${this.escapeGurpsOtfName(spell?.name)}"`;
+  }
+
+  getSheetSpellDataset(spell) {
+    return {
+      name: spell?.name,
+      key: spell?.sourcePath,
+      otf: this.getSheetSpellOtf(spell)
+    };
+  }
+
   buildGurpsHandleRollEvent(dataset) {
     return {
       preventDefault: () => {},
@@ -322,7 +388,7 @@ export class QuickDeckApp extends Application {
     };
   }
 
-  normalizeSkill(skill) {
+  normalizeSkill(skill, sourceMeta = {}) {
     if (!skill || typeof skill !== "object") return null;
 
     const name =
@@ -348,6 +414,9 @@ export class QuickDeckApp extends Application {
         "refPage",
         "referencePage"
       ]),
+      sourcePath: sourceMeta.sourcePath ?? null,
+      sourceKey: sourceMeta.sourceKey ?? null,
+      sourceCollection: sourceMeta.sourceCollection ?? null,
       raw: skill
     };
   }
@@ -377,7 +446,7 @@ export class QuickDeckApp extends Application {
     ]);
   }
 
-  normalizeSpell(spell) {
+  normalizeSpell(spell, sourceMeta = {}) {
     if (!spell || typeof spell !== "object") return null;
     const name =
       this.getFirstDefinedValue(spell, ["name", "spell", "label", "title"]) ?? "Unnamed Spell";
@@ -397,6 +466,9 @@ export class QuickDeckApp extends Application {
         "refPage",
         "referencePage"
       ]),
+      sourcePath: sourceMeta.sourcePath ?? null,
+      sourceKey: sourceMeta.sourceKey ?? null,
+      sourceCollection: sourceMeta.sourceCollection ?? null,
       raw: spell
     };
   }
@@ -447,21 +519,27 @@ export class QuickDeckApp extends Application {
     if (!actor) return [];
 
     const skillSources = [
-      "system.skills",
-      "data.data.skills",
-      "system.traits.skills"
+      { path: "system.skills", collection: "skills" },
+      { path: "data.data.skills", collection: "skills" },
+      { path: "system.traits.skills", collection: "traits.skills" }
     ];
 
     const skills = [];
 
-    for (const path of skillSources) {
-      const collection = foundry.utils.getProperty(actor, path);
-      const entries = this.collectNestedMatches(collection, (entry) =>
-        this.isSkillLike(entry)
+    for (const source of skillSources) {
+      const collection = foundry.utils.getProperty(actor, source.path);
+      const entries = this.collectNestedMatchesWithPaths(
+        collection,
+        (entry) => this.isSkillLike(entry),
+        source.path
       );
 
       for (const entry of entries) {
-        const normalized = this.normalizeSkill(entry);
+        const normalized = this.normalizeSkill(entry.value, {
+          sourcePath: entry.path,
+          sourceKey: entry.key,
+          sourceCollection: source.collection
+        });
         if (normalized) skills.push(normalized);
       }
     }
@@ -474,19 +552,27 @@ export class QuickDeckApp extends Application {
 
     const spells = [];
     const spellSources = [
-      "system.spells",
-      "data.data.spells",
-      "system.magic",
-      "data.data.magic",
-      "system.traits.spells",
-      "data.data.traits.spells"
+      { path: "system.spells", collection: "spells" },
+      { path: "data.data.spells", collection: "spells" },
+      { path: "system.magic", collection: "magic" },
+      { path: "data.data.magic", collection: "magic" },
+      { path: "system.traits.spells", collection: "traits.spells" },
+      { path: "data.data.traits.spells", collection: "traits.spells" }
     ];
 
-    for (const path of spellSources) {
-      const collection = foundry.utils.getProperty(actor, path);
-      const entries = this.collectNestedMatches(collection, (entry) => this.isSpellLike(entry));
+    for (const source of spellSources) {
+      const collection = foundry.utils.getProperty(actor, source.path);
+      const entries = this.collectNestedMatchesWithPaths(
+        collection,
+        (entry) => this.isSpellLike(entry),
+        source.path
+      );
       for (const entry of entries) {
-        const normalized = this.normalizeSpell(entry);
+        const normalized = this.normalizeSpell(entry.value, {
+          sourcePath: entry.path,
+          sourceKey: entry.key,
+          sourceCollection: source.collection
+        });
         if (normalized) spells.push(normalized);
       }
     }
@@ -1173,6 +1259,34 @@ export class QuickDeckApp extends Application {
     } catch (error) {
       console.warn("gurps-quickdeck | ChatMessage.create failed for fallback roll.", error);
     }
+  }
+
+  async triggerNativeSheetRoll(actor, dataset, { event = null, targets = [], label = "roll" } = {}) {
+    const gurps = globalThis.GURPS ?? game.GURPS;
+    if (!actor || !dataset?.otf) return false;
+
+    if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+    if (dataset.key && typeof gurps?.handleRoll === "function") {
+      try {
+        const fakeEvent = this.buildGurpsHandleRollEvent(dataset);
+        await gurps.handleRoll(fakeEvent, actor, { targets });
+        return true;
+      } catch (error) {
+        console.warn(`gurps-quickdeck | Native GURPS ${label} handleRoll failed, falling back to OTF.`, error);
+      }
+    }
+
+    try {
+      if (typeof gurps?.executeOTF === "function") {
+        await gurps.executeOTF(`[${dataset.otf}]`, false, event, actor);
+        return true;
+      }
+    } catch (_error) {
+      // Let the caller decide whether a non-native fallback is appropriate.
+    }
+
+    return false;
   }
 
   async triggerCombatRoll(actorId, rollContext) {
@@ -2502,10 +2616,19 @@ export class QuickDeckApp extends Application {
       if (!actorId || Number.isNaN(skillIndex)) return;
 
       const actor = game.actors.get(actorId);
-      const skills = this.getDerivedActorData(actor).skills;
-      const skill = skills[skillIndex];
-      if (!skill) return;
+      const skill = this.getDerivedActorData(actor).skills[skillIndex];
+      if (!actor || !skill) return;
 
+      const dataset = this.getSheetSkillDataset(skill);
+      const targets = Array.from(game.user?.targets ?? []);
+      const handled = await this.triggerNativeSheetRoll(actor, dataset, {
+        event,
+        targets,
+        label: "skill"
+      });
+      if (handled) return;
+
+      ui.notifications?.warn("QuickDeck: Could not route skill through GURPS handleRoll/OTF. Falling back to QuickDeck roll.");
       const value =
         skill.level ??
         this.getFirstDefinedValue(skill.raw, ["level", "import", "value", "rsl"]);
@@ -2517,6 +2640,29 @@ export class QuickDeckApp extends Application {
         skillName: skill.name,
         skill
       });
+    });
+
+    html.find("[data-action='roll-spell']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      const spellIndex = Number(event.currentTarget.dataset.spellIndex);
+      if (!actorId || Number.isNaN(spellIndex)) return;
+
+      const actor = game.actors.get(actorId);
+      const spell = this.getDerivedActorData(actor).spells[spellIndex];
+      if (!actor || !spell) return;
+
+      const dataset = this.getSheetSpellDataset(spell);
+      const targets = Array.from(game.user?.targets ?? []);
+      const handled = await this.triggerNativeSheetRoll(actor, dataset, {
+        event,
+        targets,
+        label: "spell"
+      });
+
+      if (!handled) {
+        ui.notifications?.warn("QuickDeck: Could not route spell through GURPS handleRoll/OTF.");
+      }
     });
 
     html.find("[data-action='open-reference']").on("click", (event) => {

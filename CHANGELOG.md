@@ -7,9 +7,11 @@ All notable changes to this project will be documented in this file.
 ### Added
 - Guided Attack MVP flow in Combat drawer: clicking **Attack** opens a setup dialog, applies optional modifiers to the GURPS Modifier Bucket, minimizes QuickDeck for target selection, restores afterward, executes attack via GURPS OTF when possible, and tracks outcome for follow-up damage rolling.
 - Combat attack list layout now separates melee and ranged attacks into distinct sections for readability.
+- Skills and spells now use native GURPS sheet-style passthrough handling where possible.
 
 ### Changed
 - Combat attack buttons now use **Attack** labeling and guided flow instead of direct quick roll.
+- Skill and spell clicks now build native sheet-like datasets and call `GURPS.handleRoll` before falling back to OTF.
 - Version metadata updated for v0.4.0 draft.
 
 ### Changed
