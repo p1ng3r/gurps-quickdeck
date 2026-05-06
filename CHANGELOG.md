@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 - Forge-safe placement reticle/cursor feedback for temporary token placement mode.
 - Guided Attack MVP flow in Combat drawer: clicking **Attack** opens a setup dialog, applies optional modifiers to the GURPS Modifier Bucket, minimizes QuickDeck for target selection, restores afterward, executes attack via GURPS OTF when possible, and tracks outcome for follow-up damage rolling.
 - Combat attack list layout now separates melee and ranged attacks into distinct sections for readability.
+- Combat window layout refactor adds tactical attack-card hierarchy plus stable target, modifier bucket, and combat modifier icon placeholder anchors for upcoming v0.4.0 UX improvements.
 - Skills and spells now use native GURPS sheet-style passthrough handling where possible.
 
 ### Changed

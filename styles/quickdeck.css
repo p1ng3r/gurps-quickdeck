@@ -703,18 +703,48 @@
   background: linear-gradient(180deg, rgba(55, 45, 27, 0.2), rgba(21, 21, 26, 0.56));
 }
 
+.quickdeck-attack-card {
+  position: relative;
+  display: grid;
+  gap: 0.62rem;
+  overflow: hidden;
+  border-color: rgba(221, 178, 100, 0.34);
+  border-radius: 11px;
+  padding: 0.62rem;
+  background:
+    linear-gradient(180deg, rgba(68, 54, 31, 0.24), rgba(17, 18, 24, 0.68)),
+    radial-gradient(circle at top left, rgba(223, 169, 77, 0.12), transparent 45%);
+}
+
+.quickdeck-attack-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  background: linear-gradient(180deg, rgba(232, 185, 93, 0.9), rgba(98, 125, 154, 0.2));
+  opacity: 0.72;
+}
+
 .quickdeck-attack-card:hover,
 .quickdeck-skill-row:hover {
   border-color: rgba(237, 196, 121, 0.55);
   box-shadow: 0 0 11px rgba(218, 176, 102, 0.16);
 }
 
-.quickdeck-attack-card header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
+.quickdeck-attack-card-header {
+  min-width: 0;
+}
+
+.quickdeck-attack-title-row {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  align-items: start;
   gap: 0.5rem;
-  margin-bottom: 0.42rem;
+  min-width: 0;
+}
+
+.quickdeck-attack-title-block {
+  min-width: 0;
 }
 
 .quickdeck-attack-card h5,
@@ -724,36 +754,152 @@
   color: #f7f2e6;
 }
 
-.quickdeck-attack-card header span {
-  font-size: 0.72rem;
-  color: rgba(232, 222, 201, 0.95);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+.quickdeck-attack-card h5 {
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);
 }
 
-.quickdeck-attack-card dl {
+.quickdeck-attack-mode {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 0.18rem;
+  padding: 0.08rem 0.4rem;
+  border: 1px solid rgba(151, 177, 202, 0.35);
+  border-radius: 999px;
+  background: rgba(31, 42, 54, 0.72);
+  color: rgba(224, 235, 245, 0.94);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.quickdeck-combat-icon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  flex: 0 0 24px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(217, 178, 102, 0.42);
+  border-radius: 6px;
+  background: linear-gradient(180deg, rgba(75, 58, 31, 0.78), rgba(37, 35, 35, 0.92));
+  color: #f1d189;
+  font-size: 0.72rem;
+  line-height: 1;
+  box-shadow: 0 0 0 1px rgba(255, 238, 196, 0.05) inset;
+}
+
+.quickdeck-attack-icon {
+  margin-top: 0.02rem;
+  color: #ffd993;
+}
+
+.quickdeck-combat-icon-muted {
+  border-style: dashed;
+  border-color: rgba(165, 184, 205, 0.28);
+  background: rgba(28, 33, 40, 0.72);
+  color: rgba(210, 222, 235, 0.58);
+}
+
+.quickdeck-attack-stats {
   margin: 0;
   display: grid;
-  gap: 0.22rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.34rem;
 }
 
-.quickdeck-attack-card dl div {
+.quickdeck-attack-stats div {
   display: grid;
-  grid-template-columns: 92px 1fr;
-  gap: 0.35rem;
+  gap: 0.12rem;
+  min-width: 0;
+  padding: 0.32rem 0.4rem;
+  border: 1px solid rgba(201, 165, 95, 0.18);
+  border-radius: 7px;
+  background: rgba(5, 7, 10, 0.25);
 }
 
 .quickdeck-attack-card dt {
-  color: rgba(223, 210, 184, 0.95);
+  color: rgba(223, 210, 184, 0.86);
+  font-size: 0.65rem;
+  letter-spacing: 0.05em;
+  line-height: 1.15;
+  text-transform: uppercase;
 }
 
 .quickdeck-attack-card dd {
+  margin: 0;
+  min-width: 0;
   color: #f5f0e2;
+  font-weight: 700;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 .quickdeck-attack-damage-row {
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
+  gap: 0.35rem;
+}
+
+.quickdeck-combat-anchors {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.35rem;
+}
+
+.quickdeck-combat-anchor {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.42rem;
+  min-width: 0;
+  padding: 0.38rem 0.45rem;
+  border: 1px dashed rgba(159, 181, 203, 0.34);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(24, 31, 39, 0.7), rgba(12, 15, 20, 0.58));
+}
+
+.quickdeck-anchor-label,
+.quickdeck-anchor-value {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.quickdeck-anchor-label {
+  color: rgba(214, 225, 236, 0.76);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.quickdeck-anchor-value {
+  margin-top: 0.08rem;
+  color: rgba(244, 238, 224, 0.88);
+  font-size: 0.72rem;
+}
+
+.quickdeck-combat-icon-tray {
+  display: flex;
+  align-items: center;
+  gap: 0.28rem;
+  min-height: 28px;
+  padding: 0.16rem 0.2rem;
+  border: 1px solid rgba(158, 181, 205, 0.18);
+  border-radius: 8px;
+  background: rgba(7, 9, 13, 0.25);
+}
+
+.quickdeck-attack-actions {
+  display: grid;
   gap: 0.35rem;
 }
 
@@ -1401,4 +1547,43 @@
   border: 1px solid rgba(222, 255, 232, 0.95);
   background: radial-gradient(circle, rgba(205, 255, 222, 0.72), rgba(57, 255, 146, 0.08) 58%, transparent 72%);
   box-shadow: 0 0 12px rgba(205, 255, 222, 0.86);
+}
+
+.quickdeck-attack-actions .quickdeck-roll-button {
+  margin-top: 0;
+}
+
+.quickdeck-attack-button {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.quickdeck-attack-button i {
+  font-size: 0.78rem;
+}
+
+@media (min-width: 700px) {
+  .quickdeck-combat-anchors {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+    align-items: stretch;
+  }
+
+  .quickdeck-combat-icon-tray {
+    align-self: stretch;
+  }
+}
+
+@media (max-width: 520px) {
+  .quickdeck-attack-stats {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .quickdeck-attack-title-row {
+    grid-template-columns: 24px minmax(0, 1fr);
+  }
 }
