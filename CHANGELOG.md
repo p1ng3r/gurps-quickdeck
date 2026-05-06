@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - v0.4.0 draft
 
 ### Added
+- Target Opponent workflow for combat attack pills: QuickDeck temporarily minimizes, displays a lightweight tactical reticle, left-click targets a canvas token through native Foundry targeting, and right-click/Escape cancel safely.
+- Forge-safe cleanup for Target Opponent mode so temporary listeners and reticles are removed on target, cancel, scene switch, close, or error.
 - Forge-safe placement reticle/cursor feedback for temporary token placement mode.
 - Guided Attack MVP flow in Combat drawer: clicking **Attack** opens a setup dialog, applies optional modifiers to the GURPS Modifier Bucket, minimizes QuickDeck for target selection, restores afterward, executes attack via GURPS OTF when possible, and tracks outcome for follow-up damage rolling.
 - Combat attack list layout now separates melee and ranged attacks into distinct sections for readability.

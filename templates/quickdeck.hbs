@@ -328,13 +328,20 @@
                             </dl>
 
                             <div class="quickdeck-combat-anchors" aria-label="Future combat workflow anchors">
-                              <div class="quickdeck-combat-anchor quickdeck-target-anchor" data-layout-anchor="target-opponent-display">
+                              <button
+                                type="button"
+                                class="quickdeck-combat-anchor quickdeck-target-anchor quickdeck-target-opponent-button"
+                                data-action="target-opponent"
+                                data-attack-index="{{attack.index}}"
+                                data-layout-anchor="target-opponent-display"
+                                {{#if ../isTargetOpponentModeActive}}disabled{{/if}}
+                              >
                                 <span class="quickdeck-combat-icon" aria-hidden="true"><i class="fas fa-user-shield"></i></span>
-                                <div>
-                                  <span class="quickdeck-anchor-label">Target</span>
-                                  <span class="quickdeck-anchor-value">No target selected</span>
-                                </div>
-                              </div>
+                                <span class="quickdeck-target-anchor-copy">
+                                  <span class="quickdeck-anchor-label">Target Opponent</span>
+                                  <span class="quickdeck-anchor-value">{{../currentTargetName}}</span>
+                                </span>
+                              </button>
                               <div class="quickdeck-combat-anchor quickdeck-modifier-anchor" data-layout-anchor="modifier-bucket-display">
                                 <span class="quickdeck-combat-icon" aria-hidden="true"><i class="fas fa-sliders-h"></i></span>
                                 <div>
@@ -402,13 +409,20 @@
                             </dl>
 
                             <div class="quickdeck-combat-anchors" aria-label="Future combat workflow anchors">
-                              <div class="quickdeck-combat-anchor quickdeck-target-anchor" data-layout-anchor="target-opponent-display">
+                              <button
+                                type="button"
+                                class="quickdeck-combat-anchor quickdeck-target-anchor quickdeck-target-opponent-button"
+                                data-action="target-opponent"
+                                data-attack-index="{{attack.index}}"
+                                data-layout-anchor="target-opponent-display"
+                                {{#if ../isTargetOpponentModeActive}}disabled{{/if}}
+                              >
                                 <span class="quickdeck-combat-icon" aria-hidden="true"><i class="fas fa-user-shield"></i></span>
-                                <div>
-                                  <span class="quickdeck-anchor-label">Target</span>
-                                  <span class="quickdeck-anchor-value">No target selected</span>
-                                </div>
-                              </div>
+                                <span class="quickdeck-target-anchor-copy">
+                                  <span class="quickdeck-anchor-label">Target Opponent</span>
+                                  <span class="quickdeck-anchor-value">{{../currentTargetName}}</span>
+                                </span>
+                              </button>
                               <div class="quickdeck-combat-anchor quickdeck-modifier-anchor" data-layout-anchor="modifier-bucket-display">
                                 <span class="quickdeck-combat-icon" aria-hidden="true"><i class="fas fa-sliders-h"></i></span>
                                 <div>

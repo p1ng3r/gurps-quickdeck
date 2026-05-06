@@ -34,6 +34,12 @@ export class QuickDeckApp extends Application {
     this._tokenDropReticleElement = null;
     this._tokenDropCursorTarget = null;
     this._tokenDropPreviousCursor = null;
+    this.pendingTargetOpponentAttackIndex = null;
+    this._pendingTargetOpponentCleanup = null;
+    this._targetOpponentSceneId = null;
+    this._targetOpponentReticleElement = null;
+    this._targetOpponentCursorTarget = null;
+    this._targetOpponentPreviousCursor = null;
     this.isMinimized = false;
     this._floatingRestoreIcon = null;
     this._restorePillDragCleanup = null;
@@ -85,6 +91,7 @@ export class QuickDeckApp extends Application {
     }
     if (this.activeActorId && this.activeActorId !== actorId) {
       this.cancelTokenDrop({ render: false });
+      this.cancelTargetOpponentMode({ render: false, restore: false });
     }
     this.activeActorId = actorId;
   }
@@ -2036,15 +2043,246 @@ export class QuickDeckApp extends Application {
     this.render(false);
   }
 
+
+  createTargetOpponentReticle(view) {
+    this.destroyTargetOpponentReticle();
+
+    const reticle = document.createElement("div");
+    reticle.className = "quickdeck-target-opponent-reticle";
+    reticle.setAttribute("aria-hidden", "true");
+    reticle.innerHTML = '<span class="quickdeck-target-opponent-reticle-ring"></span><span class="quickdeck-target-opponent-reticle-crosshair"></span><span class="quickdeck-target-opponent-reticle-core"></span><span class="quickdeck-target-opponent-reticle-rune"></span>';
+    document.body.appendChild(reticle);
+    this._targetOpponentReticleElement = reticle;
+
+    if (view?.style) {
+      this._targetOpponentCursorTarget = view;
+      this._targetOpponentPreviousCursor = view.style.cursor ?? "";
+      view.style.cursor = "crosshair";
+    }
+
+    const rect = view?.getBoundingClientRect?.();
+    const clientX = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+    const clientY = rect ? rect.top + rect.height / 2 : window.innerHeight / 2;
+    this.updateTargetOpponentReticle(clientX, clientY);
+  }
+
+  updateTargetOpponentReticle(clientX, clientY) {
+    const reticle = this._targetOpponentReticleElement;
+    if (!reticle || !Number.isFinite(Number(clientX)) || !Number.isFinite(Number(clientY))) return;
+    reticle.style.transform = `translate3d(${Number(clientX)}px, ${Number(clientY)}px, 0) translate(-50%, -50%)`;
+  }
+
+  destroyTargetOpponentReticle() {
+    if (this._targetOpponentCursorTarget?.style) {
+      this._targetOpponentCursorTarget.style.cursor = this._targetOpponentPreviousCursor ?? "";
+    }
+    this._targetOpponentCursorTarget = null;
+    this._targetOpponentPreviousCursor = null;
+
+    if (this._targetOpponentReticleElement) {
+      this._targetOpponentReticleElement.remove();
+      this._targetOpponentReticleElement = null;
+    }
+  }
+
+  getCurrentTargetDisplayName() {
+    const targets = Array.from(game?.user?.targets ?? []).filter(Boolean);
+    if (targets.length === 0) return "No target selected";
+    const firstName = targets[0]?.document?.name ?? targets[0]?.name ?? "Target selected";
+    if (targets.length === 1) return firstName;
+    return `${firstName} +${targets.length - 1}`;
+  }
+
+  getTokenAtCanvasPoint(point) {
+    if (!point || !canvas?.tokens?.placeables?.length) return null;
+
+    const candidates = canvas.tokens.placeables
+      .filter((token) => token?.visible !== false && token?.document)
+      .filter((token) => {
+        const bounds = token.bounds ?? token.getBounds?.();
+        if (bounds && typeof bounds.contains === "function") return bounds.contains(point.x, point.y);
+
+        const width = Number(token.w ?? token.width ?? token.document?.width ?? canvas?.grid?.size ?? 1);
+        const height = Number(token.h ?? token.height ?? token.document?.height ?? canvas?.grid?.size ?? 1);
+        const x = Number(token.x ?? token.document?.x);
+        const y = Number(token.y ?? token.document?.y);
+        if (![x, y, width, height].every(Number.isFinite)) return false;
+        return point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height;
+      });
+
+    return candidates.at(-1) ?? null;
+  }
+
+  async targetOpponentToken(token) {
+    if (!token || typeof token.setTarget !== "function") {
+      throw new Error("Selected token does not expose Foundry token targeting.");
+    }
+
+    const user = game?.user ?? null;
+    const existingTargets = Array.from(user?.targets ?? []);
+    for (const target of existingTargets) {
+      if (target === token || typeof target?.setTarget !== "function") continue;
+      target.setTarget(false, { user, releaseOthers: false, groupSelection: false });
+    }
+
+    await token.setTarget(true, { user, releaseOthers: true, groupSelection: false });
+  }
+
+  restoreAfterTargetOpponentMode() {
+    this.isMinimized = false;
+    this.persistMinimizedState();
+    this.syncMinimizedPresentation();
+  }
+
+  cancelTargetOpponentMode({ notify = false, render = true, restore = true } = {}) {
+    const hadPendingTarget = this.pendingTargetOpponentAttackIndex !== null || Boolean(this._pendingTargetOpponentCleanup);
+    if (typeof this._pendingTargetOpponentCleanup === "function") {
+      try {
+        this._pendingTargetOpponentCleanup();
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed during target-opponent cleanup.", error);
+      }
+    }
+    this._pendingTargetOpponentCleanup = null;
+    this.pendingTargetOpponentAttackIndex = null;
+    this._targetOpponentSceneId = null;
+    this.destroyTargetOpponentReticle();
+    if (notify) ui.notifications?.info("QuickDeck: Targeting cancelled.");
+    if (restore && hadPendingTarget) this.restoreAfterTargetOpponentMode();
+    if (render && hadPendingTarget) this.render(false);
+  }
+
+  startTargetOpponentMode(attackIndex) {
+    if (!Number.isFinite(attackIndex)) return;
+
+    if (this.pendingTargetOpponentAttackIndex !== null) {
+      ui.notifications?.info("QuickDeck: Targeting mode is already active.");
+      return;
+    }
+
+    const scene = canvas?.scene ?? game?.scenes?.current ?? null;
+    if (!scene || !canvas?.ready) {
+      ui.notifications?.warn("QuickDeck: No active scene/canvas ready for targeting.");
+      return;
+    }
+
+    const view = canvas?.app?.view;
+    if (!view || typeof view.addEventListener !== "function") {
+      ui.notifications?.warn("QuickDeck: Canvas interaction is unavailable in this environment.");
+      return;
+    }
+
+    this.cancelTokenDrop({ render: false });
+    this.pendingTargetOpponentAttackIndex = attackIndex;
+    this._targetOpponentSceneId = scene.id ?? null;
+    this.createTargetOpponentReticle(view);
+    ui.notifications?.info("QuickDeck: Click a token to target it. Right-click or press Escape to cancel.");
+
+    if (!this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState();
+      this.syncMinimizedPresentation();
+    }
+
+    const abortController = typeof AbortController === "function" ? new AbortController() : null;
+    let cleanedUp = false;
+    const cleanupListeners = () => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      if (abortController) abortController.abort();
+      else {
+        view.removeEventListener("pointerdown", onPointerDown, true);
+        view.removeEventListener("pointermove", onPointerMove, true);
+        view.removeEventListener("contextmenu", onContextMenu, true);
+        window.removeEventListener("keydown", onKeyDown, true);
+      }
+      Hooks.off("canvasReady", onCanvasReady);
+    };
+
+    const onPointerMove = (event) => {
+      const point = this.getClientPointFromEvent(event);
+      if (!point) return;
+      this.updateTargetOpponentReticle(point.clientX, point.clientY);
+    };
+
+    const onContextMenu = (event) => {
+      if (this.pendingTargetOpponentAttackIndex === null) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    const onPointerDown = async (event) => {
+      if (this.pendingTargetOpponentAttackIndex === null) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (event.button === 2) {
+        this.cancelTargetOpponentMode({ notify: true });
+        return;
+      }
+      if (event.button !== 0) return;
+
+      try {
+        const pointerPosition = this.getCanvasPointFromEvent(event);
+        const token = this.getTokenAtCanvasPoint(pointerPosition);
+        if (!token) {
+          ui.notifications?.warn("QuickDeck: Click directly on a token to target it.");
+          return;
+        }
+
+        await this.targetOpponentToken(token);
+        this.cancelTargetOpponentMode({ render: false, restore: true });
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed during target opponent selection.", error);
+        ui.notifications?.warn("QuickDeck: Could not target that token.");
+        this.cancelTargetOpponentMode({ render: false, restore: true });
+      } finally {
+        this.render(false);
+      }
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      this.cancelTargetOpponentMode({ notify: true });
+    };
+
+    const onCanvasReady = (canvasInstance) => {
+      const nextSceneId = canvasInstance?.scene?.id ?? game?.scenes?.current?.id ?? null;
+      if (this.pendingTargetOpponentAttackIndex === null) return;
+      if (this._targetOpponentSceneId && nextSceneId && this._targetOpponentSceneId !== nextSceneId) {
+        this.cancelTargetOpponentMode({ notify: true });
+      }
+    };
+
+    const listenerOptions = abortController ? { signal: abortController.signal, capture: true } : true;
+    view.addEventListener("pointerdown", onPointerDown, listenerOptions);
+    view.addEventListener("pointermove", onPointerMove, listenerOptions);
+    view.addEventListener("contextmenu", onContextMenu, listenerOptions);
+    window.addEventListener("keydown", onKeyDown, listenerOptions);
+    Hooks.on("canvasReady", onCanvasReady);
+    this._pendingTargetOpponentCleanup = () => {
+      cleanupListeners();
+    };
+
+    this.render(false);
+  }
+
   toggleMinimizedState() {
     this.isMinimized = !this.isMinimized;
-    if (this.isMinimized) this.cancelTokenDrop({ render: false });
+    if (this.isMinimized) {
+      this.cancelTokenDrop({ render: false });
+      this.cancelTargetOpponentMode({ render: false, restore: false });
+    }
     this.persistMinimizedState();
     this.syncMinimizedPresentation();
   }
 
   async minimize() {
     this.cancelTokenDrop({ render: false });
+    this.cancelTargetOpponentMode({ render: false, restore: false });
     if (!this.isMinimized) {
       this.isMinimized = true;
       this.persistMinimizedState();
@@ -2055,6 +2293,7 @@ export class QuickDeckApp extends Application {
 
   async close(options) {
     this.cancelTokenDrop({ render: false });
+    this.cancelTargetOpponentMode({ render: false, restore: false });
     this.removeFloatingRestoreIcon();
     if (this._actorSelectTimeout) {
       clearTimeout(this._actorSelectTimeout);
@@ -2112,6 +2351,10 @@ export class QuickDeckApp extends Application {
 
   onFloatingRestoreClick = (event) => {
     event.preventDefault();
+    if (this.pendingTargetOpponentAttackIndex !== null) {
+      ui.notifications?.info("QuickDeck: Choose a target or press Escape/right-click to cancel targeting first.");
+      return;
+    }
     if (this._restorePillPreventClick) {
       this._restorePillPreventClick = false;
       return;
@@ -2409,6 +2652,8 @@ export class QuickDeckApp extends Application {
       activeActorName: activeActor?.name ?? null,
       isTokenDropArmedForActive:
         Boolean(activeActor?.id) && this.pendingTokenDropActorId === activeActor.id,
+      isTargetOpponentModeActive: this.pendingTargetOpponentAttackIndex !== null,
+      currentTargetName: this.getCurrentTargetDisplayName(),
       gurpsData,
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
@@ -2451,6 +2696,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='clear-roster']").on("click", (event) => {
       event.preventDefault();
       this.cancelTokenDrop({ render: false });
+      this.cancelTargetOpponentMode({ render: false, restore: false });
       this.clearRoster();
       this.render();
     });
@@ -2492,6 +2738,7 @@ export class QuickDeckApp extends Application {
       if (!actorId) return;
 
       this.cancelTokenDrop({ render: false });
+      this.cancelTargetOpponentMode({ render: false, restore: false });
       this.removeActorFromRoster(actorId);
       this.render();
     });
@@ -2506,6 +2753,7 @@ export class QuickDeckApp extends Application {
       this._actorSelectTimeout = window.setTimeout(() => {
         if (this.activeActorId && this.activeActorId !== actorId) {
           this.cancelTokenDrop({ render: false });
+          this.cancelTargetOpponentMode({ render: false, restore: false });
         }
         this.activeActorId = actorId;
         this.render();
@@ -2524,6 +2772,7 @@ export class QuickDeckApp extends Application {
 
       if (this.activeActorId && this.activeActorId !== actorId) {
         this.cancelTokenDrop({ render: false });
+        this.cancelTargetOpponentMode({ render: false, restore: false });
       }
       this.activeActorId = actorId;
       this.openActorSheet(actorId);
@@ -2612,6 +2861,20 @@ export class QuickDeckApp extends Application {
         label,
         value
       });
+    });
+
+    html.find("[data-action='target-opponent']").on("click", (event) => {
+      event.preventDefault();
+      const attackIndex = Number(event.currentTarget.dataset.attackIndex);
+      if (Number.isNaN(attackIndex)) return;
+
+      try {
+        this.startTargetOpponentMode(attackIndex);
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed to start target opponent mode.", error);
+        this.cancelTargetOpponentMode({ render: false, restore: true });
+        ui.notifications?.warn("QuickDeck: Could not start targeting mode.");
+      }
     });
 
     html.find("[data-action='roll-attack']").on("click", async (event) => {
