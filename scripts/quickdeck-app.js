@@ -296,7 +296,7 @@ export class QuickDeckApp extends Application {
     const raw = attack?.raw && typeof attack.raw === "object" ? attack.raw : {};
     const name = String(this.getFirstDefinedValue(raw, ["name"]) ?? attack?.name ?? "").trim();
     const mode = String(this.getFirstDefinedValue(raw, ["mode", "usage"]) ?? "").trim();
-    return `${name} (${mode})`;
+    return mode ? `${name} (${mode})` : name;
   }
 
   getSheetAttackOtf(attack) {
@@ -304,6 +304,22 @@ export class QuickDeckApp extends Application {
     const prefix = attackType === "ranged" ? "R" : "M";
     const displayName = this.getSheetAttackDisplayName(attack).replace(/"/g, '\\"');
     return `${prefix}:"${displayName}"`;
+  }
+
+  getSheetAttackDataset(attack) {
+    return {
+      name: this.getSheetAttackDisplayName(attack),
+      key: attack?.sourcePath,
+      otf: this.getSheetAttackOtf(attack)
+    };
+  }
+
+  buildGurpsHandleRollEvent(dataset) {
+    return {
+      preventDefault: () => {},
+      stopPropagation: () => {},
+      currentTarget: { dataset }
+    };
   }
 
   normalizeSkill(skill) {
@@ -1031,33 +1047,9 @@ export class QuickDeckApp extends Application {
     }));
   }
 
-  getDebugPayloadPreview(payload) {
-    if (!payload || typeof payload !== "object") return {};
-
-    const preview = {};
-    for (const [key, value] of Object.entries(payload)) {
-      if (value === null || ["string", "number", "boolean"].includes(typeof value)) {
-        preview[key] = value;
-        continue;
-      }
-
-      if (Array.isArray(value)) {
-        preview[key] = `[Array(${value.length})]`;
-        continue;
-      }
-
-      if (typeof value === "object") {
-        preview[key] = `{${Object.keys(value).join(", ")}}`;
-      }
-    }
-
-    return preview;
-  }
-
   async tryGurpsRoll(actor, rollContext) {
     const numericTarget = this.parseRollTarget(rollContext.value);
     const skillRaw = rollContext.skill?.raw ?? null;
-    const attackRaw = rollContext.attack?.raw ?? null;
     const actionName = rollContext.skillName ?? rollContext.attackName ?? rollContext.defense;
     const actionPayload = {
       type: rollContext.type,
@@ -1112,20 +1104,6 @@ export class QuickDeckApp extends Application {
         rawSkillKeys: skillRaw && typeof skillRaw === "object" ? Object.keys(skillRaw).slice(0, 20) : []
       });
     }
-    if (rollContext.type === "attack") {
-      const attack = rollContext.attack ?? null;
-      const attackAction = this.getFirstDefinedValue(attack, ["action", "raw.action"]);
-      const attackOtf = this.getFirstDefinedValue(attack, ["otf", "raw.otf"]);
-      if (attackAction === null && attackOtf === null) {
-        console.warn("QD ATTACK PAYLOAD INSPECT", {
-          attackKeys: attack && typeof attack === "object" ? Object.keys(attack).slice(0, 50) : [],
-          rawKeys: attackRaw && typeof attackRaw === "object" ? Object.keys(attackRaw).slice(0, 50) : [],
-          rawPreview: this.getDebugPayloadPreview(attackRaw),
-          attackPreview: this.getDebugPayloadPreview(attack)
-        });
-      }
-    }
-
     return false;
   }
 
@@ -2466,117 +2444,24 @@ export class QuickDeckApp extends Application {
         return;
       }
 
-      console.warn("QD ATTACK CLICK PAYLOAD", {
-        actorId,
-        attackIndex,
-        attack,
-        raw: attack?.raw,
-        attackKeys: attack && typeof attack === "object" ? Object.keys(attack) : [],
-        rawKeys: attack?.raw && typeof attack.raw === "object" ? Object.keys(attack.raw) : []
-      });
-
-      console.warn("QD ATTACK SOURCE PATH", {
-        attackName: attack.name,
-        sourcePath: attack.sourcePath,
-        sourceKey: attack.sourceKey,
-        sourceCollection: attack.sourceCollection,
-        raw: attack.raw
-      });
 
       const gurps = globalThis.GURPS ?? game.GURPS;
       if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
 
       const attackName = String(attack.name ?? "").trim();
-      const attackLevel = attack.level;
-      const sourcePath = String(attack.sourcePath ?? "").trim();
-      const sourceCollection = String(attack.sourceCollection ?? "").trim();
-
-      if (sourcePath) {
-        const candidates = [
-          `[A:${attackName}]`,
-          `[A:${attackName}=${attackLevel}]`,
-          `[M:${attackName}]`,
-          `[M:${attackName}=${attackLevel}]`,
-          `[R:${attackName}]`,
-          `[R:${attackName}=${attackLevel}]`,
-          `@m:${attackName}`,
-          `@m:${attackName}=${attackLevel}`,
-          `@r:${attackName}`,
-          `@r:${attackName}=${attackLevel}`,
-          `@${sourcePath}`,
-          `${sourcePath}`,
-          `[${sourcePath}]`
-        ];
-
-        const candidateResults = candidates.map((candidate) => {
-          const parsed = gurps?.parselink?.(candidate);
-          return {
-            candidate,
-            hasParsed: Boolean(parsed),
-            hasAction: Boolean(parsed?.action),
-            actionType: parsed?.action?.type ?? null,
-            actionName: parsed?.action?.name ?? null,
-            actionKeys: parsed?.action ? Object.keys(parsed.action) : []
-          };
-        });
-
-        console.warn("QD OTF CANDIDATE PARSE", {
-          attackName,
-          attackLevel,
-          sourcePath,
-          sourceCollection,
-          candidates: candidateResults
-        });
-      }
-
       const otf = `[A:${attackName}]`;
       const targets = Array.from(game.user?.targets ?? []);
-      const fakeEvent = {
-        preventDefault: () => {},
-        stopPropagation: () => {},
-        currentTarget: {
-          dataset: {
-            name: this.getSheetAttackDisplayName(attack),
-            key: sourcePath,
-            otf: this.getSheetAttackOtf(attack)
-          }
-        }
-      };
-
-      console.warn("QD TARGET EFFECT CONTEXT", {
-        actorId,
-        actorName: actor?.name,
-        attackName: attack?.name,
-        sourcePath: attack?.sourcePath,
-        sourceKey: attack?.sourceKey,
-        sourceCollection: attack?.sourceCollection,
-        lastActorId: (globalThis.GURPS ?? game.GURPS)?.LastActor?.id,
-        lastActorName: (globalThis.GURPS ?? game.GURPS)?.LastActor?.name,
-        controlledTokenIds: canvas.tokens?.controlled?.map((t) => t.id) ?? [],
-        controlledTokenNames: canvas.tokens?.controlled?.map((t) => t.name) ?? [],
-        userTargetIds: targets.map((t) => t.id),
-        userTargetNames: targets.map((t) => t.name),
-        userTargetActorIds: targets.map((t) => t.actor?.id ?? null),
-        userTargetActorNames: targets.map((t) => t.actor?.name ?? null),
-        raw: attack?.raw
-      });
-
-      console.warn("QD HANDLE ROLL ATTACK", {
-        attackName: attack.name,
-        sourcePath: attack.sourcePath,
-        sourceCollection: attack.sourceCollection,
-        targets: targets.map((t) => t.name),
-        dataset: fakeEvent.currentTarget.dataset
-      });
+      const dataset = this.getSheetAttackDataset(attack);
+      const fakeEvent = this.buildGurpsHandleRollEvent(dataset);
 
       let handledByHandleRoll = false;
       try {
-        if (typeof gurps?.handleRoll === "function") {
+        if (dataset.key && dataset.otf && typeof gurps?.handleRoll === "function") {
           await gurps.handleRoll(fakeEvent, actor, { targets });
           handledByHandleRoll = true;
         }
       } catch (error) {
-        console.warn("gurps-quickdeck | Attack handleRoll failed, falling back.", error);
+        console.warn("gurps-quickdeck | Attack handleRoll failed, falling back to OTF.", error);
       }
 
       let usedOtF = false;
@@ -2586,7 +2471,7 @@ export class QuickDeckApp extends Application {
           usedOtF = true;
         }
       } catch (error) {
-        console.warn("gurps-quickdeck | Attack OTF failed, falling back.", error);
+        // Fall through to the QuickDeck roll fallback below.
       }
 
       if (!handledByHandleRoll && !usedOtF) {
