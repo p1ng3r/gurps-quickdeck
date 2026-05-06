@@ -622,6 +622,15 @@
                                 {{#if spell.cost}} · Cost {{spell.cost}}{{/if}}
                               </p>
                             </div>
+                            <button
+                              type="button"
+                              data-action="roll-spell"
+                              data-actor-id="{{../activeActor.id}}"
+                              data-spell-index="{{spell.index}}"
+                              class="quickdeck-roll-button"
+                            >
+                              Cast Spell
+                            </button>
                           </article>
                         {{/each}}
                       </div>
