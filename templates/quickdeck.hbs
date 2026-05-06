@@ -342,20 +342,24 @@
                                   <span class="quickdeck-anchor-value">{{../currentTargetName}}</span>
                                 </span>
                               </button>
-                              <div
-                                class="quickdeck-combat-anchor quickdeck-modifier-anchor {{../modifierBucketStatus.cssClass}}"
+                              <button
+                                type="button"
+                                class="quickdeck-combat-anchor quickdeck-modifier-anchor quickdeck-modifier-bucket-button {{../modifierBucketStatus.cssClass}}"
+                                data-action="open-modifier-bucket"
+                                data-actor-id="{{../activeActor.id}}"
                                 data-layout-anchor="modifier-bucket-display"
                                 title="{{../modifierBucketStatus.stateLabel}}: {{../modifierBucketStatus.detailLabel}}"
+                                aria-label="Open native GURPS ModifierBucket: {{../modifierBucketStatus.detailLabel}}"
                               >
                                 <span class="quickdeck-combat-icon quickdeck-modifier-bucket-icon" aria-hidden="true"><i class="fas fa-sliders-h"></i></span>
-                                <div class="quickdeck-modifier-bucket-copy">
+                                <span class="quickdeck-modifier-bucket-copy">
                                   <span class="quickdeck-anchor-label">Modifiers</span>
                                   <span class="quickdeck-anchor-value quickdeck-modifier-bucket-value">
                                     <span class="quickdeck-modifier-bucket-total">{{../modifierBucketStatus.totalText}}</span>
                                     <span class="quickdeck-modifier-bucket-detail">{{../modifierBucketStatus.detailLabel}}</span>
                                   </span>
-                                </div>
-                              </div>
+                                </span>
+                              </button>
                               <div class="quickdeck-combat-icon-tray" data-layout-anchor="combat-modifier-icons" aria-label="Combat modifier icons placeholder">
                                 <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-dice-three"></i></span>
                                 <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-bullseye"></i></span>
@@ -430,20 +434,24 @@
                                   <span class="quickdeck-anchor-value">{{../currentTargetName}}</span>
                                 </span>
                               </button>
-                              <div
-                                class="quickdeck-combat-anchor quickdeck-modifier-anchor {{../modifierBucketStatus.cssClass}}"
+                              <button
+                                type="button"
+                                class="quickdeck-combat-anchor quickdeck-modifier-anchor quickdeck-modifier-bucket-button {{../modifierBucketStatus.cssClass}}"
+                                data-action="open-modifier-bucket"
+                                data-actor-id="{{../activeActor.id}}"
                                 data-layout-anchor="modifier-bucket-display"
                                 title="{{../modifierBucketStatus.stateLabel}}: {{../modifierBucketStatus.detailLabel}}"
+                                aria-label="Open native GURPS ModifierBucket: {{../modifierBucketStatus.detailLabel}}"
                               >
                                 <span class="quickdeck-combat-icon quickdeck-modifier-bucket-icon" aria-hidden="true"><i class="fas fa-sliders-h"></i></span>
-                                <div class="quickdeck-modifier-bucket-copy">
+                                <span class="quickdeck-modifier-bucket-copy">
                                   <span class="quickdeck-anchor-label">Modifiers</span>
                                   <span class="quickdeck-anchor-value quickdeck-modifier-bucket-value">
                                     <span class="quickdeck-modifier-bucket-total">{{../modifierBucketStatus.totalText}}</span>
                                     <span class="quickdeck-modifier-bucket-detail">{{../modifierBucketStatus.detailLabel}}</span>
                                   </span>
-                                </div>
-                              </div>
+                                </span>
+                              </button>
                               <div class="quickdeck-combat-icon-tray" data-layout-anchor="combat-modifier-icons" aria-label="Combat modifier icons placeholder">
                                 <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-dice-three"></i></span>
                                 <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-crosshairs"></i></span>
