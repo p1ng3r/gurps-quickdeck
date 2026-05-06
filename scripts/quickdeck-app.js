@@ -31,6 +31,9 @@ export class QuickDeckApp extends Application {
     this.pendingTokenDropActorId = null;
     this._pendingTokenDropCleanup = null;
     this._tokenDropSceneId = null;
+    this._tokenDropReticleElement = null;
+    this._tokenDropCursorTarget = null;
+    this._tokenDropPreviousCursor = null;
     this.isMinimized = false;
     this._floatingRestoreIcon = null;
     this._restorePillDragCleanup = null;
@@ -1807,6 +1810,48 @@ export class QuickDeckApp extends Application {
     return snapped;
   }
 
+
+  createTokenDropReticle(view) {
+    this.destroyTokenDropReticle();
+
+    const reticle = document.createElement("div");
+    reticle.className = "quickdeck-token-placement-reticle";
+    reticle.setAttribute("aria-hidden", "true");
+    reticle.innerHTML = '<span class="quickdeck-token-placement-reticle-ring"></span><span class="quickdeck-token-placement-reticle-crosshair"></span><span class="quickdeck-token-placement-reticle-core"></span>';
+    document.body.appendChild(reticle);
+    this._tokenDropReticleElement = reticle;
+
+    if (view?.style) {
+      this._tokenDropCursorTarget = view;
+      this._tokenDropPreviousCursor = view.style.cursor ?? "";
+      view.style.cursor = "crosshair";
+    }
+
+    const rect = view?.getBoundingClientRect?.();
+    const clientX = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+    const clientY = rect ? rect.top + rect.height / 2 : window.innerHeight / 2;
+    this.updateTokenDropReticle(clientX, clientY);
+  }
+
+  updateTokenDropReticle(clientX, clientY) {
+    const reticle = this._tokenDropReticleElement;
+    if (!reticle || !Number.isFinite(Number(clientX)) || !Number.isFinite(Number(clientY))) return;
+    reticle.style.transform = `translate3d(${Number(clientX)}px, ${Number(clientY)}px, 0) translate(-50%, -50%)`;
+  }
+
+  destroyTokenDropReticle() {
+    if (this._tokenDropCursorTarget?.style) {
+      this._tokenDropCursorTarget.style.cursor = this._tokenDropPreviousCursor ?? "";
+    }
+    this._tokenDropCursorTarget = null;
+    this._tokenDropPreviousCursor = null;
+
+    if (this._tokenDropReticleElement) {
+      this._tokenDropReticleElement.remove();
+      this._tokenDropReticleElement = null;
+    }
+  }
+
   async dropActorToken(actorId, requestedPosition = null) {
     const actor = game.actors.get(actorId);
     if (!actor) return;
@@ -1861,6 +1906,7 @@ export class QuickDeckApp extends Application {
     this._pendingTokenDropCleanup = null;
     this.pendingTokenDropActorId = null;
     this._tokenDropSceneId = null;
+    this.destroyTokenDropReticle();
     if (notify) ui.notifications?.info("QuickDeck: Token placement cancelled.");
     if (render && hadPendingDrop) this.render(false);
   }
@@ -1897,27 +1943,57 @@ export class QuickDeckApp extends Application {
 
     this.pendingTokenDropActorId = actorId;
     this._tokenDropSceneId = scene.id ?? null;
-    ui.notifications?.info("QuickDeck: Click the canvas to place token.");
+    this.createTokenDropReticle(view);
+    ui.notifications?.info("QuickDeck: Click the canvas to place token. Right-click or press Escape to cancel.");
+
+    if (!this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState();
+      this.syncMinimizedPresentation();
+    }
 
     const abortController = typeof AbortController === "function" ? new AbortController() : null;
     let cleanedUp = false;
     const cleanupListeners = () => {
       if (cleanedUp) return;
       cleanedUp = true;
-      if (abortController) {
-        abortController.abort();
-        return;
+      if (abortController) abortController.abort();
+      else {
+        view.removeEventListener("pointerdown", onPointerDown, true);
+        view.removeEventListener("pointermove", onPointerMove, true);
+        view.removeEventListener("contextmenu", onContextMenu, true);
+        window.removeEventListener("keydown", onKeyDown, true);
       }
-      view.removeEventListener("pointerdown", onPointerDown);
-      window.removeEventListener("keydown", onKeyDown);
       Hooks.off("canvasReady", onCanvasReady);
+    };
+
+    const onPointerMove = (event) => {
+      const point = this.getClientPointFromEvent(event);
+      if (!point) return;
+      this.updateTokenDropReticle(point.clientX, point.clientY);
+    };
+
+    const onContextMenu = (event) => {
+      if (!this.pendingTokenDropActorId) return;
+      event.preventDefault();
+      event.stopPropagation();
     };
 
     const onPointerDown = async (event) => {
       if (!this.pendingTokenDropActorId) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (event.button === 2) {
+        this.cancelTokenDrop({ notify: true });
+        return;
+      }
+      if (event.button !== 0) return;
+
       const activeDropActorId = this.pendingTokenDropActorId;
       const pointerPosition = this.getCanvasPointFromEvent(event);
-      cleanupListeners();
+      this.cancelTokenDrop({ render: false });
 
       try {
         if (!pointerPosition) {
@@ -1928,7 +2004,6 @@ export class QuickDeckApp extends Application {
         console.warn("gurps-quickdeck | Failed to drop token from canvas click.", error);
         ui.notifications?.warn("QuickDeck: Could not drop token for this actor.");
       } finally {
-        this.cancelTokenDrop({ render: false });
         this.render(false);
       }
     };
@@ -1936,6 +2011,7 @@ export class QuickDeckApp extends Application {
     const onKeyDown = (event) => {
       if (event.key !== "Escape") return;
       event.preventDefault();
+      event.stopPropagation();
       this.cancelTokenDrop({ notify: true });
     };
 
@@ -1947,13 +2023,14 @@ export class QuickDeckApp extends Application {
       }
     };
 
-    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+    const listenerOptions = abortController ? { signal: abortController.signal, capture: true } : true;
     view.addEventListener("pointerdown", onPointerDown, listenerOptions);
+    view.addEventListener("pointermove", onPointerMove, listenerOptions);
+    view.addEventListener("contextmenu", onContextMenu, listenerOptions);
     window.addEventListener("keydown", onKeyDown, listenerOptions);
     Hooks.on("canvasReady", onCanvasReady);
     this._pendingTokenDropCleanup = () => {
       cleanupListeners();
-      Hooks.off("canvasReady", onCanvasReady);
     };
 
     this.render(false);
