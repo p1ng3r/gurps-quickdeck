@@ -9,6 +9,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - QuickDeck minimizes while waiting for in-game target selection and restores automatically after selection/timeout.
 - Attack, skill, and spell actions prefer native GURPS sheet-style handling where available, with OTF/QuickDeck fallback paths for unsupported cases.
 - Attack list readability improved with separate melee and ranged sections.
+- Combat window layout refactored with tactical attack-card hierarchy and stable target/modifier/icon placeholder anchors for upcoming native GURPS UX improvements.
 - Skills and spells now use native GURPS sheet-style passthrough handling where possible, matching the sheet click path before falling back to OTF.
 - Repaired the Forge-safe **Drop Token** workflow so QuickDeck minimizes, click-to-place mode cleans up after place/cancel/error, and the restore pill remains usable.
 - Added lightweight green placement reticle/cursor feedback while token placement mode is active.
