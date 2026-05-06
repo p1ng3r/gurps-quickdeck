@@ -6,6 +6,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 - Combat drawer weapon buttons now launch a guided **Attack** flow (MVP).
 - Combat attack pills now include a **Target Opponent** workflow that temporarily minimizes QuickDeck, shows a tactical reticle, and uses native Foundry token targeting with Forge-safe cleanup.
+- Combat attack pills now surface the current native GURPS **ModifierBucket** status in the modifier area without applying, clearing, or recalculating modifiers.
 - Guided flow can apply common situational modifiers through the existing GURPS Modifier Bucket API where available.
 - QuickDeck minimizes while waiting for in-game target selection and restores automatically after selection/timeout.
 - Attack, skill, and spell actions prefer native GURPS sheet-style handling where available, with OTF/QuickDeck fallback paths for unsupported cases.
@@ -134,6 +135,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Token placement uses click-to-place canvas coordinates (no browser drag/drop to canvas).
 - Token placement displays a temporary Forge-safe placement reticle/cursor and removes it during placement cleanup.
 - Combat attack pill targeting uses Foundry token `setTarget` behavior only, avoids GURPS combat-rule mutations, and removes all temporary listeners/reticles on target, cancel, scene switch, close, or error.
+- Combat attack pill modifier displays read the native GURPS `ModifierBucket` status only; QuickDeck does not apply, clear, or manually calculate bucket modifiers.
 - Escape/cancel, close, minimize, and scene-switch paths always remove temporary pointer/window/canvas listeners.
 - Roll and token placement failures are warning-first and never intentionally crash the app.
 - Reference summaries load from module-local JSON files only; missing packs warn and continue.

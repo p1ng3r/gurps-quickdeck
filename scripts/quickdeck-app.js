@@ -974,6 +974,47 @@ export class QuickDeckApp extends Application {
     return value === undefined || value === null || value === "" ? "—" : value;
   }
 
+  getModifierBucketStatus() {
+    const bucket = (globalThis.GURPS ?? globalThis.game?.GURPS)?.ModifierBucket;
+    if (!bucket || typeof bucket !== "object") {
+      return {
+        available: false,
+        totalText: "+0",
+        stateLabel: "Native bucket unavailable",
+        detailLabel: "Safe fallback",
+        cssClass: "quickdeck-modifier-neutral quickdeck-modifier-unavailable"
+      };
+    }
+
+    const stack = bucket.modifierStack && typeof bucket.modifierStack === "object" ? bucket.modifierStack : null;
+    const nativeDisplay = typeof stack?.displaySum === "string" ? stack.displaySum.trim() : "";
+    const rawTotal = typeof bucket.currentSum === "function" ? bucket.currentSum() : stack?.currentSum;
+    const numericTotal = Number(rawTotal);
+    const totalText =
+      nativeDisplay ||
+      (Number.isFinite(numericTotal) ? `${numericTotal >= 0 ? "+" : ""}${numericTotal}` : "+0");
+    const normalizedTotal = Number.isFinite(numericTotal) ? numericTotal : Number(totalText);
+    const modifierList = Array.isArray(stack?.modifierList) ? stack.modifierList : [];
+    const stackIsEmpty = typeof bucket.isEmpty === "function" ? bucket.isEmpty() : modifierList.length === 0;
+    const detailLabel = stackIsEmpty
+      ? "No modifiers queued"
+      : `${modifierList.length} modifier${modifierList.length === 1 ? "" : "s"} queued`;
+    const polarityClass =
+      Number.isFinite(normalizedTotal) && normalizedTotal > 0
+        ? "quickdeck-modifier-positive"
+        : Number.isFinite(normalizedTotal) && normalizedTotal < 0
+          ? "quickdeck-modifier-negative"
+          : "quickdeck-modifier-neutral";
+
+    return {
+      available: true,
+      totalText,
+      stateLabel: "Native GURPS ModifierBucket",
+      detailLabel,
+      cssClass: polarityClass
+    };
+  }
+
   parseDefenseScore(value) {
     if (value === undefined || value === null || value === "") return null;
     const match = String(value).match(/-?\d+/);
@@ -2538,6 +2579,7 @@ export class QuickDeckApp extends Application {
 
     const indexedAttacks = derivedData.indexedAttacks;
     const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
+    const modifierBucketStatus = this.getModifierBucketStatus();
     const activeActorId = activeActor?.id ?? null;
     const pendingActorId = this._pendingAttackGuidance?.actorId ?? null;
     const pendingAttackIndex = Number.isFinite(this._pendingAttackGuidance?.attackIndex)
@@ -2654,6 +2696,7 @@ export class QuickDeckApp extends Application {
         Boolean(activeActor?.id) && this.pendingTokenDropActorId === activeActor.id,
       isTargetOpponentModeActive: this.pendingTargetOpponentAttackIndex !== null,
       currentTargetName: this.getCurrentTargetDisplayName(),
+      modifierBucketStatus,
       gurpsData,
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
