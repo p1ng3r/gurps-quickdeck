@@ -10,6 +10,8 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Attack, skill, and spell actions prefer native GURPS sheet-style handling where available, with OTF/QuickDeck fallback paths for unsupported cases.
 - Attack list readability improved with separate melee and ranged sections.
 - Skills and spells now use native GURPS sheet-style passthrough handling where possible, matching the sheet click path before falling back to OTF.
+- Repaired the Forge-safe **Drop Token** workflow so QuickDeck minimizes, click-to-place mode cleans up after place/cancel/error, and the restore pill remains usable.
+- Added lightweight green placement reticle/cursor feedback while token placement mode is active.
 
 ## What's New in v0.3.0 (Draft)
 
@@ -128,6 +130,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 - QuickDeck only opens `actor.sheet` through the explicit `openActorSheet(actorId)` path.
 - Token placement uses click-to-place canvas coordinates (no browser drag/drop to canvas).
+- Token placement displays a temporary Forge-safe placement reticle/cursor and removes it during placement cleanup.
 - Escape/cancel, close, minimize, and scene-switch paths always remove temporary pointer/window/canvas listeners.
 - Roll and token placement failures are warning-first and never intentionally crash the app.
 - Reference summaries load from module-local JSON files only; missing packs warn and continue.
