@@ -975,44 +975,54 @@ export class QuickDeckApp extends Application {
   }
 
   getModifierBucketStatus() {
-    const bucket = (globalThis.GURPS ?? globalThis.game?.GURPS)?.ModifierBucket;
-    if (!bucket || typeof bucket !== "object") {
-      return {
-        available: false,
-        totalText: "+0",
-        stateLabel: "Native bucket unavailable",
-        detailLabel: "Safe fallback",
-        cssClass: "quickdeck-modifier-neutral quickdeck-modifier-unavailable"
-      };
+    const fallbackStatus = {
+      available: false,
+      totalText: "+0",
+      stateLabel: "Native bucket unavailable",
+      detailLabel: "Safe fallback",
+      cssClass: "quickdeck-modifier-neutral quickdeck-modifier-unavailable"
+    };
+
+    let bucket = null;
+    try {
+      bucket = (globalThis.GURPS ?? globalThis.game?.GURPS)?.ModifierBucket;
+    } catch (_error) {
+      return fallbackStatus;
     }
 
-    const stack = bucket.modifierStack && typeof bucket.modifierStack === "object" ? bucket.modifierStack : null;
-    const nativeDisplay = typeof stack?.displaySum === "string" ? stack.displaySum.trim() : "";
-    const rawTotal = typeof bucket.currentSum === "function" ? bucket.currentSum() : stack?.currentSum;
-    const numericTotal = Number(rawTotal);
-    const totalText =
-      nativeDisplay ||
-      (Number.isFinite(numericTotal) ? `${numericTotal >= 0 ? "+" : ""}${numericTotal}` : "+0");
-    const normalizedTotal = Number.isFinite(numericTotal) ? numericTotal : Number(totalText);
-    const modifierList = Array.isArray(stack?.modifierList) ? stack.modifierList : [];
-    const stackIsEmpty = typeof bucket.isEmpty === "function" ? bucket.isEmpty() : modifierList.length === 0;
-    const detailLabel = stackIsEmpty
-      ? "No modifiers queued"
-      : `${modifierList.length} modifier${modifierList.length === 1 ? "" : "s"} queued`;
-    const polarityClass =
-      Number.isFinite(normalizedTotal) && normalizedTotal > 0
-        ? "quickdeck-modifier-positive"
-        : Number.isFinite(normalizedTotal) && normalizedTotal < 0
-          ? "quickdeck-modifier-negative"
-          : "quickdeck-modifier-neutral";
+    if (!bucket || typeof bucket !== "object") return fallbackStatus;
 
-    return {
-      available: true,
-      totalText,
-      stateLabel: "Native GURPS ModifierBucket",
-      detailLabel,
-      cssClass: polarityClass
-    };
+    try {
+      const stack = bucket.modifierStack && typeof bucket.modifierStack === "object" ? bucket.modifierStack : null;
+      const rawTotal = typeof bucket.currentSum === "function" ? bucket.currentSum() : stack?.currentSum;
+      const numericTotal = Number(rawTotal);
+      const nativeDisplay = typeof stack?.displaySum === "string" ? stack.displaySum.trim() : "";
+      const totalText = Number.isFinite(numericTotal)
+        ? `${numericTotal >= 0 ? "+" : ""}${numericTotal}`
+        : nativeDisplay || "+0";
+      const normalizedTotal = Number.isFinite(numericTotal) ? numericTotal : Number(totalText);
+      const modifierList = Array.isArray(stack?.modifierList) ? stack.modifierList : [];
+      const stackIsEmpty = typeof bucket.isEmpty === "function" ? bucket.isEmpty() : modifierList.length === 0;
+      const detailLabel = stackIsEmpty
+        ? "No modifiers queued"
+        : `${modifierList.length} modifier${modifierList.length === 1 ? "" : "s"} queued`;
+      const polarityClass =
+        Number.isFinite(normalizedTotal) && normalizedTotal > 0
+          ? "quickdeck-modifier-positive"
+          : Number.isFinite(normalizedTotal) && normalizedTotal < 0
+            ? "quickdeck-modifier-negative"
+            : "quickdeck-modifier-neutral";
+
+      return {
+        available: true,
+        totalText,
+        stateLabel: "Native GURPS ModifierBucket",
+        detailLabel,
+        cssClass: polarityClass
+      };
+    } catch (_error) {
+      return fallbackStatus;
+    }
   }
 
   openNativeModifierBucket(actorId = null, event = null) {

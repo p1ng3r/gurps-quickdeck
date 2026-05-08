@@ -14,6 +14,7 @@ All notable changes to this project will be documented in this file.
 - Skills and spells now use native GURPS sheet-style passthrough handling where possible.
 - Combat attack pills now surface native GURPS ModifierBucket status in the modifier area, including the current total such as `+0`, `+2`, or `-3`, and the modifier area can now open the native GURPS ModifierBucket UI while preserving a safe neutral fallback when unavailable.
 - Fixed a false warning when opening the native GURPS ModifierBucket from QuickDeck.
+- QuickDeck's modifier box now live-refreshes from native GURPS ModifierBucket updates.
 
 ### Changed
 - Combat attack buttons now use **Attack** labeling and guided flow instead of direct quick roll.
