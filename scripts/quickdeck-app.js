@@ -31,11 +31,21 @@ export class QuickDeckApp extends Application {
     this.pendingTokenDropActorId = null;
     this._pendingTokenDropCleanup = null;
     this._tokenDropSceneId = null;
+    this._tokenDropReticleElement = null;
+    this._tokenDropCursorTarget = null;
+    this._tokenDropPreviousCursor = null;
+    this.pendingTargetOpponentAttackIndex = null;
+    this._pendingTargetOpponentCleanup = null;
+    this._targetOpponentSceneId = null;
+    this._targetOpponentReticleElement = null;
+    this._targetOpponentCursorTarget = null;
+    this._targetOpponentPreviousCursor = null;
     this.isMinimized = false;
     this._floatingRestoreIcon = null;
     this._restorePillDragCleanup = null;
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
+    this._pendingAttackGuidance = null;
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
@@ -81,6 +91,7 @@ export class QuickDeckApp extends Application {
     }
     if (this.activeActorId && this.activeActorId !== actorId) {
       this.cancelTokenDrop({ render: false });
+      this.cancelTargetOpponentMode({ render: false, restore: false });
     }
     this.activeActorId = actorId;
   }
@@ -165,6 +176,44 @@ export class QuickDeckApp extends Application {
     return results;
   }
 
+  collectNestedMatchesWithPaths(root, matcher, basePath) {
+    if (!root || typeof root !== "object" || typeof matcher !== "function" || !basePath) return [];
+
+    const results = [];
+    const visited = new WeakSet();
+    const stack = Object.entries(root).map(([key, value]) => ({
+      value,
+      path: `${basePath}.${key}`,
+      key: String(key)
+    }));
+
+    while (stack.length > 0) {
+      const current = stack.pop();
+      const value = current?.value;
+      if (!value || typeof value !== "object") continue;
+      if (visited.has(value)) continue;
+      visited.add(value);
+
+      if (matcher(value)) {
+        results.push({ value, path: current.path, key: current.key });
+      }
+
+      const childEntries = Array.isArray(value)
+        ? value.map((child, index) => [String(index), child])
+        : Object.entries(value);
+      for (const [childKey, childValue] of childEntries) {
+        if (!childValue || typeof childValue !== "object") continue;
+        stack.push({
+          value: childValue,
+          path: `${current.path}.${childKey}`,
+          key: String(childKey)
+        });
+      }
+    }
+
+    return results;
+  }
+
   objectHasAnyPath(source, paths = []) {
     if (!source || typeof source !== "object") return false;
     return paths.some((path) => foundry.utils.getProperty(source, path) !== undefined);
@@ -226,7 +275,7 @@ export class QuickDeckApp extends Application {
     return true;
   }
 
-  normalizeAttack(attack, type) {
+  normalizeAttack(attack, type, sourceMeta = {}) {
     if (!attack || typeof attack !== "object") return null;
 
     const name =
@@ -283,11 +332,73 @@ export class QuickDeckApp extends Application {
         parry ??
         block ??
         this.getFirstDefinedValue(attack, ["defense", "defence"]),
+      sourcePath: sourceMeta.sourcePath ?? null,
+      sourceKey: sourceMeta.sourceKey ?? null,
+      sourceCollection: sourceMeta.sourceCollection ?? null,
       raw: attack
     };
   }
 
-  normalizeSkill(skill) {
+
+  getSheetAttackDisplayName(attack) {
+    const raw = attack?.raw && typeof attack.raw === "object" ? attack.raw : {};
+    const name = String(this.getFirstDefinedValue(raw, ["name"]) ?? attack?.name ?? "").trim();
+    const mode = String(this.getFirstDefinedValue(raw, ["mode", "usage"]) ?? "").trim();
+    return mode ? `${name} (${mode})` : name;
+  }
+
+  escapeGurpsOtfName(name) {
+    return String(name ?? "").trim().replace(/"/g, '\\"');
+  }
+
+  getSheetAttackOtf(attack) {
+    const attackType = String(attack?.type ?? "").toLowerCase();
+    const prefix = attackType === "ranged" ? "R" : "M";
+    const displayName = this.escapeGurpsOtfName(this.getSheetAttackDisplayName(attack));
+    return `${prefix}:"${displayName}"`;
+  }
+
+  getSheetAttackDataset(attack) {
+    return {
+      name: this.getSheetAttackDisplayName(attack),
+      key: attack?.sourcePath,
+      otf: this.getSheetAttackOtf(attack)
+    };
+  }
+
+  getSheetSkillOtf(skill) {
+    return `Sk:"${this.escapeGurpsOtfName(skill?.name)}"`;
+  }
+
+  getSheetSkillDataset(skill) {
+    return {
+      name: skill?.name,
+      key: skill?.sourcePath,
+      otf: this.getSheetSkillOtf(skill)
+    };
+  }
+
+  getSheetSpellOtf(spell) {
+    return `Sp:"${this.escapeGurpsOtfName(spell?.name)}"`;
+  }
+
+  getSheetSpellDataset(spell) {
+    return {
+      name: spell?.name,
+      key: spell?.sourcePath,
+      otf: this.getSheetSpellOtf(spell)
+    };
+  }
+
+  buildGurpsHandleRollEvent(dataset) {
+    return {
+      preventDefault: () => {},
+      stopPropagation: () => {},
+      currentTarget: { dataset }
+    };
+  }
+
+  normalizeSkill(skill, sourceMeta = {}) {
     if (!skill || typeof skill !== "object") return null;
 
     const name =
@@ -313,6 +424,9 @@ export class QuickDeckApp extends Application {
         "refPage",
         "referencePage"
       ]),
+      sourcePath: sourceMeta.sourcePath ?? null,
+      sourceKey: sourceMeta.sourceKey ?? null,
+      sourceCollection: sourceMeta.sourceCollection ?? null,
       raw: skill
     };
   }
@@ -342,7 +456,7 @@ export class QuickDeckApp extends Application {
     ]);
   }
 
-  normalizeSpell(spell) {
+  normalizeSpell(spell, sourceMeta = {}) {
     if (!spell || typeof spell !== "object") return null;
     const name =
       this.getFirstDefinedValue(spell, ["name", "spell", "label", "title"]) ?? "Unnamed Spell";
@@ -362,6 +476,9 @@ export class QuickDeckApp extends Application {
         "refPage",
         "referencePage"
       ]),
+      sourcePath: sourceMeta.sourcePath ?? null,
+      sourceKey: sourceMeta.sourceKey ?? null,
+      sourceCollection: sourceMeta.sourceCollection ?? null,
       raw: spell
     };
   }
@@ -370,23 +487,38 @@ export class QuickDeckApp extends Application {
     if (!actor) return [];
 
     const attackSources = [
-      { path: "system.melee", type: "Melee" },
-      { path: "system.ranged", type: "Ranged" },
-      { path: "data.data.melee", type: "Melee" },
-      { path: "data.data.ranged", type: "Ranged" }
+      { path: "system.melee", type: "Melee", collection: "melee" },
+      { path: "system.ranged", type: "Ranged", collection: "ranged" },
+      { path: "data.data.melee", type: "Melee", collection: "melee" },
+      { path: "data.data.ranged", type: "Ranged", collection: "ranged" }
     ];
 
     const attacks = [];
 
     for (const source of attackSources) {
       const collection = foundry.utils.getProperty(actor, source.path);
-      const entries = this.collectNestedMatches(collection, (entry) =>
-        this.isAttackLike(entry)
-      );
+      if (!collection || typeof collection !== "object") continue;
 
-      for (const entry of entries) {
-        const normalized = this.normalizeAttack(entry, source.type);
-        if (normalized) attacks.push(normalized);
+      for (const [entryKey, entryValue] of Object.entries(collection)) {
+        if (!entryValue || typeof entryValue !== "object") continue;
+        const sourcePath = `${source.path}.${entryKey}`;
+        const sourceMeta = {
+          sourcePath,
+          sourceKey: String(entryKey),
+          sourceCollection: source.collection
+        };
+
+        if (this.isAttackLike(entryValue)) {
+          const normalized = this.normalizeAttack(entryValue, source.type, sourceMeta);
+          if (normalized) attacks.push(normalized);
+          continue;
+        }
+
+        const entries = this.collectNestedMatches(entryValue, (entry) => this.isAttackLike(entry));
+        for (const entry of entries) {
+          const normalized = this.normalizeAttack(entry, source.type, sourceMeta);
+          if (normalized) attacks.push(normalized);
+        }
       }
     }
 
@@ -397,21 +529,27 @@ export class QuickDeckApp extends Application {
     if (!actor) return [];
 
     const skillSources = [
-      "system.skills",
-      "data.data.skills",
-      "system.traits.skills"
+      { path: "system.skills", collection: "skills" },
+      { path: "data.data.skills", collection: "skills" },
+      { path: "system.traits.skills", collection: "traits.skills" }
     ];
 
     const skills = [];
 
-    for (const path of skillSources) {
-      const collection = foundry.utils.getProperty(actor, path);
-      const entries = this.collectNestedMatches(collection, (entry) =>
-        this.isSkillLike(entry)
+    for (const source of skillSources) {
+      const collection = foundry.utils.getProperty(actor, source.path);
+      const entries = this.collectNestedMatchesWithPaths(
+        collection,
+        (entry) => this.isSkillLike(entry),
+        source.path
       );
 
       for (const entry of entries) {
-        const normalized = this.normalizeSkill(entry);
+        const normalized = this.normalizeSkill(entry.value, {
+          sourcePath: entry.path,
+          sourceKey: entry.key,
+          sourceCollection: source.collection
+        });
         if (normalized) skills.push(normalized);
       }
     }
@@ -424,19 +562,27 @@ export class QuickDeckApp extends Application {
 
     const spells = [];
     const spellSources = [
-      "system.spells",
-      "data.data.spells",
-      "system.magic",
-      "data.data.magic",
-      "system.traits.spells",
-      "data.data.traits.spells"
+      { path: "system.spells", collection: "spells" },
+      { path: "data.data.spells", collection: "spells" },
+      { path: "system.magic", collection: "magic" },
+      { path: "data.data.magic", collection: "magic" },
+      { path: "system.traits.spells", collection: "traits.spells" },
+      { path: "data.data.traits.spells", collection: "traits.spells" }
     ];
 
-    for (const path of spellSources) {
-      const collection = foundry.utils.getProperty(actor, path);
-      const entries = this.collectNestedMatches(collection, (entry) => this.isSpellLike(entry));
+    for (const source of spellSources) {
+      const collection = foundry.utils.getProperty(actor, source.path);
+      const entries = this.collectNestedMatchesWithPaths(
+        collection,
+        (entry) => this.isSpellLike(entry),
+        source.path
+      );
       for (const entry of entries) {
-        const normalized = this.normalizeSpell(entry);
+        const normalized = this.normalizeSpell(entry.value, {
+          sourcePath: entry.path,
+          sourceKey: entry.key,
+          sourceCollection: source.collection
+        });
         if (normalized) spells.push(normalized);
       }
     }
@@ -828,6 +974,118 @@ export class QuickDeckApp extends Application {
     return value === undefined || value === null || value === "" ? "—" : value;
   }
 
+  getModifierBucketStatus() {
+    const fallbackStatus = {
+      available: false,
+      totalText: "+0",
+      stateLabel: "Native bucket unavailable",
+      detailLabel: "Safe fallback",
+      cssClass: "quickdeck-modifier-neutral quickdeck-modifier-unavailable"
+    };
+
+    let bucket = null;
+    try {
+      bucket = (globalThis.GURPS ?? globalThis.game?.GURPS)?.ModifierBucket;
+    } catch (_error) {
+      return fallbackStatus;
+    }
+
+    if (!bucket || typeof bucket !== "object") return fallbackStatus;
+
+    try {
+      const stack = bucket.modifierStack && typeof bucket.modifierStack === "object" ? bucket.modifierStack : null;
+      const rawTotal = typeof bucket.currentSum === "function" ? bucket.currentSum() : stack?.currentSum;
+      const numericTotal = Number(rawTotal);
+      const nativeDisplay = typeof stack?.displaySum === "string" ? stack.displaySum.trim() : "";
+      const totalText = Number.isFinite(numericTotal)
+        ? `${numericTotal >= 0 ? "+" : ""}${numericTotal}`
+        : nativeDisplay || "+0";
+      const normalizedTotal = Number.isFinite(numericTotal) ? numericTotal : Number(totalText);
+      const modifierList = Array.isArray(stack?.modifierList) ? stack.modifierList : [];
+      const stackIsEmpty = typeof bucket.isEmpty === "function" ? bucket.isEmpty() : modifierList.length === 0;
+      const detailLabel = stackIsEmpty
+        ? "No modifiers queued"
+        : `${modifierList.length} modifier${modifierList.length === 1 ? "" : "s"} queued`;
+      const polarityClass =
+        Number.isFinite(normalizedTotal) && normalizedTotal > 0
+          ? "quickdeck-modifier-positive"
+          : Number.isFinite(normalizedTotal) && normalizedTotal < 0
+            ? "quickdeck-modifier-negative"
+            : "quickdeck-modifier-neutral";
+
+      return {
+        available: true,
+        totalText,
+        stateLabel: "Native GURPS ModifierBucket",
+        detailLabel,
+        cssClass: polarityClass
+      };
+    } catch (_error) {
+      return fallbackStatus;
+    }
+  }
+
+  openNativeModifierBucket(actorId = null, event = null) {
+    const gurps = globalThis.GURPS ?? globalThis.game?.GURPS;
+    const bucket = gurps?.ModifierBucket;
+    if (!bucket || typeof bucket !== "object") {
+      ui.notifications?.warn("QuickDeck: Native GURPS ModifierBucket is unavailable.");
+      return false;
+    }
+
+    const actor = actorId ? game.actors.get(actorId) : this.getActiveActor();
+    if (actor && typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+    const focusNativeBucket = (renderedApp = null) => {
+      renderedApp?.bringToTop?.();
+      bucket.editor?.bringToTop?.();
+      bucket.bringToTop?.();
+    };
+    const scheduleFocusNativeBucket = (renderedApp = null) => {
+      try {
+        focusNativeBucket(renderedApp);
+        setTimeout(() => {
+          try {
+            focusNativeBucket(renderedApp);
+          } catch (_error) {
+            // Focusing is best-effort; a focus failure should not imply the native editor failed to open.
+          }
+        }, 0);
+      } catch (_error) {
+        // Focusing is best-effort; a focus failure should not imply the native editor failed to open.
+      }
+    };
+
+    try {
+      if (typeof bucket.editor?.render === "function") {
+        const renderedApp = bucket.editor.render(true);
+        bucket.SHOWING = true;
+        scheduleFocusNativeBucket(renderedApp);
+        return true;
+      }
+
+      if (typeof bucket.render === "function") {
+        const renderedApp = bucket.render(true);
+        bucket.SHOWING = true;
+        scheduleFocusNativeBucket(renderedApp);
+        return true;
+      }
+
+      if (typeof bucket._onenter === "function") {
+        bucket._onenter(event);
+        bucket.SHOWING = true;
+        scheduleFocusNativeBucket(bucket.editor);
+        return true;
+      }
+    } catch (_error) {
+      ui.notifications?.warn("QuickDeck: Could not open the native GURPS ModifierBucket UI.");
+      return false;
+    }
+
+    ui.notifications?.warn("QuickDeck: Native GURPS ModifierBucket UI API is unavailable.");
+    return false;
+  }
+
   parseDefenseScore(value) {
     if (value === undefined || value === null || value === "") return null;
     const match = String(value).match(/-?\d+/);
@@ -1000,7 +1258,6 @@ export class QuickDeckApp extends Application {
   async tryGurpsRoll(actor, rollContext) {
     const numericTarget = this.parseRollTarget(rollContext.value);
     const skillRaw = rollContext.skill?.raw ?? null;
-    const attackRaw = rollContext.attack?.raw ?? null;
     const actionName = rollContext.skillName ?? rollContext.attackName ?? rollContext.defense;
     const actionPayload = {
       type: rollContext.type,
@@ -1055,7 +1312,6 @@ export class QuickDeckApp extends Application {
         rawSkillKeys: skillRaw && typeof skillRaw === "object" ? Object.keys(skillRaw).slice(0, 20) : []
       });
     }
-
     return false;
   }
 
@@ -1125,6 +1381,34 @@ export class QuickDeckApp extends Application {
     } catch (error) {
       console.warn("gurps-quickdeck | ChatMessage.create failed for fallback roll.", error);
     }
+  }
+
+  async triggerNativeSheetRoll(actor, dataset, { event = null, targets = [], label = "roll" } = {}) {
+    const gurps = globalThis.GURPS ?? game.GURPS;
+    if (!actor || !dataset?.otf) return false;
+
+    if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+    if (dataset.key && typeof gurps?.handleRoll === "function") {
+      try {
+        const fakeEvent = this.buildGurpsHandleRollEvent(dataset);
+        await gurps.handleRoll(fakeEvent, actor, { targets });
+        return true;
+      } catch (error) {
+        console.warn(`gurps-quickdeck | Native GURPS ${label} handleRoll failed, falling back to OTF.`, error);
+      }
+    }
+
+    try {
+      if (typeof gurps?.executeOTF === "function") {
+        await gurps.executeOTF(`[${dataset.otf}]`, false, event, actor);
+        return true;
+      }
+    } catch (_error) {
+      // Let the caller decide whether a non-native fallback is appropriate.
+    }
+
+    return false;
   }
 
   async triggerCombatRoll(actorId, rollContext) {
@@ -1297,6 +1581,108 @@ export class QuickDeckApp extends Application {
       formula,
       roll
     });
+  }
+
+  async waitForTargetSelection({ timeoutMs = 30000 } = {}) {
+    return new Promise((resolve) => {
+      let resolved = false;
+      const complete = (token = null) => {
+        if (resolved) return;
+        resolved = true;
+        cleanup();
+        resolve(token);
+      };
+      const onTargetToken = (user, token, targeted) => {
+        if (!targeted) return;
+        if (user?.id !== game.user?.id) return;
+        complete(token ?? null);
+      };
+      const onControlToken = (token, controlled) => {
+        if (!controlled) return;
+        complete(token ?? null);
+      };
+      const timeoutId = window.setTimeout(() => complete(null), Math.max(2500, timeoutMs));
+      const cleanup = () => {
+        Hooks.off("targetToken", onTargetToken);
+        Hooks.off("controlToken", onControlToken);
+        window.clearTimeout(timeoutId);
+      };
+      Hooks.on("targetToken", onTargetToken);
+      Hooks.on("controlToken", onControlToken);
+    });
+  }
+
+  async runGuidedAttack(actor, attack, attackIndex, setup = {}) {
+    const gurps = globalThis.GURPS ?? game.GURPS;
+    if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+    const modifiers = [];
+    const addModifier = (value, label) => {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric) || numeric === 0) return;
+      modifiers.push({ value: numeric, label });
+      if (gurps?.ModifierBucket?.addModifier) gurps.ModifierBucket.addModifier(numeric, label);
+    };
+    addModifier(setup.coverMod, `QuickDeck Cover (${setup.coverLabel || "custom"})`);
+    addModifier(setup.postureMod, `QuickDeck Posture (${setup.postureLabel || "custom"})`);
+    addModifier(setup.rangeSpeedMod, `QuickDeck Range/Speed (${setup.rangeSpeedLabel || "custom"})`);
+    addModifier(setup.customMod, `QuickDeck Custom (${setup.customLabel || "modifier"})`);
+    if (setup.hitLocation) addModifier(setup.hitLocationMod, `QuickDeck Hit Location (${setup.hitLocation})`);
+
+    const wasMinimized = this.isMinimized;
+    if (!wasMinimized) this.minimizeQuickDeckWindow();
+    ui.notifications?.info("QuickDeck: Target a token (T) or click-select one.");
+    const token = await this.waitForTargetSelection();
+    if (!wasMinimized) this.restoreQuickDeckWindow();
+    if (!token) {
+      ui.notifications?.warn("QuickDeck: No target selected. Attack cancelled.");
+      return;
+    }
+    try {
+      if (game.user && token?.setTarget) token.setTarget(true, { user: game.user, releaseOthers: true, groupSelection: false });
+      else if (game.user?.targets instanceof Set) {
+        game.user.targets.clear();
+        game.user.targets.add(token);
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to set selected token as target.", error);
+    }
+
+    const otfName = String(attack?.name ?? "").trim().replaceAll(" ", "*");
+    let usedOtF = false;
+    try {
+      if (otfName && typeof gurps?.executeOTF === "function") {
+        await gurps.executeOTF(`[A:${otfName}]`);
+        usedOtF = true;
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Guided attack OTF failed, falling back.", error);
+    }
+    if (!usedOtF) {
+      await this.triggerCombatRoll(actor.id, {
+        type: "attack",
+        label: `Attack (${attack.name})`,
+        value: attack.level,
+        attackName: attack.name,
+        attackType: attack.type,
+        attack
+      });
+    }
+
+    const lastRoll = gurps?.lastTargetedRoll ?? (gurps?.lastTargetedRolls && actor?.id ? gurps.lastTargetedRolls[actor.id] : null);
+    const hasRollResult = Boolean(lastRoll);
+    const success = Boolean(hasRollResult && (lastRoll.isCritSuccess || (!lastRoll.failure && !lastRoll.isCritFailure)));
+    const outcomeLabel = !hasRollResult
+      ? "Unknown (no GURPS roll result)"
+      : lastRoll?.isCritSuccess
+        ? "Critical Success"
+        : lastRoll?.isCritFailure
+          ? "Critical Failure"
+          : lastRoll?.failure
+            ? "Failure"
+            : "Success";
+    ui.notifications?.info(`QuickDeck: Attack outcome: ${outcomeLabel}.`);
+    this._pendingAttackGuidance = success ? { actorId: actor.id, attackIndex } : null;
+    this.render(false);
   }
 
   async updateActorResource(actorId, resource, rawValue) {
@@ -1543,6 +1929,48 @@ export class QuickDeckApp extends Application {
     return snapped;
   }
 
+
+  createTokenDropReticle(view) {
+    this.destroyTokenDropReticle();
+
+    const reticle = document.createElement("div");
+    reticle.className = "quickdeck-token-placement-reticle";
+    reticle.setAttribute("aria-hidden", "true");
+    reticle.innerHTML = '<span class="quickdeck-token-placement-reticle-ring"></span><span class="quickdeck-token-placement-reticle-crosshair"></span><span class="quickdeck-token-placement-reticle-core"></span>';
+    document.body.appendChild(reticle);
+    this._tokenDropReticleElement = reticle;
+
+    if (view?.style) {
+      this._tokenDropCursorTarget = view;
+      this._tokenDropPreviousCursor = view.style.cursor ?? "";
+      view.style.cursor = "crosshair";
+    }
+
+    const rect = view?.getBoundingClientRect?.();
+    const clientX = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+    const clientY = rect ? rect.top + rect.height / 2 : window.innerHeight / 2;
+    this.updateTokenDropReticle(clientX, clientY);
+  }
+
+  updateTokenDropReticle(clientX, clientY) {
+    const reticle = this._tokenDropReticleElement;
+    if (!reticle || !Number.isFinite(Number(clientX)) || !Number.isFinite(Number(clientY))) return;
+    reticle.style.transform = `translate3d(${Number(clientX)}px, ${Number(clientY)}px, 0) translate(-50%, -50%)`;
+  }
+
+  destroyTokenDropReticle() {
+    if (this._tokenDropCursorTarget?.style) {
+      this._tokenDropCursorTarget.style.cursor = this._tokenDropPreviousCursor ?? "";
+    }
+    this._tokenDropCursorTarget = null;
+    this._tokenDropPreviousCursor = null;
+
+    if (this._tokenDropReticleElement) {
+      this._tokenDropReticleElement.remove();
+      this._tokenDropReticleElement = null;
+    }
+  }
+
   async dropActorToken(actorId, requestedPosition = null) {
     const actor = game.actors.get(actorId);
     if (!actor) return;
@@ -1597,6 +2025,7 @@ export class QuickDeckApp extends Application {
     this._pendingTokenDropCleanup = null;
     this.pendingTokenDropActorId = null;
     this._tokenDropSceneId = null;
+    this.destroyTokenDropReticle();
     if (notify) ui.notifications?.info("QuickDeck: Token placement cancelled.");
     if (render && hadPendingDrop) this.render(false);
   }
@@ -1633,27 +2062,57 @@ export class QuickDeckApp extends Application {
 
     this.pendingTokenDropActorId = actorId;
     this._tokenDropSceneId = scene.id ?? null;
-    ui.notifications?.info("QuickDeck: Click the canvas to place token.");
+    this.createTokenDropReticle(view);
+    ui.notifications?.info("QuickDeck: Click the canvas to place token. Right-click or press Escape to cancel.");
+
+    if (!this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState();
+      this.syncMinimizedPresentation();
+    }
 
     const abortController = typeof AbortController === "function" ? new AbortController() : null;
     let cleanedUp = false;
     const cleanupListeners = () => {
       if (cleanedUp) return;
       cleanedUp = true;
-      if (abortController) {
-        abortController.abort();
-        return;
+      if (abortController) abortController.abort();
+      else {
+        view.removeEventListener("pointerdown", onPointerDown, true);
+        view.removeEventListener("pointermove", onPointerMove, true);
+        view.removeEventListener("contextmenu", onContextMenu, true);
+        window.removeEventListener("keydown", onKeyDown, true);
       }
-      view.removeEventListener("pointerdown", onPointerDown);
-      window.removeEventListener("keydown", onKeyDown);
       Hooks.off("canvasReady", onCanvasReady);
+    };
+
+    const onPointerMove = (event) => {
+      const point = this.getClientPointFromEvent(event);
+      if (!point) return;
+      this.updateTokenDropReticle(point.clientX, point.clientY);
+    };
+
+    const onContextMenu = (event) => {
+      if (!this.pendingTokenDropActorId) return;
+      event.preventDefault();
+      event.stopPropagation();
     };
 
     const onPointerDown = async (event) => {
       if (!this.pendingTokenDropActorId) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (event.button === 2) {
+        this.cancelTokenDrop({ notify: true });
+        return;
+      }
+      if (event.button !== 0) return;
+
       const activeDropActorId = this.pendingTokenDropActorId;
       const pointerPosition = this.getCanvasPointFromEvent(event);
-      cleanupListeners();
+      this.cancelTokenDrop({ render: false });
 
       try {
         if (!pointerPosition) {
@@ -1664,7 +2123,6 @@ export class QuickDeckApp extends Application {
         console.warn("gurps-quickdeck | Failed to drop token from canvas click.", error);
         ui.notifications?.warn("QuickDeck: Could not drop token for this actor.");
       } finally {
-        this.cancelTokenDrop({ render: false });
         this.render(false);
       }
     };
@@ -1672,6 +2130,7 @@ export class QuickDeckApp extends Application {
     const onKeyDown = (event) => {
       if (event.key !== "Escape") return;
       event.preventDefault();
+      event.stopPropagation();
       this.cancelTokenDrop({ notify: true });
     };
 
@@ -1683,13 +2142,241 @@ export class QuickDeckApp extends Application {
       }
     };
 
-    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+    const listenerOptions = abortController ? { signal: abortController.signal, capture: true } : true;
     view.addEventListener("pointerdown", onPointerDown, listenerOptions);
+    view.addEventListener("pointermove", onPointerMove, listenerOptions);
+    view.addEventListener("contextmenu", onContextMenu, listenerOptions);
     window.addEventListener("keydown", onKeyDown, listenerOptions);
     Hooks.on("canvasReady", onCanvasReady);
     this._pendingTokenDropCleanup = () => {
       cleanupListeners();
+    };
+
+    this.render(false);
+  }
+
+
+  createTargetOpponentReticle(view) {
+    this.destroyTargetOpponentReticle();
+
+    const reticle = document.createElement("div");
+    reticle.className = "quickdeck-target-opponent-reticle";
+    reticle.setAttribute("aria-hidden", "true");
+    reticle.innerHTML = '<span class="quickdeck-target-opponent-reticle-ring"></span><span class="quickdeck-target-opponent-reticle-crosshair"></span><span class="quickdeck-target-opponent-reticle-core"></span><span class="quickdeck-target-opponent-reticle-rune"></span>';
+    document.body.appendChild(reticle);
+    this._targetOpponentReticleElement = reticle;
+
+    if (view?.style) {
+      this._targetOpponentCursorTarget = view;
+      this._targetOpponentPreviousCursor = view.style.cursor ?? "";
+      view.style.cursor = "crosshair";
+    }
+
+    const rect = view?.getBoundingClientRect?.();
+    const clientX = rect ? rect.left + rect.width / 2 : window.innerWidth / 2;
+    const clientY = rect ? rect.top + rect.height / 2 : window.innerHeight / 2;
+    this.updateTargetOpponentReticle(clientX, clientY);
+  }
+
+  updateTargetOpponentReticle(clientX, clientY) {
+    const reticle = this._targetOpponentReticleElement;
+    if (!reticle || !Number.isFinite(Number(clientX)) || !Number.isFinite(Number(clientY))) return;
+    reticle.style.transform = `translate3d(${Number(clientX)}px, ${Number(clientY)}px, 0) translate(-50%, -50%)`;
+  }
+
+  destroyTargetOpponentReticle() {
+    if (this._targetOpponentCursorTarget?.style) {
+      this._targetOpponentCursorTarget.style.cursor = this._targetOpponentPreviousCursor ?? "";
+    }
+    this._targetOpponentCursorTarget = null;
+    this._targetOpponentPreviousCursor = null;
+
+    if (this._targetOpponentReticleElement) {
+      this._targetOpponentReticleElement.remove();
+      this._targetOpponentReticleElement = null;
+    }
+  }
+
+  getCurrentTargetDisplayName() {
+    const targets = Array.from(game?.user?.targets ?? []).filter(Boolean);
+    if (targets.length === 0) return "No target selected";
+    const firstName = targets[0]?.document?.name ?? targets[0]?.name ?? "Target selected";
+    if (targets.length === 1) return firstName;
+    return `${firstName} +${targets.length - 1}`;
+  }
+
+  getTokenAtCanvasPoint(point) {
+    if (!point || !canvas?.tokens?.placeables?.length) return null;
+
+    const candidates = canvas.tokens.placeables
+      .filter((token) => token?.visible !== false && token?.document)
+      .filter((token) => {
+        const bounds = token.bounds ?? token.getBounds?.();
+        if (bounds && typeof bounds.contains === "function") return bounds.contains(point.x, point.y);
+
+        const width = Number(token.w ?? token.width ?? token.document?.width ?? canvas?.grid?.size ?? 1);
+        const height = Number(token.h ?? token.height ?? token.document?.height ?? canvas?.grid?.size ?? 1);
+        const x = Number(token.x ?? token.document?.x);
+        const y = Number(token.y ?? token.document?.y);
+        if (![x, y, width, height].every(Number.isFinite)) return false;
+        return point.x >= x && point.x <= x + width && point.y >= y && point.y <= y + height;
+      });
+
+    return candidates.at(-1) ?? null;
+  }
+
+  async targetOpponentToken(token) {
+    if (!token || typeof token.setTarget !== "function") {
+      throw new Error("Selected token does not expose Foundry token targeting.");
+    }
+
+    const user = game?.user ?? null;
+    const existingTargets = Array.from(user?.targets ?? []);
+    for (const target of existingTargets) {
+      if (target === token || typeof target?.setTarget !== "function") continue;
+      target.setTarget(false, { user, releaseOthers: false, groupSelection: false });
+    }
+
+    await token.setTarget(true, { user, releaseOthers: true, groupSelection: false });
+  }
+
+  restoreAfterTargetOpponentMode() {
+    this.isMinimized = false;
+    this.persistMinimizedState();
+    this.syncMinimizedPresentation();
+  }
+
+  cancelTargetOpponentMode({ notify = false, render = true, restore = true } = {}) {
+    const hadPendingTarget = this.pendingTargetOpponentAttackIndex !== null || Boolean(this._pendingTargetOpponentCleanup);
+    if (typeof this._pendingTargetOpponentCleanup === "function") {
+      try {
+        this._pendingTargetOpponentCleanup();
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed during target-opponent cleanup.", error);
+      }
+    }
+    this._pendingTargetOpponentCleanup = null;
+    this.pendingTargetOpponentAttackIndex = null;
+    this._targetOpponentSceneId = null;
+    this.destroyTargetOpponentReticle();
+    if (notify) ui.notifications?.info("QuickDeck: Targeting cancelled.");
+    if (restore && hadPendingTarget) this.restoreAfterTargetOpponentMode();
+    if (render && hadPendingTarget) this.render(false);
+  }
+
+  startTargetOpponentMode(attackIndex) {
+    if (!Number.isFinite(attackIndex)) return;
+
+    if (this.pendingTargetOpponentAttackIndex !== null) {
+      ui.notifications?.info("QuickDeck: Targeting mode is already active.");
+      return;
+    }
+
+    const scene = canvas?.scene ?? game?.scenes?.current ?? null;
+    if (!scene || !canvas?.ready) {
+      ui.notifications?.warn("QuickDeck: No active scene/canvas ready for targeting.");
+      return;
+    }
+
+    const view = canvas?.app?.view;
+    if (!view || typeof view.addEventListener !== "function") {
+      ui.notifications?.warn("QuickDeck: Canvas interaction is unavailable in this environment.");
+      return;
+    }
+
+    this.cancelTokenDrop({ render: false });
+    this.pendingTargetOpponentAttackIndex = attackIndex;
+    this._targetOpponentSceneId = scene.id ?? null;
+    this.createTargetOpponentReticle(view);
+    ui.notifications?.info("QuickDeck: Click a token to target it. Right-click or press Escape to cancel.");
+
+    if (!this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState();
+      this.syncMinimizedPresentation();
+    }
+
+    const abortController = typeof AbortController === "function" ? new AbortController() : null;
+    let cleanedUp = false;
+    const cleanupListeners = () => {
+      if (cleanedUp) return;
+      cleanedUp = true;
+      if (abortController) abortController.abort();
+      else {
+        view.removeEventListener("pointerdown", onPointerDown, true);
+        view.removeEventListener("pointermove", onPointerMove, true);
+        view.removeEventListener("contextmenu", onContextMenu, true);
+        window.removeEventListener("keydown", onKeyDown, true);
+      }
       Hooks.off("canvasReady", onCanvasReady);
+    };
+
+    const onPointerMove = (event) => {
+      const point = this.getClientPointFromEvent(event);
+      if (!point) return;
+      this.updateTargetOpponentReticle(point.clientX, point.clientY);
+    };
+
+    const onContextMenu = (event) => {
+      if (this.pendingTargetOpponentAttackIndex === null) return;
+      event.preventDefault();
+      event.stopPropagation();
+    };
+
+    const onPointerDown = async (event) => {
+      if (this.pendingTargetOpponentAttackIndex === null) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      if (event.button === 2) {
+        this.cancelTargetOpponentMode({ notify: true });
+        return;
+      }
+      if (event.button !== 0) return;
+
+      try {
+        const pointerPosition = this.getCanvasPointFromEvent(event);
+        const token = this.getTokenAtCanvasPoint(pointerPosition);
+        if (!token) {
+          ui.notifications?.warn("QuickDeck: Click directly on a token to target it.");
+          return;
+        }
+
+        await this.targetOpponentToken(token);
+        this.cancelTargetOpponentMode({ render: false, restore: true });
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed during target opponent selection.", error);
+        ui.notifications?.warn("QuickDeck: Could not target that token.");
+        this.cancelTargetOpponentMode({ render: false, restore: true });
+      } finally {
+        this.render(false);
+      }
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      event.stopPropagation();
+      this.cancelTargetOpponentMode({ notify: true });
+    };
+
+    const onCanvasReady = (canvasInstance) => {
+      const nextSceneId = canvasInstance?.scene?.id ?? game?.scenes?.current?.id ?? null;
+      if (this.pendingTargetOpponentAttackIndex === null) return;
+      if (this._targetOpponentSceneId && nextSceneId && this._targetOpponentSceneId !== nextSceneId) {
+        this.cancelTargetOpponentMode({ notify: true });
+      }
+    };
+
+    const listenerOptions = abortController ? { signal: abortController.signal, capture: true } : true;
+    view.addEventListener("pointerdown", onPointerDown, listenerOptions);
+    view.addEventListener("pointermove", onPointerMove, listenerOptions);
+    view.addEventListener("contextmenu", onContextMenu, listenerOptions);
+    window.addEventListener("keydown", onKeyDown, listenerOptions);
+    Hooks.on("canvasReady", onCanvasReady);
+    this._pendingTargetOpponentCleanup = () => {
+      cleanupListeners();
     };
 
     this.render(false);
@@ -1697,13 +2384,17 @@ export class QuickDeckApp extends Application {
 
   toggleMinimizedState() {
     this.isMinimized = !this.isMinimized;
-    if (this.isMinimized) this.cancelTokenDrop({ render: false });
+    if (this.isMinimized) {
+      this.cancelTokenDrop({ render: false });
+      this.cancelTargetOpponentMode({ render: false, restore: false });
+    }
     this.persistMinimizedState();
     this.syncMinimizedPresentation();
   }
 
   async minimize() {
     this.cancelTokenDrop({ render: false });
+    this.cancelTargetOpponentMode({ render: false, restore: false });
     if (!this.isMinimized) {
       this.isMinimized = true;
       this.persistMinimizedState();
@@ -1714,6 +2405,7 @@ export class QuickDeckApp extends Application {
 
   async close(options) {
     this.cancelTokenDrop({ render: false });
+    this.cancelTargetOpponentMode({ render: false, restore: false });
     this.removeFloatingRestoreIcon();
     if (this._actorSelectTimeout) {
       clearTimeout(this._actorSelectTimeout);
@@ -1771,6 +2463,10 @@ export class QuickDeckApp extends Application {
 
   onFloatingRestoreClick = (event) => {
     event.preventDefault();
+    if (this.pendingTargetOpponentAttackIndex !== null) {
+      ui.notifications?.info("QuickDeck: Choose a target or press Escape/right-click to cancel targeting first.");
+      return;
+    }
     if (this._restorePillPreventClick) {
       this._restorePillPreventClick = false;
       return;
@@ -1954,8 +2650,25 @@ export class QuickDeckApp extends Application {
 
     const indexedAttacks = derivedData.indexedAttacks;
     const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
-
+    const modifierBucketStatus = this.getModifierBucketStatus();
     const activeActorId = activeActor?.id ?? null;
+    const pendingActorId = this._pendingAttackGuidance?.actorId ?? null;
+    const pendingAttackIndex = Number.isFinite(this._pendingAttackGuidance?.attackIndex)
+      ? this._pendingAttackGuidance.attackIndex
+      : null;
+    const meleeAttacks = filteredAttacks
+      .filter((entry) => entry.type === "Melee")
+      .map((entry) => ({
+        ...entry,
+        showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
+      }));
+    const rangedAttacks = filteredAttacks
+      .filter((entry) => entry.type === "Ranged")
+      .map((entry) => ({
+        ...entry,
+        showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
+      }));
+
     const quickSelection = this.getQuickSkillSelection(activeActorId);
     const indexedSkills = derivedData.indexedSkills.map((skill) => {
       const quickSkillKey = this.getQuickSkillKey(skill);
@@ -2052,6 +2765,9 @@ export class QuickDeckApp extends Application {
       activeActorName: activeActor?.name ?? null,
       isTokenDropArmedForActive:
         Boolean(activeActor?.id) && this.pendingTokenDropActorId === activeActor.id,
+      isTargetOpponentModeActive: this.pendingTargetOpponentAttackIndex !== null,
+      currentTargetName: this.getCurrentTargetDisplayName(),
+      modifierBucketStatus,
       gurpsData,
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
@@ -2063,6 +2779,8 @@ export class QuickDeckApp extends Application {
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
+      meleeAttacks,
+      rangedAttacks,
       skillsCount: skills.length,
       visibleSkillsCount: filteredSkills.length,
       quickSkillsCount: quickSkills.length,
@@ -2092,6 +2810,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='clear-roster']").on("click", (event) => {
       event.preventDefault();
       this.cancelTokenDrop({ render: false });
+      this.cancelTargetOpponentMode({ render: false, restore: false });
       this.clearRoster();
       this.render();
     });
@@ -2133,6 +2852,7 @@ export class QuickDeckApp extends Application {
       if (!actorId) return;
 
       this.cancelTokenDrop({ render: false });
+      this.cancelTargetOpponentMode({ render: false, restore: false });
       this.removeActorFromRoster(actorId);
       this.render();
     });
@@ -2147,6 +2867,7 @@ export class QuickDeckApp extends Application {
       this._actorSelectTimeout = window.setTimeout(() => {
         if (this.activeActorId && this.activeActorId !== actorId) {
           this.cancelTokenDrop({ render: false });
+          this.cancelTargetOpponentMode({ render: false, restore: false });
         }
         this.activeActorId = actorId;
         this.render();
@@ -2165,6 +2886,7 @@ export class QuickDeckApp extends Application {
 
       if (this.activeActorId && this.activeActorId !== actorId) {
         this.cancelTokenDrop({ render: false });
+        this.cancelTargetOpponentMode({ render: false, restore: false });
       }
       this.activeActorId = actorId;
       this.openActorSheet(actorId);
@@ -2255,29 +2977,87 @@ export class QuickDeckApp extends Application {
       });
     });
 
+    html.find("[data-action='target-opponent']").on("click", (event) => {
+      event.preventDefault();
+      const attackIndex = Number(event.currentTarget.dataset.attackIndex);
+      if (Number.isNaN(attackIndex)) return;
+
+      try {
+        this.startTargetOpponentMode(attackIndex);
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed to start target opponent mode.", error);
+        this.cancelTargetOpponentMode({ render: false, restore: true });
+        ui.notifications?.warn("QuickDeck: Could not start targeting mode.");
+      }
+    });
+
+    html.find("[data-action='open-modifier-bucket']").on("click", (event) => {
+      event.preventDefault();
+      this.openNativeModifierBucket(event.currentTarget.dataset.actorId, event);
+    });
+
     html.find("[data-action='roll-attack']").on("click", async (event) => {
       event.preventDefault();
       const actorId = event.currentTarget.dataset.actorId;
       const attackIndex = Number(event.currentTarget.dataset.attackIndex);
-      if (!actorId || Number.isNaN(attackIndex)) return;
+      if (!actorId || Number.isNaN(attackIndex)) {
+        console.warn("gurps-quickdeck | Missing actorId or attackIndex for attack click.", { actorId, attackIndex });
+        return;
+      }
 
       const actor = game.actors.get(actorId);
+      if (!actor) {
+        console.warn("gurps-quickdeck | Attack click ignored: actor not found.", { actorId, attackIndex });
+        return;
+      }
       const attacks = this.getDerivedActorData(actor).attacks;
       const attack = attacks[attackIndex];
-      if (!attack) return;
+      if (!attack) {
+        console.warn("gurps-quickdeck | Attack click ignored: attack not found.", { actorId, attackIndex });
+        return;
+      }
 
-      const value =
-        attack.level ??
-        this.getFirstDefinedValue(attack.raw, ["skill", "level", "roll", "import"]);
 
-      await this.triggerCombatRoll(actorId, {
-        type: "attack",
-        label: `Roll Attack (${attack.name})`,
-        value,
-        attackName: attack.name,
-        attackType: attack.type,
-        attack
-      });
+      const gurps = globalThis.GURPS ?? game.GURPS;
+      if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+      const attackName = String(attack.name ?? "").trim();
+      const otf = `[A:${attackName}]`;
+      const targets = Array.from(game.user?.targets ?? []);
+      const dataset = this.getSheetAttackDataset(attack);
+      const fakeEvent = this.buildGurpsHandleRollEvent(dataset);
+
+      let handledByHandleRoll = false;
+      try {
+        if (dataset.key && dataset.otf && typeof gurps?.handleRoll === "function") {
+          await gurps.handleRoll(fakeEvent, actor, { targets });
+          handledByHandleRoll = true;
+        }
+      } catch (error) {
+        console.warn("gurps-quickdeck | Attack handleRoll failed, falling back to OTF.", error);
+      }
+
+      let usedOtF = false;
+      try {
+        if (!handledByHandleRoll && otf && typeof gurps?.executeOTF === "function") {
+          await gurps.executeOTF(otf, false, event, actor);
+          usedOtF = true;
+        }
+      } catch (error) {
+        // Fall through to the QuickDeck roll fallback below.
+      }
+
+      if (!handledByHandleRoll && !usedOtF) {
+        ui.notifications?.warn("QuickDeck: Could not route attack through GURPS handleRoll/OTF. Falling back to QuickDeck roll.");
+        await this.triggerCombatRoll(actor.id, {
+          type: "attack",
+          label: `Attack (${attack.name})`,
+          value: attack.level,
+          attackName: attack.name,
+          attackType: attack.type,
+          attack
+        });
+      }
     });
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {
@@ -2295,10 +3075,19 @@ export class QuickDeckApp extends Application {
       if (!actorId || Number.isNaN(skillIndex)) return;
 
       const actor = game.actors.get(actorId);
-      const skills = this.getDerivedActorData(actor).skills;
-      const skill = skills[skillIndex];
-      if (!skill) return;
+      const skill = this.getDerivedActorData(actor).skills[skillIndex];
+      if (!actor || !skill) return;
 
+      const dataset = this.getSheetSkillDataset(skill);
+      const targets = Array.from(game.user?.targets ?? []);
+      const handled = await this.triggerNativeSheetRoll(actor, dataset, {
+        event,
+        targets,
+        label: "skill"
+      });
+      if (handled) return;
+
+      ui.notifications?.warn("QuickDeck: Could not route skill through GURPS handleRoll/OTF. Falling back to QuickDeck roll.");
       const value =
         skill.level ??
         this.getFirstDefinedValue(skill.raw, ["level", "import", "value", "rsl"]);
@@ -2310,6 +3099,29 @@ export class QuickDeckApp extends Application {
         skillName: skill.name,
         skill
       });
+    });
+
+    html.find("[data-action='roll-spell']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      const spellIndex = Number(event.currentTarget.dataset.spellIndex);
+      if (!actorId || Number.isNaN(spellIndex)) return;
+
+      const actor = game.actors.get(actorId);
+      const spell = this.getDerivedActorData(actor).spells[spellIndex];
+      if (!actor || !spell) return;
+
+      const dataset = this.getSheetSpellDataset(spell);
+      const targets = Array.from(game.user?.targets ?? []);
+      const handled = await this.triggerNativeSheetRoll(actor, dataset, {
+        event,
+        targets,
+        label: "spell"
+      });
+
+      if (!handled) {
+        ui.notifications?.warn("QuickDeck: Could not route spell through GURPS handleRoll/OTF.");
+      }
     });
 
     html.find("[data-action='open-reference']").on("click", (event) => {

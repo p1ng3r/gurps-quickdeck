@@ -266,10 +266,7 @@
                   </div>
 
                   <section class="quickdeck-attacks-section">
-                    <h4>
-                      Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> /
-                      <span data-count="attacks-total">{{attackCount}}</span>)
-                    </h4>
+                    <h4>Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> / <span data-count="attacks-total">{{attackCount}}</span>)</h4>
                     <input
                       type="search"
                       class="quickdeck-drawer-search"
@@ -280,14 +277,23 @@
                     />
 
                     {{#if indexedAttacks.length}}
+                      <h5 class="quickdeck-subsection-title">Melee</h5>
                       <div class="quickdeck-attacks-list">
-                        {{#each indexedAttacks as |attack|}}
+                        {{#each meleeAttacks as |attack|}}
                           <article class="quickdeck-attack-card" data-search-row="combat" data-search-text="{{attack.searchText}}">
-                            <header>
-                              <h5>{{attack.name}}</h5>
-                              <span>{{attack.type}}</span>
+                            <header class="quickdeck-attack-card-header">
+                              <div class="quickdeck-attack-title-row">
+                                <span class="quickdeck-combat-icon quickdeck-attack-icon" aria-hidden="true">
+                                  <i class="fas fa-crosshairs"></i>
+                                </span>
+                                <div class="quickdeck-attack-title-block">
+                                  <h5>{{attack.name}}</h5>
+                                  <span class="quickdeck-attack-mode">{{attack.type}}</span>
+                                </div>
+                              </div>
                             </header>
-                            <dl>
+
+                            <dl class="quickdeck-attack-stats">
                               <div>
                                 <dt>Level/Skill</dt>
                                 <dd>{{#if attack.level}}{{attack.level}}{{else}}—{{/if}}</dd>
@@ -320,15 +326,147 @@
                                 <dd>{{#if attack.block}}{{attack.block}}{{else}}—{{/if}}</dd>
                               </div>
                             </dl>
-                            <button
-                              type="button"
-                              data-action="roll-attack"
-                              data-actor-id="{{../activeActor.id}}"
-                              data-attack-index="{{attack.index}}"
-                              class="quickdeck-roll-button"
-                            >
-                              Roll Attack
-                            </button>
+
+                            <div class="quickdeck-combat-anchors" aria-label="Future combat workflow anchors">
+                              <button
+                                type="button"
+                                class="quickdeck-combat-anchor quickdeck-target-anchor quickdeck-target-opponent-button"
+                                data-action="target-opponent"
+                                data-attack-index="{{attack.index}}"
+                                data-layout-anchor="target-opponent-display"
+                                {{#if ../isTargetOpponentModeActive}}disabled{{/if}}
+                              >
+                                <span class="quickdeck-combat-icon" aria-hidden="true"><i class="fas fa-user-shield"></i></span>
+                                <span class="quickdeck-target-anchor-copy">
+                                  <span class="quickdeck-anchor-label">Target Opponent</span>
+                                  <span class="quickdeck-anchor-value">{{../currentTargetName}}</span>
+                                </span>
+                              </button>
+                              <button
+                                type="button"
+                                class="quickdeck-combat-anchor quickdeck-modifier-anchor quickdeck-modifier-bucket-button {{../modifierBucketStatus.cssClass}}"
+                                data-action="open-modifier-bucket"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-layout-anchor="modifier-bucket-display"
+                                title="{{../modifierBucketStatus.stateLabel}}: {{../modifierBucketStatus.detailLabel}}"
+                                aria-label="Open native GURPS ModifierBucket: {{../modifierBucketStatus.detailLabel}}"
+                              >
+                                <span class="quickdeck-combat-icon quickdeck-modifier-bucket-icon" aria-hidden="true"><i class="fas fa-sliders-h"></i></span>
+                                <span class="quickdeck-modifier-bucket-copy">
+                                  <span class="quickdeck-anchor-label">Modifiers</span>
+                                  <span class="quickdeck-anchor-value quickdeck-modifier-bucket-value">
+                                    <span class="quickdeck-modifier-bucket-total">{{../modifierBucketStatus.totalText}}</span>
+                                    <span class="quickdeck-modifier-bucket-detail">{{../modifierBucketStatus.detailLabel}}</span>
+                                  </span>
+                                </span>
+                              </button>
+                              <div class="quickdeck-combat-icon-tray" data-layout-anchor="combat-modifier-icons" aria-label="Combat modifier icons placeholder">
+                                <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-dice-three"></i></span>
+                                <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-bullseye"></i></span>
+                              </div>
+                            </div>
+
+                            <div class="quickdeck-attack-actions">
+                              <button
+                                type="button"
+                                data-action="roll-attack"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-attack-index="{{attack.index}}"
+                                class="quickdeck-roll-button quickdeck-attack-button"
+                              >
+                                <i class="fas fa-dice-d6" aria-hidden="true"></i>
+                                <span>Attack</span>
+                              </button>
+                              {{#if attack.showDamageFollowup}}
+                                <button
+                                  type="button"
+                                  data-action="roll-damage"
+                                  data-actor-id="{{../activeActor.id}}"
+                                  data-attack-index="{{attack.index}}"
+                                  class="quickdeck-roll-button quickdeck-roll-button-secondary"
+                                >
+                                  Roll Damage (Follow-up)
+                                </button>
+                              {{/if}}
+                            </div>
+                          </article>
+                        {{/each}}
+                      </div>
+                      <h5 class="quickdeck-subsection-title">Ranged</h5>
+                      <div class="quickdeck-attacks-list">
+                        {{#each rangedAttacks as |attack|}}
+                          <article class="quickdeck-attack-card" data-search-row="combat" data-search-text="{{attack.searchText}}">
+                            <header class="quickdeck-attack-card-header">
+                              <div class="quickdeck-attack-title-row">
+                                <span class="quickdeck-combat-icon quickdeck-attack-icon" aria-hidden="true">
+                                  <i class="fas fa-bullseye"></i>
+                                </span>
+                                <div class="quickdeck-attack-title-block">
+                                  <h5>{{attack.name}}</h5>
+                                  <span class="quickdeck-attack-mode">{{attack.type}}</span>
+                                </div>
+                              </div>
+                            </header>
+
+                            <dl class="quickdeck-attack-stats quickdeck-attack-stats-compact">
+                              <div>
+                                <dt>Level/Skill</dt>
+                                <dd>{{#if attack.level}}{{attack.level}}{{else}}—{{/if}}</dd>
+                              </div>
+                              <div>
+                                <dt>Damage</dt>
+                                <dd>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</dd>
+                              </div>
+                            </dl>
+
+                            <div class="quickdeck-combat-anchors" aria-label="Future combat workflow anchors">
+                              <button
+                                type="button"
+                                class="quickdeck-combat-anchor quickdeck-target-anchor quickdeck-target-opponent-button"
+                                data-action="target-opponent"
+                                data-attack-index="{{attack.index}}"
+                                data-layout-anchor="target-opponent-display"
+                                {{#if ../isTargetOpponentModeActive}}disabled{{/if}}
+                              >
+                                <span class="quickdeck-combat-icon" aria-hidden="true"><i class="fas fa-user-shield"></i></span>
+                                <span class="quickdeck-target-anchor-copy">
+                                  <span class="quickdeck-anchor-label">Target Opponent</span>
+                                  <span class="quickdeck-anchor-value">{{../currentTargetName}}</span>
+                                </span>
+                              </button>
+                              <button
+                                type="button"
+                                class="quickdeck-combat-anchor quickdeck-modifier-anchor quickdeck-modifier-bucket-button {{../modifierBucketStatus.cssClass}}"
+                                data-action="open-modifier-bucket"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-layout-anchor="modifier-bucket-display"
+                                title="{{../modifierBucketStatus.stateLabel}}: {{../modifierBucketStatus.detailLabel}}"
+                                aria-label="Open native GURPS ModifierBucket: {{../modifierBucketStatus.detailLabel}}"
+                              >
+                                <span class="quickdeck-combat-icon quickdeck-modifier-bucket-icon" aria-hidden="true"><i class="fas fa-sliders-h"></i></span>
+                                <span class="quickdeck-modifier-bucket-copy">
+                                  <span class="quickdeck-anchor-label">Modifiers</span>
+                                  <span class="quickdeck-anchor-value quickdeck-modifier-bucket-value">
+                                    <span class="quickdeck-modifier-bucket-total">{{../modifierBucketStatus.totalText}}</span>
+                                    <span class="quickdeck-modifier-bucket-detail">{{../modifierBucketStatus.detailLabel}}</span>
+                                  </span>
+                                </span>
+                              </button>
+                              <div class="quickdeck-combat-icon-tray" data-layout-anchor="combat-modifier-icons" aria-label="Combat modifier icons placeholder">
+                                <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-dice-three"></i></span>
+                                <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-crosshairs"></i></span>
+                              </div>
+                            </div>
+
+                            <div class="quickdeck-attack-actions">
+                              <button type="button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-roll-button quickdeck-attack-button">
+                                <i class="fas fa-dice-d6" aria-hidden="true"></i>
+                                <span>Attack</span>
+                              </button>
+                              {{#if attack.showDamageFollowup}}
+                                <button type="button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-roll-button quickdeck-roll-button-secondary">Roll Damage (Follow-up)</button>
+                              {{/if}}
+                            </div>
                           </article>
                         {{/each}}
                       </div>
@@ -600,6 +738,15 @@
                                 {{#if spell.cost}} · Cost {{spell.cost}}{{/if}}
                               </p>
                             </div>
+                            <button
+                              type="button"
+                              data-action="roll-spell"
+                              data-actor-id="{{../activeActor.id}}"
+                              data-spell-index="{{spell.index}}"
+                              class="quickdeck-roll-button"
+                            >
+                              Cast Spell
+                            </button>
                           </article>
                         {{/each}}
                       </div>

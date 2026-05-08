@@ -2,7 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - v0.3.0 draft
+## [Unreleased] - v0.4.0 draft
+
+### Added
+- Target Opponent workflow for combat attack pills: QuickDeck temporarily minimizes, displays a lightweight tactical reticle, left-click targets a canvas token through native Foundry targeting, and right-click/Escape cancel safely.
+- Forge-safe cleanup for Target Opponent mode so temporary listeners and reticles are removed on target, cancel, scene switch, close, or error.
+- Forge-safe placement reticle/cursor feedback for temporary token placement mode.
+- Guided Attack MVP flow in Combat drawer: clicking **Attack** opens a setup dialog, applies optional modifiers to the GURPS Modifier Bucket, minimizes QuickDeck for target selection, restores afterward, executes attack via GURPS OTF when possible, and tracks outcome for follow-up damage rolling.
+- Combat attack list layout now separates melee and ranged attacks into distinct sections for readability.
+- Combat window layout refactor adds tactical attack-card hierarchy plus stable target, modifier bucket, and combat modifier icon placeholder anchors for upcoming v0.4.0 UX improvements.
+- Skills and spells now use native GURPS sheet-style passthrough handling where possible.
+- Combat attack pills now surface native GURPS ModifierBucket status in the modifier area, including the current total such as `+0`, `+2`, or `-3`, and the modifier area can now open the native GURPS ModifierBucket UI while preserving a safe neutral fallback when unavailable.
+- Fixed a false warning when opening the native GURPS ModifierBucket from QuickDeck.
+- QuickDeck's modifier box now live-refreshes from native GURPS ModifierBucket updates.
+
+### Changed
+- Combat attack buttons now use **Attack** labeling and guided flow instead of direct quick roll.
+- Skill and spell clicks now build native sheet-like datasets and call `GURPS.handleRoll` before falling back to OTF.
+- Version metadata updated for v0.4.0 draft.
+- Repaired Forge-safe token placement workflow so Drop Token minimizes QuickDeck, places or cancels once, removes temporary listeners/reticle immediately, and keeps the restore pill functional.
 
 ### Changed
 - Simplified QuickDeck Reference to use bundled `data/reference-summaries.json` as the primary source of reference content.

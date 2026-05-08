@@ -2,6 +2,20 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.4.0 (Draft)
+
+- Combat drawer weapon buttons now launch a guided **Attack** flow (MVP).
+- Combat attack pills now include a **Target Opponent** workflow that temporarily minimizes QuickDeck, shows a tactical reticle, and uses native Foundry token targeting with Forge-safe cleanup.
+- Combat attack pills now surface the current native GURPS **ModifierBucket** status in the modifier area and can open the native ModifierBucket UI without applying, clearing, or recalculating modifiers.
+- Guided flow can apply common situational modifiers through the existing GURPS Modifier Bucket API where available.
+- QuickDeck minimizes while waiting for in-game target selection and restores automatically after selection/timeout.
+- Attack, skill, and spell actions prefer native GURPS sheet-style handling where available, with OTF/QuickDeck fallback paths for unsupported cases.
+- Attack list readability improved with separate melee and ranged sections.
+- Combat window layout refactored with tactical attack-card hierarchy and stable target/modifier/icon placeholder anchors for upcoming native GURPS UX improvements.
+- Skills and spells now use native GURPS sheet-style passthrough handling where possible, matching the sheet click path before falling back to OTF.
+- Repaired the Forge-safe **Drop Token** workflow so QuickDeck minimizes, click-to-place mode cleans up after place/cancel/error, and the restore pill remains usable.
+- Added lightweight green placement reticle/cursor feedback while token placement mode is active.
+
 ## What's New in v0.3.0 (Draft)
 
 - QuickDeck Reference now uses bundled repo data from `data/reference-summaries.json` as the primary reference source.
@@ -46,10 +60,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Minimized `QD QuickDeck` restore pill position persists per client/user.
   - Missing/deleted actors are cleaned up defensively.
 - Drawer tools:
-  - **Combat Burst**: defenses, HP/FP edit, attacks, roll buttons, and damage actions.
-  - **Skills**: extracted nested GURPS skills + quick-pin checkboxes.
-  - **Quick Skills**: pinned skills with independent search and roll actions.
-  - **Spells**: spell extraction + searchable spell list.
+  - **Combat Burst**: defenses, HP/FP edit, attacks, native-token **Target Opponent** controls, roll buttons, and damage actions.
+  - **Skills**: extracted nested GURPS skills + quick-pin checkboxes; roll buttons route through native GURPS sheet-style skill handling where possible.
+  - **Quick Skills**: pinned skills with independent search and native sheet-style roll actions.
+  - **Spells**: spell extraction + searchable spell list; cast buttons route through native GURPS sheet-style spell handling where possible.
 - Reference helpers:
   - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
   - Matching order is bundled repo summary data first, with optional Local Override metadata applied for personal source/page replacements.
@@ -119,6 +133,9 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 - QuickDeck only opens `actor.sheet` through the explicit `openActorSheet(actorId)` path.
 - Token placement uses click-to-place canvas coordinates (no browser drag/drop to canvas).
+- Token placement displays a temporary Forge-safe placement reticle/cursor and removes it during placement cleanup.
+- Combat attack pill targeting uses Foundry token `setTarget` behavior only, avoids GURPS combat-rule mutations, and removes all temporary listeners/reticles on target, cancel, scene switch, close, or error.
+- Combat attack pill modifier controls read the native GURPS `ModifierBucket` status and open the native GURPS ModifierBucket UI; QuickDeck does not apply, clear, or manually calculate bucket modifiers.
 - Escape/cancel, close, minimize, and scene-switch paths always remove temporary pointer/window/canvas listeners.
 - Roll and token placement failures are warning-first and never intentionally crash the app.
 - Reference summaries load from module-local JSON files only; missing packs warn and continue.
