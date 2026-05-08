@@ -160,6 +160,22 @@ function refreshQuickDeckOnCombatChange() {
   quickDeckApp.render(false);
 }
 
+let pendingModifierBucketRefresh = null;
+function refreshQuickDeckOnModifierBucketChange() {
+  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
+
+  if (pendingModifierBucketRefresh) clearTimeout(pendingModifierBucketRefresh);
+  pendingModifierBucketRefresh = setTimeout(() => {
+    pendingModifierBucketRefresh = null;
+    if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
+    quickDeckApp.render(false);
+  }, 0);
+}
+
+Hooks.on("renderModifierBucket", () => {
+  refreshQuickDeckOnModifierBucketChange();
+});
+
 Hooks.on("updateCombat", () => {
   refreshQuickDeckOnCombatChange();
 });
