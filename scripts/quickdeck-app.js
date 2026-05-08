@@ -46,6 +46,9 @@ export class QuickDeckApp extends Application {
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
     this._pendingAttackGuidance = null;
+    this._modifierBucketRefreshHooks = [];
+    this._modifierBucketRefreshTimer = null;
+    this._lastModifierBucketSignature = null;
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
@@ -974,6 +977,72 @@ export class QuickDeckApp extends Application {
     return value === undefined || value === null || value === "" ? "—" : value;
   }
 
+  formatSignedModifierTotal(total) {
+    return `${total >= 0 ? "+" : ""}${total}`;
+  }
+
+  parseModifierBucketEntryValue(entry) {
+    if (typeof entry === "number") return entry;
+    if (typeof entry === "string") {
+      const match = entry.match(/[+-]?\d+/);
+      return match ? Number(match[0]) : null;
+    }
+    if (!entry || typeof entry !== "object") return null;
+
+    const directValue = this.getFirstDefinedValue(entry, [
+      "modint",
+      "mod",
+      "modifier",
+      "value",
+      "total",
+      "amount",
+      "bonus",
+      "penalty"
+    ]);
+    const directNumber = Number(directValue);
+    if (Number.isFinite(directNumber)) return directNumber;
+
+    for (const path of ["mod", "modifier", "value", "desc", "description", "label", "name"]) {
+      const text = foundry.utils.getProperty(entry, path);
+      if (typeof text !== "string") continue;
+      const match = text.match(/[+-]?\d+/);
+      if (match) return Number(match[0]);
+    }
+
+    return null;
+  }
+
+  getModifierBucketListTotal(modifierList) {
+    let total = 0;
+    let foundNumericEntry = false;
+    for (const entry of modifierList) {
+      const entryValue = this.parseModifierBucketEntryValue(entry);
+      if (!Number.isFinite(entryValue)) continue;
+      total += entryValue;
+      foundNumericEntry = true;
+    }
+    return foundNumericEntry ? total : null;
+  }
+
+  getModifierBucketNativeTotal(bucket, stack, modifierList) {
+    if (stack && Array.isArray(modifierList) && modifierList.length === 0) return 0;
+
+    const listTotal = this.getModifierBucketListTotal(modifierList);
+    if (Number.isFinite(listTotal)) return listTotal;
+
+    const stackCurrentSum =
+      typeof stack?.currentSum === "function" ? stack.currentSum() : stack?.currentSum;
+    const bucketCurrentSum = typeof bucket?.currentSum === "function" ? bucket.currentSum() : null;
+    for (const rawTotal of [bucketCurrentSum, stackCurrentSum]) {
+      const numericTotal = Number(rawTotal);
+      if (Number.isFinite(numericTotal)) return numericTotal;
+    }
+
+    const nativeDisplay = typeof stack?.displaySum === "string" ? stack.displaySum.trim() : "";
+    const displayMatch = nativeDisplay.match(/[+-]?\d+/);
+    return displayMatch ? Number(displayMatch[0]) : 0;
+  }
+
   getModifierBucketStatus() {
     const bucket = (globalThis.GURPS ?? globalThis.game?.GURPS)?.ModifierBucket;
     if (!bucket || typeof bucket !== "object") {
@@ -987,22 +1056,18 @@ export class QuickDeckApp extends Application {
     }
 
     const stack = bucket.modifierStack && typeof bucket.modifierStack === "object" ? bucket.modifierStack : null;
-    const nativeDisplay = typeof stack?.displaySum === "string" ? stack.displaySum.trim() : "";
-    const rawTotal = typeof bucket.currentSum === "function" ? bucket.currentSum() : stack?.currentSum;
-    const numericTotal = Number(rawTotal);
-    const totalText =
-      nativeDisplay ||
-      (Number.isFinite(numericTotal) ? `${numericTotal >= 0 ? "+" : ""}${numericTotal}` : "+0");
-    const normalizedTotal = Number.isFinite(numericTotal) ? numericTotal : Number(totalText);
     const modifierList = Array.isArray(stack?.modifierList) ? stack.modifierList : [];
+    const nativeTotal = this.getModifierBucketNativeTotal(bucket, stack, modifierList);
+    const normalizedTotal = Number.isFinite(nativeTotal) ? nativeTotal : 0;
+    const totalText = this.formatSignedModifierTotal(normalizedTotal);
     const stackIsEmpty = typeof bucket.isEmpty === "function" ? bucket.isEmpty() : modifierList.length === 0;
     const detailLabel = stackIsEmpty
       ? "No modifiers queued"
       : `${modifierList.length} modifier${modifierList.length === 1 ? "" : "s"} queued`;
     const polarityClass =
-      Number.isFinite(normalizedTotal) && normalizedTotal > 0
+      normalizedTotal > 0
         ? "quickdeck-modifier-positive"
-        : Number.isFinite(normalizedTotal) && normalizedTotal < 0
+        : normalizedTotal < 0
           ? "quickdeck-modifier-negative"
           : "quickdeck-modifier-neutral";
 
@@ -1013,6 +1078,81 @@ export class QuickDeckApp extends Application {
       detailLabel,
       cssClass: polarityClass
     };
+  }
+
+  getModifierBucketSignature() {
+    const bucket = (globalThis.GURPS ?? globalThis.game?.GURPS)?.ModifierBucket;
+    if (!bucket || typeof bucket !== "object") return "unavailable";
+    const stack = bucket.modifierStack && typeof bucket.modifierStack === "object" ? bucket.modifierStack : null;
+    const modifierList = Array.isArray(stack?.modifierList) ? stack.modifierList : [];
+    const total = this.getModifierBucketNativeTotal(bucket, stack, modifierList);
+    const entries = modifierList.map((entry) => {
+      if (entry && typeof entry === "object") {
+        return JSON.stringify({
+          value: this.parseModifierBucketEntryValue(entry),
+          desc: entry.desc ?? entry.description ?? entry.label ?? entry.name ?? ""
+        });
+      }
+      return String(entry);
+    });
+    return JSON.stringify({ total, entries });
+  }
+
+  scheduleModifierBucketStatusRefresh(delay = 0) {
+    if (!this.rendered || this.isMinimized) return;
+    window.setTimeout(() => {
+      if (this.rendered && !this.isMinimized) this.render(false);
+    }, delay);
+  }
+
+  schedulePostRollModifierBucketRefresh() {
+    for (const delay of [0, 100, 250]) this.scheduleModifierBucketStatusRefresh(delay);
+  }
+
+  startModifierBucketRefreshPolling() {
+    if (this._modifierBucketRefreshTimer) return;
+    this._lastModifierBucketSignature = this.getModifierBucketSignature();
+    this._modifierBucketRefreshTimer = window.setInterval(() => {
+      if (!this.rendered || this.isMinimized) return;
+      const nextSignature = this.getModifierBucketSignature();
+      if (nextSignature === this._lastModifierBucketSignature) return;
+      this._lastModifierBucketSignature = nextSignature;
+      this.render(false);
+    }, 250);
+  }
+
+  stopModifierBucketRefreshPolling() {
+    if (!this._modifierBucketRefreshTimer) return;
+    window.clearInterval(this._modifierBucketRefreshTimer);
+    this._modifierBucketRefreshTimer = null;
+  }
+
+  registerModifierBucketRefreshHooks() {
+    const hooks = globalThis.Hooks;
+    if (this._modifierBucketRefreshHooks.length > 0 || typeof hooks?.on !== "function") return;
+    const refresh = () => this.scheduleModifierBucketStatusRefresh(0);
+    const refreshAndStopPolling = () => {
+      this.scheduleModifierBucketStatusRefresh(0);
+      this.stopModifierBucketRefreshPolling();
+    };
+    for (const hookName of ["renderModifierBucket", "renderModifierBucketEditor"]) {
+      hooks.on(hookName, refresh);
+      this._modifierBucketRefreshHooks.push({ hookName, handler: refresh });
+    }
+    for (const hookName of ["closeModifierBucket", "closeModifierBucketEditor"]) {
+      hooks.on(hookName, refreshAndStopPolling);
+      this._modifierBucketRefreshHooks.push({ hookName, handler: refreshAndStopPolling });
+    }
+  }
+
+  unregisterModifierBucketRefreshHooks() {
+    const hooks = globalThis.Hooks;
+    if (typeof hooks?.off === "function") {
+      for (const { hookName, handler } of this._modifierBucketRefreshHooks) {
+        hooks.off(hookName, handler);
+      }
+    }
+    this._modifierBucketRefreshHooks = [];
   }
 
   openNativeModifierBucket(actorId = null, event = null) {
@@ -1051,6 +1191,9 @@ export class QuickDeckApp extends Application {
         const renderedApp = bucket.editor.render(true);
         bucket.SHOWING = true;
         scheduleFocusNativeBucket(renderedApp);
+        this.registerModifierBucketRefreshHooks();
+        this.startModifierBucketRefreshPolling();
+        this.scheduleModifierBucketStatusRefresh(0);
         return true;
       }
 
@@ -1058,6 +1201,9 @@ export class QuickDeckApp extends Application {
         const renderedApp = bucket.render(true);
         bucket.SHOWING = true;
         scheduleFocusNativeBucket(renderedApp);
+        this.registerModifierBucketRefreshHooks();
+        this.startModifierBucketRefreshPolling();
+        this.scheduleModifierBucketStatusRefresh(0);
         return true;
       }
 
@@ -1065,6 +1211,9 @@ export class QuickDeckApp extends Application {
         bucket._onenter(event);
         bucket.SHOWING = true;
         scheduleFocusNativeBucket(bucket.editor);
+        this.registerModifierBucketRefreshHooks();
+        this.startModifierBucketRefreshPolling();
+        this.scheduleModifierBucketStatusRefresh(0);
         return true;
       }
     } catch (_error) {
@@ -1383,6 +1532,7 @@ export class QuickDeckApp extends Application {
       try {
         const fakeEvent = this.buildGurpsHandleRollEvent(dataset);
         await gurps.handleRoll(fakeEvent, actor, { targets });
+        this.schedulePostRollModifierBucketRefresh();
         return true;
       } catch (error) {
         console.warn(`gurps-quickdeck | Native GURPS ${label} handleRoll failed, falling back to OTF.`, error);
@@ -1392,6 +1542,7 @@ export class QuickDeckApp extends Application {
     try {
       if (typeof gurps?.executeOTF === "function") {
         await gurps.executeOTF(`[${dataset.otf}]`, false, event, actor);
+        this.schedulePostRollModifierBucketRefresh();
         return true;
       }
     } catch (_error) {
@@ -1407,7 +1558,10 @@ export class QuickDeckApp extends Application {
     if (!rollContext?.label) return;
 
     const usedSystemRoll = await this.tryGurpsRoll(actor, rollContext);
-    if (usedSystemRoll) return;
+    if (usedSystemRoll) {
+      this.schedulePostRollModifierBucketRefresh();
+      return;
+    }
 
     const target = this.parseRollTarget(rollContext.value);
     let roll = null;
@@ -1429,6 +1583,7 @@ export class QuickDeckApp extends Application {
     }
 
     await this.createFallbackRollChat(actor, rollContext, roll, target);
+    this.schedulePostRollModifierBucketRefresh();
   }
 
   getAttackDamageString(attack) {
@@ -1643,6 +1798,7 @@ export class QuickDeckApp extends Application {
       if (otfName && typeof gurps?.executeOTF === "function") {
         await gurps.executeOTF(`[A:${otfName}]`);
         usedOtF = true;
+        this.schedulePostRollModifierBucketRefresh();
       }
     } catch (error) {
       console.warn("gurps-quickdeck | Guided attack OTF failed, falling back.", error);
@@ -2397,6 +2553,8 @@ export class QuickDeckApp extends Application {
     this.cancelTokenDrop({ render: false });
     this.cancelTargetOpponentMode({ render: false, restore: false });
     this.removeFloatingRestoreIcon();
+    this.stopModifierBucketRefreshPolling();
+    this.unregisterModifierBucketRefreshHooks();
     if (this._actorSelectTimeout) {
       clearTimeout(this._actorSelectTimeout);
       this._actorSelectTimeout = null;
@@ -3022,6 +3180,7 @@ export class QuickDeckApp extends Application {
         if (dataset.key && dataset.otf && typeof gurps?.handleRoll === "function") {
           await gurps.handleRoll(fakeEvent, actor, { targets });
           handledByHandleRoll = true;
+          this.schedulePostRollModifierBucketRefresh();
         }
       } catch (error) {
         console.warn("gurps-quickdeck | Attack handleRoll failed, falling back to OTF.", error);
@@ -3032,6 +3191,7 @@ export class QuickDeckApp extends Application {
         if (!handledByHandleRoll && otf && typeof gurps?.executeOTF === "function") {
           await gurps.executeOTF(otf, false, event, actor);
           usedOtF = true;
+          this.schedulePostRollModifierBucketRefresh();
         }
       } catch (error) {
         // Fall through to the QuickDeck roll fallback below.
