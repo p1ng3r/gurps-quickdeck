@@ -1026,31 +1026,45 @@ export class QuickDeckApp extends Application {
     const actor = actorId ? game.actors.get(actorId) : this.getActiveActor();
     if (actor && typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
 
-    const focusNativeBucket = () => {
+    const focusNativeBucket = (renderedApp = null) => {
+      renderedApp?.bringToTop?.();
       bucket.editor?.bringToTop?.();
       bucket.bringToTop?.();
     };
+    const scheduleFocusNativeBucket = (renderedApp = null) => {
+      try {
+        focusNativeBucket(renderedApp);
+        setTimeout(() => {
+          try {
+            focusNativeBucket(renderedApp);
+          } catch (_error) {
+            // Focusing is best-effort; a focus failure should not imply the native editor failed to open.
+          }
+        }, 0);
+      } catch (_error) {
+        // Focusing is best-effort; a focus failure should not imply the native editor failed to open.
+      }
+    };
 
     try {
-      if (typeof bucket._onenter === "function") {
-        bucket._onenter(event);
-        focusNativeBucket();
-        setTimeout(focusNativeBucket, 0);
-        return true;
-      }
-
       if (typeof bucket.editor?.render === "function") {
-        bucket.editor.render(true);
+        const renderedApp = bucket.editor.render(true);
         bucket.SHOWING = true;
-        focusNativeBucket();
-        setTimeout(focusNativeBucket, 0);
+        scheduleFocusNativeBucket(renderedApp);
         return true;
       }
 
       if (typeof bucket.render === "function") {
-        bucket.render(true);
-        focusNativeBucket();
-        setTimeout(focusNativeBucket, 0);
+        const renderedApp = bucket.render(true);
+        bucket.SHOWING = true;
+        scheduleFocusNativeBucket(renderedApp);
+        return true;
+      }
+
+      if (typeof bucket._onenter === "function") {
+        bucket._onenter(event);
+        bucket.SHOWING = true;
+        scheduleFocusNativeBucket(bucket.editor);
         return true;
       }
     } catch (_error) {
