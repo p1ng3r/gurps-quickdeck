@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.5.1 draft
+
+### Added
+- Selected-character HP/FP pass-through controls with larger bars, minus/plus buttons, and compact direct entry fields that update `system.HP.value` and `system.FP.value` without changing max HP/FP.
+- Roster HP/FP value chips and mini bars for every loaded QuickDeck actor.
+- Large selected-character Dodge/Parry/Block combat buttons that prefer native GURPS roll handling and warn safely when no native defense roll is available.
+
+### Changed
+- QuickDeck continues to leave attack, defense, and damage resolution to native GURPS, avoids custom damage math in the combat flow polish pass, limits HP/FP mutation to explicit GM pass-through current-value edits, and points damage follow-ups back to native GURPS chat controls.
+
 ## [Unreleased] - v0.5.0 draft
 
 ### Added
