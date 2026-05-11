@@ -2,6 +2,14 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.5.0 (Draft)
+
+- Combat attack buttons remain native-GURPS-first: QuickDeck records attack context, routes through sheet-style `GURPS.handleRoll`/OTF when available, and leaves attack, defense, and damage rules to GURPS.
+- Native GURPS roll/damage-related windows are brought forward with guarded `bringToTop?.()` calls after QuickDeck triggers native handling.
+- After attack, skill, spell, or fallback rolls, QuickDeck opens/focuses the native Foundry chat sidebar instead of embedding or cloning chat.
+- Added lightweight combat flow helpers: **Bring Chat Front**, **Clear Targets**, **Next Actor**, and **Repeat Last Attack**.
+- Pending attack context now stores actor id, attack index/name, OTF, damage string, source path, raw attack reference, and lowercase `hitlocation` when known for future native damage pass-through work; QuickDeck damage controls now point the GM back to native GURPS chat controls instead of rolling custom damage.
+
 ## What's New in v0.4.0 (Draft)
 
 - Combat drawer weapon buttons now launch a guided **Attack** flow (MVP).
@@ -60,7 +68,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Minimized `QD QuickDeck` restore pill position persists per client/user.
   - Missing/deleted actors are cleaned up defensively.
 - Drawer tools:
-  - **Combat Burst**: defenses, HP/FP edit, attacks, native-token **Target Opponent** controls, roll buttons, and damage actions.
+  - **Combat Burst**: defenses, HP/FP display, attacks, native-token **Target Opponent** controls, native chat/target/actor helper buttons, roll buttons, and native damage handoff prompts.
   - **Skills**: extracted nested GURPS skills + quick-pin checkboxes; roll buttons route through native GURPS sheet-style skill handling where possible.
   - **Quick Skills**: pinned skills with independent search and native sheet-style roll actions.
   - **Spells**: spell extraction + searchable spell list; cast buttons route through native GURPS sheet-style spell handling where possible.
@@ -105,7 +113,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
    - **Combat Burst** for defenses/attacks and quick rolls.
    - **Skills** to browse and check skills you want pinned.
    - **Quick Skills** to use pinned skills quickly.
-5. Edit HP/FP directly in Combat Burst.
+5. Review HP/FP in Combat Burst; apply damage or resource changes through native GURPS controls.
 6. Click **Minimize** to collapse QuickDeck into a compact top-screen **QD QuickDeck** restore pill.
 7. **Left-click** the floating restore pill to reopen QuickDeck.
 8. **Right-click and drag** the floating restore pill to move it; release to save position.
@@ -135,6 +143,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Token placement uses click-to-place canvas coordinates (no browser drag/drop to canvas).
 - Token placement displays a temporary Forge-safe placement reticle/cursor and removes it during placement cleanup.
 - Combat attack pill targeting uses Foundry token `setTarget` behavior only, avoids GURPS combat-rule mutations, and removes all temporary listeners/reticles on target, cancel, scene switch, close, or error.
+- QuickDeck records pending attack context for flow state only and does not manually apply HP/FP damage or calculate GURPS damage, DR, wounding, shock, knockback, or crippling.
 - Combat attack pill modifier controls read the native GURPS `ModifierBucket` status and open the native GURPS ModifierBucket UI; QuickDeck does not apply, clear, or manually calculate bucket modifiers.
 - Escape/cancel, close, minimize, and scene-switch paths always remove temporary pointer/window/canvas listeners.
 - Roll and token placement failures are warning-first and never intentionally crash the app.
