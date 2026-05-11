@@ -22,7 +22,7 @@ function openQuickDeck() {
 
 function renderQuickDeckIfOpen() {
   if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-  quickDeckApp.render(false);
+  quickDeckApp.render(false, { focus: false });
   quickDeckApp.scheduleNativeWindowFocusAfterRender?.();
 }
 
