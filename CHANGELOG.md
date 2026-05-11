@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.5.0 draft
+
+### Added
+- Native combat flow polish: attack buttons keep using GURPS sheet-style `handleRoll`/OTF handling while QuickDeck records pending attack context for later handoff work.
+- Guarded native-window and chat focus helpers bring GURPS dialogs/windows and the Foundry chat sidebar forward after native rolls without embedding chat or adding permanent listeners.
+- Combat helper controls for **Bring Chat Front**, **Clear Targets**, **Next Actor**, and **Repeat Last Attack**.
+- Pending attack context stores actor id, attack index/name, OTF, damage string, source path, raw attack reference, and lowercase `hitlocation` when attack metadata already exposes one.
+
+### Changed
+- QuickDeck continues to leave attack, defense, and damage resolution to native GURPS, avoids any direct HP/FP mutation or custom damage math in the combat flow polish pass, and points damage follow-ups back to native GURPS chat controls.
+
 ## [Unreleased] - v0.4.0 draft
 
 ### Added

@@ -46,6 +46,7 @@ export class QuickDeckApp extends Application {
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
     this._pendingAttackGuidance = null;
+    this.pendingAttackContext = null;
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
@@ -1388,6 +1389,7 @@ export class QuickDeckApp extends Application {
     if (!actor || !dataset?.otf) return false;
 
     if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+    const previousWindowIds = this.getNativeWindowIds();
 
     if (dataset.key && typeof gurps?.handleRoll === "function") {
       try {
@@ -1396,6 +1398,9 @@ export class QuickDeckApp extends Application {
         return true;
       } catch (error) {
         console.warn(`gurps-quickdeck | Native GURPS ${label} handleRoll failed, falling back to OTF.`, error);
+      } finally {
+        this.scheduleNativeWindowFocus(previousWindowIds);
+        this.scheduleChatFocus();
       }
     }
 
@@ -1406,10 +1411,211 @@ export class QuickDeckApp extends Application {
       }
     } catch (_error) {
       // Let the caller decide whether a non-native fallback is appropriate.
+    } finally {
+      this.scheduleNativeWindowFocus(previousWindowIds);
+      this.scheduleChatFocus();
     }
 
     return false;
   }
+
+
+
+  getNativeWindowIds() {
+    try {
+      return new Set(Object.keys(ui?.windows ?? {}));
+    } catch (_error) {
+      return new Set();
+    }
+  }
+
+  isLikelyNativeGurpsWindow(app) {
+    const parts = [
+      app?.id,
+      app?.options?.id,
+      app?.options?.title,
+      app?.title,
+      app?.constructor?.name
+    ].map((value) => String(value ?? "").toLowerCase());
+    return parts.some((part) => /gurps|damage|roll|modifier|bucket|attack/.test(part));
+  }
+
+  bringNativeWindowsToFront(previousWindowIds = new Set()) {
+    try {
+      const windows = Object.values(ui?.windows ?? {});
+      for (const app of windows) {
+        if (!app || app === this) continue;
+        const appId = String(app.appId ?? app.id ?? "");
+        if (previousWindowIds.has(appId) && !this.isLikelyNativeGurpsWindow(app)) continue;
+        app.bringToTop?.();
+      }
+    } catch (_error) {
+      // Native window focus is best-effort only.
+    }
+  }
+
+  scheduleNativeWindowFocus(previousWindowIds = new Set()) {
+    this.bringNativeWindowsToFront(previousWindowIds);
+    globalThis.setTimeout?.(() => this.bringNativeWindowsToFront(previousWindowIds), 0);
+    globalThis.setTimeout?.(() => this.bringNativeWindowsToFront(previousWindowIds), 100);
+  }
+
+  focusChatSidebar() {
+    try {
+      ui?.sidebar?.expand?.();
+      ui?.sidebar?.activateTab?.("chat");
+      ui?.chat?.render?.(true);
+      ui?.chat?.bringToTop?.();
+    } catch (_error) {
+      // Chat focus is best-effort and must not block native GURPS handling.
+    }
+  }
+
+  scheduleChatFocus() {
+    this.focusChatSidebar();
+    globalThis.setTimeout?.(() => this.focusChatSidebar(), 0);
+    globalThis.setTimeout?.(() => this.focusChatSidebar(), 100);
+  }
+
+  extractKnownHitLocation(attack) {
+    const raw = attack?.raw && typeof attack.raw === "object" ? attack.raw : attack;
+    const value = this.getFirstDefinedValue(raw, [
+      "hitlocation",
+      "hitLocation",
+      "hit_location",
+      "location",
+      "calc.hitlocation",
+      "calc.hitLocation",
+      "damage.hitlocation",
+      "damage.hitLocation",
+      "dmg.hitlocation",
+      "dmg.hitLocation"
+    ]);
+    const normalized = String(value ?? "").trim().toLowerCase();
+    return normalized || null;
+  }
+
+  buildNativeDamagePassThroughOptions(attack) {
+    const hitlocation = this.extractKnownHitLocation(attack);
+    return hitlocation ? { hitlocation } : {};
+  }
+
+  rememberPendingAttackContext(actor, attack, attackIndex, dataset = null) {
+    if (!actor || !attack) return null;
+    const otf = dataset?.otf ? `[${dataset.otf}]` : `[${this.getSheetAttackOtf(attack)}]`;
+    const context = {
+      actorId: actor.id,
+      attackIndex,
+      attackName: this.getSheetAttackDisplayName(attack) || attack.name || "Unnamed Attack",
+      otf,
+      damage: this.getAttackDamageString(attack),
+      sourcePath: attack.sourcePath ?? null,
+      rawAttackReference: attack.raw ?? null,
+      hitlocation: this.extractKnownHitLocation(attack),
+      nativeDamageOptions: this.buildNativeDamagePassThroughOptions(attack)
+    };
+    this.pendingAttackContext = context;
+    return context;
+  }
+
+  async executeNativeAttack(actor, attack, attackIndex, event = null) {
+    const gurps = globalThis.GURPS ?? game.GURPS;
+    if (!actor || !attack) return false;
+    if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+    const dataset = this.getSheetAttackDataset(attack);
+    this.rememberPendingAttackContext(actor, attack, attackIndex, dataset);
+    const targets = Array.from(game.user?.targets ?? []);
+    const previousWindowIds = this.getNativeWindowIds();
+    let handled = false;
+
+    try {
+      if (dataset.key && dataset.otf && typeof gurps?.handleRoll === "function") {
+        const fakeEvent = this.buildGurpsHandleRollEvent(dataset);
+        await gurps.handleRoll(fakeEvent, actor, { targets });
+        handled = true;
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Attack handleRoll failed, falling back to OTF.", error);
+    } finally {
+      this.scheduleNativeWindowFocus(previousWindowIds);
+    }
+
+    try {
+      if (!handled && dataset.otf && typeof gurps?.executeOTF === "function") {
+        await gurps.executeOTF(`[${dataset.otf}]`, false, event, actor);
+        handled = true;
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Attack OTF failed, falling back if possible.", error);
+    } finally {
+      this.scheduleNativeWindowFocus(previousWindowIds);
+    }
+
+    this.scheduleChatFocus();
+    return handled;
+  }
+
+  async repeatLastAttack(event = null) {
+    const context = this.pendingAttackContext;
+    if (!context?.actorId || !Number.isFinite(context.attackIndex)) {
+      ui.notifications?.warn("QuickDeck: No attack has been selected yet.");
+      return;
+    }
+
+    const actor = game.actors.get(context.actorId);
+    if (!actor) {
+      ui.notifications?.warn("QuickDeck: The last attack actor is unavailable.");
+      return;
+    }
+
+    const attack = this.getDerivedActorData(actor).attacks[context.attackIndex];
+    if (!attack) {
+      ui.notifications?.warn("QuickDeck: The last attack is unavailable.");
+      return;
+    }
+
+    const handled = await this.executeNativeAttack(actor, attack, context.attackIndex, event);
+    if (handled) return;
+
+    ui.notifications?.warn("QuickDeck: Could not route repeated attack through GURPS handleRoll/OTF. Falling back to QuickDeck roll.");
+    await this.triggerCombatRoll(actor.id, {
+      type: "attack",
+      label: `Attack (${attack.name})`,
+      value: attack.level,
+      attackName: attack.name,
+      attackType: attack.type,
+      attack
+    });
+    this.scheduleChatFocus();
+  }
+
+  clearUserTargets() {
+    try {
+      const targets = Array.from(game?.user?.targets ?? []);
+      for (const token of targets) {
+        if (typeof token?.setTarget === "function") {
+          token.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: false });
+        }
+      }
+      game?.user?.targets?.clear?.();
+      ui.notifications?.info("QuickDeck: Targets cleared.");
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to clear targets.", error);
+      ui.notifications?.warn("QuickDeck: Could not clear targets.");
+    }
+    this.render(false);
+  }
+
+  activateNextRosterActor() {
+    if (this.rosterActorIds.length === 0) return;
+    const currentIndex = this.activeActorId ? this.rosterActorIds.indexOf(this.activeActorId) : -1;
+    const nextIndex = (currentIndex + 1) % this.rosterActorIds.length;
+    this.activeActorId = this.rosterActorIds[nextIndex] ?? null;
+    this.persistRosterState();
+    this.render(false);
+  }
+
 
   async triggerCombatRoll(actorId, rollContext) {
     const actor = game.actors.get(actorId);
@@ -1467,120 +1673,17 @@ export class QuickDeckApp extends Application {
     return null;
   }
 
-  extractConcreteDamageFormula(damageText) {
-    const normalizedDamage = String(damageText ?? "").trim();
-    if (!normalizedDamage) return null;
-    if (/^(sw|thr)\b/i.test(normalizedDamage)) return null;
-
-    const match = normalizedDamage.match(/(\d+)d(6)?(?:\s*([+-])\s*(\d+))?/i);
-    if (!match?.[1]) return null;
-
-    const diceCount = Number(match[1]);
-    if (!Number.isFinite(diceCount) || diceCount <= 0) return null;
-
-    const modifierSign = match[3] ?? "";
-    const modifierValue = match[4] ?? "";
-    const modifier = modifierSign && modifierValue ? `${modifierSign}${modifierValue}` : "";
-
-    return `${diceCount}d6${modifier}`;
-  }
-
-  async createDamageChatCard({
-    actor,
-    attackName,
-    damageText,
-    formula,
-    roll = null,
-    manualNeeded = false,
-    errorMessage = null
-  }) {
-    const speaker = ChatMessage.getSpeaker({ actor });
-    const actorName = this.escapeHtml(actor?.name ?? "Unknown");
-    const safeAttackName = this.escapeHtml(attackName ?? "Unnamed Attack");
-    const safeDamageText = this.escapeHtml(damageText ?? "—");
-    const safeFormula = this.escapeHtml(formula ?? "—");
-    const safeError = this.escapeHtml(errorMessage ?? "");
-    const total = Number.isFinite(roll?.total) ? roll.total : "—";
-
-    const content = `
-      <div class="gurps-quickdeck-roll-fallback">
-        <h3>QuickDeck Damage Roll</h3>
-        <p><strong>Actor:</strong> ${actorName}</p>
-        <p><strong>Attack:</strong> ${safeAttackName}</p>
-        <p><strong>Damage String:</strong> ${safeDamageText}</p>
-        <p><strong>Formula:</strong> ${safeFormula}</p>
-        ${errorMessage ? `<p><strong>Error:</strong> ${safeError}</p>` : ""}
-        ${manualNeeded ? "<p><strong>Manual damage needed.</strong></p>" : `<p><strong>Total:</strong> ${this.escapeHtml(String(total))}</p>`}
-      </div>
-    `;
-    const flavor = manualNeeded
-      ? `QuickDeck Damage: ${safeAttackName} (manual)`
-      : `QuickDeck Damage: ${safeAttackName}`;
-
-    if (roll && typeof roll.toMessage === "function") {
-      try {
-        await roll.toMessage({ speaker, flavor, content });
-        return;
-      } catch (error) {
-        console.warn("gurps-quickdeck | roll.toMessage failed, falling back to ChatMessage.create.", error);
-      }
-    }
-
-    await ChatMessage.create({
-      speaker,
-      flavor,
-      rolls: roll ? [roll] : [],
-      content
-    });
-  }
-
   async triggerDamageRoll(actorId, attackIndex) {
     if (!actorId || !Number.isFinite(attackIndex)) return;
     const actor = game.actors.get(actorId);
     if (!actor) return;
 
-    const attacks = this.extractAttacks(actor);
-    const attack = attacks[attackIndex];
+    const attack = this.getDerivedActorData(actor).attacks[attackIndex];
     if (!attack) return;
 
-    const damageText = this.getAttackDamageString(attack) ?? "—";
-    const formula = this.extractConcreteDamageFormula(damageText);
-
-    if (!formula) {
-      await this.createDamageChatCard({
-        actor,
-        attackName: attack.name,
-        damageText,
-        formula: null,
-        manualNeeded: true
-      });
-      return;
-    }
-
-    let roll = null;
-    try {
-      roll = await new Roll(formula).evaluate();
-    } catch (error) {
-      console.warn("gurps-quickdeck | Damage roll evaluation failed.", { formula, error });
-      const message = error instanceof Error ? error.message : String(error);
-      await this.createDamageChatCard({
-        actor,
-        attackName: attack.name,
-        damageText,
-        formula,
-        manualNeeded: true,
-        errorMessage: message
-      });
-      return;
-    }
-
-    await this.createDamageChatCard({
-      actor,
-      attackName: attack.name,
-      damageText,
-      formula,
-      roll
-    });
+    this.rememberPendingAttackContext(actor, attack, attackIndex, this.getSheetAttackDataset(attack));
+    this.scheduleChatFocus();
+    ui.notifications?.info("QuickDeck: Use the native GURPS chat damage controls for this attack.");
   }
 
   async waitForTargetSelection({ timeoutMs = 30000 } = {}) {
@@ -1683,26 +1786,6 @@ export class QuickDeckApp extends Application {
     ui.notifications?.info(`QuickDeck: Attack outcome: ${outcomeLabel}.`);
     this._pendingAttackGuidance = success ? { actorId: actor.id, attackIndex } : null;
     this.render(false);
-  }
-
-  async updateActorResource(actorId, resource, rawValue) {
-    if (!actorId || !resource) return;
-    const actor = game.actors.get(actorId);
-    if (!actor) return;
-
-    const trimmedValue = String(rawValue ?? "").trim();
-    if (!trimmedValue) return;
-
-    const parsed = Number(trimmedValue);
-    if (!Number.isFinite(parsed)) return;
-
-    const normalizedResource = String(resource).toLowerCase();
-    let path = null;
-    if (normalizedResource === "hp") path = "system.HP.value";
-    if (normalizedResource === "fp") path = "system.FP.value";
-    if (!path) return;
-
-    await actor.update({ [path]: parsed });
   }
 
   openReferenceEntry(referenceData = {}) {
@@ -2768,6 +2851,8 @@ export class QuickDeckApp extends Application {
       isTargetOpponentModeActive: this.pendingTargetOpponentAttackIndex !== null,
       currentTargetName: this.getCurrentTargetDisplayName(),
       modifierBucketStatus,
+      canRepeatLastAttack: Boolean(this.pendingAttackContext?.actorId),
+      lastAttackName: this.pendingAttackContext?.attackName ?? "No attack selected",
       gurpsData,
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
@@ -2933,25 +3018,6 @@ export class QuickDeckApp extends Application {
       this.render();
     });
 
-    const commitResourceUpdate = async (event) => {
-      const input = event.currentTarget;
-      const actorId = input?.dataset?.actorId;
-      const resource = input?.dataset?.resource;
-      if (!actorId || !resource) return;
-      if (input.dataset.lastCommittedValue === input.value) return;
-      input.dataset.lastCommittedValue = input.value;
-      await this.updateActorResource(actorId, resource, input.value);
-      this.render();
-    };
-
-    html.find("[data-action='update-resource']").on("change", commitResourceUpdate);
-    html.find("[data-action='update-resource']").on("blur", commitResourceUpdate);
-    html.find("[data-action='update-resource']").on("keydown", async (event) => {
-      if (event.key !== "Enter") return;
-      event.preventDefault();
-      await commitResourceUpdate(event);
-    });
-
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();
       const drawer = event.currentTarget.dataset.drawer;
@@ -2996,6 +3062,26 @@ export class QuickDeckApp extends Application {
       this.openNativeModifierBucket(event.currentTarget.dataset.actorId, event);
     });
 
+    html.find("[data-action='open-chat']").on("click", (event) => {
+      event.preventDefault();
+      this.scheduleChatFocus();
+    });
+
+    html.find("[data-action='clear-targets']").on("click", (event) => {
+      event.preventDefault();
+      this.clearUserTargets();
+    });
+
+    html.find("[data-action='next-actor']").on("click", (event) => {
+      event.preventDefault();
+      this.activateNextRosterActor();
+    });
+
+    html.find("[data-action='repeat-last-attack']").on("click", async (event) => {
+      event.preventDefault();
+      await this.repeatLastAttack(event);
+    });
+
     html.find("[data-action='roll-attack']").on("click", async (event) => {
       event.preventDefault();
       const actorId = event.currentTarget.dataset.actorId;
@@ -3018,36 +3104,8 @@ export class QuickDeckApp extends Application {
       }
 
 
-      const gurps = globalThis.GURPS ?? game.GURPS;
-      if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
-
-      const attackName = String(attack.name ?? "").trim();
-      const otf = `[A:${attackName}]`;
-      const targets = Array.from(game.user?.targets ?? []);
-      const dataset = this.getSheetAttackDataset(attack);
-      const fakeEvent = this.buildGurpsHandleRollEvent(dataset);
-
-      let handledByHandleRoll = false;
-      try {
-        if (dataset.key && dataset.otf && typeof gurps?.handleRoll === "function") {
-          await gurps.handleRoll(fakeEvent, actor, { targets });
-          handledByHandleRoll = true;
-        }
-      } catch (error) {
-        console.warn("gurps-quickdeck | Attack handleRoll failed, falling back to OTF.", error);
-      }
-
-      let usedOtF = false;
-      try {
-        if (!handledByHandleRoll && otf && typeof gurps?.executeOTF === "function") {
-          await gurps.executeOTF(otf, false, event, actor);
-          usedOtF = true;
-        }
-      } catch (error) {
-        // Fall through to the QuickDeck roll fallback below.
-      }
-
-      if (!handledByHandleRoll && !usedOtF) {
+      const handled = await this.executeNativeAttack(actor, attack, attackIndex, event);
+      if (!handled) {
         ui.notifications?.warn("QuickDeck: Could not route attack through GURPS handleRoll/OTF. Falling back to QuickDeck roll.");
         await this.triggerCombatRoll(actor.id, {
           type: "attack",
@@ -3057,6 +3115,7 @@ export class QuickDeckApp extends Application {
           attackType: attack.type,
           attack
         });
+        this.scheduleChatFocus();
       }
     });
 
