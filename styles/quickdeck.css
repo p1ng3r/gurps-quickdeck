@@ -609,6 +609,36 @@
   gap: 0.35rem;
 }
 
+
+.quickdeck-combat-flow-controls {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.quickdeck-flow-button {
+  border: 1px solid rgba(125, 180, 218, 0.42);
+  border-radius: 7px;
+  padding: 0.28rem 0.36rem;
+  color: #eaf5ff;
+  background: linear-gradient(180deg, rgba(29, 51, 68, 0.78), rgba(14, 23, 32, 0.88));
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.quickdeck-flow-button:hover:not(:disabled) {
+  border-color: rgba(143, 213, 255, 0.9);
+  box-shadow: 0 0 10px rgba(118, 210, 255, 0.18);
+}
+
+.quickdeck-flow-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .quickdeck-defenses,
 .quickdeck-stats {
   display: grid;
@@ -1115,6 +1145,7 @@
 .quickdeck-open-sheet-button:hover,
 .quickdeck-drop-token-button:hover,
 .quickdeck-remove-button:hover,
+.quickdeck-flow-button:hover,
 .quickdeck-roll-button:hover,
 .quickdeck-drawer-tab:hover,
 .quickdeck-roster-button:hover {

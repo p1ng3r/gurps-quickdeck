@@ -180,6 +180,21 @@
                       </div>
                     </header>
 
+                    <div class="quickdeck-combat-flow-controls" aria-label="Combat flow helpers">
+                      <button type="button" data-action="open-chat" class="quickdeck-flow-button">Bring Chat Front</button>
+                      <button type="button" data-action="clear-targets" class="quickdeck-flow-button">Clear Targets</button>
+                      <button type="button" data-action="next-actor" class="quickdeck-flow-button">Next Actor</button>
+                      <button
+                        type="button"
+                        data-action="repeat-last-attack"
+                        class="quickdeck-flow-button"
+                        title="Repeat {{lastAttackName}}"
+                        {{#unless canRepeatLastAttack}}disabled{{/unless}}
+                      >
+                        Repeat Last Attack
+                      </button>
+                    </div>
+
                     <dl class="quickdeck-defenses">
                       <div>
                         <dt>Dodge</dt>
@@ -230,14 +245,7 @@
                         <dt>HP</dt>
                         <dd>
                           <div class="quickdeck-resource-row">
-                            <input
-                              type="number"
-                              value="{{gurpsData.hp}}"
-                              data-action="update-resource"
-                              data-actor-id="{{activeActor.id}}"
-                              data-resource="hp"
-                              aria-label="Edit HP for {{activeActor.name}}"
-                            />
+                            <span>{{gurpsData.display.hp}}</span>
                             <span class="quickdeck-resource-max">/ {{gurpsData.display.hpMax}}</span>
                           </div>
                         </dd>
@@ -246,14 +254,7 @@
                         <dt>FP</dt>
                         <dd>
                           <div class="quickdeck-resource-row">
-                            <input
-                              type="number"
-                              value="{{gurpsData.fp}}"
-                              data-action="update-resource"
-                              data-actor-id="{{activeActor.id}}"
-                              data-resource="fp"
-                              aria-label="Edit FP for {{activeActor.name}}"
-                            />
+                            <span>{{gurpsData.display.fp}}</span>
                             <span class="quickdeck-resource-max">/ {{gurpsData.display.fpMax}}</span>
                           </div>
                         </dd>
@@ -309,7 +310,7 @@
                                     data-attack-index="{{attack.index}}"
                                     class="quickdeck-roll-button quickdeck-roll-button-secondary"
                                   >
-                                    Roll Damage
+                                    Show Native Damage
                                   </button>
                                 </dd>
                               </div>
@@ -385,7 +386,7 @@
                                   data-attack-index="{{attack.index}}"
                                   class="quickdeck-roll-button quickdeck-roll-button-secondary"
                                 >
-                                  Roll Damage (Follow-up)
+                                  Show Native Damage
                                 </button>
                               {{/if}}
                             </div>
@@ -464,7 +465,7 @@
                                 <span>Attack</span>
                               </button>
                               {{#if attack.showDamageFollowup}}
-                                <button type="button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-roll-button quickdeck-roll-button-secondary">Roll Damage (Follow-up)</button>
+                                <button type="button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-roll-button quickdeck-roll-button-secondary">Show Native Damage</button>
                               {{/if}}
                             </div>
                           </article>
