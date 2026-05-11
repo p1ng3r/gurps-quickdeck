@@ -26,13 +26,33 @@
                 class="quickdeck-roster-button {{#if actor.isActive}}is-active{{/if}} {{#if actor.isCurrentTurn}}is-current-turn{{/if}}"
               >
                 <img src="{{actor.img}}" alt="{{actor.name}}" />
-                <span class="quickdeck-roster-name">{{actor.name}}</span>
-                {{#if actor.combatBadge}}
-                  <span class="quickdeck-combat-pill">{{actor.combatBadge}}</span>
-                {{/if}}
-                {{#if actor.actorType}}
-                  <span class="quickdeck-type-pill">{{actor.actorType}}</span>
-                {{/if}}
+                <span class="quickdeck-roster-main">
+                  <span class="quickdeck-roster-title-row">
+                    <span class="quickdeck-roster-name">{{actor.name}}</span>
+                    {{#if actor.combatBadge}}
+                      <span class="quickdeck-combat-pill">{{actor.combatBadge}}</span>
+                    {{/if}}
+                    {{#if actor.actorType}}
+                      <span class="quickdeck-type-pill">{{actor.actorType}}</span>
+                    {{/if}}
+                  </span>
+                  <span class="quickdeck-roster-resources" aria-label="{{actor.name}} HP and FP">
+                    <span class="quickdeck-roster-resource">
+                      <span class="quickdeck-roster-resource-label">HP</span>
+                      <span class="quickdeck-mini-resource-bar" aria-hidden="true">
+                        <span style="width: {{actor.hpPercent}}%;"></span>
+                      </span>
+                      <span class="quickdeck-roster-resource-value">{{actor.hpDisplay}}/{{actor.hpMaxDisplay}}</span>
+                    </span>
+                    <span class="quickdeck-roster-resource">
+                      <span class="quickdeck-roster-resource-label">FP</span>
+                      <span class="quickdeck-mini-resource-bar" aria-hidden="true">
+                        <span style="width: {{actor.fpPercent}}%;"></span>
+                      </span>
+                      <span class="quickdeck-roster-resource-value">{{actor.fpDisplay}}/{{actor.fpMaxDisplay}}</span>
+                    </span>
+                  </span>
+                </span>
               </button>
               <button
                 type="button"
@@ -195,71 +215,96 @@
                       </button>
                     </div>
 
-                    <dl class="quickdeck-defenses">
-                      <div>
-                        <dt>Dodge</dt>
-                        <dd>{{gurpsData.display.dodge}}</dd>
-                        <button
-                          type="button"
-                          data-action="roll-defense"
-                          data-actor-id="{{activeActor.id}}"
-                          data-defense="Dodge"
-                          data-value="{{gurpsData.display.dodge}}"
-                          class="quickdeck-roll-button"
-                        >
-                          Roll Dodge
-                        </button>
-                      </div>
-                      <div>
-                        <dt>Parry</dt>
-                        <dd>{{gurpsData.display.parry}}</dd>
-                        <button
-                          type="button"
-                          data-action="roll-defense"
-                          data-actor-id="{{activeActor.id}}"
-                          data-defense="Parry"
-                          data-value="{{gurpsData.display.parry}}"
-                          class="quickdeck-roll-button"
-                        >
-                          Roll Parry
-                        </button>
-                      </div>
-                      <div>
-                        <dt>Block</dt>
-                        <dd>{{gurpsData.display.block}}</dd>
-                        <button
-                          type="button"
-                          data-action="roll-defense"
-                          data-actor-id="{{activeActor.id}}"
-                          data-defense="Block"
-                          data-value="{{gurpsData.display.block}}"
-                          class="quickdeck-roll-button"
-                        >
-                          Roll Block
-                        </button>
-                      </div>
-                    </dl>
+                    <div class="quickdeck-defense-buttons" aria-label="Selected character active defenses">
+                      <button
+                        type="button"
+                        data-action="roll-defense"
+                        data-actor-id="{{activeActor.id}}"
+                        data-defense="Dodge"
+                        data-value="{{gurpsData.display.dodge}}"
+                        class="quickdeck-defense-button"
+                      >
+                        <span>Dodge</span>
+                        <strong>{{gurpsData.display.dodge}}</strong>
+                      </button>
+                      <button
+                        type="button"
+                        data-action="roll-defense"
+                        data-actor-id="{{activeActor.id}}"
+                        data-defense="Parry"
+                        data-value="{{gurpsData.display.parry}}"
+                        class="quickdeck-defense-button"
+                      >
+                        <span>Parry</span>
+                        <strong>{{gurpsData.display.parry}}</strong>
+                      </button>
+                      <button
+                        type="button"
+                        data-action="roll-defense"
+                        data-actor-id="{{activeActor.id}}"
+                        data-defense="Block"
+                        data-value="{{gurpsData.display.block}}"
+                        class="quickdeck-defense-button"
+                      >
+                        <span>Block</span>
+                        <strong>{{gurpsData.display.block}}</strong>
+                      </button>
+                    </div>
 
-                    <dl class="quickdeck-stats">
-                      <div>
+                    <dl class="quickdeck-stats quickdeck-main-resources">
+                      <div class="quickdeck-resource-card">
                         <dt>HP</dt>
                         <dd>
-                          <div class="quickdeck-resource-row">
-                            <span>{{gurpsData.display.hp}}</span>
-                            <span class="quickdeck-resource-max">/ {{gurpsData.display.hpMax}}</span>
+                          <div class="quickdeck-resource-control" data-resource-control="HP">
+                            <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="-1" aria-label="Reduce HP by 1">−</button>
+                            <div class="quickdeck-resource-readout">
+                              <div class="quickdeck-large-resource-bar" aria-hidden="true">
+                                <span style="width: {{gurpsData.hpPercent}}%;"></span>
+                              </div>
+                              <div class="quickdeck-resource-value-line">
+                                <input
+                                  type="text"
+                                  inputmode="decimal"
+                                  data-action="set-resource"
+                                  data-actor-id="{{activeActor.id}}"
+                                  data-resource="HP"
+                                  value="{{gurpsData.display.hp}}"
+                                  aria-label="Current HP"
+                                />
+                                <span class="quickdeck-resource-max">/ {{gurpsData.display.hpMax}}</span>
+                              </div>
+                            </div>
+                            <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="1" aria-label="Increase HP by 1">+</button>
                           </div>
                         </dd>
                       </div>
-                      <div>
+                      <div class="quickdeck-resource-card">
                         <dt>FP</dt>
                         <dd>
-                          <div class="quickdeck-resource-row">
-                            <span>{{gurpsData.display.fp}}</span>
-                            <span class="quickdeck-resource-max">/ {{gurpsData.display.fpMax}}</span>
+                          <div class="quickdeck-resource-control" data-resource-control="FP">
+                            <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="-1" aria-label="Reduce FP by 1">−</button>
+                            <div class="quickdeck-resource-readout">
+                              <div class="quickdeck-large-resource-bar" aria-hidden="true">
+                                <span style="width: {{gurpsData.fpPercent}}%;"></span>
+                              </div>
+                              <div class="quickdeck-resource-value-line">
+                                <input
+                                  type="text"
+                                  inputmode="decimal"
+                                  data-action="set-resource"
+                                  data-actor-id="{{activeActor.id}}"
+                                  data-resource="FP"
+                                  value="{{gurpsData.display.fp}}"
+                                  aria-label="Current FP"
+                                />
+                                <span class="quickdeck-resource-max">/ {{gurpsData.display.fpMax}}</span>
+                              </div>
+                            </div>
+                            <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="1" aria-label="Increase FP by 1">+</button>
                           </div>
                         </dd>
                       </div>
-                      <div>
+                      <div class="quickdeck-move-card">
                         <dt>Move</dt>
                         <dd>{{gurpsData.display.move}}</dd>
                       </div>
