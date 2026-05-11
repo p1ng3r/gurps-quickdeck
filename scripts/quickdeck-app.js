@@ -1312,6 +1312,28 @@ export class QuickDeckApp extends Application {
     ]);
     if (await this.callAnyMethod(gurpsCandidates)) return true;
 
+    if (rollContext.type === "defense") {
+      const gurps = globalThis.GURPS ?? game.GURPS;
+      const defense = String(rollContext.defense ?? "").trim();
+      if (defense && typeof gurps?.executeOTF === "function") {
+        const previousWindowIds = this.getNativeWindowIds();
+        try {
+          if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+          await gurps.executeOTF(`[${defense}]`, false, null, actor);
+          return true;
+        } catch (error) {
+          console.warn("gurps-quickdeck | Native GURPS defense OTF failed.", error);
+        } finally {
+          this.scheduleNativeWindowFocus(previousWindowIds);
+          this.scheduleChatFocus();
+        }
+      }
+      console.warn("gurps-quickdeck | No GURPS-native defense roll method found.", {
+        actor: actor?.name,
+        defense
+      });
+    }
+
     if (rollContext.type === "skill") {
       console.warn("gurps-quickdeck | No GURPS-native skill roll method found, using 3d6 fallback.", {
         actor: actor?.name,
@@ -1824,6 +1846,11 @@ export class QuickDeckApp extends Application {
     const usedSystemRoll = await this.tryGurpsRoll(actor, rollContext);
     if (usedSystemRoll) return;
 
+    if (rollContext.type === "defense") {
+      ui.notifications?.warn(`QuickDeck: Could not find a native GURPS roll for ${rollContext.defense ?? "this defense"}.`);
+      return;
+    }
+
     const target = this.parseRollTarget(rollContext.value);
     let roll = null;
     try {
@@ -2067,6 +2094,75 @@ export class QuickDeckApp extends Application {
       `data.data.${normalized}.maxValue`,
       `data.data.${normalized}.value`
     ]);
+  }
+
+
+  getResourcePercent(current, max) {
+    const currentNumber = Number(current);
+    const maxNumber = Number(max);
+    if (!Number.isFinite(currentNumber) || !Number.isFinite(maxNumber) || maxNumber <= 0) return 0;
+    return Math.max(0, Math.min(100, Math.round((currentNumber / maxNumber) * 100)));
+  }
+
+  getResourceSummary(actor, resource) {
+    const current = this.getResourceValue(actor, resource);
+    const max = this.getResourceMax(actor, resource) ?? current;
+    return {
+      value: current,
+      max,
+      display: this.toDisplayValue(current),
+      maxDisplay: this.toDisplayValue(max),
+      percent: this.getResourcePercent(current, max)
+    };
+  }
+
+  getResourceUpdatePath(resource) {
+    const normalized = String(resource ?? "").toUpperCase();
+    if (!["HP", "FP"].includes(normalized)) return null;
+    return `system.${normalized}.value`;
+  }
+
+  parseResourceNumber(rawValue) {
+    if (typeof rawValue === "number") return Number.isFinite(rawValue) ? rawValue : null;
+    const trimmed = String(rawValue ?? "").trim();
+    if (!trimmed || trimmed === "—") return null;
+    const parsed = Number(trimmed);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  async adjustActorResource(actorId, resource, delta) {
+    const actor = actorId ? game.actors.get(actorId) : null;
+    const path = this.getResourceUpdatePath(resource);
+    const numericDelta = Number(delta);
+    if (!actor || !path || !Number.isFinite(numericDelta)) return;
+
+    const current = this.parseResourceNumber(this.getResourceValue(actor, resource));
+    if (!Number.isFinite(current)) {
+      ui.notifications?.warn(`QuickDeck: ${resource} is not a numeric value on ${actor.name}.`);
+      return;
+    }
+
+    await this.setActorResourceValue(actor, resource, current + numericDelta);
+  }
+
+  async setActorResourceValue(actorOrId, resource, value) {
+    const actor = typeof actorOrId === "string" ? game.actors.get(actorOrId) : actorOrId;
+    const path = this.getResourceUpdatePath(resource);
+    const numericValue = this.parseResourceNumber(value);
+    if (!actor || !path) return;
+    if (!Number.isFinite(numericValue)) {
+      ui.notifications?.warn(`QuickDeck: Enter a numeric ${resource} value.`);
+      return;
+    }
+
+    try {
+      await actor.update({ [path]: numericValue });
+      this.invalidateDerivedActorData(actor.id);
+      this.render(false);
+    } catch (error) {
+      console.warn(`gurps-quickdeck | Failed to update ${resource}.`, error);
+      ui.notifications?.warn(`QuickDeck: Could not update ${resource} for ${actor.name}.`);
+    }
   }
 
   parseDropPayload(rawText) {
@@ -2999,6 +3095,8 @@ export class QuickDeckApp extends Application {
       fp: currentFp ?? null,
       hpMax: maxHp ?? currentHp ?? null,
       fpMax: maxFp ?? currentFp ?? null,
+      hpPercent: this.getResourcePercent(currentHp, maxHp ?? currentHp),
+      fpPercent: this.getResourcePercent(currentFp, maxFp ?? currentFp),
       move: derivedData.move,
       dodge,
       defenses: {
@@ -3030,17 +3128,27 @@ export class QuickDeckApp extends Application {
       visibleAvailableCount: this.getVisibleCountBySearchText(availableActors, this.availableSearch),
       rosterCount: rosterActors.length,
       availableCount: availableActors.length,
-      rosterActors: rosterActors.map((actor) => ({
-        id: actor.id,
-        name: actor.name,
-        img: actor.img || "icons/svg/mystery-man.svg",
-        actorType: actor.type ? String(actor.type) : null,
-        isActive: actor.id === this.activeActorId,
-        combatBadge: this.getCombatBadgeText(combatantByActorId.get(actor.id)),
-        isCurrentTurn:
-          combatantByActorId.get(actor.id)?.id &&
-          combatantByActorId.get(actor.id).id === currentCombatantId
-      })),
+      rosterActors: rosterActors.map((actor) => {
+        const hp = this.getResourceSummary(actor, "HP");
+        const fp = this.getResourceSummary(actor, "FP");
+        return {
+          id: actor.id,
+          name: actor.name,
+          img: actor.img || "icons/svg/mystery-man.svg",
+          actorType: actor.type ? String(actor.type) : null,
+          isActive: actor.id === this.activeActorId,
+          combatBadge: this.getCombatBadgeText(combatantByActorId.get(actor.id)),
+          isCurrentTurn:
+            combatantByActorId.get(actor.id)?.id &&
+            combatantByActorId.get(actor.id).id === currentCombatantId,
+          hpDisplay: hp.display,
+          hpMaxDisplay: hp.maxDisplay,
+          hpPercent: hp.percent,
+          fpDisplay: fp.display,
+          fpMaxDisplay: fp.maxDisplay,
+          fpPercent: fp.percent
+        };
+      }),
       activeActor: activeActor
         ? {
             id: activeActor.id,
@@ -3229,6 +3337,26 @@ export class QuickDeckApp extends Application {
 
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.render();
+    });
+
+    html.find("[data-action='adjust-resource']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      const resource = event.currentTarget.dataset.resource;
+      const delta = event.currentTarget.dataset.delta;
+      await this.adjustActorResource(actorId, resource, delta);
+    });
+
+    html.find("[data-action='set-resource']").on("change", async (event) => {
+      const actorId = event.currentTarget.dataset.actorId;
+      const resource = event.currentTarget.dataset.resource;
+      await this.setActorResourceValue(actorId, resource, event.currentTarget.value);
+    });
+
+    html.find("[data-action='set-resource']").on("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      event.currentTarget.blur();
     });
 
     html.find("[data-action='roll-defense']").on("click", async (event) => {
