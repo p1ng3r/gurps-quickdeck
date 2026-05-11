@@ -20,12 +20,6 @@ function openQuickDeck() {
   return quickDeckApp;
 }
 
-function renderQuickDeckIfOpen() {
-  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-  quickDeckApp.render(false);
-  quickDeckApp.scheduleNativeWindowFocusAfterRender?.();
-}
-
 Hooks.once("ready", () => {
   console.log(`${MODULE_ID} | Ready`);
   game.gurpsQuickDeckDebug = {
@@ -137,32 +131,33 @@ Hooks.on("deleteActor", (actor) => {
 Hooks.on("updateActor", (actor) => {
   if (!quickDeckApp) return;
   quickDeckApp.invalidateDerivedActorData(actor?.id);
-  renderQuickDeckIfOpen();
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
 });
 
 Hooks.on("createItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  renderQuickDeckIfOpen();
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
 });
 
 Hooks.on("updateItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  renderQuickDeckIfOpen();
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
 });
 
 Hooks.on("deleteItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  renderQuickDeckIfOpen();
+  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
 });
 
 function refreshQuickDeckOnCombatChange() {
-  renderQuickDeckIfOpen();
+  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
+  quickDeckApp.render(false);
 }
 
 let pendingModifierBucketRefresh = null;
@@ -172,7 +167,8 @@ function refreshQuickDeckOnModifierBucketChange() {
   if (pendingModifierBucketRefresh) clearTimeout(pendingModifierBucketRefresh);
   pendingModifierBucketRefresh = setTimeout(() => {
     pendingModifierBucketRefresh = null;
-    renderQuickDeckIfOpen();
+    if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
+    quickDeckApp.render(false);
   }, 0);
 }
 

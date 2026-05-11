@@ -12,9 +12,6 @@ const SETTING_KEYS = {
   RESTORE_PILL_POSITION: "restorePillPosition"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
-const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
-const NATIVE_WINDOW_FOCUS_GUARD_MS = 1400;
-const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
 
 
 export class QuickDeckApp extends Application {
@@ -50,8 +47,6 @@ export class QuickDeckApp extends Application {
     this.restorePillPosition = null;
     this._pendingAttackGuidance = null;
     this.pendingAttackContext = null;
-    this._nativeWindowFocusUntil = 0;
-    this._lastNativeWindowIds = new Set();
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
@@ -1428,48 +1423,21 @@ export class QuickDeckApp extends Application {
 
   getNativeWindowIds() {
     try {
-      return new Set(Object.keys(ui?.windows ?? {}).map((id) => String(id)));
+      return new Set(Object.keys(ui?.windows ?? {}));
     } catch (_error) {
       return new Set();
-    }
-  }
-
-  getWindowTitleText(app) {
-    try {
-      const element = app?.element?.[0] ?? app?.element;
-      return element?.querySelector?.(".window-title")?.textContent ?? app?.element?.find?.(".window-title")?.text?.() ?? "";
-    } catch (_error) {
-      return "";
     }
   }
 
   isLikelyNativeGurpsWindow(app) {
     const parts = [
       app?.id,
-      app?.appId,
       app?.options?.id,
       app?.options?.title,
       app?.title,
-      app?.constructor?.name,
-      this.getWindowTitleText(app)
-    ].map((part) => String(part ?? ""));
-    if (parts.some((part) => /quickdeck/i.test(part))) return false;
-    return parts.some((part) => NATIVE_GURPS_WINDOW_PATTERN.test(part));
-  }
-
-  focusNativeWindow(app) {
-    try {
-      app?.bringToTop?.();
-    } catch (_error) {
-      // Native window focus is best-effort only.
-    }
-
-    try {
-      const element = app?.element?.[0] ?? app?.element;
-      element?.focus?.({ preventScroll: true });
-    } catch (_error) {
-      // Native window focus is best-effort only.
-    }
+      app?.constructor?.name
+    ].map((value) => String(value ?? "").toLowerCase());
+    return parts.some((part) => /gurps|damage|roll|modifier|bucket|attack/.test(part));
   }
 
   bringNativeWindowsToFront(previousWindowIds = new Set()) {
@@ -1477,9 +1445,9 @@ export class QuickDeckApp extends Application {
       const windows = Object.values(ui?.windows ?? {});
       for (const app of windows) {
         if (!app || app === this) continue;
-        if (!this.isLikelyNativeGurpsWindow(app)) continue;
-
-        this.focusNativeWindow(app);
+        const appId = String(app.appId ?? app.id ?? "");
+        if (previousWindowIds.has(appId) && !this.isLikelyNativeGurpsWindow(app)) continue;
+        app.bringToTop?.();
       }
     } catch (_error) {
       // Native window focus is best-effort only.
@@ -1487,34 +1455,9 @@ export class QuickDeckApp extends Application {
   }
 
   scheduleNativeWindowFocus(previousWindowIds = new Set()) {
-    const guardedWindowIds = previousWindowIds instanceof Set ? previousWindowIds : new Set();
-    this._lastNativeWindowIds = new Set(guardedWindowIds);
-    this._nativeWindowFocusUntil = Date.now() + NATIVE_WINDOW_FOCUS_GUARD_MS;
-
-    try {
-      this.bringNativeWindowsToFront(guardedWindowIds);
-    } catch (_error) {
-      // Native window focus is best-effort only.
-    }
-
-    for (const delay of NATIVE_WINDOW_FOCUS_DELAYS_MS) {
-      try {
-        globalThis.setTimeout?.(() => {
-          try {
-            this.bringNativeWindowsToFront(guardedWindowIds);
-          } catch (_error) {
-            // Native window focus is best-effort only.
-          }
-        }, delay);
-      } catch (_error) {
-        // Native window focus is best-effort only.
-      }
-    }
-  }
-
-  scheduleNativeWindowFocusAfterRender() {
-    if (Date.now() > this._nativeWindowFocusUntil) return;
-    this.scheduleNativeWindowFocus(this._lastNativeWindowIds);
+    this.bringNativeWindowsToFront(previousWindowIds);
+    globalThis.setTimeout?.(() => this.bringNativeWindowsToFront(previousWindowIds), 0);
+    globalThis.setTimeout?.(() => this.bringNativeWindowsToFront(previousWindowIds), 100);
   }
 
   focusChatSidebar() {
@@ -1610,7 +1553,6 @@ export class QuickDeckApp extends Application {
     }
 
     this.scheduleChatFocus();
-    this.scheduleNativeWindowFocus(previousWindowIds);
     return handled;
   }
 
