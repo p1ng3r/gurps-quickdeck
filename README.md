@@ -2,6 +2,14 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.5.2 (Draft)
+
+- First compact dark-fantasy layout polish pass for the QuickDeck combat cockpit.
+- The loaded actor roster is denser while preserving portraits, active/current-turn highlighting, and HP/FP mini bars.
+- Selected-actor HP/FP controls keep the existing minus/plus and direct-entry behavior but use smaller resource controls and cleaner bars.
+- Dodge / Parry / Block remain large click targets with a cleaner bronze/leather fantasy treatment.
+- Combat helper buttons and attack rows are styled as compact GM controls without embedding Foundry/GURPS chat DOM or changing native GURPS attack, damage, defense, targeting, or HP/FP flows.
+
 ## What's New in v0.5.0 (Draft)
 
 - Combat buttons remain native-GURPS-first: QuickDeck records attack context, routes attacks and large Dodge/Parry/Block buttons through GURPS sheet-style/native roll handling when available, and leaves attack, defense, and damage rules to GURPS.
