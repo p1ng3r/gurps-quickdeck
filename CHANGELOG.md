@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.5.2 draft
+
+### Changed
+- Added a compact dark-fantasy UI polish pass using charcoal/leather panels, bronze accents, and parchment-highlighted text for the main QuickDeck combat cockpit.
+- Tightened the roster, selected-actor header, HP/FP pass-through controls, defense buttons, helper controls, and attack cards while preserving existing GURPS-native attack, damage, defense, targeting, z-order, and HP/FP current-value behavior.
+
 ## [Unreleased] - v0.5.1 draft
 
 ### Added
