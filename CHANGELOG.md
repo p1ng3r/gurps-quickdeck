@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.5.6 draft
+
+### Added
+- Added client-side per-actor Spell Favorites with compact pinned spell rows, full-list star toggles, stable spell keys, and native GURPS spell passthrough preserved for favorite launches.
+
 ## [Unreleased] - v0.5.5 draft
 
 ### Added

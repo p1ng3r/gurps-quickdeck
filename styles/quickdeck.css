@@ -2282,3 +2282,39 @@
   background: linear-gradient(180deg, rgba(83, 60, 24, 0.88), rgba(35, 29, 20, 0.9));
   color: #ffd76d;
 }
+
+.quickdeck-favorite-spells {
+  margin-bottom: 0.55rem;
+}
+
+.quickdeck-favorite-spell-card {
+  grid-template-columns: minmax(0, 1fr) 28px;
+}
+
+.quickdeck-favorite-spell-main {
+  padding-block: 0.3rem;
+}
+
+.quickdeck-spell-row {
+  grid-template-columns: 28px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.quickdeck-spell-row .quickdeck-skill-main {
+  min-width: 0;
+}
+
+.quickdeck-spell-favorite-toggle {
+  align-self: center;
+}
+
+@media (max-width: 720px) {
+  .quickdeck-spell-row {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+
+  .quickdeck-spell-row .quickdeck-roll-button {
+    grid-column: 1 / -1;
+  }
+}

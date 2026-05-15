@@ -6,6 +6,7 @@ const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   COMBAT_FAVORITES: "combatFavoriteAttackKeysByActor",
+  SPELL_FAVORITES: "spellFavoriteKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
@@ -63,6 +64,15 @@ Hooks.once("init", () => {
   game.settings.register(MODULE_ID, SETTING_KEYS.COMBAT_FAVORITES, {
     name: "QuickDeck Combat Favorites",
     hint: "Client-side saved favorite combat attack keys per actor.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "{}"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.SPELL_FAVORITES, {
+    name: "QuickDeck Spell Favorites",
+    hint: "Client-side saved favorite spell keys per actor.",
     scope: "client",
     config: false,
     type: String,

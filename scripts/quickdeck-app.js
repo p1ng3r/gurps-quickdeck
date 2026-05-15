@@ -8,6 +8,7 @@ const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   COMBAT_FAVORITES: "combatFavoriteAttackKeysByActor",
+  SPELL_FAVORITES: "spellFavoriteKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition"
@@ -31,6 +32,7 @@ export class QuickDeckApp extends Application {
     this.spellsSearch = "";
     this.quickSkillSelectionsByActor = {};
     this.combatFavoriteAttackKeysByActor = {};
+    this.spellFavoriteKeysByActor = {};
     this._actorSelectTimeout = null;
     this.isDragOverRoster = false;
     this.pendingTokenDropActorId = null;
@@ -473,7 +475,8 @@ export class QuickDeckApp extends Application {
     return {
       name,
       level: this.getFirstDefinedValue(spell, ["level", "calc.level", "import", "value"]),
-      class: this.getFirstDefinedValue(spell, ["class", "spellClass", "category"]),
+      class: this.getFirstDefinedValue(spell, ["class", "spellClass", "category", "college"]),
+      college: this.getFirstDefinedValue(spell, ["college"]),
       cost: this.getFirstDefinedValue(spell, ["cost", "casting.cost", "castCost"]),
       maintain: this.getFirstDefinedValue(spell, ["maintain", "maintenance", "maint"]),
       duration: this.getFirstDefinedValue(spell, ["duration"]),
@@ -606,7 +609,11 @@ export class QuickDeckApp extends Application {
         itemName.includes("ritual") ||
         itemName.includes("magic");
       if (!looksLikeSpell) continue;
-      const normalized = this.normalizeSpell(item?.system ?? item);
+      const normalized = this.normalizeSpell(item?.system ?? item, {
+        sourcePath: item?.id ? `items.${item.id}` : null,
+        sourceKey: item?.id ?? null,
+        sourceCollection: "items"
+      });
       if (!normalized) continue;
       if (!normalized.name || normalized.name === "Unnamed Spell") {
         normalized.name = item?.name ?? normalized.name;
@@ -700,6 +707,7 @@ export class QuickDeckApp extends Application {
         spell.name,
         spell.level,
         spell.class,
+        spell.college,
         spell.cost,
         spell.duration,
         spell.reference,
@@ -774,6 +782,56 @@ export class QuickDeckApp extends Application {
       Object.entries(this.combatFavoriteAttackKeysByActor).map(([actorId, attackSet]) => [
         actorId,
         Array.from(attackSet instanceof Set ? attackSet : new Set())
+      ])
+    );
+  }
+
+  getSpellFavoriteKey(spell) {
+    if (!spell || typeof spell !== "object") return null;
+    const raw = spell.raw && typeof spell.raw === "object" ? spell.raw : {};
+    const sourceParts = [
+      spell.sourceCollection,
+      spell.sourcePath,
+      spell.sourceKey,
+      this.getFirstDefinedValue(raw, ["uuid", "id", "_id", "itemid", "itemId", "key"])
+    ].filter((part) => part !== undefined && part !== null && part !== "");
+    const identityParts = [
+      spell.name,
+      spell.class,
+      spell.college,
+      spell.level,
+      spell.cost,
+      spell.duration,
+      spell.reference,
+      spell.pageHint
+    ].filter((part) => part !== undefined && part !== null && part !== "");
+    const base = [...sourceParts, ...identityParts];
+    return base.map((part) => String(part).trim().toLowerCase()).join("::") || null;
+  }
+
+  getFavoriteSpellSelection(actorId) {
+    if (!actorId) return new Set();
+    const selected = this.spellFavoriteKeysByActor[actorId];
+    if (selected instanceof Set) return selected;
+
+    const normalized = new Set(Array.isArray(selected) ? selected.map((entry) => String(entry)) : []);
+    this.spellFavoriteKeysByActor[actorId] = normalized;
+    return normalized;
+  }
+
+  setFavoriteSpellSelected(actorId, spellKey, isSelected) {
+    if (!actorId || !spellKey) return;
+    const selection = this.getFavoriteSpellSelection(actorId);
+    if (isSelected) selection.add(String(spellKey));
+    else selection.delete(String(spellKey));
+    this.persistFavoriteSpellsState();
+  }
+
+  serializeFavoriteSpellsState() {
+    return Object.fromEntries(
+      Object.entries(this.spellFavoriteKeysByActor).map(([actorId, spellSet]) => [
+        actorId,
+        Array.from(spellSet instanceof Set ? spellSet : new Set())
       ])
     );
   }
@@ -866,6 +924,21 @@ export class QuickDeckApp extends Application {
       this.combatFavoriteAttackKeysByActor = {};
     }
 
+    const savedFavoriteSpells = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.SPELL_FAVORITES),
+      {}
+    );
+    if (savedFavoriteSpells && typeof savedFavoriteSpells === "object") {
+      this.spellFavoriteKeysByActor = Object.fromEntries(
+        Object.entries(savedFavoriteSpells).map(([actorId, spellKeys]) => [
+          String(actorId),
+          new Set(Array.isArray(spellKeys) ? spellKeys.map((entry) => String(entry)) : [])
+        ])
+      );
+    } else {
+      this.spellFavoriteKeysByActor = {};
+    }
+
     this.isMinimized = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.MINIMIZED));
     const savedRestorePillPosition = this.parseJsonSetting(
       game.settings.get(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION),
@@ -901,6 +974,12 @@ export class QuickDeckApp extends Application {
     if (!game?.settings) return;
     const serialized = this.serializeFavoriteAttacksState();
     game.settings.set(MODULE_ID, SETTING_KEYS.COMBAT_FAVORITES, JSON.stringify(serialized));
+  }
+
+  persistFavoriteSpellsState() {
+    if (!game?.settings) return;
+    const serialized = this.serializeFavoriteSpellsState();
+    game.settings.set(MODULE_ID, SETTING_KEYS.SPELL_FAVORITES, JSON.stringify(serialized));
   }
 
   persistMinimizedState() {
@@ -939,6 +1018,7 @@ export class QuickDeckApp extends Application {
 
     let removedQuickSkills = false;
     let removedFavoriteAttacks = false;
+    let removedFavoriteSpells = false;
     for (const actorId of Object.keys(this.quickSkillSelectionsByActor)) {
       if (!validActorIds.has(actorId)) {
         delete this.quickSkillSelectionsByActor[actorId];
@@ -950,6 +1030,13 @@ export class QuickDeckApp extends Application {
       if (!validActorIds.has(actorId)) {
         delete this.combatFavoriteAttackKeysByActor[actorId];
         removedFavoriteAttacks = true;
+      }
+    }
+
+    for (const actorId of Object.keys(this.spellFavoriteKeysByActor)) {
+      if (!validActorIds.has(actorId)) {
+        delete this.spellFavoriteKeysByActor[actorId];
+        removedFavoriteSpells = true;
       }
     }
 
@@ -968,6 +1055,9 @@ export class QuickDeckApp extends Application {
     }
     if (removedFavoriteAttacks) {
       this.persistFavoriteAttacksState();
+    }
+    if (removedFavoriteSpells) {
+      this.persistFavoriteSpellsState();
     }
   }
 
@@ -3201,7 +3291,18 @@ export class QuickDeckApp extends Application {
     const filteredSkills = this.filterEntriesBySearchText(indexedSkills, skillsSearch);
     const quickSkills = indexedSkills.filter((skill) => skill.isQuickSkillSelected);
     const filteredQuickSkills = this.filterEntriesBySearchText(quickSkills, quickSkillsSearch);
-    const indexedSpells = derivedData.indexedSpells;
+    const favoriteSpellSelection = this.getFavoriteSpellSelection(activeActorId);
+    const indexedSpells = derivedData.indexedSpells.map((spell) => {
+      const spellKey = spell.spellKey ?? this.getSpellFavoriteKey(spell);
+      const isFavorite = spellKey ? favoriteSpellSelection.has(spellKey) : false;
+      return {
+        ...spell,
+        spellKey,
+        isFavoriteSpell: isFavorite,
+        favoriteToggleLabel: isFavorite ? "Unpin spell" : "Pin spell"
+      };
+    });
+    const favoriteSpells = indexedSpells.filter((spell) => spell.isFavoriteSpell);
     const filteredSpells = this.filterEntriesBySearchText(indexedSpells, spellsSearch);
     if (DEBUG) {
       const meleeCount = attacks.filter((attack) => attack.type === "Melee").length;
@@ -3323,6 +3424,8 @@ export class QuickDeckApp extends Application {
       visibleQuickSkillsCount: filteredQuickSkills.length,
       spellsCount: spells.length,
       visibleSpellsCount: filteredSpells.length,
+      favoriteSpells,
+      favoriteSpellCount: favoriteSpells.length,
       isDragOverRoster: this.isDragOverRoster,
       indexedAttacks,
       indexedSkills,
@@ -3478,6 +3581,19 @@ export class QuickDeckApp extends Application {
 
       const selection = this.getFavoriteAttackSelection(actorId);
       this.setFavoriteAttackSelected(actorId, attackKey, !selection.has(attackKey));
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
+    });
+
+    html.find("[data-action='toggle-favorite-spell']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId;
+      const spellKey = event.currentTarget.dataset.spellKey;
+      if (!actorId || !spellKey) return;
+
+      const selection = this.getFavoriteSpellSelection(actorId);
+      this.setFavoriteSpellSelected(actorId, spellKey, !selection.has(spellKey));
       this.render(false, { focus: false });
       this.scheduleNativeWindowFocusAfterRender();
     });
