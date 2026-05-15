@@ -3381,6 +3381,8 @@
 }
 
 .quickdeck-drawer-tab {
+  position: relative;
+  overflow: hidden;
   isolation: isolate;
   background:
     var(--quickdeck-asset-bronze-tab-plate-vertical) center / 100% 100% no-repeat,
@@ -3390,10 +3392,11 @@
 }
 
 .quickdeck-drawer-tab::before {
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
   opacity: var(--quickdeck-art-batch2-tab-opacity);
   background: var(--quickdeck-asset-bronze-tab-plate-vertical) center / 100% 100% no-repeat;
   mix-blend-mode: screen;
@@ -3476,10 +3479,27 @@
   background: var(--quickdeck-asset-bronze-compact-row-divider) center / 100% 100% no-repeat;
 }
 
+.quickdeck-favorite-attacks {
+  position: relative;
+  isolation: isolate;
+}
+
 .quickdeck-favorite-attacks::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  border: 0;
+  border-radius: inherit;
   background: var(--quickdeck-asset-icon-star-favorite-mark) right 0.44rem top 0.38rem / 28px 28px no-repeat;
   background-blend-mode: screen;
   opacity: 0.72;
+}
+
+.quickdeck-favorite-attacks > * {
+  position: relative;
+  z-index: 1;
 }
 
 .quickdeck-favorite-attack-card {
