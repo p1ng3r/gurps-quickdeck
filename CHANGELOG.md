@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.5.3 draft
+
+### Changed
+- Rebuilt the selected-actor cockpit into a cleaner top identity, compact GM helper strip, redesigned HP/FP resource cards, prominent defense row, and unchanged dense attack list.
+- Kept HP/FP pass-through controls on their existing action hooks while simplifying the resource card markup so current/max values align naturally without nested outline boxes.
+
 ## [Unreleased] - v0.5.2 draft
 
 ### Changed
