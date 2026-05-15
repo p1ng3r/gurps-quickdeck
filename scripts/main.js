@@ -5,6 +5,7 @@ const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
+  COMBAT_FAVORITES: "combatFavoriteAttackKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
@@ -53,6 +54,15 @@ Hooks.once("init", () => {
   game.settings.register(MODULE_ID, SETTING_KEYS.QUICK_SKILLS, {
     name: "QuickDeck Skill Pins",
     hint: "Client-side saved Quick Skills per actor.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "{}"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.COMBAT_FAVORITES, {
+    name: "QuickDeck Combat Favorites",
+    hint: "Client-side saved favorite combat attack keys per actor.",
     scope: "client",
     config: false,
     type: String,
