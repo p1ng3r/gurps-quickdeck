@@ -7,6 +7,7 @@ const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
+  COMBAT_FAVORITES: "combatFavoriteAttackKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition"
@@ -29,6 +30,7 @@ export class QuickDeckApp extends Application {
     this.quickSkillsSearch = "";
     this.spellsSearch = "";
     this.quickSkillSelectionsByActor = {};
+    this.combatFavoriteAttackKeysByActor = {};
     this._actorSelectTimeout = null;
     this.isDragOverRoster = false;
     this.pendingTokenDropActorId = null;
@@ -675,6 +677,7 @@ export class QuickDeckApp extends Application {
     const indexedAttacks = attacks.map((attack, index) => ({
       ...attack,
       index,
+      attackKey: this.getAttackFavoriteKey(attack),
       searchText: this.buildSearchText([
         attack.name,
         attack.type,
@@ -725,6 +728,54 @@ export class QuickDeckApp extends Application {
     nextActorCache.set(cacheScope, { stamp, value });
     this._derivedActorDataCache.set(actorId, nextActorCache);
     return value;
+  }
+
+
+  getAttackFavoriteKey(attack) {
+    if (!attack || typeof attack !== "object") return null;
+    const raw = attack.raw && typeof attack.raw === "object" ? attack.raw : {};
+    const sourceParts = [
+      attack.sourceCollection,
+      attack.sourcePath,
+      attack.sourceKey,
+      this.getFirstDefinedValue(raw, ["uuid", "id", "_id", "itemid", "itemId", "key"])
+    ].filter((part) => part !== undefined && part !== null && part !== "");
+    const identityParts = [
+      attack.name,
+      attack.type,
+      this.getFirstDefinedValue(raw, ["mode", "usage"]),
+      attack.level,
+      attack.damage
+    ].filter((part) => part !== undefined && part !== null && part !== "");
+    const base = [...sourceParts, ...identityParts];
+    return base.map((part) => String(part).trim().toLowerCase()).join("::") || null;
+  }
+
+  getFavoriteAttackSelection(actorId) {
+    if (!actorId) return new Set();
+    const selected = this.combatFavoriteAttackKeysByActor[actorId];
+    if (selected instanceof Set) return selected;
+
+    const normalized = new Set(Array.isArray(selected) ? selected.map((entry) => String(entry)) : []);
+    this.combatFavoriteAttackKeysByActor[actorId] = normalized;
+    return normalized;
+  }
+
+  setFavoriteAttackSelected(actorId, attackKey, isSelected) {
+    if (!actorId || !attackKey) return;
+    const selection = this.getFavoriteAttackSelection(actorId);
+    if (isSelected) selection.add(String(attackKey));
+    else selection.delete(String(attackKey));
+    this.persistFavoriteAttacksState();
+  }
+
+  serializeFavoriteAttacksState() {
+    return Object.fromEntries(
+      Object.entries(this.combatFavoriteAttackKeysByActor).map(([actorId, attackSet]) => [
+        actorId,
+        Array.from(attackSet instanceof Set ? attackSet : new Set())
+      ])
+    );
   }
 
 
@@ -800,6 +851,21 @@ export class QuickDeckApp extends Application {
     } else {
       this.quickSkillSelectionsByActor = {};
     }
+    const savedFavoriteAttacks = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.COMBAT_FAVORITES),
+      {}
+    );
+    if (savedFavoriteAttacks && typeof savedFavoriteAttacks === "object") {
+      this.combatFavoriteAttackKeysByActor = Object.fromEntries(
+        Object.entries(savedFavoriteAttacks).map(([actorId, attackKeys]) => [
+          String(actorId),
+          new Set(Array.isArray(attackKeys) ? attackKeys.map((entry) => String(entry)) : [])
+        ])
+      );
+    } else {
+      this.combatFavoriteAttackKeysByActor = {};
+    }
+
     this.isMinimized = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.MINIMIZED));
     const savedRestorePillPosition = this.parseJsonSetting(
       game.settings.get(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION),
@@ -829,6 +895,12 @@ export class QuickDeckApp extends Application {
     if (!game?.settings) return;
     const serialized = this.serializeQuickSkillsState();
     game.settings.set(MODULE_ID, SETTING_KEYS.QUICK_SKILLS, JSON.stringify(serialized));
+  }
+
+  persistFavoriteAttacksState() {
+    if (!game?.settings) return;
+    const serialized = this.serializeFavoriteAttacksState();
+    game.settings.set(MODULE_ID, SETTING_KEYS.COMBAT_FAVORITES, JSON.stringify(serialized));
   }
 
   persistMinimizedState() {
@@ -866,10 +938,18 @@ export class QuickDeckApp extends Application {
     this.rosterActorIds = this.rosterActorIds.filter((id) => validActorIds.has(id));
 
     let removedQuickSkills = false;
+    let removedFavoriteAttacks = false;
     for (const actorId of Object.keys(this.quickSkillSelectionsByActor)) {
       if (!validActorIds.has(actorId)) {
         delete this.quickSkillSelectionsByActor[actorId];
         removedQuickSkills = true;
+      }
+    }
+
+    for (const actorId of Object.keys(this.combatFavoriteAttackKeysByActor)) {
+      if (!validActorIds.has(actorId)) {
+        delete this.combatFavoriteAttackKeysByActor[actorId];
+        removedFavoriteAttacks = true;
       }
     }
 
@@ -885,6 +965,9 @@ export class QuickDeckApp extends Application {
     }
     if (removedQuickSkills) {
       this.persistQuickSkillsState();
+    }
+    if (removedFavoriteAttacks) {
+      this.persistFavoriteAttacksState();
     }
   }
 
@@ -3082,26 +3165,29 @@ export class QuickDeckApp extends Application {
     const spellsSearch = this.spellsSearch;
     const spells = derivedData.spells;
 
-    const indexedAttacks = derivedData.indexedAttacks;
-    const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
-    const modifierBucketStatus = this.getModifierBucketStatus();
     const activeActorId = activeActor?.id ?? null;
+    const favoriteAttackSelection = this.getFavoriteAttackSelection(activeActorId);
+    const modifierBucketStatus = this.getModifierBucketStatus();
     const pendingActorId = this._pendingAttackGuidance?.actorId ?? null;
     const pendingAttackIndex = Number.isFinite(this._pendingAttackGuidance?.attackIndex)
       ? this._pendingAttackGuidance.attackIndex
       : null;
-    const meleeAttacks = filteredAttacks
-      .filter((entry) => entry.type === "Melee")
-      .map((entry) => ({
+    const decorateAttack = (entry) => {
+      const attackKey = entry.attackKey ?? this.getAttackFavoriteKey(entry);
+      const isFavorite = attackKey ? favoriteAttackSelection.has(attackKey) : false;
+      return {
         ...entry,
+        attackKey,
+        isFavoriteAttack: isFavorite,
+        favoriteToggleLabel: isFavorite ? "Unpin attack" : "Pin attack",
         showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
-      }));
-    const rangedAttacks = filteredAttacks
-      .filter((entry) => entry.type === "Ranged")
-      .map((entry) => ({
-        ...entry,
-        showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
-      }));
+      };
+    };
+    const indexedAttacks = derivedData.indexedAttacks.map(decorateAttack);
+    const favoriteAttacks = indexedAttacks.filter((entry) => entry.isFavoriteAttack);
+    const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
+    const meleeAttacks = filteredAttacks.filter((entry) => entry.type === "Melee");
+    const rangedAttacks = filteredAttacks.filter((entry) => entry.type === "Ranged");
 
     const quickSelection = this.getQuickSkillSelection(activeActorId);
     const indexedSkills = derivedData.indexedSkills.map((skill) => {
@@ -3229,6 +3315,8 @@ export class QuickDeckApp extends Application {
       visibleAttackCount: filteredAttacks.length,
       meleeAttacks,
       rangedAttacks,
+      favoriteAttacks,
+      favoriteAttackCount: favoriteAttacks.length,
       skillsCount: skills.length,
       visibleSkillsCount: filteredSkills.length,
       quickSkillsCount: quickSkills.length,
@@ -3379,6 +3467,19 @@ export class QuickDeckApp extends Application {
 
       this.setQuickSkillSelected(actorId, skillKey, Boolean(event.currentTarget.checked));
       this.render();
+    });
+
+    html.find("[data-action='toggle-favorite-attack']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId;
+      const attackKey = event.currentTarget.dataset.attackKey;
+      if (!actorId || !attackKey) return;
+
+      const selection = this.getFavoriteAttackSelection(actorId);
+      this.setFavoriteAttackSelected(actorId, attackKey, !selection.has(attackKey));
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
     });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {

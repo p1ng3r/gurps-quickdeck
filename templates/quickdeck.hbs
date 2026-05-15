@@ -324,6 +324,47 @@
                       autocomplete="off"
                     />
 
+                    <section class="quickdeck-favorite-attacks" aria-label="Favorite Attacks">
+                      <div class="quickdeck-favorite-attacks-heading">
+                        <h5>Favorite Attacks</h5>
+                        {{#if favoriteAttackCount}}
+                          <span>{{favoriteAttackCount}} pinned</span>
+                        {{/if}}
+                      </div>
+                      {{#if favoriteAttackCount}}
+                        <div class="quickdeck-favorite-attacks-list">
+                          {{#each favoriteAttacks as |attack|}}
+                            <article class="quickdeck-favorite-attack-card">
+                              <button
+                                type="button"
+                                data-action="roll-attack"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-attack-index="{{attack.index}}"
+                                class="quickdeck-favorite-attack-main"
+                                title="Attack with {{attack.name}}"
+                              >
+                                <span class="quickdeck-favorite-attack-name">{{attack.name}}</span>
+                                <span class="quickdeck-favorite-attack-meta">{{attack.type}} · {{#if attack.level}}{{attack.level}}{{else}}—{{/if}} · {{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</span>
+                              </button>
+                              <button
+                                type="button"
+                                data-action="toggle-favorite-attack"
+                                data-actor-id="{{../activeActor.id}}"
+                                data-attack-key="{{attack.attackKey}}"
+                                class="quickdeck-favorite-toggle is-selected"
+                                title="Unpin attack"
+                                aria-label="Unpin attack"
+                              >
+                                <i class="fas fa-star" aria-hidden="true"></i>
+                              </button>
+                            </article>
+                          {{/each}}
+                        </div>
+                      {{else}}
+                        <p class="quickdeck-favorite-attacks-hint">Pin attacks with ★ for quick access.</p>
+                      {{/if}}
+                    </section>
+
                     {{#if indexedAttacks.length}}
                       <h5 class="quickdeck-subsection-title">Melee</h5>
                       <div class="quickdeck-attacks-list">
@@ -338,6 +379,21 @@
                                   <h5>{{attack.name}}</h5>
                                   <span class="quickdeck-attack-mode">{{attack.type}}</span>
                                 </div>
+                                <button
+                                  type="button"
+                                  data-action="toggle-favorite-attack"
+                                  data-actor-id="{{../activeActor.id}}"
+                                  data-attack-key="{{attack.attackKey}}"
+                                  class="quickdeck-favorite-toggle {{#if attack.isFavoriteAttack}}is-selected{{/if}}"
+                                  title="{{attack.favoriteToggleLabel}}"
+                                  aria-label="{{attack.favoriteToggleLabel}}"
+                                >
+                                  {{#if attack.isFavoriteAttack}}
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                  {{else}}
+                                    <i class="far fa-star" aria-hidden="true"></i>
+                                  {{/if}}
+                                </button>
                               </div>
                             </header>
 
@@ -453,6 +509,21 @@
                                   <h5>{{attack.name}}</h5>
                                   <span class="quickdeck-attack-mode">{{attack.type}}</span>
                                 </div>
+                                <button
+                                  type="button"
+                                  data-action="toggle-favorite-attack"
+                                  data-actor-id="{{../activeActor.id}}"
+                                  data-attack-key="{{attack.attackKey}}"
+                                  class="quickdeck-favorite-toggle {{#if attack.isFavoriteAttack}}is-selected{{/if}}"
+                                  title="{{attack.favoriteToggleLabel}}"
+                                  aria-label="{{attack.favoriteToggleLabel}}"
+                                >
+                                  {{#if attack.isFavoriteAttack}}
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                  {{else}}
+                                    <i class="far fa-star" aria-hidden="true"></i>
+                                  {{/if}}
+                                </button>
                               </div>
                             </header>
 
