@@ -7,11 +7,16 @@ const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
+  COMBAT_FAVORITES: "combatFavoriteAttackKeysByActor",
+  SPELL_FAVORITES: "spellFavoriteKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
+const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
+const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
+const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
 
 
 export class QuickDeckApp extends Application {
@@ -26,6 +31,8 @@ export class QuickDeckApp extends Application {
     this.quickSkillsSearch = "";
     this.spellsSearch = "";
     this.quickSkillSelectionsByActor = {};
+    this.combatFavoriteAttackKeysByActor = {};
+    this.spellFavoriteKeysByActor = {};
     this._actorSelectTimeout = null;
     this.isDragOverRoster = false;
     this.pendingTokenDropActorId = null;
@@ -46,6 +53,10 @@ export class QuickDeckApp extends Application {
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
     this._pendingAttackGuidance = null;
+    this.pendingAttackContext = null;
+    this._nativeWindowFocusUntil = 0;
+    this._lastNativeWindowIds = new Set();
+    this._nativeWindowFocusLock = null;
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
@@ -464,7 +475,8 @@ export class QuickDeckApp extends Application {
     return {
       name,
       level: this.getFirstDefinedValue(spell, ["level", "calc.level", "import", "value"]),
-      class: this.getFirstDefinedValue(spell, ["class", "spellClass", "category"]),
+      class: this.getFirstDefinedValue(spell, ["class", "spellClass", "category", "college"]),
+      college: this.getFirstDefinedValue(spell, ["college"]),
       cost: this.getFirstDefinedValue(spell, ["cost", "casting.cost", "castCost"]),
       maintain: this.getFirstDefinedValue(spell, ["maintain", "maintenance", "maint"]),
       duration: this.getFirstDefinedValue(spell, ["duration"]),
@@ -597,7 +609,11 @@ export class QuickDeckApp extends Application {
         itemName.includes("ritual") ||
         itemName.includes("magic");
       if (!looksLikeSpell) continue;
-      const normalized = this.normalizeSpell(item?.system ?? item);
+      const normalized = this.normalizeSpell(item?.system ?? item, {
+        sourcePath: item?.id ? `items.${item.id}` : null,
+        sourceKey: item?.id ?? null,
+        sourceCollection: "items"
+      });
       if (!normalized) continue;
       if (!normalized.name || normalized.name === "Unnamed Spell") {
         normalized.name = item?.name ?? normalized.name;
@@ -668,6 +684,7 @@ export class QuickDeckApp extends Application {
     const indexedAttacks = attacks.map((attack, index) => ({
       ...attack,
       index,
+      attackKey: this.getAttackFavoriteKey(attack),
       searchText: this.buildSearchText([
         attack.name,
         attack.type,
@@ -690,6 +707,7 @@ export class QuickDeckApp extends Application {
         spell.name,
         spell.level,
         spell.class,
+        spell.college,
         spell.cost,
         spell.duration,
         spell.reference,
@@ -718,6 +736,104 @@ export class QuickDeckApp extends Application {
     nextActorCache.set(cacheScope, { stamp, value });
     this._derivedActorDataCache.set(actorId, nextActorCache);
     return value;
+  }
+
+
+  getAttackFavoriteKey(attack) {
+    if (!attack || typeof attack !== "object") return null;
+    const raw = attack.raw && typeof attack.raw === "object" ? attack.raw : {};
+    const sourceParts = [
+      attack.sourceCollection,
+      attack.sourcePath,
+      attack.sourceKey,
+      this.getFirstDefinedValue(raw, ["uuid", "id", "_id", "itemid", "itemId", "key"])
+    ].filter((part) => part !== undefined && part !== null && part !== "");
+    const identityParts = [
+      attack.name,
+      attack.type,
+      this.getFirstDefinedValue(raw, ["mode", "usage"]),
+      attack.level,
+      attack.damage
+    ].filter((part) => part !== undefined && part !== null && part !== "");
+    const base = [...sourceParts, ...identityParts];
+    return base.map((part) => String(part).trim().toLowerCase()).join("::") || null;
+  }
+
+  getFavoriteAttackSelection(actorId) {
+    if (!actorId) return new Set();
+    const selected = this.combatFavoriteAttackKeysByActor[actorId];
+    if (selected instanceof Set) return selected;
+
+    const normalized = new Set(Array.isArray(selected) ? selected.map((entry) => String(entry)) : []);
+    this.combatFavoriteAttackKeysByActor[actorId] = normalized;
+    return normalized;
+  }
+
+  setFavoriteAttackSelected(actorId, attackKey, isSelected) {
+    if (!actorId || !attackKey) return;
+    const selection = this.getFavoriteAttackSelection(actorId);
+    if (isSelected) selection.add(String(attackKey));
+    else selection.delete(String(attackKey));
+    this.persistFavoriteAttacksState();
+  }
+
+  serializeFavoriteAttacksState() {
+    return Object.fromEntries(
+      Object.entries(this.combatFavoriteAttackKeysByActor).map(([actorId, attackSet]) => [
+        actorId,
+        Array.from(attackSet instanceof Set ? attackSet : new Set())
+      ])
+    );
+  }
+
+  getSpellFavoriteKey(spell) {
+    if (!spell || typeof spell !== "object") return null;
+    const raw = spell.raw && typeof spell.raw === "object" ? spell.raw : {};
+    const sourceParts = [
+      spell.sourceCollection,
+      spell.sourcePath,
+      spell.sourceKey,
+      this.getFirstDefinedValue(raw, ["uuid", "id", "_id", "itemid", "itemId", "key"])
+    ].filter((part) => part !== undefined && part !== null && part !== "");
+    const identityParts = [
+      spell.name,
+      spell.class,
+      spell.college,
+      spell.level,
+      spell.cost,
+      spell.duration,
+      spell.reference,
+      spell.pageHint
+    ].filter((part) => part !== undefined && part !== null && part !== "");
+    const base = [...sourceParts, ...identityParts];
+    return base.map((part) => String(part).trim().toLowerCase()).join("::") || null;
+  }
+
+  getFavoriteSpellSelection(actorId) {
+    if (!actorId) return new Set();
+    const selected = this.spellFavoriteKeysByActor[actorId];
+    if (selected instanceof Set) return selected;
+
+    const normalized = new Set(Array.isArray(selected) ? selected.map((entry) => String(entry)) : []);
+    this.spellFavoriteKeysByActor[actorId] = normalized;
+    return normalized;
+  }
+
+  setFavoriteSpellSelected(actorId, spellKey, isSelected) {
+    if (!actorId || !spellKey) return;
+    const selection = this.getFavoriteSpellSelection(actorId);
+    if (isSelected) selection.add(String(spellKey));
+    else selection.delete(String(spellKey));
+    this.persistFavoriteSpellsState();
+  }
+
+  serializeFavoriteSpellsState() {
+    return Object.fromEntries(
+      Object.entries(this.spellFavoriteKeysByActor).map(([actorId, spellSet]) => [
+        actorId,
+        Array.from(spellSet instanceof Set ? spellSet : new Set())
+      ])
+    );
   }
 
 
@@ -793,6 +909,36 @@ export class QuickDeckApp extends Application {
     } else {
       this.quickSkillSelectionsByActor = {};
     }
+    const savedFavoriteAttacks = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.COMBAT_FAVORITES),
+      {}
+    );
+    if (savedFavoriteAttacks && typeof savedFavoriteAttacks === "object") {
+      this.combatFavoriteAttackKeysByActor = Object.fromEntries(
+        Object.entries(savedFavoriteAttacks).map(([actorId, attackKeys]) => [
+          String(actorId),
+          new Set(Array.isArray(attackKeys) ? attackKeys.map((entry) => String(entry)) : [])
+        ])
+      );
+    } else {
+      this.combatFavoriteAttackKeysByActor = {};
+    }
+
+    const savedFavoriteSpells = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.SPELL_FAVORITES),
+      {}
+    );
+    if (savedFavoriteSpells && typeof savedFavoriteSpells === "object") {
+      this.spellFavoriteKeysByActor = Object.fromEntries(
+        Object.entries(savedFavoriteSpells).map(([actorId, spellKeys]) => [
+          String(actorId),
+          new Set(Array.isArray(spellKeys) ? spellKeys.map((entry) => String(entry)) : [])
+        ])
+      );
+    } else {
+      this.spellFavoriteKeysByActor = {};
+    }
+
     this.isMinimized = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.MINIMIZED));
     const savedRestorePillPosition = this.parseJsonSetting(
       game.settings.get(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION),
@@ -822,6 +968,18 @@ export class QuickDeckApp extends Application {
     if (!game?.settings) return;
     const serialized = this.serializeQuickSkillsState();
     game.settings.set(MODULE_ID, SETTING_KEYS.QUICK_SKILLS, JSON.stringify(serialized));
+  }
+
+  persistFavoriteAttacksState() {
+    if (!game?.settings) return;
+    const serialized = this.serializeFavoriteAttacksState();
+    game.settings.set(MODULE_ID, SETTING_KEYS.COMBAT_FAVORITES, JSON.stringify(serialized));
+  }
+
+  persistFavoriteSpellsState() {
+    if (!game?.settings) return;
+    const serialized = this.serializeFavoriteSpellsState();
+    game.settings.set(MODULE_ID, SETTING_KEYS.SPELL_FAVORITES, JSON.stringify(serialized));
   }
 
   persistMinimizedState() {
@@ -859,10 +1017,26 @@ export class QuickDeckApp extends Application {
     this.rosterActorIds = this.rosterActorIds.filter((id) => validActorIds.has(id));
 
     let removedQuickSkills = false;
+    let removedFavoriteAttacks = false;
+    let removedFavoriteSpells = false;
     for (const actorId of Object.keys(this.quickSkillSelectionsByActor)) {
       if (!validActorIds.has(actorId)) {
         delete this.quickSkillSelectionsByActor[actorId];
         removedQuickSkills = true;
+      }
+    }
+
+    for (const actorId of Object.keys(this.combatFavoriteAttackKeysByActor)) {
+      if (!validActorIds.has(actorId)) {
+        delete this.combatFavoriteAttackKeysByActor[actorId];
+        removedFavoriteAttacks = true;
+      }
+    }
+
+    for (const actorId of Object.keys(this.spellFavoriteKeysByActor)) {
+      if (!validActorIds.has(actorId)) {
+        delete this.spellFavoriteKeysByActor[actorId];
+        removedFavoriteSpells = true;
       }
     }
 
@@ -878,6 +1052,12 @@ export class QuickDeckApp extends Application {
     }
     if (removedQuickSkills) {
       this.persistQuickSkillsState();
+    }
+    if (removedFavoriteAttacks) {
+      this.persistFavoriteAttacksState();
+    }
+    if (removedFavoriteSpells) {
+      this.persistFavoriteSpellsState();
     }
   }
 
@@ -1037,9 +1217,9 @@ export class QuickDeckApp extends Application {
     if (actor && typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
 
     const focusNativeBucket = (renderedApp = null) => {
-      renderedApp?.bringToTop?.();
-      bucket.editor?.bringToTop?.();
-      bucket.bringToTop?.();
+      this.focusNativeWindow(renderedApp);
+      this.focusNativeWindow(bucket.editor);
+      this.focusNativeWindow(bucket);
     };
     const scheduleFocusNativeBucket = (renderedApp = null) => {
       try {
@@ -1056,34 +1236,36 @@ export class QuickDeckApp extends Application {
       }
     };
 
-    try {
-      if (typeof bucket.editor?.render === "function") {
-        const renderedApp = bucket.editor.render(true);
-        bucket.SHOWING = true;
-        scheduleFocusNativeBucket(renderedApp);
-        return true;
+    return this.runWithNativeWindowFocusGuard(() => {
+      try {
+        if (typeof bucket.editor?.render === "function") {
+          const renderedApp = bucket.editor.render(true);
+          bucket.SHOWING = true;
+          scheduleFocusNativeBucket(renderedApp);
+          return true;
+        }
+
+        if (typeof bucket.render === "function") {
+          const renderedApp = bucket.render(true);
+          bucket.SHOWING = true;
+          scheduleFocusNativeBucket(renderedApp);
+          return true;
+        }
+
+        if (typeof bucket._onenter === "function") {
+          bucket._onenter(event);
+          bucket.SHOWING = true;
+          scheduleFocusNativeBucket(bucket.editor);
+          return true;
+        }
+      } catch (_error) {
+        ui.notifications?.warn("QuickDeck: Could not open the native GURPS ModifierBucket UI.");
+        return false;
       }
 
-      if (typeof bucket.render === "function") {
-        const renderedApp = bucket.render(true);
-        bucket.SHOWING = true;
-        scheduleFocusNativeBucket(renderedApp);
-        return true;
-      }
-
-      if (typeof bucket._onenter === "function") {
-        bucket._onenter(event);
-        bucket.SHOWING = true;
-        scheduleFocusNativeBucket(bucket.editor);
-        return true;
-      }
-    } catch (_error) {
-      ui.notifications?.warn("QuickDeck: Could not open the native GURPS ModifierBucket UI.");
+      ui.notifications?.warn("QuickDeck: Native GURPS ModifierBucket UI API is unavailable.");
       return false;
-    }
-
-    ui.notifications?.warn("QuickDeck: Native GURPS ModifierBucket UI API is unavailable.");
-    return false;
+    }, "modifier-bucket");
   }
 
   parseDefenseScore(value) {
@@ -1185,7 +1367,7 @@ export class QuickDeckApp extends Application {
       return;
     }
 
-    actor.sheet.render(true);
+    return this.runWithNativeWindowFocusGuard(() => actor.sheet.render(true), "open-actor-sheet");
   }
 
   parseRollTarget(value) {
@@ -1305,6 +1487,29 @@ export class QuickDeckApp extends Application {
     ]);
     if (await this.callAnyMethod(gurpsCandidates)) return true;
 
+    if (rollContext.type === "defense") {
+      const gurps = globalThis.GURPS ?? game.GURPS;
+      const defense = String(rollContext.defense ?? "").trim();
+      if (defense && typeof gurps?.executeOTF === "function") {
+        const previousWindowIds = this._nativeWindowFocusLock?.previousWindowIds ?? this.getNativeWindowIds();
+        if (!this._nativeWindowFocusLock) this.startNativeWindowFocusLock(previousWindowIds, "native-defense");
+        try {
+          if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+          await gurps.executeOTF(`[${defense}]`, false, null, actor);
+          return true;
+        } catch (error) {
+          console.warn("gurps-quickdeck | Native GURPS defense OTF failed.", error);
+        } finally {
+          this.scheduleNativeWindowFocus(previousWindowIds);
+          this.scheduleChatFocus();
+        }
+      }
+      console.warn("gurps-quickdeck | No GURPS-native defense roll method found.", {
+        actor: actor?.name,
+        defense
+      });
+    }
+
     if (rollContext.type === "skill") {
       console.warn("gurps-quickdeck | No GURPS-native skill roll method found, using 3d6 fallback.", {
         actor: actor?.name,
@@ -1388,6 +1593,8 @@ export class QuickDeckApp extends Application {
     if (!actor || !dataset?.otf) return false;
 
     if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+    const previousWindowIds = this.getNativeWindowIds();
+    this.startNativeWindowFocusLock(previousWindowIds, `native-sheet-${label}`);
 
     if (dataset.key && typeof gurps?.handleRoll === "function") {
       try {
@@ -1396,6 +1603,9 @@ export class QuickDeckApp extends Application {
         return true;
       } catch (error) {
         console.warn(`gurps-quickdeck | Native GURPS ${label} handleRoll failed, falling back to OTF.`, error);
+      } finally {
+        this.scheduleNativeWindowFocus(previousWindowIds);
+        this.scheduleChatFocus();
       }
     }
 
@@ -1406,18 +1616,464 @@ export class QuickDeckApp extends Application {
       }
     } catch (_error) {
       // Let the caller decide whether a non-native fallback is appropriate.
+    } finally {
+      this.scheduleNativeWindowFocus(previousWindowIds);
+      this.scheduleChatFocus();
     }
 
     return false;
   }
+
+
+
+  getNativeWindowIds() {
+    try {
+      return new Set(Object.keys(ui?.windows ?? {}).map((id) => String(id)));
+    } catch (_error) {
+      return new Set();
+    }
+  }
+
+  getWindowTitleText(app) {
+    try {
+      const element = app?.element?.[0] ?? app?.element;
+      return element?.querySelector?.(".window-title")?.textContent ?? app?.element?.find?.(".window-title")?.text?.() ?? "";
+    } catch (_error) {
+      return "";
+    }
+  }
+
+  isQuickDeckWindow(app) {
+    const parts = [
+      app?.id,
+      app?.appId,
+      app?.options?.id,
+      app?.options?.title,
+      app?.title,
+      app?.constructor?.name,
+      this.getWindowTitleText(app)
+    ].map((part) => String(part ?? ""));
+    return app === this || parts.some((part) => /quickdeck/i.test(part));
+  }
+
+  isLikelyNativeGurpsWindow(app) {
+    const parts = [
+      app?.id,
+      app?.appId,
+      app?.options?.id,
+      app?.options?.title,
+      app?.title,
+      app?.constructor?.name,
+      this.getWindowTitleText(app)
+    ].map((part) => String(part ?? ""));
+    if (this.isQuickDeckWindow(app)) return false;
+    return parts.some((part) => NATIVE_GURPS_WINDOW_PATTERN.test(part));
+  }
+
+  isNativeWindowFocusCandidate(app, previousWindowIds = new Set()) {
+    if (!app || this.isQuickDeckWindow(app)) return false;
+
+    const appId = this.getNativeWindowId(app);
+    if (appId && previousWindowIds?.has?.(appId)) {
+      return this.isLikelyNativeGurpsWindow(app);
+    }
+
+    // During a QuickDeck-started native-window guard, newly registered Foundry windows
+    // are the important case even when their title is only an actor name and does not
+    // match a GURPS-specific pattern.
+    return true;
+  }
+
+  getQuickDeckWindowElement() {
+    try {
+      return this.element?.[0] ?? this.element ?? document.getElementById(this.options?.id ?? this.id);
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  getWindowZIndex(app) {
+    try {
+      const element = app?.element?.[0] ?? app?.element;
+      const rawZIndex = element?.style?.zIndex || (element ? globalThis.getComputedStyle?.(element)?.zIndex : null);
+      const zIndex = Number.parseInt(rawZIndex, 10);
+      return Number.isFinite(zIndex) ? zIndex : null;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  lowerQuickDeckBelow(app) {
+    const quickDeckElement = this.getQuickDeckWindowElement();
+    if (!quickDeckElement) return;
+
+    let nativeZIndex = this.getWindowZIndex(app);
+    if (!Number.isFinite(nativeZIndex)) {
+      try {
+        app?.bringToFront?.();
+        app?.bringToTop?.();
+      } catch (_error) {
+        // Native window focus is best-effort only.
+      }
+      nativeZIndex = this.getWindowZIndex(app);
+    }
+
+    if (!Number.isFinite(nativeZIndex)) return;
+    quickDeckElement.style.zIndex = String(Math.max(0, nativeZIndex - 1));
+  }
+
+  focusNativeWindow(app) {
+    try {
+      app?.bringToFront?.();
+      app?.bringToTop?.();
+    } catch (_error) {
+      // Native window focus is best-effort only.
+    }
+
+    this.lowerQuickDeckBelow(app);
+
+    try {
+      const element = app?.element?.[0] ?? app?.element;
+      element?.focus?.({ preventScroll: true });
+    } catch (_error) {
+      // Native window focus is best-effort only.
+    }
+  }
+
+  getNativeWindowId(app) {
+    const id = app?.appId ?? app?.id ?? app?.options?.id;
+    return id === undefined || id === null ? null : String(id);
+  }
+
+  handleNativeWindowFocusLockRender(app) {
+    const lock = this._nativeWindowFocusLock;
+    if (!lock || Date.now() > lock.until) return;
+    if (!this.isNativeWindowFocusCandidate(app, lock.previousWindowIds)) return;
+
+    const appId = this.getNativeWindowId(app);
+    this.focusNativeWindow(app);
+    lock.focusedWindowIds.add(appId ?? app?.constructor?.name ?? "unknown");
+  }
+
+  startNativeWindowFocusLock(previousWindowIds = new Set(), reason = "native-window") {
+    this.stopNativeWindowFocusLock();
+
+    const previousIds = previousWindowIds instanceof Set ? previousWindowIds : new Set();
+    const quickDeckElement = this.getQuickDeckWindowElement();
+    const until = Date.now() + NATIVE_WINDOW_FOCUS_GUARD_MS;
+    const lock = {
+      reason,
+      previousWindowIds: new Set(previousIds),
+      previousQuickDeckZIndex: this.getWindowZIndex(this),
+      previousQuickDeckInlineZIndex: quickDeckElement?.style?.zIndex ?? "",
+      focusedWindowIds: new Set(),
+      hooks: [],
+      timeoutId: null,
+      until
+    };
+    const onRender = (app) => this.handleNativeWindowFocusLockRender(app);
+
+    for (const hookName of ["renderApplicationV1", "renderApplicationV2", "renderApplication"]) {
+      try {
+        const hookId = globalThis.Hooks?.on?.(hookName, onRender);
+        lock.hooks.push([hookName, hookId, onRender]);
+      } catch (_error) {
+        // Native window focus locking is best-effort only.
+      }
+    }
+
+    lock.timeoutId = globalThis.setTimeout?.(() => this.stopNativeWindowFocusLock(), NATIVE_WINDOW_FOCUS_GUARD_MS) ?? null;
+    this._nativeWindowFocusLock = lock;
+
+    this.bringNativeWindowsToFront(previousIds);
+    return lock;
+  }
+
+  stopNativeWindowFocusLock() {
+    const lock = this._nativeWindowFocusLock;
+    if (!lock) return;
+
+    for (const [hookName, hookId, hookCallback] of lock.hooks ?? []) {
+      try {
+        globalThis.Hooks?.off?.(hookName, hookId);
+      } catch (_error) {
+        // Native window focus locking is best-effort only.
+      }
+
+      try {
+        globalThis.Hooks?.off?.(hookName, hookCallback);
+      } catch (_error) {
+        // Native window focus locking is best-effort only.
+      }
+    }
+
+    if (lock.timeoutId) {
+      try {
+        globalThis.clearTimeout?.(lock.timeoutId);
+      } catch (_error) {
+        // Native window focus locking is best-effort only.
+      }
+    }
+
+    this._nativeWindowFocusLock = null;
+  }
+
+  bringNativeWindowsToFront(previousWindowIds = new Set()) {
+    const previousIds = previousWindowIds instanceof Set ? previousWindowIds : new Set();
+    try {
+      const windows = Object.values(ui?.windows ?? {});
+      for (const app of windows) {
+        if (!this.isNativeWindowFocusCandidate(app, previousIds)) continue;
+        this.focusNativeWindow(app);
+      }
+    } catch (_error) {
+      // Native window focus is best-effort only.
+    }
+  }
+
+  scheduleNativeWindowFocus(previousWindowIds = new Set()) {
+    const guardedWindowIds = previousWindowIds instanceof Set ? previousWindowIds : new Set();
+    this._lastNativeWindowIds = new Set(guardedWindowIds);
+    this._nativeWindowFocusUntil = Date.now() + NATIVE_WINDOW_FOCUS_GUARD_MS;
+
+    if (this._nativeWindowFocusLock) {
+      this._nativeWindowFocusLock.previousWindowIds = new Set(guardedWindowIds);
+      this._nativeWindowFocusLock.until = this._nativeWindowFocusUntil;
+      if (this._nativeWindowFocusLock.timeoutId) globalThis.clearTimeout?.(this._nativeWindowFocusLock.timeoutId);
+      this._nativeWindowFocusLock.timeoutId = globalThis.setTimeout?.(
+        () => this.stopNativeWindowFocusLock(),
+        NATIVE_WINDOW_FOCUS_GUARD_MS
+      ) ?? null;
+    }
+
+    try {
+      this.bringNativeWindowsToFront(guardedWindowIds);
+    } catch (_error) {
+      // Native window focus is best-effort only.
+    }
+
+    for (const delay of NATIVE_WINDOW_FOCUS_DELAYS_MS) {
+      try {
+        globalThis.setTimeout?.(() => {
+          try {
+            this.bringNativeWindowsToFront(guardedWindowIds);
+          } catch (_error) {
+            // Native window focus is best-effort only.
+          }
+        }, delay);
+      } catch (_error) {
+        // Native window focus is best-effort only.
+      }
+    }
+  }
+
+  runWithNativeWindowFocusGuard(callback, reason = "native-window") {
+    const previousWindowIds = this.getNativeWindowIds();
+    this.startNativeWindowFocusLock(previousWindowIds, reason);
+
+    try {
+      const result = callback(previousWindowIds);
+      if (result && typeof result.then === "function") {
+        return result
+          .then((value) => {
+            this.focusNativeWindow(value);
+            return value;
+          })
+          .finally(() => this.scheduleNativeWindowFocus(previousWindowIds));
+      }
+      this.focusNativeWindow(result);
+      this.scheduleNativeWindowFocus(previousWindowIds);
+      return result;
+    } catch (error) {
+      this.scheduleNativeWindowFocus(previousWindowIds);
+      throw error;
+    }
+  }
+
+  scheduleNativeWindowFocusAfterRender() {
+    if (Date.now() > this._nativeWindowFocusUntil) return;
+    this.scheduleNativeWindowFocus(this._lastNativeWindowIds);
+  }
+
+  focusChatSidebar() {
+    try {
+      ui?.sidebar?.expand?.();
+      ui?.sidebar?.activateTab?.("chat");
+      ui?.chat?.render?.(true);
+      ui?.chat?.bringToFront?.();
+      ui?.chat?.bringToTop?.();
+    } catch (_error) {
+      // Chat focus is best-effort and must not block native GURPS handling.
+    }
+  }
+
+  scheduleChatFocus() {
+    const lock = this._nativeWindowFocusLock;
+    const previousWindowIds = lock?.previousWindowIds ?? this.getNativeWindowIds();
+    if (!lock) this.startNativeWindowFocusLock(previousWindowIds, "chat");
+    this.focusChatSidebar();
+    globalThis.setTimeout?.(() => this.focusChatSidebar(), 0);
+    globalThis.setTimeout?.(() => this.focusChatSidebar(), 100);
+    this.scheduleNativeWindowFocus(previousWindowIds);
+  }
+
+  extractKnownHitLocation(attack) {
+    const raw = attack?.raw && typeof attack.raw === "object" ? attack.raw : attack;
+    const value = this.getFirstDefinedValue(raw, [
+      "hitlocation",
+      "hitLocation",
+      "hit_location",
+      "location",
+      "calc.hitlocation",
+      "calc.hitLocation",
+      "damage.hitlocation",
+      "damage.hitLocation",
+      "dmg.hitlocation",
+      "dmg.hitLocation"
+    ]);
+    const normalized = String(value ?? "").trim().toLowerCase();
+    return normalized || null;
+  }
+
+  buildNativeDamagePassThroughOptions(attack) {
+    const hitlocation = this.extractKnownHitLocation(attack);
+    return hitlocation ? { hitlocation } : {};
+  }
+
+  rememberPendingAttackContext(actor, attack, attackIndex, dataset = null) {
+    if (!actor || !attack) return null;
+    const otf = dataset?.otf ? `[${dataset.otf}]` : `[${this.getSheetAttackOtf(attack)}]`;
+    const context = {
+      actorId: actor.id,
+      attackIndex,
+      attackName: this.getSheetAttackDisplayName(attack) || attack.name || "Unnamed Attack",
+      otf,
+      damage: this.getAttackDamageString(attack),
+      sourcePath: attack.sourcePath ?? null,
+      rawAttackReference: attack.raw ?? null,
+      hitlocation: this.extractKnownHitLocation(attack),
+      nativeDamageOptions: this.buildNativeDamagePassThroughOptions(attack)
+    };
+    this.pendingAttackContext = context;
+    return context;
+  }
+
+  async executeNativeAttack(actor, attack, attackIndex, event = null) {
+    const gurps = globalThis.GURPS ?? game.GURPS;
+    if (!actor || !attack) return false;
+    if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
+
+    const dataset = this.getSheetAttackDataset(attack);
+    this.rememberPendingAttackContext(actor, attack, attackIndex, dataset);
+    const targets = Array.from(game.user?.targets ?? []);
+    const previousWindowIds = this.getNativeWindowIds();
+    this.startNativeWindowFocusLock(previousWindowIds, "native-attack");
+    let handled = false;
+
+    try {
+      if (dataset.key && dataset.otf && typeof gurps?.handleRoll === "function") {
+        const fakeEvent = this.buildGurpsHandleRollEvent(dataset);
+        await gurps.handleRoll(fakeEvent, actor, { targets });
+        handled = true;
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Attack handleRoll failed, falling back to OTF.", error);
+    } finally {
+      this.scheduleNativeWindowFocus(previousWindowIds);
+    }
+
+    try {
+      if (!handled && dataset.otf && typeof gurps?.executeOTF === "function") {
+        await gurps.executeOTF(`[${dataset.otf}]`, false, event, actor);
+        handled = true;
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Attack OTF failed, falling back if possible.", error);
+    } finally {
+      this.scheduleNativeWindowFocus(previousWindowIds);
+    }
+
+    this.scheduleChatFocus();
+    this.scheduleNativeWindowFocus(previousWindowIds);
+    return handled;
+  }
+
+  async repeatLastAttack(event = null) {
+    const context = this.pendingAttackContext;
+    if (!context?.actorId || !Number.isFinite(context.attackIndex)) {
+      ui.notifications?.warn("QuickDeck: No attack has been selected yet.");
+      return;
+    }
+
+    const actor = game.actors.get(context.actorId);
+    if (!actor) {
+      ui.notifications?.warn("QuickDeck: The last attack actor is unavailable.");
+      return;
+    }
+
+    const attack = this.getDerivedActorData(actor).attacks[context.attackIndex];
+    if (!attack) {
+      ui.notifications?.warn("QuickDeck: The last attack is unavailable.");
+      return;
+    }
+
+    const handled = await this.executeNativeAttack(actor, attack, context.attackIndex, event);
+    if (handled) return;
+
+    ui.notifications?.warn("QuickDeck: Could not route repeated attack through GURPS handleRoll/OTF. Falling back to QuickDeck roll.");
+    await this.triggerCombatRoll(actor.id, {
+      type: "attack",
+      label: `Attack (${attack.name})`,
+      value: attack.level,
+      attackName: attack.name,
+      attackType: attack.type,
+      attack
+    });
+    this.scheduleChatFocus();
+  }
+
+  clearUserTargets() {
+    try {
+      const targets = Array.from(game?.user?.targets ?? []);
+      for (const token of targets) {
+        if (typeof token?.setTarget === "function") {
+          token.setTarget(false, { user: game.user, releaseOthers: false, groupSelection: false });
+        }
+      }
+      game?.user?.targets?.clear?.();
+      ui.notifications?.info("QuickDeck: Targets cleared.");
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to clear targets.", error);
+      ui.notifications?.warn("QuickDeck: Could not clear targets.");
+    }
+    this.render(false);
+  }
+
+  activateNextRosterActor() {
+    if (this.rosterActorIds.length === 0) return;
+    const currentIndex = this.activeActorId ? this.rosterActorIds.indexOf(this.activeActorId) : -1;
+    const nextIndex = (currentIndex + 1) % this.rosterActorIds.length;
+    this.activeActorId = this.rosterActorIds[nextIndex] ?? null;
+    this.persistRosterState();
+    this.render(false);
+  }
+
 
   async triggerCombatRoll(actorId, rollContext) {
     const actor = game.actors.get(actorId);
     if (!actor) return;
     if (!rollContext?.label) return;
 
-    const usedSystemRoll = await this.tryGurpsRoll(actor, rollContext);
+    const shouldGuardNativeRoll = ["attack", "defense", "skill"].includes(rollContext.type);
+    const usedSystemRoll = shouldGuardNativeRoll
+      ? await this.runWithNativeWindowFocusGuard(() => this.tryGurpsRoll(actor, rollContext), `combat-${rollContext.type}`)
+      : await this.tryGurpsRoll(actor, rollContext);
     if (usedSystemRoll) return;
+
+    if (rollContext.type === "defense") {
+      ui.notifications?.warn(`QuickDeck: Could not find a native GURPS roll for ${rollContext.defense ?? "this defense"}.`);
+      return;
+    }
 
     const target = this.parseRollTarget(rollContext.value);
     let roll = null;
@@ -1467,120 +2123,17 @@ export class QuickDeckApp extends Application {
     return null;
   }
 
-  extractConcreteDamageFormula(damageText) {
-    const normalizedDamage = String(damageText ?? "").trim();
-    if (!normalizedDamage) return null;
-    if (/^(sw|thr)\b/i.test(normalizedDamage)) return null;
-
-    const match = normalizedDamage.match(/(\d+)d(6)?(?:\s*([+-])\s*(\d+))?/i);
-    if (!match?.[1]) return null;
-
-    const diceCount = Number(match[1]);
-    if (!Number.isFinite(diceCount) || diceCount <= 0) return null;
-
-    const modifierSign = match[3] ?? "";
-    const modifierValue = match[4] ?? "";
-    const modifier = modifierSign && modifierValue ? `${modifierSign}${modifierValue}` : "";
-
-    return `${diceCount}d6${modifier}`;
-  }
-
-  async createDamageChatCard({
-    actor,
-    attackName,
-    damageText,
-    formula,
-    roll = null,
-    manualNeeded = false,
-    errorMessage = null
-  }) {
-    const speaker = ChatMessage.getSpeaker({ actor });
-    const actorName = this.escapeHtml(actor?.name ?? "Unknown");
-    const safeAttackName = this.escapeHtml(attackName ?? "Unnamed Attack");
-    const safeDamageText = this.escapeHtml(damageText ?? "—");
-    const safeFormula = this.escapeHtml(formula ?? "—");
-    const safeError = this.escapeHtml(errorMessage ?? "");
-    const total = Number.isFinite(roll?.total) ? roll.total : "—";
-
-    const content = `
-      <div class="gurps-quickdeck-roll-fallback">
-        <h3>QuickDeck Damage Roll</h3>
-        <p><strong>Actor:</strong> ${actorName}</p>
-        <p><strong>Attack:</strong> ${safeAttackName}</p>
-        <p><strong>Damage String:</strong> ${safeDamageText}</p>
-        <p><strong>Formula:</strong> ${safeFormula}</p>
-        ${errorMessage ? `<p><strong>Error:</strong> ${safeError}</p>` : ""}
-        ${manualNeeded ? "<p><strong>Manual damage needed.</strong></p>" : `<p><strong>Total:</strong> ${this.escapeHtml(String(total))}</p>`}
-      </div>
-    `;
-    const flavor = manualNeeded
-      ? `QuickDeck Damage: ${safeAttackName} (manual)`
-      : `QuickDeck Damage: ${safeAttackName}`;
-
-    if (roll && typeof roll.toMessage === "function") {
-      try {
-        await roll.toMessage({ speaker, flavor, content });
-        return;
-      } catch (error) {
-        console.warn("gurps-quickdeck | roll.toMessage failed, falling back to ChatMessage.create.", error);
-      }
-    }
-
-    await ChatMessage.create({
-      speaker,
-      flavor,
-      rolls: roll ? [roll] : [],
-      content
-    });
-  }
-
   async triggerDamageRoll(actorId, attackIndex) {
     if (!actorId || !Number.isFinite(attackIndex)) return;
     const actor = game.actors.get(actorId);
     if (!actor) return;
 
-    const attacks = this.extractAttacks(actor);
-    const attack = attacks[attackIndex];
+    const attack = this.getDerivedActorData(actor).attacks[attackIndex];
     if (!attack) return;
 
-    const damageText = this.getAttackDamageString(attack) ?? "—";
-    const formula = this.extractConcreteDamageFormula(damageText);
-
-    if (!formula) {
-      await this.createDamageChatCard({
-        actor,
-        attackName: attack.name,
-        damageText,
-        formula: null,
-        manualNeeded: true
-      });
-      return;
-    }
-
-    let roll = null;
-    try {
-      roll = await new Roll(formula).evaluate();
-    } catch (error) {
-      console.warn("gurps-quickdeck | Damage roll evaluation failed.", { formula, error });
-      const message = error instanceof Error ? error.message : String(error);
-      await this.createDamageChatCard({
-        actor,
-        attackName: attack.name,
-        damageText,
-        formula,
-        manualNeeded: true,
-        errorMessage: message
-      });
-      return;
-    }
-
-    await this.createDamageChatCard({
-      actor,
-      attackName: attack.name,
-      damageText,
-      formula,
-      roll
-    });
+    this.rememberPendingAttackContext(actor, attack, attackIndex, this.getSheetAttackDataset(attack));
+    this.scheduleChatFocus();
+    ui.notifications?.info("QuickDeck: Use the native GURPS chat damage controls for this attack.");
   }
 
   async waitForTargetSelection({ timeoutMs = 30000 } = {}) {
@@ -1685,26 +2238,6 @@ export class QuickDeckApp extends Application {
     this.render(false);
   }
 
-  async updateActorResource(actorId, resource, rawValue) {
-    if (!actorId || !resource) return;
-    const actor = game.actors.get(actorId);
-    if (!actor) return;
-
-    const trimmedValue = String(rawValue ?? "").trim();
-    if (!trimmedValue) return;
-
-    const parsed = Number(trimmedValue);
-    if (!Number.isFinite(parsed)) return;
-
-    const normalizedResource = String(resource).toLowerCase();
-    let path = null;
-    if (normalizedResource === "hp") path = "system.HP.value";
-    if (normalizedResource === "fp") path = "system.FP.value";
-    if (!path) return;
-
-    await actor.update({ [path]: parsed });
-  }
-
   openReferenceEntry(referenceData = {}) {
     try {
       const app = new QuickDeckReferenceApp(referenceData);
@@ -1785,6 +2318,75 @@ export class QuickDeckApp extends Application {
       `data.data.${normalized}.maxValue`,
       `data.data.${normalized}.value`
     ]);
+  }
+
+
+  getResourcePercent(current, max) {
+    const currentNumber = Number(current);
+    const maxNumber = Number(max);
+    if (!Number.isFinite(currentNumber) || !Number.isFinite(maxNumber) || maxNumber <= 0) return 0;
+    return Math.max(0, Math.min(100, Math.round((currentNumber / maxNumber) * 100)));
+  }
+
+  getResourceSummary(actor, resource) {
+    const current = this.getResourceValue(actor, resource);
+    const max = this.getResourceMax(actor, resource) ?? current;
+    return {
+      value: current,
+      max,
+      display: this.toDisplayValue(current),
+      maxDisplay: this.toDisplayValue(max),
+      percent: this.getResourcePercent(current, max)
+    };
+  }
+
+  getResourceUpdatePath(resource) {
+    const normalized = String(resource ?? "").toUpperCase();
+    if (!["HP", "FP"].includes(normalized)) return null;
+    return `system.${normalized}.value`;
+  }
+
+  parseResourceNumber(rawValue) {
+    if (typeof rawValue === "number") return Number.isFinite(rawValue) ? rawValue : null;
+    const trimmed = String(rawValue ?? "").trim();
+    if (!trimmed || trimmed === "—") return null;
+    const parsed = Number(trimmed);
+    return Number.isFinite(parsed) ? parsed : null;
+  }
+
+  async adjustActorResource(actorId, resource, delta) {
+    const actor = actorId ? game.actors.get(actorId) : null;
+    const path = this.getResourceUpdatePath(resource);
+    const numericDelta = Number(delta);
+    if (!actor || !path || !Number.isFinite(numericDelta)) return;
+
+    const current = this.parseResourceNumber(this.getResourceValue(actor, resource));
+    if (!Number.isFinite(current)) {
+      ui.notifications?.warn(`QuickDeck: ${resource} is not a numeric value on ${actor.name}.`);
+      return;
+    }
+
+    await this.setActorResourceValue(actor, resource, current + numericDelta);
+  }
+
+  async setActorResourceValue(actorOrId, resource, value) {
+    const actor = typeof actorOrId === "string" ? game.actors.get(actorOrId) : actorOrId;
+    const path = this.getResourceUpdatePath(resource);
+    const numericValue = this.parseResourceNumber(value);
+    if (!actor || !path) return;
+    if (!Number.isFinite(numericValue)) {
+      ui.notifications?.warn(`QuickDeck: Enter a numeric ${resource} value.`);
+      return;
+    }
+
+    try {
+      await actor.update({ [path]: numericValue });
+      this.invalidateDerivedActorData(actor.id);
+      this.render(false);
+    } catch (error) {
+      console.warn(`gurps-quickdeck | Failed to update ${resource}.`, error);
+      ui.notifications?.warn(`QuickDeck: Could not update ${resource} for ${actor.name}.`);
+    }
   }
 
   parseDropPayload(rawText) {
@@ -2412,6 +3014,7 @@ export class QuickDeckApp extends Application {
       this._actorSelectTimeout = null;
     }
     this.invalidateDerivedActorData();
+    this.stopNativeWindowFocusLock();
     return super.close(options);
   }
 
@@ -2431,6 +3034,10 @@ export class QuickDeckApp extends Application {
 
     this.removeFloatingRestoreIcon();
     this.element?.show();
+    if (this._nativeWindowFocusLock && Date.now() <= this._nativeWindowFocusLock.until) {
+      this.bringNativeWindowsToFront(this._nativeWindowFocusLock.previousWindowIds);
+      return;
+    }
     this.bringToTop();
   }
 
@@ -2648,40 +3255,67 @@ export class QuickDeckApp extends Application {
     const spellsSearch = this.spellsSearch;
     const spells = derivedData.spells;
 
-    const indexedAttacks = derivedData.indexedAttacks;
-    const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
-    const modifierBucketStatus = this.getModifierBucketStatus();
     const activeActorId = activeActor?.id ?? null;
+    const favoriteAttackSelection = this.getFavoriteAttackSelection(activeActorId);
+    const modifierBucketStatus = this.getModifierBucketStatus();
     const pendingActorId = this._pendingAttackGuidance?.actorId ?? null;
     const pendingAttackIndex = Number.isFinite(this._pendingAttackGuidance?.attackIndex)
       ? this._pendingAttackGuidance.attackIndex
       : null;
-    const meleeAttacks = filteredAttacks
-      .filter((entry) => entry.type === "Melee")
-      .map((entry) => ({
+    const decorateAttack = (entry) => {
+      const attackKey = entry.attackKey ?? this.getAttackFavoriteKey(entry);
+      const isFavorite = attackKey ? favoriteAttackSelection.has(attackKey) : false;
+      return {
         ...entry,
+        attackKey,
+        isFavoriteAttack: isFavorite,
+        favoriteToggleLabel: isFavorite ? "Unpin attack" : "Pin attack",
         showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
-      }));
-    const rangedAttacks = filteredAttacks
-      .filter((entry) => entry.type === "Ranged")
-      .map((entry) => ({
-        ...entry,
-        showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
-      }));
+      };
+    };
+    const indexedAttacks = derivedData.indexedAttacks.map(decorateAttack);
+    const favoriteAttacks = indexedAttacks.filter((entry) => entry.isFavoriteAttack);
+    const filteredAttacks = this.filterEntriesBySearchText(indexedAttacks, combatSearch);
+    const meleeAttacks = filteredAttacks.filter((entry) => entry.type === "Melee");
+    const rangedAttacks = filteredAttacks.filter((entry) => entry.type === "Ranged");
 
     const quickSelection = this.getQuickSkillSelection(activeActorId);
     const indexedSkills = derivedData.indexedSkills.map((skill) => {
       const quickSkillKey = this.getQuickSkillKey(skill);
+      const isQuickSkillSelected = quickSkillKey ? quickSelection.has(quickSkillKey) : false;
       return {
         ...skill,
         quickSkillKey,
-        isQuickSkillSelected: quickSkillKey ? quickSelection.has(quickSkillKey) : false
+        isQuickSkillSelected,
+        quickSkillToggleLabel: isQuickSkillSelected ? "Unpin skill" : "Pin skill",
+        levelDisplay: skill.level === undefined || skill.level === null ? "—" : String(skill.level),
+        relativeLevelDisplay:
+          skill.relativeLevel === undefined || skill.relativeLevel === null
+            ? null
+            : String(skill.relativeLevel),
+        pointsDisplay:
+          skill.points === undefined || skill.points === null ? null : String(skill.points),
+        referenceDisplay:
+          (skill.reference ?? skill.pageHint) === undefined || (skill.reference ?? skill.pageHint) === null
+            ? null
+            : String(skill.reference ?? skill.pageHint)
       };
     });
     const filteredSkills = this.filterEntriesBySearchText(indexedSkills, skillsSearch);
     const quickSkills = indexedSkills.filter((skill) => skill.isQuickSkillSelected);
     const filteredQuickSkills = this.filterEntriesBySearchText(quickSkills, quickSkillsSearch);
-    const indexedSpells = derivedData.indexedSpells;
+    const favoriteSpellSelection = this.getFavoriteSpellSelection(activeActorId);
+    const indexedSpells = derivedData.indexedSpells.map((spell) => {
+      const spellKey = spell.spellKey ?? this.getSpellFavoriteKey(spell);
+      const isFavorite = spellKey ? favoriteSpellSelection.has(spellKey) : false;
+      return {
+        ...spell,
+        spellKey,
+        isFavoriteSpell: isFavorite,
+        favoriteToggleLabel: isFavorite ? "Unpin spell" : "Pin spell"
+      };
+    });
+    const favoriteSpells = indexedSpells.filter((spell) => spell.isFavoriteSpell);
     const filteredSpells = this.filterEntriesBySearchText(indexedSpells, spellsSearch);
     if (DEBUG) {
       const meleeCount = attacks.filter((attack) => attack.type === "Melee").length;
@@ -2712,6 +3346,8 @@ export class QuickDeckApp extends Application {
       fp: currentFp ?? null,
       hpMax: maxHp ?? currentHp ?? null,
       fpMax: maxFp ?? currentFp ?? null,
+      hpPercent: this.getResourcePercent(currentHp, maxHp ?? currentHp),
+      fpPercent: this.getResourcePercent(currentFp, maxFp ?? currentFp),
       move: derivedData.move,
       dodge,
       defenses: {
@@ -2743,17 +3379,27 @@ export class QuickDeckApp extends Application {
       visibleAvailableCount: this.getVisibleCountBySearchText(availableActors, this.availableSearch),
       rosterCount: rosterActors.length,
       availableCount: availableActors.length,
-      rosterActors: rosterActors.map((actor) => ({
-        id: actor.id,
-        name: actor.name,
-        img: actor.img || "icons/svg/mystery-man.svg",
-        actorType: actor.type ? String(actor.type) : null,
-        isActive: actor.id === this.activeActorId,
-        combatBadge: this.getCombatBadgeText(combatantByActorId.get(actor.id)),
-        isCurrentTurn:
-          combatantByActorId.get(actor.id)?.id &&
-          combatantByActorId.get(actor.id).id === currentCombatantId
-      })),
+      rosterActors: rosterActors.map((actor) => {
+        const hp = this.getResourceSummary(actor, "HP");
+        const fp = this.getResourceSummary(actor, "FP");
+        return {
+          id: actor.id,
+          name: actor.name,
+          img: actor.img || "icons/svg/mystery-man.svg",
+          actorType: actor.type ? String(actor.type) : null,
+          isActive: actor.id === this.activeActorId,
+          combatBadge: this.getCombatBadgeText(combatantByActorId.get(actor.id)),
+          isCurrentTurn:
+            combatantByActorId.get(actor.id)?.id &&
+            combatantByActorId.get(actor.id).id === currentCombatantId,
+          hpDisplay: hp.display,
+          hpMaxDisplay: hp.maxDisplay,
+          hpPercent: hp.percent,
+          fpDisplay: fp.display,
+          fpMaxDisplay: fp.maxDisplay,
+          fpPercent: fp.percent
+        };
+      }),
       activeActor: activeActor
         ? {
             id: activeActor.id,
@@ -2768,6 +3414,8 @@ export class QuickDeckApp extends Application {
       isTargetOpponentModeActive: this.pendingTargetOpponentAttackIndex !== null,
       currentTargetName: this.getCurrentTargetDisplayName(),
       modifierBucketStatus,
+      canRepeatLastAttack: Boolean(this.pendingAttackContext?.actorId),
+      lastAttackName: this.pendingAttackContext?.attackName ?? "No attack selected",
       gurpsData,
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
@@ -2781,12 +3429,16 @@ export class QuickDeckApp extends Application {
       visibleAttackCount: filteredAttacks.length,
       meleeAttacks,
       rangedAttacks,
+      favoriteAttacks,
+      favoriteAttackCount: favoriteAttacks.length,
       skillsCount: skills.length,
       visibleSkillsCount: filteredSkills.length,
       quickSkillsCount: quickSkills.length,
       visibleQuickSkillsCount: filteredQuickSkills.length,
       spellsCount: spells.length,
       visibleSpellsCount: filteredSpells.length,
+      favoriteSpells,
+      favoriteSpellCount: favoriteSpells.length,
       isDragOverRoster: this.isDragOverRoster,
       indexedAttacks,
       indexedSkills,
@@ -2890,7 +3542,7 @@ export class QuickDeckApp extends Application {
       }
       this.activeActorId = actorId;
       this.openActorSheet(actorId);
-      this.render();
+      this.render(false, { focus: false });
     });
 
     html.find("[data-action='available-search']").on("input", (event) => {
@@ -2933,23 +3585,42 @@ export class QuickDeckApp extends Application {
       this.render();
     });
 
-    const commitResourceUpdate = async (event) => {
-      const input = event.currentTarget;
-      const actorId = input?.dataset?.actorId;
-      const resource = input?.dataset?.resource;
-      if (!actorId || !resource) return;
-      if (input.dataset.lastCommittedValue === input.value) return;
-      input.dataset.lastCommittedValue = input.value;
-      await this.updateActorResource(actorId, resource, input.value);
-      this.render();
-    };
-
-    html.find("[data-action='update-resource']").on("change", commitResourceUpdate);
-    html.find("[data-action='update-resource']").on("blur", commitResourceUpdate);
-    html.find("[data-action='update-resource']").on("keydown", async (event) => {
-      if (event.key !== "Enter") return;
+    html.find("[data-action='unpin-quick-skill']").on("click", (event) => {
       event.preventDefault();
-      await commitResourceUpdate(event);
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId;
+      const skillKey = event.currentTarget.dataset.skillKey;
+      if (!actorId || !skillKey) return;
+
+      this.setQuickSkillSelected(actorId, skillKey, false);
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
+    });
+
+    html.find("[data-action='toggle-favorite-attack']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId;
+      const attackKey = event.currentTarget.dataset.attackKey;
+      if (!actorId || !attackKey) return;
+
+      const selection = this.getFavoriteAttackSelection(actorId);
+      this.setFavoriteAttackSelected(actorId, attackKey, !selection.has(attackKey));
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
+    });
+
+    html.find("[data-action='toggle-favorite-spell']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId;
+      const spellKey = event.currentTarget.dataset.spellKey;
+      if (!actorId || !spellKey) return;
+
+      const selection = this.getFavoriteSpellSelection(actorId);
+      this.setFavoriteSpellSelected(actorId, spellKey, !selection.has(spellKey));
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
     });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
@@ -2959,6 +3630,26 @@ export class QuickDeckApp extends Application {
 
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.render();
+    });
+
+    html.find("[data-action='adjust-resource']").on("click", async (event) => {
+      event.preventDefault();
+      const actorId = event.currentTarget.dataset.actorId;
+      const resource = event.currentTarget.dataset.resource;
+      const delta = event.currentTarget.dataset.delta;
+      await this.adjustActorResource(actorId, resource, delta);
+    });
+
+    html.find("[data-action='set-resource']").on("change", async (event) => {
+      const actorId = event.currentTarget.dataset.actorId;
+      const resource = event.currentTarget.dataset.resource;
+      await this.setActorResourceValue(actorId, resource, event.currentTarget.value);
+    });
+
+    html.find("[data-action='set-resource']").on("keydown", (event) => {
+      if (event.key !== "Enter") return;
+      event.preventDefault();
+      event.currentTarget.blur();
     });
 
     html.find("[data-action='roll-defense']").on("click", async (event) => {
@@ -2996,6 +3687,26 @@ export class QuickDeckApp extends Application {
       this.openNativeModifierBucket(event.currentTarget.dataset.actorId, event);
     });
 
+    html.find("[data-action='open-chat']").on("click", (event) => {
+      event.preventDefault();
+      this.scheduleChatFocus();
+    });
+
+    html.find("[data-action='clear-targets']").on("click", (event) => {
+      event.preventDefault();
+      this.clearUserTargets();
+    });
+
+    html.find("[data-action='next-actor']").on("click", (event) => {
+      event.preventDefault();
+      this.activateNextRosterActor();
+    });
+
+    html.find("[data-action='repeat-last-attack']").on("click", async (event) => {
+      event.preventDefault();
+      await this.repeatLastAttack(event);
+    });
+
     html.find("[data-action='roll-attack']").on("click", async (event) => {
       event.preventDefault();
       const actorId = event.currentTarget.dataset.actorId;
@@ -3018,36 +3729,8 @@ export class QuickDeckApp extends Application {
       }
 
 
-      const gurps = globalThis.GURPS ?? game.GURPS;
-      if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
-
-      const attackName = String(attack.name ?? "").trim();
-      const otf = `[A:${attackName}]`;
-      const targets = Array.from(game.user?.targets ?? []);
-      const dataset = this.getSheetAttackDataset(attack);
-      const fakeEvent = this.buildGurpsHandleRollEvent(dataset);
-
-      let handledByHandleRoll = false;
-      try {
-        if (dataset.key && dataset.otf && typeof gurps?.handleRoll === "function") {
-          await gurps.handleRoll(fakeEvent, actor, { targets });
-          handledByHandleRoll = true;
-        }
-      } catch (error) {
-        console.warn("gurps-quickdeck | Attack handleRoll failed, falling back to OTF.", error);
-      }
-
-      let usedOtF = false;
-      try {
-        if (!handledByHandleRoll && otf && typeof gurps?.executeOTF === "function") {
-          await gurps.executeOTF(otf, false, event, actor);
-          usedOtF = true;
-        }
-      } catch (error) {
-        // Fall through to the QuickDeck roll fallback below.
-      }
-
-      if (!handledByHandleRoll && !usedOtF) {
+      const handled = await this.executeNativeAttack(actor, attack, attackIndex, event);
+      if (!handled) {
         ui.notifications?.warn("QuickDeck: Could not route attack through GURPS handleRoll/OTF. Falling back to QuickDeck roll.");
         await this.triggerCombatRoll(actor.id, {
           type: "attack",
@@ -3057,6 +3740,7 @@ export class QuickDeckApp extends Application {
           attackType: attack.type,
           attack
         });
+        this.scheduleChatFocus();
       }
     });
 

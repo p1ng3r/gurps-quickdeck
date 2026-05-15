@@ -2,6 +2,15 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.6.0 (Release Candidate)
+
+- QuickDeck's selected-actor cockpit has been rebuilt with a clearer identity header, compact GM helper strip, redesigned HP/FP resource cards, prominent Dodge/Parry/Block controls, and dense attack rows for fast table use.
+- Combat Favorites and Spell Favorites add per-actor/client pinned rows above the searchable combat and spell lists while preserving native GURPS attack and spell launch behavior.
+- Quick Skills is now the pinned-only fast-access surface for curated skills; the full Skills drawer remains the place to browse, search, and pin skills.
+- The local QuickDeck Reference popup now uses a parchment-style presentation with source/page metadata and an independently scrollable body for longer bundled or local override entries.
+- The fantasy UI polish pass adds CSS-only leather, bronze, parchment, engraved-tab, shield-plate, pinned-slip, and restore-pill ornamentation without changing QuickDeck's runtime rules behavior.
+- QuickDeck remains native-GURPS-first: it does not add custom damage, DR, wounding, shock, knockback, crippling, spell, skill, targeting, or ModifierBucket math rules. Attacks, defenses, damage follow-ups, skills, spells, and modifiers continue to route to native Foundry/GURPS behavior wherever available.
+
 ## What's New in v0.4.0 (Draft)
 
 - Combat drawer weapon buttons now launch a guided **Attack** flow (MVP).
@@ -56,14 +65,16 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Client-side persistence:
   - Roster actor IDs persist per client/user.
   - Quick Skills selections persist per actor ID per client/user.
+  - Combat Favorite attack keys persist per actor ID per client/user.
+  - Spell Favorite keys persist per actor ID per client/user.
   - Minimized/expanded QuickDeck window state persists per client/user.
   - Minimized `QD QuickDeck` restore pill position persists per client/user.
   - Missing/deleted actors are cleaned up defensively.
 - Drawer tools:
-  - **Combat Burst**: defenses, HP/FP edit, attacks, native-token **Target Opponent** controls, roll buttons, and damage actions.
+  - **Combat Burst**: large Dodge/Parry/Block buttons, selected-character HP/FP pass-through controls, roster HP/FP bars, pinned favorite attacks, the full attack list, native-token **Target Opponent** controls, native chat/target/actor helper buttons, roll buttons, and native damage handoff prompts.
   - **Skills**: extracted nested GURPS skills + quick-pin checkboxes; roll buttons route through native GURPS sheet-style skill handling where possible.
   - **Quick Skills**: pinned skills with independent search and native sheet-style roll actions.
-  - **Spells**: spell extraction + searchable spell list; cast buttons route through native GURPS sheet-style spell handling where possible.
+  - **Spells**: pinned favorite spells plus the full searchable spell list; cast buttons route through native GURPS sheet-style spell handling where possible.
 - Reference helpers:
   - Click a **Skill** or **Spell** name to open a small local **QuickDeck Reference** window.
   - Matching order is bundled repo summary data first, with optional Local Override metadata applied for personal source/page replacements.
@@ -88,6 +99,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Local Overrides manager supports merge/replace JSON import with safe validation and invalid-JSON warnings (no crash).
 
 
+## Design Specs
+
+- [QuickDeck Favorites and Scroll Reference Popup UI Spec](docs/ui-favorites-scroll-reference-spec.md): planned direction for Combat favorites, Spell favorites, Quick Skills curation, and scroll-styled reference popups.
+
 ## Installation / Local Development
 
 1. Clone this repository into your Foundry modules folder:
@@ -102,14 +117,15 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 2. Add actors to the roster (button or drag/drop).
 3. Select a roster actor.
 4. Open drawers:
-   - **Combat Burst** for defenses/attacks and quick rolls.
-   - **Skills** to browse and check skills you want pinned.
+   - **Combat Burst** for defenses/attacks, Combat Favorites, and native-GURPS-first attack rolls.
+   - **Skills** to browse the full skill list and check skills you want pinned.
    - **Quick Skills** to use pinned skills quickly.
-5. Edit HP/FP directly in Combat Burst.
+   - **Spells** to browse spells, pin Spell Favorites, and cast through native GURPS handling where possible.
+5. Review HP/FP in Combat Burst; use the compact HP/FP minus/plus or direct value fields for GM bookkeeping pass-through to `system.HP.value` and `system.FP.value` without changing max HP/FP.
 6. Click **Minimize** to collapse QuickDeck into a compact top-screen **QD QuickDeck** restore pill.
 7. **Left-click** the floating restore pill to reopen QuickDeck.
 8. **Right-click and drag** the floating restore pill to move it; release to save position.
-9. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, minimized state, and restore pill position restore per client.
+9. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, Combat Favorites, Spell Favorites, minimized state, and restore pill position restore per client.
 
 ## Branch Workflow
 
@@ -135,6 +151,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Token placement uses click-to-place canvas coordinates (no browser drag/drop to canvas).
 - Token placement displays a temporary Forge-safe placement reticle/cursor and removes it during placement cleanup.
 - Combat attack pill targeting uses Foundry token `setTarget` behavior only, avoids GURPS combat-rule mutations, and removes all temporary listeners/reticles on target, cancel, scene switch, close, or error.
+- QuickDeck records pending attack context for flow state only and does not calculate GURPS damage, DR, wounding, shock, knockback, or crippling; HP/FP buttons are direct GM pass-through edits to current actor sheet values only.
 - Combat attack pill modifier controls read the native GURPS `ModifierBucket` status and open the native GURPS ModifierBucket UI; QuickDeck does not apply, clear, or manually calculate bucket modifiers.
 - Escape/cancel, close, minimize, and scene-switch paths always remove temporary pointer/window/canvas listeners.
 - Roll and token placement failures are warning-first and never intentionally crash the app.

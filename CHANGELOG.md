@@ -2,6 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.6.0 release candidate
+
+### Added
+- Added per-actor/client Combat Favorites with compact pinned attack rows, full-list star toggles, and native GURPS attack passthrough preserved for favorite launches.
+- Added per-actor/client Spell Favorites with compact pinned spell rows, full-list star toggles, stable spell keys, and native GURPS spell passthrough preserved for favorite launches.
+- Added selected-character HP/FP pass-through controls, roster HP/FP chips, large Dodge/Parry/Block buttons, and compact combat helper controls for common table flow.
+- Added a UI design spec for Combat Favorites, Spell Favorites, Quick Skills curation, and scroll-styled reference popups.
+
+### Changed
+- Rebuilt the selected-actor cockpit with a clearer identity header, compact GM helper strip, redesigned HP/FP resource cards, prominent defenses, and the existing dense attack list.
+- Generalized the guarded native-window focus helper so GURPS dialogs, attack/defense windows, actor sheets, chat, and other native Foundry windows can stay above QuickDeck after guarded actions.
+- Refined Quick Skills into a pinned-only fast-access drawer with compact rows, native skill-roll passthrough, visible level/relative/points/reference metadata, and an in-row unpin control.
+- Restyled the reference popup as a parchment-style local reference window with a dark leather header, ink-toned sections, source/page metadata, and CSS-only scroll-edge shading.
+- Applied the v0.6.0 fantasy UI polish pass: dark leather framing, bronze trim, parchment ledger rows, engraved drawer tabs, shield-like defense plates, pinned-slip favorites, and a bronze/leather restore pill.
+- Preserved QuickDeck's native-GURPS-first behavior: attacks, defenses, damage, skills, spells, targeting, ModifierBucket behavior, and rule resolution remain delegated to Foundry/GURPS instead of custom QuickDeck damage or math rules.
+
+### Fixed
+- Kept the parchment-style reference popup body independently scrollable after the visual restyle.
+- Stabilized decorative CSS layers so ornament pseudo-elements remain non-interactive and do not block drawer tabs, attack cards, or reference popup controls.
+
+### Documentation
+- Consolidated the accumulated v0.5.x draft notes into this v0.6.0 release-candidate entry.
+- Updated release-facing wording to describe Combat Favorites, Spell Favorites, Quick Skills, reference popup scrolling, the selected-actor cockpit rebuild, and the CSS ornament pass as one coherent v0.6.0 prep pass.
+
 ## [Unreleased] - v0.4.0 draft
 
 ### Added

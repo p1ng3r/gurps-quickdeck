@@ -5,6 +5,8 @@ const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
   ROSTER: "rosterActorIds",
   QUICK_SKILLS: "quickSkillSelectionsByActor",
+  COMBAT_FAVORITES: "combatFavoriteAttackKeysByActor",
+  SPELL_FAVORITES: "spellFavoriteKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
@@ -18,6 +20,12 @@ function openQuickDeck() {
 
   quickDeckApp.render(true);
   return quickDeckApp;
+}
+
+function renderQuickDeckIfOpen() {
+  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
+  quickDeckApp.render(false, { focus: false });
+  quickDeckApp.scheduleNativeWindowFocusAfterRender?.();
 }
 
 Hooks.once("ready", () => {
@@ -47,6 +55,24 @@ Hooks.once("init", () => {
   game.settings.register(MODULE_ID, SETTING_KEYS.QUICK_SKILLS, {
     name: "QuickDeck Skill Pins",
     hint: "Client-side saved Quick Skills per actor.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "{}"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.COMBAT_FAVORITES, {
+    name: "QuickDeck Combat Favorites",
+    hint: "Client-side saved favorite combat attack keys per actor.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "{}"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.SPELL_FAVORITES, {
+    name: "QuickDeck Spell Favorites",
+    hint: "Client-side saved favorite spell keys per actor.",
     scope: "client",
     config: false,
     type: String,
@@ -131,33 +157,32 @@ Hooks.on("deleteActor", (actor) => {
 Hooks.on("updateActor", (actor) => {
   if (!quickDeckApp) return;
   quickDeckApp.invalidateDerivedActorData(actor?.id);
-  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
+  renderQuickDeckIfOpen();
 });
 
 Hooks.on("createItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
+  renderQuickDeckIfOpen();
 });
 
 Hooks.on("updateItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
+  renderQuickDeckIfOpen();
 });
 
 Hooks.on("deleteItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (quickDeckApp.rendered && !quickDeckApp.isMinimized) quickDeckApp.render(false);
+  renderQuickDeckIfOpen();
 });
 
 function refreshQuickDeckOnCombatChange() {
-  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-  quickDeckApp.render(false);
+  renderQuickDeckIfOpen();
 }
 
 let pendingModifierBucketRefresh = null;
@@ -167,8 +192,7 @@ function refreshQuickDeckOnModifierBucketChange() {
   if (pendingModifierBucketRefresh) clearTimeout(pendingModifierBucketRefresh);
   pendingModifierBucketRefresh = setTimeout(() => {
     pendingModifierBucketRefresh = null;
-    if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-    quickDeckApp.render(false);
+    renderQuickDeckIfOpen();
   }, 0);
 }
 
