@@ -2,10 +2,30 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - v0.5.7 draft
+## [Unreleased] - v0.5.10 draft
+
+### Fixed
+- Stabilized decorative CSS layers so ornament pseudo-elements remain non-interactive and do not block drawer tabs, attack cards, or reference popup controls.
+
+### Documentation
+- Polished the v0.5.x draft notes so the README and changelog consistently describe Combat Favorites, Spell Favorites, Quick Skills, reference popup scrolling, and the CSS ornament pass.
+
+## [Unreleased] - v0.5.9 draft
+
+### Changed
+- Added the first heavy ornament fantasy UI pass with CSS-only dark leather framing, bronze trim, parchment ledger rows, engraved drawer tabs, shield-like defense plates, pinned-slip favorites, and a bronze/leather restore pill while preserving existing QuickDeck behavior.
+
+## [Unreleased] - v0.5.8 draft
 
 ### Changed
 - Refined Quick Skills into a pinned-only fast-access tab with compact rows, native skill-roll passthrough, visible level/relative/points/reference metadata, and an in-row unpin control.
+
+### Fixed
+- Kept the parchment-style reference popup body independently scrollable after the visual restyle.
+
+## [Unreleased] - v0.5.7 draft
+
+### Changed
 - Restyled the QuickDeck reference popup as a parchment scroll window with a dark leather header, ink-toned reference sections, clear source/page metadata, and CSS-only scroll-edge shading while preserving existing reference behavior.
 
 ## [Unreleased] - v0.5.6 draft
