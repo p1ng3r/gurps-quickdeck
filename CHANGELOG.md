@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.5.7 draft
+
+### Changed
+- Restyled the QuickDeck reference popup as a parchment scroll window with a dark leather header, ink-toned reference sections, clear source/page metadata, and CSS-only scroll-edge shading while preserving existing reference behavior.
+
 ## [Unreleased] - v0.5.6 draft
 
 ### Added
