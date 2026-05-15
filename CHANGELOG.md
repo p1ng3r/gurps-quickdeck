@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.5.4 draft
+
+### Added
+- Added a UI/feature design spec for upcoming Combat favorites, Spell favorites, Quick Skills refinement, and scroll-styled reference popups.
+
+### Changed
+- Documented the next UI direction: QuickDeck remains a compact combat cockpit, native GURPS remains responsible for rules behavior, and decorative scroll treatments belong in popup reference windows rather than permanent main-window panels.
+
 ## [Unreleased] - v0.5.3 draft
 
 ### Changed
