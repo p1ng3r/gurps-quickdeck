@@ -2,6 +2,12 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.5.5 (Draft)
+
+- Combat Favorite attacks can now be pinned per actor/client with compact quick-launch rows above the full attack list.
+- Favorite launches use the same native GURPS attack path as full attack rows; QuickDeck does not add attack or damage math.
+- Full attack rows remain searchable and keep star controls for pinning/unpinning common attacks.
+
 ## What's New in v0.5.2 (Draft)
 
 - First compact dark-fantasy layout polish pass for the QuickDeck combat cockpit.
@@ -72,11 +78,12 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Client-side persistence:
   - Roster actor IDs persist per client/user.
   - Quick Skills selections persist per actor ID per client/user.
+  - Combat Favorite attack keys persist per actor ID per client/user.
   - Minimized/expanded QuickDeck window state persists per client/user.
   - Minimized `QD QuickDeck` restore pill position persists per client/user.
   - Missing/deleted actors are cleaned up defensively.
 - Drawer tools:
-  - **Combat Burst**: large Dodge/Parry/Block buttons, selected-character HP/FP pass-through controls, roster HP/FP bars, attacks, native-token **Target Opponent** controls, native chat/target/actor helper buttons, roll buttons, and native damage handoff prompts.
+  - **Combat Burst**: large Dodge/Parry/Block buttons, selected-character HP/FP pass-through controls, roster HP/FP bars, pinned favorite attacks, the full attack list, native-token **Target Opponent** controls, native chat/target/actor helper buttons, roll buttons, and native damage handoff prompts.
   - **Skills**: extracted nested GURPS skills + quick-pin checkboxes; roll buttons route through native GURPS sheet-style skill handling where possible.
   - **Quick Skills**: pinned skills with independent search and native sheet-style roll actions.
   - **Spells**: spell extraction + searchable spell list; cast buttons route through native GURPS sheet-style spell handling where possible.

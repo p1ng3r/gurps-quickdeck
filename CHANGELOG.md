@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.5.5 draft
+
+### Added
+- Added client-side per-actor Combat Favorite attacks with compact pinned rows, full-list star toggles, and native GURPS attack passthrough preserved for favorite launches.
+
 ## [Unreleased] - v0.5.4 draft
 
 ### Added
