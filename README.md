@@ -104,6 +104,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Local Overrides manager supports merge/replace JSON import with safe validation and invalid-JSON warnings (no crash).
 
 
+## Design Specs
+
+- [QuickDeck Favorites and Scroll Reference Popup UI Spec](docs/ui-favorites-scroll-reference-spec.md): planned direction for Combat favorites, Spell favorites, Quick Skills curation, and scroll-styled reference popups.
+
 ## Installation / Local Development
 
 1. Clone this repository into your Foundry modules folder:
