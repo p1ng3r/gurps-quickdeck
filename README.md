@@ -2,25 +2,14 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
-## What's New in v0.5.10 (Draft)
+## What's New in v0.6.0 (Release Candidate)
 
-- Stabilization pass after the v0.5.x UI/favorites/reference work: decorative CSS layers are kept non-interactive so ornamentation does not block drawer tabs, attack cards, or reference popup controls.
-- Combat Favorite attacks and Spell Favorites both remain per-actor/client pinned quick-launch rows above their full searchable lists, with native GURPS attack/spell passthrough preserved.
-- Quick Skills remains the pinned-only skill surface; the Skills drawer remains the full skill browser with quick-pin controls.
-- The parchment-style reference popup remains local-data-only and keeps an independently scrollable body.
-
-## What's New in v0.5.x (Draft)
-
-- Selected-actor cockpit, HP/FP controls, Dodge/Parry/Block buttons, helper controls, attack rows, favorites, Quick Skills, and the restore pill use compact dark-fantasy leather/bronze/parchment styling without embedding Foundry/GURPS chat DOM or changing native GURPS attack, damage, defense, targeting, spell, skill, or HP/FP flows.
-- Native GURPS roll/damage-related windows are brought forward with guarded `bringToTop?.()` calls after QuickDeck triggers native handling.
-
-## What's New in v0.5.0 (Draft)
-
-- Combat buttons remain native-GURPS-first: QuickDeck records attack context, routes attacks and large Dodge/Parry/Block buttons through GURPS sheet-style/native roll handling when available, and leaves attack, defense, and damage rules to GURPS.
-- Native GURPS roll/damage-related windows are brought forward with guarded `bringToTop?.()` calls after QuickDeck triggers native handling.
-- After attack, skill, spell, or fallback rolls, QuickDeck opens/focuses the native Foundry chat sidebar instead of embedding or cloning chat.
-- Added lightweight combat flow helpers: **Bring Chat Front**, **Clear Targets**, **Next Actor**, and **Repeat Last Attack**.
-- Pending attack context now stores actor id, attack index/name, OTF, damage string, source path, raw attack reference, and lowercase `hitlocation` when known for future native damage pass-through work; QuickDeck damage controls now point the GM back to native GURPS chat controls instead of rolling custom damage.
+- QuickDeck's selected-actor cockpit has been rebuilt with a clearer identity header, compact GM helper strip, redesigned HP/FP resource cards, prominent Dodge/Parry/Block controls, and dense attack rows for fast table use.
+- Combat Favorites and Spell Favorites add per-actor/client pinned rows above the searchable combat and spell lists while preserving native GURPS attack and spell launch behavior.
+- Quick Skills is now the pinned-only fast-access surface for curated skills; the full Skills drawer remains the place to browse, search, and pin skills.
+- The local QuickDeck Reference popup now uses a parchment-style presentation with source/page metadata and an independently scrollable body for longer bundled or local override entries.
+- The fantasy UI polish pass adds CSS-only leather, bronze, parchment, engraved-tab, shield-plate, pinned-slip, and restore-pill ornamentation without changing QuickDeck's runtime rules behavior.
+- QuickDeck remains native-GURPS-first: it does not add custom damage, DR, wounding, shock, knockback, crippling, spell, skill, targeting, or ModifierBucket math rules. Attacks, defenses, damage follow-ups, skills, spells, and modifiers continue to route to native Foundry/GURPS behavior wherever available.
 
 ## What's New in v0.4.0 (Draft)
 
