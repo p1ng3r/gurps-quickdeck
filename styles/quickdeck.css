@@ -1354,6 +1354,84 @@
   box-shadow: 0 0 0 1px rgba(91, 163, 255, 0.35), 0 0 12px rgba(75, 151, 255, 0.25);
 }
 
+.quickdeck-section-note {
+  margin-left: 0.35rem;
+  color: rgba(219, 205, 173, 0.72);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.quickdeck-quick-skill-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.45rem;
+  min-height: 0;
+  padding: 0.34rem 0.38rem 0.34rem 0.55rem;
+  border-color: rgba(217, 178, 102, 0.32);
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(54, 43, 26, 0.42), rgba(17, 18, 24, 0.72)),
+    radial-gradient(circle at left, rgba(226, 174, 90, 0.13), transparent 46%);
+}
+
+.quickdeck-quick-skill-row.is-quick-skill-selected {
+  border-color: rgba(226, 184, 98, 0.58);
+  background:
+    linear-gradient(180deg, rgba(68, 52, 28, 0.58), rgba(23, 24, 30, 0.78)),
+    radial-gradient(circle at left, rgba(244, 187, 83, 0.18), transparent 48%);
+  box-shadow: 0 0 0 1px rgba(229, 180, 86, 0.2), 0 0 10px rgba(218, 176, 102, 0.14);
+}
+
+.quickdeck-skill-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.18rem 0.45rem;
+}
+
+.quickdeck-quick-skill-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.quickdeck-quick-skill-actions .quickdeck-roll-button {
+  min-width: 3.7rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.quickdeck-unpin-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid rgba(218, 179, 99, 0.45);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(79, 60, 30, 0.72), rgba(38, 31, 24, 0.94));
+  color: #ffd783;
+  font-size: 0.75rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.quickdeck-unpin-button:hover,
+.quickdeck-unpin-button:focus-visible {
+  border-color: rgba(255, 219, 143, 0.86);
+  color: #fff2cf;
+  box-shadow: 0 0 10px rgba(239, 190, 93, 0.22);
+  outline: none;
+}
+
+.quickdeck-empty-compact {
+  margin-top: 0.42rem;
+  padding: 0.4rem 0.5rem;
+  border: 1px dashed rgba(202, 166, 95, 0.32);
+  border-radius: 8px;
+  background: rgba(12, 14, 18, 0.28);
+  font-size: 0.76rem;
+}
+
 .quickdeck-spell-row {
   grid-template-columns: minmax(0, 1fr);
   border-radius: 10px;
