@@ -993,6 +993,7 @@
 .quickdeck-attack-card::before {
   content: "";
   position: absolute;
+  pointer-events: none;
   inset: 0 auto 0 0;
   width: 3px;
   background: linear-gradient(180deg, rgba(232, 185, 93, 0.9), rgba(98, 125, 154, 0.2));
@@ -1478,6 +1479,7 @@
 
 .quickdeck-main::before {
   content: "";
+  pointer-events: none;
   height: 2px;
   background: linear-gradient(90deg, transparent, rgba(228, 190, 111, 0.48), transparent);
 }
@@ -1732,6 +1734,7 @@
 .quickdeck-reference-header::after {
   content: "";
   position: absolute;
+  pointer-events: none;
   left: 0.68rem;
   right: 0.68rem;
   bottom: -0.47rem;
@@ -1845,6 +1848,7 @@
 .quickdeck-reference-sources::before {
   content: "";
   position: absolute;
+  pointer-events: none;
   left: 0.62rem;
   right: 0.62rem;
   top: -0.29rem;
@@ -2288,6 +2292,7 @@
 .quickdeck-token-placement-reticle-crosshair::after {
   content: "";
   position: absolute;
+  pointer-events: none;
   background: linear-gradient(90deg, transparent, rgba(205, 255, 222, 0.92), transparent);
   opacity: 0.95;
 }
@@ -2348,6 +2353,7 @@
 .quickdeck-target-opponent-reticle-crosshair::after {
   content: "";
   position: absolute;
+  pointer-events: none;
   background: linear-gradient(90deg, transparent, rgba(230, 245, 255, 0.95), transparent);
   opacity: 0.95;
 }
@@ -2719,6 +2725,7 @@
 .quickdeck-drawer-tab::after {
   content: "";
   position: absolute;
+  pointer-events: none;
   left: 0.23rem;
   right: 0.23rem;
   height: 1px;
