@@ -1044,9 +1044,9 @@ export class QuickDeckApp extends Application {
     if (actor && typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
 
     const focusNativeBucket = (renderedApp = null) => {
-      renderedApp?.bringToTop?.();
-      bucket.editor?.bringToTop?.();
-      bucket.bringToTop?.();
+      this.focusNativeWindow(renderedApp);
+      this.focusNativeWindow(bucket.editor);
+      this.focusNativeWindow(bucket);
     };
     const scheduleFocusNativeBucket = (renderedApp = null) => {
       try {
@@ -1063,34 +1063,36 @@ export class QuickDeckApp extends Application {
       }
     };
 
-    try {
-      if (typeof bucket.editor?.render === "function") {
-        const renderedApp = bucket.editor.render(true);
-        bucket.SHOWING = true;
-        scheduleFocusNativeBucket(renderedApp);
-        return true;
+    return this.runWithNativeWindowFocusGuard(() => {
+      try {
+        if (typeof bucket.editor?.render === "function") {
+          const renderedApp = bucket.editor.render(true);
+          bucket.SHOWING = true;
+          scheduleFocusNativeBucket(renderedApp);
+          return true;
+        }
+
+        if (typeof bucket.render === "function") {
+          const renderedApp = bucket.render(true);
+          bucket.SHOWING = true;
+          scheduleFocusNativeBucket(renderedApp);
+          return true;
+        }
+
+        if (typeof bucket._onenter === "function") {
+          bucket._onenter(event);
+          bucket.SHOWING = true;
+          scheduleFocusNativeBucket(bucket.editor);
+          return true;
+        }
+      } catch (_error) {
+        ui.notifications?.warn("QuickDeck: Could not open the native GURPS ModifierBucket UI.");
+        return false;
       }
 
-      if (typeof bucket.render === "function") {
-        const renderedApp = bucket.render(true);
-        bucket.SHOWING = true;
-        scheduleFocusNativeBucket(renderedApp);
-        return true;
-      }
-
-      if (typeof bucket._onenter === "function") {
-        bucket._onenter(event);
-        bucket.SHOWING = true;
-        scheduleFocusNativeBucket(bucket.editor);
-        return true;
-      }
-    } catch (_error) {
-      ui.notifications?.warn("QuickDeck: Could not open the native GURPS ModifierBucket UI.");
+      ui.notifications?.warn("QuickDeck: Native GURPS ModifierBucket UI API is unavailable.");
       return false;
-    }
-
-    ui.notifications?.warn("QuickDeck: Native GURPS ModifierBucket UI API is unavailable.");
-    return false;
+    }, "modifier-bucket");
   }
 
   parseDefenseScore(value) {
@@ -1192,7 +1194,7 @@ export class QuickDeckApp extends Application {
       return;
     }
 
-    actor.sheet.render(true);
+    return this.runWithNativeWindowFocusGuard(() => actor.sheet.render(true), "open-actor-sheet");
   }
 
   parseRollTarget(value) {
@@ -1316,7 +1318,8 @@ export class QuickDeckApp extends Application {
       const gurps = globalThis.GURPS ?? game.GURPS;
       const defense = String(rollContext.defense ?? "").trim();
       if (defense && typeof gurps?.executeOTF === "function") {
-        const previousWindowIds = this.getNativeWindowIds();
+        const previousWindowIds = this._nativeWindowFocusLock?.previousWindowIds ?? this.getNativeWindowIds();
+        if (!this._nativeWindowFocusLock) this.startNativeWindowFocusLock(previousWindowIds, "native-defense");
         try {
           if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
           await gurps.executeOTF(`[${defense}]`, false, null, actor);
@@ -1418,6 +1421,7 @@ export class QuickDeckApp extends Application {
 
     if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
     const previousWindowIds = this.getNativeWindowIds();
+    this.startNativeWindowFocusLock(previousWindowIds, `native-sheet-${label}`);
 
     if (dataset.key && typeof gurps?.handleRoll === "function") {
       try {
@@ -1466,6 +1470,19 @@ export class QuickDeckApp extends Application {
     }
   }
 
+  isQuickDeckWindow(app) {
+    const parts = [
+      app?.id,
+      app?.appId,
+      app?.options?.id,
+      app?.options?.title,
+      app?.title,
+      app?.constructor?.name,
+      this.getWindowTitleText(app)
+    ].map((part) => String(part ?? ""));
+    return app === this || parts.some((part) => /quickdeck/i.test(part));
+  }
+
   isLikelyNativeGurpsWindow(app) {
     const parts = [
       app?.id,
@@ -1476,8 +1493,22 @@ export class QuickDeckApp extends Application {
       app?.constructor?.name,
       this.getWindowTitleText(app)
     ].map((part) => String(part ?? ""));
-    if (parts.some((part) => /quickdeck/i.test(part))) return false;
+    if (this.isQuickDeckWindow(app)) return false;
     return parts.some((part) => NATIVE_GURPS_WINDOW_PATTERN.test(part));
+  }
+
+  isNativeWindowFocusCandidate(app, previousWindowIds = new Set()) {
+    if (!app || this.isQuickDeckWindow(app)) return false;
+
+    const appId = this.getNativeWindowId(app);
+    if (appId && previousWindowIds?.has?.(appId)) {
+      return this.isLikelyNativeGurpsWindow(app);
+    }
+
+    // During a QuickDeck-started native-window guard, newly registered Foundry windows
+    // are the important case even when their title is only an actor name and does not
+    // match a GURPS-specific pattern.
+    return true;
   }
 
   getQuickDeckWindowElement() {
@@ -1506,8 +1537,8 @@ export class QuickDeckApp extends Application {
     let nativeZIndex = this.getWindowZIndex(app);
     if (!Number.isFinite(nativeZIndex)) {
       try {
-        app?.bringToTop?.();
         app?.bringToFront?.();
+        app?.bringToTop?.();
       } catch (_error) {
         // Native window focus is best-effort only.
       }
@@ -1520,8 +1551,8 @@ export class QuickDeckApp extends Application {
 
   focusNativeWindow(app) {
     try {
-      app?.bringToTop?.();
       app?.bringToFront?.();
+      app?.bringToTop?.();
     } catch (_error) {
       // Native window focus is best-effort only.
     }
@@ -1544,22 +1575,21 @@ export class QuickDeckApp extends Application {
   handleNativeWindowFocusLockRender(app) {
     const lock = this._nativeWindowFocusLock;
     if (!lock || Date.now() > lock.until) return;
-    if (!app || app === this || !this.isLikelyNativeGurpsWindow(app)) return;
+    if (!this.isNativeWindowFocusCandidate(app, lock.previousWindowIds)) return;
 
     const appId = this.getNativeWindowId(app);
-    if (appId && lock.previousWindowIds.has(appId)) return;
-
     this.focusNativeWindow(app);
     lock.focusedWindowIds.add(appId ?? app?.constructor?.name ?? "unknown");
   }
 
-  startNativeWindowFocusLock(previousWindowIds = new Set()) {
+  startNativeWindowFocusLock(previousWindowIds = new Set(), reason = "native-window") {
     this.stopNativeWindowFocusLock();
 
     const previousIds = previousWindowIds instanceof Set ? previousWindowIds : new Set();
     const quickDeckElement = this.getQuickDeckWindowElement();
     const until = Date.now() + NATIVE_WINDOW_FOCUS_GUARD_MS;
     const lock = {
+      reason,
       previousWindowIds: new Set(previousIds),
       previousQuickDeckZIndex: this.getWindowZIndex(this),
       previousQuickDeckInlineZIndex: quickDeckElement?.style?.zIndex ?? "",
@@ -1570,18 +1600,13 @@ export class QuickDeckApp extends Application {
     };
     const onRender = (app) => this.handleNativeWindowFocusLockRender(app);
 
-    try {
-      const renderApplicationHookId = globalThis.Hooks?.on?.("renderApplication", onRender);
-      lock.hooks.push(["renderApplication", renderApplicationHookId, onRender]);
-    } catch (_error) {
-      // Native window focus locking is best-effort only.
-    }
-
-    try {
-      const renderApplicationV2HookId = globalThis.Hooks?.on?.("renderApplicationV2", onRender);
-      lock.hooks.push(["renderApplicationV2", renderApplicationV2HookId, onRender]);
-    } catch (_error) {
-      // Native window focus locking is best-effort only.
+    for (const hookName of ["renderApplicationV1", "renderApplicationV2", "renderApplication"]) {
+      try {
+        const hookId = globalThis.Hooks?.on?.(hookName, onRender);
+        lock.hooks.push([hookName, hookId, onRender]);
+      } catch (_error) {
+        // Native window focus locking is best-effort only.
+      }
     }
 
     lock.timeoutId = globalThis.setTimeout?.(() => this.stopNativeWindowFocusLock(), NATIVE_WINDOW_FOCUS_GUARD_MS) ?? null;
@@ -1625,12 +1650,7 @@ export class QuickDeckApp extends Application {
     try {
       const windows = Object.values(ui?.windows ?? {});
       for (const app of windows) {
-        if (!app || app === this) continue;
-        if (!this.isLikelyNativeGurpsWindow(app)) continue;
-
-        const appId = this.getNativeWindowId(app);
-        if (previousIds.has(appId)) continue;
-
+        if (!this.isNativeWindowFocusCandidate(app, previousIds)) continue;
         this.focusNativeWindow(app);
       }
     } catch (_error) {
@@ -1674,6 +1694,29 @@ export class QuickDeckApp extends Application {
     }
   }
 
+  runWithNativeWindowFocusGuard(callback, reason = "native-window") {
+    const previousWindowIds = this.getNativeWindowIds();
+    this.startNativeWindowFocusLock(previousWindowIds, reason);
+
+    try {
+      const result = callback(previousWindowIds);
+      if (result && typeof result.then === "function") {
+        return result
+          .then((value) => {
+            this.focusNativeWindow(value);
+            return value;
+          })
+          .finally(() => this.scheduleNativeWindowFocus(previousWindowIds));
+      }
+      this.focusNativeWindow(result);
+      this.scheduleNativeWindowFocus(previousWindowIds);
+      return result;
+    } catch (error) {
+      this.scheduleNativeWindowFocus(previousWindowIds);
+      throw error;
+    }
+  }
+
   scheduleNativeWindowFocusAfterRender() {
     if (Date.now() > this._nativeWindowFocusUntil) return;
     this.scheduleNativeWindowFocus(this._lastNativeWindowIds);
@@ -1684,6 +1727,7 @@ export class QuickDeckApp extends Application {
       ui?.sidebar?.expand?.();
       ui?.sidebar?.activateTab?.("chat");
       ui?.chat?.render?.(true);
+      ui?.chat?.bringToFront?.();
       ui?.chat?.bringToTop?.();
     } catch (_error) {
       // Chat focus is best-effort and must not block native GURPS handling.
@@ -1691,9 +1735,13 @@ export class QuickDeckApp extends Application {
   }
 
   scheduleChatFocus() {
+    const lock = this._nativeWindowFocusLock;
+    const previousWindowIds = lock?.previousWindowIds ?? this.getNativeWindowIds();
+    if (!lock) this.startNativeWindowFocusLock(previousWindowIds, "chat");
     this.focusChatSidebar();
     globalThis.setTimeout?.(() => this.focusChatSidebar(), 0);
     globalThis.setTimeout?.(() => this.focusChatSidebar(), 100);
+    this.scheduleNativeWindowFocus(previousWindowIds);
   }
 
   extractKnownHitLocation(attack) {
@@ -1746,7 +1794,7 @@ export class QuickDeckApp extends Application {
     this.rememberPendingAttackContext(actor, attack, attackIndex, dataset);
     const targets = Array.from(game.user?.targets ?? []);
     const previousWindowIds = this.getNativeWindowIds();
-    this.startNativeWindowFocusLock(previousWindowIds);
+    this.startNativeWindowFocusLock(previousWindowIds, "native-attack");
     let handled = false;
 
     try {
@@ -1843,7 +1891,10 @@ export class QuickDeckApp extends Application {
     if (!actor) return;
     if (!rollContext?.label) return;
 
-    const usedSystemRoll = await this.tryGurpsRoll(actor, rollContext);
+    const shouldGuardNativeRoll = ["attack", "defense", "skill"].includes(rollContext.type);
+    const usedSystemRoll = shouldGuardNativeRoll
+      ? await this.runWithNativeWindowFocusGuard(() => this.tryGurpsRoll(actor, rollContext), `combat-${rollContext.type}`)
+      : await this.tryGurpsRoll(actor, rollContext);
     if (usedSystemRoll) return;
 
     if (rollContext.type === "defense") {
@@ -3287,7 +3338,7 @@ export class QuickDeckApp extends Application {
       }
       this.activeActorId = actorId;
       this.openActorSheet(actorId);
-      this.render();
+      this.render(false, { focus: false });
     });
 
     html.find("[data-action='available-search']").on("input", (event) => {
