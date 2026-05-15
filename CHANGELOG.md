@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.5.9 draft
+
+### Changed
+- Added the first heavy ornament fantasy UI pass with CSS-only dark leather framing, bronze trim, parchment ledger rows, engraved drawer tabs, shield-like defense plates, pinned-slip favorites, and a bronze/leather restore pill while preserving existing QuickDeck behavior.
+
 ## [Unreleased] - v0.5.7 draft
 
 ### Changed

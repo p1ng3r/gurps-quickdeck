@@ -2573,3 +2573,349 @@
     grid-column: 1 / -1;
   }
 }
+
+/* v0.5.9 heavy ornament UI pass: CSS-only leather, bronze, and parchment treatment. */
+.gurps-quickdeck {
+  --quickdeck-leather-dark: #120b08;
+  --quickdeck-leather-mid: #2d1b12;
+  --quickdeck-leather-warm: #4b2d18;
+  --quickdeck-bronze-dark: #6f461d;
+  --quickdeck-bronze-mid: #a97735;
+  --quickdeck-bronze-light: #e2b76c;
+  --quickdeck-parchment-inked: #24190f;
+  --quickdeck-parchment-wash: rgba(238, 210, 151, 0.13);
+  --quickdeck-ornament-line: rgba(232, 187, 105, 0.36);
+  --quickdeck-ornament-glow: rgba(216, 151, 58, 0.2);
+}
+
+.gurps-quickdeck .window-header {
+  background:
+    linear-gradient(90deg, rgba(255, 229, 164, 0.08), transparent 15%, transparent 85%, rgba(255, 229, 164, 0.08)),
+    radial-gradient(circle at 8% 0, rgba(248, 200, 104, 0.26), transparent 34%),
+    linear-gradient(180deg, rgba(125, 82, 31, 0.84), rgba(46, 26, 13, 0.98) 58%, rgba(18, 11, 8, 0.98));
+  border-bottom: 1px solid rgba(235, 189, 103, 0.62);
+  box-shadow:
+    0 1px 0 rgba(255, 235, 184, 0.12) inset,
+    0 -1px 0 rgba(35, 18, 7, 0.86) inset,
+    0 7px 18px rgba(0, 0, 0, 0.34);
+}
+
+.gurps-quickdeck .window-content {
+  background: var(--quickdeck-leather-dark);
+}
+
+.quickdeck-shell {
+  position: relative;
+  isolation: isolate;
+  border: 1px solid rgba(231, 186, 99, 0.28);
+  background:
+    radial-gradient(circle at 100% 0, rgba(226, 174, 82, 0.22), transparent 27%),
+    radial-gradient(circle at 8% 92%, rgba(161, 92, 37, 0.2), transparent 34%),
+    repeating-linear-gradient(135deg, rgba(255, 226, 167, 0.025) 0, rgba(255, 226, 167, 0.025) 2px, transparent 2px, transparent 10px),
+    linear-gradient(145deg, rgba(18, 11, 8, 0.99), rgba(41, 25, 16, 0.98) 42%, rgba(9, 10, 14, 0.98));
+  box-shadow:
+    0 0 0 1px rgba(255, 239, 196, 0.06) inset,
+    0 0 0 4px rgba(0, 0, 0, 0.2) inset,
+    0 24px 46px rgba(0, 0, 0, 0.46);
+}
+
+.quickdeck-shell::before,
+.quickdeck-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0.36rem;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 10px;
+}
+
+.quickdeck-shell::before {
+  border: 1px solid rgba(218, 164, 75, 0.22);
+  background:
+    radial-gradient(circle at 0 0, transparent 0 16px, var(--quickdeck-ornament-line) 17px, transparent 18px 25px, var(--quickdeck-ornament-line) 26px, transparent 27px 35px),
+    radial-gradient(circle at 100% 0, transparent 0 16px, var(--quickdeck-ornament-line) 17px, transparent 18px 25px, var(--quickdeck-ornament-line) 26px, transparent 27px 35px),
+    radial-gradient(circle at 0 100%, transparent 0 16px, var(--quickdeck-ornament-line) 17px, transparent 18px 25px, var(--quickdeck-ornament-line) 26px, transparent 27px 35px),
+    radial-gradient(circle at 100% 100%, transparent 0 16px, var(--quickdeck-ornament-line) 17px, transparent 18px 25px, var(--quickdeck-ornament-line) 26px, transparent 27px 35px);
+  box-shadow:
+    0 0 22px rgba(0, 0, 0, 0.34) inset,
+    0 0 0 1px rgba(255, 238, 190, 0.04) inset;
+}
+
+.quickdeck-shell::after {
+  inset: 0.72rem;
+  border-top: 1px solid rgba(232, 185, 93, 0.14);
+  border-bottom: 1px solid rgba(232, 185, 93, 0.14);
+  background:
+    linear-gradient(90deg, rgba(235, 187, 93, 0.14), transparent 5.5rem, transparent calc(100% - 5.5rem), rgba(235, 187, 93, 0.14)),
+    linear-gradient(180deg, rgba(255, 225, 155, 0.045), transparent 30%, transparent 70%, rgba(56, 28, 11, 0.18));
+}
+
+.quickdeck-shell > * {
+  position: relative;
+  z-index: 1;
+}
+
+.quickdeck-sidebar {
+  border-right: 1px solid rgba(218, 164, 75, 0.36);
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.26), transparent 12%, transparent 88%, rgba(0, 0, 0, 0.16)),
+    radial-gradient(circle at 12% 8%, rgba(229, 176, 86, 0.14), transparent 32%),
+    repeating-linear-gradient(90deg, rgba(255, 228, 169, 0.025) 0, rgba(255, 228, 169, 0.025) 1px, transparent 1px, transparent 9px),
+    linear-gradient(180deg, rgba(35, 20, 13, 0.9), rgba(15, 11, 10, 0.88));
+  box-shadow:
+    -1px 0 0 rgba(255, 229, 167, 0.08) inset,
+    -12px 0 22px rgba(0, 0, 0, 0.18) inset;
+}
+
+.quickdeck-sidebar-block,
+.quickdeck-panel,
+.quickdeck-panel-scroll-root {
+  border-color: rgba(221, 172, 86, 0.36);
+}
+
+.quickdeck-sidebar-block {
+  position: relative;
+  border-radius: 10px;
+  background:
+    linear-gradient(180deg, rgba(255, 224, 151, 0.07), rgba(0, 0, 0, 0.16)),
+    radial-gradient(circle at 0 0, rgba(239, 185, 88, 0.13), transparent 42%),
+    linear-gradient(135deg, rgba(58, 35, 20, 0.72), rgba(18, 15, 16, 0.82));
+}
+
+.quickdeck-sidebar-block::after,
+.quickdeck-favorite-attacks::after,
+.quickdeck-selected-cockpit::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: 0.28rem;
+  border-radius: inherit;
+  border-top: 1px solid rgba(255, 226, 168, 0.11);
+  border-bottom: 1px solid rgba(92, 49, 17, 0.28);
+}
+
+.quickdeck-drawer-tabs {
+  border-left: 1px solid rgba(223, 173, 85, 0.42);
+  background:
+    linear-gradient(90deg, rgba(255, 230, 170, 0.06), rgba(0, 0, 0, 0.18)),
+    linear-gradient(180deg, rgba(42, 26, 15, 0.98), rgba(10, 10, 13, 0.98));
+  box-shadow: 8px 0 20px rgba(0, 0, 0, 0.18) inset;
+}
+
+.quickdeck-drawer-tab {
+  position: relative;
+  overflow: hidden;
+  border-color: rgba(226, 178, 89, 0.44);
+  border-radius: 9px;
+  background:
+    linear-gradient(90deg, rgba(255, 229, 157, 0.07), transparent 34%, rgba(66, 35, 13, 0.18)),
+    linear-gradient(180deg, rgba(93, 62, 27, 0.9), rgba(36, 25, 17, 0.96));
+  box-shadow:
+    0 0 0 1px rgba(255, 239, 196, 0.04) inset,
+    0 5px 12px rgba(0, 0, 0, 0.22);
+}
+
+.quickdeck-drawer-tab::before,
+.quickdeck-drawer-tab::after {
+  content: "";
+  position: absolute;
+  left: 0.23rem;
+  right: 0.23rem;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(248, 210, 132, 0.48), transparent);
+}
+
+.quickdeck-drawer-tab::before {
+  top: 0.28rem;
+}
+
+.quickdeck-drawer-tab::after {
+  bottom: 0.28rem;
+}
+
+.quickdeck-drawer-tab.is-active {
+  color: #fff6dc;
+  background:
+    radial-gradient(circle at 50% 8%, rgba(255, 226, 151, 0.2), transparent 35%),
+    linear-gradient(180deg, rgba(173, 122, 48, 0.96), rgba(82, 49, 17, 0.98));
+  box-shadow:
+    0 0 0 1px rgba(255, 229, 168, 0.22) inset,
+    0 0 15px rgba(228, 164, 61, 0.25),
+    -3px 0 0 rgba(255, 218, 139, 0.48) inset;
+}
+
+.quickdeck-panel {
+  background:
+    linear-gradient(90deg, rgba(255, 230, 170, 0.045), transparent 6%, transparent 94%, rgba(0, 0, 0, 0.18)),
+    radial-gradient(circle at 30% 0, rgba(226, 174, 82, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(28, 18, 14, 0.99), rgba(10, 10, 13, 0.98));
+  box-shadow:
+    inset 10px 0 20px rgba(0, 0, 0, 0.2),
+    inset 1px 0 0 rgba(255, 229, 167, 0.08);
+}
+
+.quickdeck-panel-scroll-root {
+  border-bottom-color: rgba(222, 172, 86, 0.34);
+  background:
+    linear-gradient(180deg, rgba(50, 30, 18, 0.99), rgba(21, 16, 16, 0.96)),
+    radial-gradient(circle at 20% 0, rgba(244, 190, 91, 0.15), transparent 52%);
+  box-shadow: 0 9px 16px rgba(0, 0, 0, 0.2);
+}
+
+.quickdeck-selected-cockpit {
+  position: relative;
+  padding: 0.42rem;
+  border: 1px solid rgba(221, 172, 86, 0.34);
+  border-radius: 12px;
+  background:
+    linear-gradient(90deg, rgba(255, 225, 156, 0.06), transparent 14%, transparent 86%, rgba(91, 49, 17, 0.18)),
+    radial-gradient(circle at 18% 0, rgba(238, 184, 89, 0.14), transparent 36%),
+    linear-gradient(180deg, rgba(34, 22, 16, 0.92), rgba(10, 11, 14, 0.78));
+  box-shadow:
+    0 0 0 1px rgba(255, 239, 196, 0.04) inset,
+    0 12px 22px rgba(0, 0, 0, 0.22);
+}
+
+.quickdeck-actor-header {
+  border-color: rgba(235, 183, 91, 0.44);
+  background:
+    linear-gradient(90deg, rgba(255, 229, 158, 0.12), transparent 18%, transparent 82%, rgba(55, 29, 11, 0.24)),
+    linear-gradient(180deg, rgba(112, 73, 28, 0.72), rgba(44, 27, 15, 0.86));
+  box-shadow:
+    0 1px 0 rgba(255, 232, 178, 0.12) inset,
+    0 8px 16px rgba(0, 0, 0, 0.22);
+}
+
+.quickdeck-actor-header h3 {
+  color: #fff3d2;
+  text-shadow: 0 1px 0 rgba(45, 20, 6, 0.92), 0 2px 8px rgba(0, 0, 0, 0.52);
+}
+
+.quickdeck-main-resources .quickdeck-resource-card {
+  border-color: rgba(224, 179, 94, 0.34);
+  background:
+    linear-gradient(180deg, rgba(238, 201, 128, 0.11), rgba(5, 6, 9, 0.28)),
+    radial-gradient(circle at top, rgba(228, 184, 98, 0.13), transparent 54%);
+  box-shadow: 0 0 0 1px rgba(255, 241, 202, 0.035) inset;
+}
+
+.quickdeck-defense-buttons {
+  border-color: rgba(219, 163, 72, 0.38);
+  background:
+    linear-gradient(90deg, rgba(255, 225, 151, 0.06), transparent 22%, transparent 78%, rgba(82, 44, 15, 0.18)),
+    rgba(6, 5, 6, 0.3);
+}
+
+.quickdeck-defense-button {
+  border-color: rgba(235, 187, 96, 0.66);
+  border-radius: 12px 12px 16px 16px;
+  background:
+    radial-gradient(circle at 50% 0, rgba(255, 225, 151, 0.2), transparent 34%),
+    linear-gradient(180deg, rgba(132, 87, 30, 0.92), rgba(53, 34, 15, 0.98));
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%);
+}
+
+.quickdeck-favorite-attacks {
+  position: relative;
+  border-color: rgba(226, 178, 89, 0.42);
+  border-radius: 10px;
+  background:
+    linear-gradient(90deg, rgba(255, 231, 176, 0.11), transparent 5%, transparent 95%, rgba(111, 65, 25, 0.15)),
+    repeating-linear-gradient(0deg, rgba(255, 238, 190, 0.026) 0, rgba(255, 238, 190, 0.026) 1px, transparent 1px, transparent 8px),
+    linear-gradient(180deg, rgba(83, 55, 27, 0.34), rgba(12, 13, 17, 0.48));
+  box-shadow:
+    0 0 0 1px rgba(255, 241, 202, 0.035) inset,
+    0 8px 16px rgba(0, 0, 0, 0.16);
+}
+
+.quickdeck-favorite-attacks-heading h5,
+.quickdeck-attacks-section h4,
+.quickdeck-skills-section h4 {
+  color: #ffe6aa;
+  text-shadow: 0 1px 0 rgba(48, 24, 7, 0.95), 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.quickdeck-favorite-attack-main,
+.quickdeck-skill-row,
+.quickdeck-attack-card {
+  background:
+    linear-gradient(90deg, rgba(255, 239, 196, 0.055), transparent 16%, transparent 84%, rgba(99, 58, 22, 0.12)),
+    repeating-linear-gradient(0deg, rgba(244, 215, 154, 0.018) 0, rgba(244, 215, 154, 0.018) 1px, transparent 1px, transparent 7px),
+    linear-gradient(180deg, rgba(65, 48, 29, 0.38), rgba(17, 18, 23, 0.7));
+}
+
+.quickdeck-favorite-attack-main {
+  border-color: rgba(220, 174, 92, 0.38);
+  box-shadow: 3px 0 0 rgba(225, 176, 88, 0.28) inset;
+}
+
+.quickdeck-favorite-toggle,
+.quickdeck-unpin-button {
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 225, 151, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(84, 58, 27, 0.92), rgba(26, 22, 18, 0.95));
+}
+
+.quickdeck-favorite-toggle.is-selected {
+  box-shadow:
+    0 0 0 1px rgba(255, 235, 184, 0.13) inset,
+    0 0 10px rgba(255, 207, 105, 0.22);
+}
+
+.quickdeck-skill-row {
+  border-color: rgba(214, 173, 95, 0.3);
+  box-shadow: 0 1px 0 rgba(255, 237, 194, 0.04) inset;
+}
+
+.quickdeck-quick-skill-row,
+.quickdeck-spell-row {
+  border-radius: 10px;
+}
+
+.quickdeck-drawer-search,
+.quickdeck-available-header input {
+  border-color: rgba(223, 178, 94, 0.56);
+  background:
+    linear-gradient(180deg, rgba(14, 10, 8, 0.86), rgba(5, 6, 9, 0.72));
+  box-shadow:
+    0 1px 0 rgba(255, 235, 184, 0.08) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+
+.quickdeck-roll-button,
+.quickdeck-flow-button,
+.quickdeck-clear-button,
+.quickdeck-open-sheet-button,
+.quickdeck-drop-token-button,
+.quickdeck-minimize-button,
+.quickdeck-add-button {
+  box-shadow:
+    0 1px 0 rgba(255, 236, 187, 0.08) inset,
+    0 4px 9px rgba(0, 0, 0, 0.16);
+}
+
+.quickdeck-floating-restore {
+  border-color: rgba(237, 188, 96, 0.82);
+  border-radius: 999px 999px 999px 8px;
+  background:
+    linear-gradient(90deg, rgba(255, 228, 158, 0.09), transparent 42%),
+    linear-gradient(145deg, rgba(57, 32, 16, 0.98), rgba(14, 11, 11, 0.98));
+  box-shadow:
+    0 5px 18px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 232, 177, 0.14) inset,
+    0 -2px 0 rgba(82, 43, 14, 0.48) inset;
+}
+
+.quickdeck-floating-restore-mark {
+  background:
+    radial-gradient(circle at 50% 18%, #ffe8ad, transparent 40%),
+    linear-gradient(180deg, #dba95b, #8b5b23);
+  box-shadow: 0 0 0 1px rgba(255, 239, 196, 0.22) inset;
+}
+
+.quickdeck-reference-shell {
+  box-shadow:
+    0 18px 36px rgba(21, 10, 4, 0.46),
+    0 0 0 1px rgba(255, 248, 212, 0.28) inset,
+    0 0 30px rgba(109, 63, 20, 0.19) inset;
+}
