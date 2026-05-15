@@ -2,84 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased] - v0.5.10 draft
+## [Unreleased] - v0.6.0 release candidate
 
-### Fixed
-- Stabilized decorative CSS layers so ornament pseudo-elements remain non-interactive and do not block drawer tabs, attack cards, or reference popup controls.
-
-### Documentation
-- Polished the v0.5.x draft notes so the README and changelog consistently describe Combat Favorites, Spell Favorites, Quick Skills, reference popup scrolling, and the CSS ornament pass.
-
-## [Unreleased] - v0.5.9 draft
+### Added
+- Added per-actor/client Combat Favorites with compact pinned attack rows, full-list star toggles, and native GURPS attack passthrough preserved for favorite launches.
+- Added per-actor/client Spell Favorites with compact pinned spell rows, full-list star toggles, stable spell keys, and native GURPS spell passthrough preserved for favorite launches.
+- Added selected-character HP/FP pass-through controls, roster HP/FP chips, large Dodge/Parry/Block buttons, and compact combat helper controls for common table flow.
+- Added a UI design spec for Combat Favorites, Spell Favorites, Quick Skills curation, and scroll-styled reference popups.
 
 ### Changed
-- Added the first heavy ornament fantasy UI pass with CSS-only dark leather framing, bronze trim, parchment ledger rows, engraved drawer tabs, shield-like defense plates, pinned-slip favorites, and a bronze/leather restore pill while preserving existing QuickDeck behavior.
-
-## [Unreleased] - v0.5.8 draft
-
-### Changed
-- Refined Quick Skills into a pinned-only fast-access tab with compact rows, native skill-roll passthrough, visible level/relative/points/reference metadata, and an in-row unpin control.
+- Rebuilt the selected-actor cockpit with a clearer identity header, compact GM helper strip, redesigned HP/FP resource cards, prominent defenses, and the existing dense attack list.
+- Generalized the guarded native-window focus helper so GURPS dialogs, attack/defense windows, actor sheets, chat, and other native Foundry windows can stay above QuickDeck after guarded actions.
+- Refined Quick Skills into a pinned-only fast-access drawer with compact rows, native skill-roll passthrough, visible level/relative/points/reference metadata, and an in-row unpin control.
+- Restyled the reference popup as a parchment-style local reference window with a dark leather header, ink-toned sections, source/page metadata, and CSS-only scroll-edge shading.
+- Applied the v0.6.0 fantasy UI polish pass: dark leather framing, bronze trim, parchment ledger rows, engraved drawer tabs, shield-like defense plates, pinned-slip favorites, and a bronze/leather restore pill.
+- Preserved QuickDeck's native-GURPS-first behavior: attacks, defenses, damage, skills, spells, targeting, ModifierBucket behavior, and rule resolution remain delegated to Foundry/GURPS instead of custom QuickDeck damage or math rules.
 
 ### Fixed
 - Kept the parchment-style reference popup body independently scrollable after the visual restyle.
+- Stabilized decorative CSS layers so ornament pseudo-elements remain non-interactive and do not block drawer tabs, attack cards, or reference popup controls.
 
-## [Unreleased] - v0.5.7 draft
-
-### Changed
-- Restyled the QuickDeck reference popup as a parchment scroll window with a dark leather header, ink-toned reference sections, clear source/page metadata, and CSS-only scroll-edge shading while preserving existing reference behavior.
-
-## [Unreleased] - v0.5.6 draft
-
-### Added
-- Added client-side per-actor Spell Favorites with compact pinned spell rows, full-list star toggles, stable spell keys, and native GURPS spell passthrough preserved for favorite launches.
-
-## [Unreleased] - v0.5.5 draft
-
-### Added
-- Added client-side per-actor Combat Favorite attacks with compact pinned rows, full-list star toggles, and native GURPS attack passthrough preserved for favorite launches.
-
-## [Unreleased] - v0.5.4 draft
-
-### Added
-- Added a UI/feature design spec for upcoming Combat favorites, Spell favorites, Quick Skills refinement, and scroll-styled reference popups.
-
-### Changed
-- Documented the next UI direction: QuickDeck remains a compact combat cockpit, native GURPS remains responsible for rules behavior, and decorative scroll treatments belong in popup reference windows rather than permanent main-window panels.
-
-## [Unreleased] - v0.5.3 draft
-
-### Changed
-- Generalized QuickDeck's native-window focus guard so GURPS defense dialogs, attack dialogs, actor sheets, chat, and other newly opened native Foundry windows stay above QuickDeck during guarded actions.
-- Rebuilt the selected-actor cockpit into a cleaner top identity, compact GM helper strip, redesigned HP/FP resource cards, prominent defense row, and unchanged dense attack list.
-- Kept HP/FP pass-through controls on their existing action hooks while simplifying the resource card markup so current/max values align naturally without nested outline boxes.
-
-## [Unreleased] - v0.5.2 draft
-
-### Changed
-- Added a compact dark-fantasy UI polish pass using charcoal/leather panels, bronze accents, and parchment-highlighted text for the main QuickDeck combat cockpit.
-- Flattened the selected-actor HP/FP card styling so the label, resource pill, direct value entry, and +/- controls read as one compact card without nested outline boxes.
-- Tightened the roster, selected-actor header, HP/FP pass-through controls, defense buttons, helper controls, and attack cards while preserving existing GURPS-native attack, damage, defense, targeting, z-order, and HP/FP current-value behavior.
-
-## [Unreleased] - v0.5.1 draft
-
-### Added
-- Selected-character HP/FP pass-through controls with larger bars, minus/plus buttons, and compact direct entry fields that update `system.HP.value` and `system.FP.value` without changing max HP/FP.
-- Roster HP/FP value chips and mini bars for every loaded QuickDeck actor.
-- Large selected-character Dodge/Parry/Block combat buttons that prefer native GURPS roll handling and warn safely when no native defense roll is available.
-
-### Changed
-- QuickDeck continues to leave attack, defense, and damage resolution to native GURPS, avoids custom damage math in the combat flow polish pass, limits HP/FP mutation to explicit GM pass-through current-value edits, and points damage follow-ups back to native GURPS chat controls.
-
-## [Unreleased] - v0.5.0 draft
-
-### Added
-- Native combat flow polish: attack buttons keep using GURPS sheet-style `handleRoll`/OTF handling while QuickDeck records pending attack context for later handoff work.
-- Guarded native-window and chat focus helpers bring GURPS dialogs/windows and the Foundry chat sidebar forward after native rolls without embedding chat or adding permanent listeners.
-- Combat helper controls for **Bring Chat Front**, **Clear Targets**, **Next Actor**, and **Repeat Last Attack**.
-- Pending attack context stores actor id, attack index/name, OTF, damage string, source path, raw attack reference, and lowercase `hitlocation` when attack metadata already exposes one.
-
-### Changed
-- QuickDeck continues to leave attack, defense, and damage resolution to native GURPS, avoids any direct HP/FP mutation or custom damage math in the combat flow polish pass, and points damage follow-ups back to native GURPS chat controls.
+### Documentation
+- Consolidated the accumulated v0.5.x draft notes into this v0.6.0 release-candidate entry.
+- Updated release-facing wording to describe Combat Favorites, Spell Favorites, Quick Skills, reference popup scrolling, the selected-actor cockpit rebuild, and the CSS ornament pass as one coherent v0.6.0 prep pass.
 
 ## [Unreleased] - v0.4.0 draft
 
