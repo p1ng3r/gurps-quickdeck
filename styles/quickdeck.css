@@ -3221,9 +3221,9 @@
 }
 
 .gurps-quickdeck {
-  --quickdeck-art-corner-size: clamp(44px, 8vw, 76px);
-  --quickdeck-art-divider-opacity: 0.34;
-  --quickdeck-art-leather-opacity: 0.12;
+  --quickdeck-art-corner-size: clamp(36px, 5vw, 58px);
+  --quickdeck-art-divider-opacity: 0.22;
+  --quickdeck-art-leather-opacity: 0;
 }
 
 .quickdeck-shell {
@@ -3237,15 +3237,15 @@
   position: absolute;
   pointer-events: none;
   z-index: 0;
-  inset: 0.24rem;
-  opacity: 0.86;
+  inset: 0.32rem;
+  opacity: 0.72;
   border: 1px solid rgba(218, 164, 75, 0.18);
   background:
     var(--quickdeck-asset-bronze-corner-top-left) top left / var(--quickdeck-art-corner-size) var(--quickdeck-art-corner-size) no-repeat,
     var(--quickdeck-asset-bronze-corner-top-right) top right / var(--quickdeck-art-corner-size) var(--quickdeck-art-corner-size) no-repeat,
     var(--quickdeck-asset-bronze-corner-bottom-left) bottom left / var(--quickdeck-art-corner-size) var(--quickdeck-art-corner-size) no-repeat,
     var(--quickdeck-asset-bronze-corner-bottom-right) bottom right / var(--quickdeck-art-corner-size) var(--quickdeck-art-corner-size) no-repeat,
-    linear-gradient(90deg, rgba(235, 187, 93, 0.12), transparent 5.5rem, transparent calc(100% - 5.5rem), rgba(235, 187, 93, 0.12)),
+    linear-gradient(90deg, rgba(235, 187, 93, 0.08), transparent 4.6rem, transparent calc(100% - 4.6rem), rgba(235, 187, 93, 0.08)),
     linear-gradient(180deg, rgba(255, 225, 155, 0.04), transparent 30%, transparent 70%, rgba(56, 28, 11, 0.16));
   background-blend-mode: normal, normal, normal, normal, screen, normal;
   box-shadow:
@@ -3262,9 +3262,7 @@
   opacity: var(--quickdeck-art-leather-opacity);
   border: 0;
   border-radius: 0;
-  background:
-    var(--quickdeck-asset-leather-grain-overlay) center / 420px 420px repeat,
-    linear-gradient(180deg, rgba(255, 225, 155, 0.18), transparent 36%, transparent 64%, rgba(56, 28, 11, 0.22));
+  background: linear-gradient(180deg, rgba(255, 225, 155, 0.08), transparent 38%, transparent 66%, rgba(56, 28, 11, 0.12));
   mix-blend-mode: soft-light;
 }
 
@@ -3286,38 +3284,40 @@
   content: "";
   position: absolute;
   pointer-events: none;
-  left: 0.35rem;
-  right: 0.35rem;
+  left: 50%;
+  right: auto;
   bottom: -1px;
+  width: min(72%, 520px);
   height: 10px;
   opacity: var(--quickdeck-art-divider-opacity);
-  background: var(--quickdeck-asset-bronze-divider-horizontal) center / 100% 10px no-repeat;
+  background: var(--quickdeck-asset-bronze-divider-horizontal) center / contain no-repeat;
+  transform: translateX(-50%);
 }
 
 .quickdeck-actor-header::after,
 .quickdeck-favorite-attacks-heading::after,
-.quickdeck-attacks-section h4::after,
-.quickdeck-skills-section h4::after,
-.quickdeck-subsection-title::after {
+.quickdeck-attacks-section h4::after {
   content: "";
-  display: block;
+  position: absolute;
   pointer-events: none;
+  left: 50%;
+  bottom: -0.22rem;
+  width: min(58%, 360px);
   height: 8px;
-  margin-top: 0.22rem;
   opacity: var(--quickdeck-art-divider-opacity);
-  background: var(--quickdeck-asset-bronze-divider-horizontal) center / 100% 8px no-repeat;
+  background: var(--quickdeck-asset-bronze-divider-horizontal) center / contain no-repeat;
+  transform: translateX(-50%);
 }
 
 .quickdeck-actor-header::after {
-  grid-column: 1 / -1;
-  margin-top: 0.08rem;
-  opacity: 0.24;
+  bottom: 0.06rem;
+  width: min(68%, 460px);
+  opacity: 0.18;
 }
 
 .quickdeck-favorite-attacks-heading::after {
-  flex: 0 0 100%;
-  margin-top: 0.06rem;
-  opacity: 0.24;
+  bottom: -0.12rem;
+  opacity: 0.18;
 }
 
 .quickdeck-defense-button {
@@ -3330,18 +3330,18 @@
   content: "";
   position: absolute;
   pointer-events: none;
-  inset: 0.16rem 0.24rem 0.12rem;
+  inset: 0.34rem 0.28rem 0.02rem;
   z-index: 0;
-  opacity: 0.22;
-  background: var(--quickdeck-asset-bronze-shield-plate) center / contain no-repeat;
-  filter: saturate(0.88) brightness(0.9);
+  opacity: 0.1;
+  background: var(--quickdeck-asset-bronze-shield-plate) center 68% / contain no-repeat;
+  filter: saturate(0.72) brightness(0.78);
 }
 
 .quickdeck-defense-button span,
 .quickdeck-defense-button strong {
   position: relative;
   z-index: 1;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.74), 0 0 8px rgba(0, 0, 0, 0.42);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.84), 0 0 7px rgba(0, 0, 0, 0.54);
 }
 
 .quickdeck-floating-restore {
@@ -3356,7 +3356,7 @@
   inset: 1px auto 1px 1px;
   z-index: 0;
   width: 2.35rem;
-  opacity: 0.18;
+  opacity: 0.14;
   background: var(--quickdeck-asset-bronze-restore-pill-badge) left center / contain no-repeat;
 }
 
