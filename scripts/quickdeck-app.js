@@ -3282,10 +3282,23 @@ export class QuickDeckApp extends Application {
     const quickSelection = this.getQuickSkillSelection(activeActorId);
     const indexedSkills = derivedData.indexedSkills.map((skill) => {
       const quickSkillKey = this.getQuickSkillKey(skill);
+      const isQuickSkillSelected = quickSkillKey ? quickSelection.has(quickSkillKey) : false;
       return {
         ...skill,
         quickSkillKey,
-        isQuickSkillSelected: quickSkillKey ? quickSelection.has(quickSkillKey) : false
+        isQuickSkillSelected,
+        quickSkillToggleLabel: isQuickSkillSelected ? "Unpin skill" : "Pin skill",
+        levelDisplay: skill.level === undefined || skill.level === null ? "—" : String(skill.level),
+        relativeLevelDisplay:
+          skill.relativeLevel === undefined || skill.relativeLevel === null
+            ? null
+            : String(skill.relativeLevel),
+        pointsDisplay:
+          skill.points === undefined || skill.points === null ? null : String(skill.points),
+        referenceDisplay:
+          (skill.reference ?? skill.pageHint) === undefined || (skill.reference ?? skill.pageHint) === null
+            ? null
+            : String(skill.reference ?? skill.pageHint)
       };
     });
     const filteredSkills = this.filterEntriesBySearchText(indexedSkills, skillsSearch);
@@ -3570,6 +3583,18 @@ export class QuickDeckApp extends Application {
 
       this.setQuickSkillSelected(actorId, skillKey, Boolean(event.currentTarget.checked));
       this.render();
+    });
+
+    html.find("[data-action='unpin-quick-skill']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId;
+      const skillKey = event.currentTarget.dataset.skillKey;
+      if (!actorId || !skillKey) return;
+
+      this.setQuickSkillSelected(actorId, skillKey, false);
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
     });
 
     html.find("[data-action='toggle-favorite-attack']").on("click", (event) => {
