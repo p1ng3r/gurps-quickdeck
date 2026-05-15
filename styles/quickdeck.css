@@ -3227,10 +3227,16 @@
 }
 
 .quickdeck-shell {
+  position: relative;
+  isolation: isolate;
   overflow: hidden;
 }
 
 .quickdeck-shell::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
   inset: 0.24rem;
   opacity: 0.86;
   border: 1px solid rgba(218, 164, 75, 0.18);
@@ -3248,6 +3254,10 @@
 }
 
 .quickdeck-shell::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
   inset: 0;
   opacity: var(--quickdeck-art-leather-opacity);
   border: 0;
@@ -3256,6 +3266,11 @@
     var(--quickdeck-asset-leather-grain-overlay) center / 420px 420px repeat,
     linear-gradient(180deg, rgba(255, 225, 155, 0.18), transparent 36%, transparent 64%, rgba(56, 28, 11, 0.22));
   mix-blend-mode: soft-light;
+}
+
+.quickdeck-shell > * {
+  position: relative;
+  z-index: 1;
 }
 
 .quickdeck-panel-scroll-root,
