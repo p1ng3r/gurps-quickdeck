@@ -3763,7 +3763,9 @@
 
 .quickdeck-selected-cockpit,
 .quickdeck-actor-header {
+  position: relative;
   isolation: isolate;
+  overflow: hidden;
 }
 
 .quickdeck-selected-cockpit {
@@ -4146,6 +4148,11 @@
   background-size: 100% 100%, auto;
   background-repeat: no-repeat;
   background-blend-mode: multiply, normal;
+}
+
+.quickdeck-reference-header {
+  position: relative;
+  isolation: isolate;
 }
 
 .quickdeck-reference-header::before {
