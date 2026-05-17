@@ -3520,3 +3520,540 @@
     overflow: visible;
   }
 }
+
+/* v0.6.1 complete local art wiring: use committed UI assets to identify every real QuickDeck control. */
+.gurps-quickdeck {
+  /* Layout art */
+  --quickdeck-art-layout-main-command-shell: url("../assets/ui/layout/main-command-shell.webp");
+  --quickdeck-art-layout-top-command-bar: url("../assets/ui/layout/top-command-bar.webp");
+  --quickdeck-art-layout-left-roster-frame: url("../assets/ui/layout/left-roster-frame.webp");
+  --quickdeck-art-layout-roster-list-panel: url("../assets/ui/layout/roster-list-panel.webp");
+  --quickdeck-art-layout-available-actors-panel: url("../assets/ui/layout/available-actors-panel.webp");
+  --quickdeck-art-layout-center-cockpit-frame: url("../assets/ui/layout/center-cockpit-frame.webp");
+  --quickdeck-art-layout-cockpit-action-panel: url("../assets/ui/layout/cockpit-action-panel.webp");
+  --quickdeck-art-layout-combat-favorites-frame: url("../assets/ui/layout/combat-favorites-frame.webp");
+  --quickdeck-art-layout-right-drawer-frame: url("../assets/ui/layout/right-drawer-frame.webp");
+  --quickdeck-art-layout-drawer-content-panel: url("../assets/ui/layout/drawer-content-panel.webp");
+  --quickdeck-art-layout-reference-drawer-frame: url("../assets/ui/layout/reference-drawer-frame.webp");
+  --quickdeck-art-layout-settings-drawer-frame: url("../assets/ui/layout/settings-drawer-frame.webp");
+  --quickdeck-art-layout-search-input-frame-wide: url("../assets/ui/layout/search-input-frame-wide.webp");
+  --quickdeck-art-layout-row-frame-attack: url("../assets/ui/layout/row-frame-attack.webp");
+  --quickdeck-art-layout-row-frame-skill: url("../assets/ui/layout/row-frame-skill.webp");
+  --quickdeck-art-layout-roll-button-3d6: url("../assets/ui/layout/roll-button-3d6.webp");
+  --quickdeck-art-layout-target-button-frame: url("../assets/ui/layout/target-button-frame.webp");
+  --quickdeck-art-layout-modifier-bucket-button: url("../assets/ui/layout/modifier-bucket-button.webp");
+  --quickdeck-art-layout-resource-card-frame: url("../assets/ui/layout/resource-card-frame.webp");
+  --quickdeck-art-layout-defense-button-frame: url("../assets/ui/layout/defense-button-frame.webp");
+  --quickdeck-art-layout-portrait-bezel-large: url("../assets/ui/layout/portrait-bezel-large.webp");
+  --quickdeck-art-layout-favorites-empty-slot: url("../assets/ui/layout/favorites-empty-slot.webp");
+
+  /* Component art */
+  --quickdeck-art-component-actor-roster-card: url("../assets/ui/components/actor-roster-card.webp");
+  --quickdeck-art-component-actor-roster-card-selected: url("../assets/ui/components/actor-roster-card-selected.webp");
+  --quickdeck-art-component-actor-small-portrait-frame: url("../assets/ui/components/actor-small-portrait-frame.webp");
+  --quickdeck-art-component-title-plaque-wide: url("../assets/ui/components/title-plaque-wide.webp");
+  --quickdeck-art-component-small-bronze-button: url("../assets/ui/components/small-bronze-button.webp");
+  --quickdeck-art-component-small-green-button: url("../assets/ui/components/small-green-button.webp");
+  --quickdeck-art-component-small-red-button: url("../assets/ui/components/small-red-button.webp");
+  --quickdeck-art-component-medium-bronze-button: url("../assets/ui/components/medium-bronze-button.webp");
+  --quickdeck-art-component-large-bronze-button: url("../assets/ui/components/large-bronze-button.webp");
+  --quickdeck-art-component-type-pill: url("../assets/ui/components/type-pill.webp");
+  --quickdeck-art-component-points-pill: url("../assets/ui/components/points-pill.webp");
+  --quickdeck-art-component-hp-bar-track: url("../assets/ui/components/hp-bar-track.webp");
+  --quickdeck-art-component-hp-bar-fill: url("../assets/ui/components/hp-bar-fill.webp");
+  --quickdeck-art-component-fp-bar-track: url("../assets/ui/components/fp-bar-track.webp");
+  --quickdeck-art-component-fp-bar-fill: url("../assets/ui/components/fp-bar-fill.webp");
+  --quickdeck-art-component-combat-favorite-card: url("../assets/ui/components/combat-favorite-card.webp");
+  --quickdeck-art-component-spell-favorite-card: url("../assets/ui/components/spell-favorite-card.webp");
+  --quickdeck-art-component-quick-skill-card: url("../assets/ui/components/quick-skill-card.webp");
+  --quickdeck-art-component-attack-card-compact: url("../assets/ui/components/attack-card-compact.webp");
+  --quickdeck-art-component-spell-card-compact: url("../assets/ui/components/spell-card-compact.webp");
+  --quickdeck-art-component-spell-section-panel: url("../assets/ui/components/spell-section-panel.webp");
+  --quickdeck-art-component-combat-section-panel: url("../assets/ui/components/combat-section-panel.webp");
+  --quickdeck-art-component-quick-skills-section-panel: url("../assets/ui/components/quick-skills-section-panel.webp");
+  --quickdeck-art-component-empty-state-plaque: url("../assets/ui/components/empty-state-plaque.webp");
+  --quickdeck-art-component-drawer-tab-active-glow: url("../assets/ui/components/drawer-tab-active-glow.webp");
+  --quickdeck-art-component-reference-source-plaque: url("../assets/ui/components/reference-source-plaque.webp");
+  --quickdeck-art-component-source-row-frame: url("../assets/ui/components/source-row-frame.webp");
+  --quickdeck-art-component-local-override-chip: url("../assets/ui/components/local-override-chip.webp");
+  --quickdeck-art-component-settings-row-frame: url("../assets/ui/components/settings-row-frame.webp");
+  --quickdeck-art-component-folder-path-field: url("../assets/ui/components/folder-path-field.webp");
+  --quickdeck-art-component-checkbox-frame: url("../assets/ui/components/checkbox-frame.webp");
+
+  /* Icon and control art */
+  --quickdeck-art-icon-3d6: url("../assets/ui/icons/icon-3d6.webp");
+  --quickdeck-art-icon-3d6-small: url("../assets/ui/icons/icon-3d6-small.webp");
+  --quickdeck-art-icon-target-small: url("../assets/ui/icons/icon-target-small.webp");
+  --quickdeck-art-icon-modifier-small: url("../assets/ui/icons/icon-modifier-small.webp");
+  --quickdeck-art-icon-damage-small: url("../assets/ui/icons/icon-damage-small.webp");
+  --quickdeck-art-icon-skill-small: url("../assets/ui/icons/icon-skill-small.webp");
+  --quickdeck-art-icon-spell-small: url("../assets/ui/icons/icon-spell-small.webp");
+  --quickdeck-art-icon-book-small: url("../assets/ui/icons/icon-book-small.webp");
+  --quickdeck-art-icon-gear-small: url("../assets/ui/icons/icon-gear-small.webp");
+  --quickdeck-art-icon-search-small: url("../assets/ui/icons/icon-search-small.webp");
+  --quickdeck-art-icon-plus-small: url("../assets/ui/icons/icon-plus-small.webp");
+  --quickdeck-art-icon-trash-small: url("../assets/ui/icons/icon-trash-small.webp");
+  --quickdeck-art-icon-star-small: url("../assets/ui/icons/icon-star-small.webp");
+  --quickdeck-art-icon-star-empty-small: url("../assets/ui/icons/icon-star-empty-small.webp");
+  --quickdeck-art-icon-heart-small: url("../assets/ui/icons/icon-heart-small.webp");
+  --quickdeck-art-icon-fatigue-small: url("../assets/ui/icons/icon-fatigue-small.webp");
+  --quickdeck-art-icon-defense-small: url("../assets/ui/icons/icon-defense-small.webp");
+  --quickdeck-art-icon-move-small: url("../assets/ui/icons/icon-move-small.webp");
+  --quickdeck-art-icon-reload-small: url("../assets/ui/icons/icon-reload-small.webp");
+  --quickdeck-art-icon-minimize-small: url("../assets/ui/icons/icon-minimize-small.webp");
+  --quickdeck-art-icon-open-sheet-button: url("../assets/ui/icons/button-open-sheet.webp");
+  --quickdeck-art-icon-drop-token-button: url("../assets/ui/icons/button-drop-token.webp");
+  --quickdeck-art-icon-chat-front-button: url("../assets/ui/icons/button-chat-front.webp");
+  --quickdeck-art-icon-clear-targets-button: url("../assets/ui/icons/button-clear-targets.webp");
+  --quickdeck-art-icon-next-actor-button: url("../assets/ui/icons/button-next-actor.webp");
+  --quickdeck-art-icon-repeat-attack-button: url("../assets/ui/icons/button-repeat-attack.webp");
+  --quickdeck-art-icon-manage-sources-button: url("../assets/ui/icons/button-manage-sources.webp");
+  --quickdeck-art-icon-settings-button: url("../assets/ui/icons/button-settings.webp");
+}
+
+.quickdeck-top-bar {
+  background:
+    var(--quickdeck-art-layout-top-command-bar) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(33, 21, 14, 0.84), rgba(10, 9, 10, 0.58));
+}
+
+.quickdeck-top-bar-title strong,
+.quickdeck-block-title-row h3,
+.quickdeck-available-header h4,
+.quickdeck-attacks-section > h4,
+.quickdeck-skills-section > h4,
+.quickdeck-reference-drawer-card > h4,
+.quickdeck-favorite-attacks-heading {
+  background: var(--quickdeck-art-component-title-plaque-wide) center / 100% 100% no-repeat;
+  padding: 0.28rem 0.62rem;
+  min-height: 1.7rem;
+}
+
+.quickdeck-sidebar-roster {
+  background:
+    var(--quickdeck-art-layout-roster-list-panel) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(42, 27, 16, 0.8), rgba(9, 9, 12, 0.72));
+}
+
+.quickdeck-sidebar-available {
+  background:
+    var(--quickdeck-art-layout-available-actors-panel) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(38, 27, 17, 0.78), rgba(9, 9, 12, 0.74));
+}
+
+.quickdeck-roster-button {
+  border-color: rgba(236, 192, 111, 0.34);
+  background:
+    var(--quickdeck-art-component-actor-roster-card) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(38, 38, 46, 0.76), rgba(21, 22, 27, 0.9));
+}
+
+.quickdeck-roster-button.is-active {
+  background:
+    var(--quickdeck-art-component-actor-roster-card-selected) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(88, 67, 36, 0.86), rgba(45, 35, 21, 0.94));
+}
+
+.quickdeck-roster-button img,
+.quickdeck-available-actor img {
+  padding: 3px;
+  background: var(--quickdeck-art-component-actor-small-portrait-frame) center / 100% 100% no-repeat;
+}
+
+.quickdeck-available-list li {
+  border: 1px solid rgba(218, 171, 88, 0.18);
+  border-radius: 9px;
+  padding: 0.22rem;
+  background:
+    var(--quickdeck-art-component-actor-roster-card) center / 100% 100% no-repeat,
+    rgba(8, 8, 10, 0.32);
+}
+
+.quickdeck-drawer-search,
+.quickdeck-available-header input[type="search"] {
+  border-color: rgba(226, 184, 106, 0.36);
+  padding-left: 1.9rem;
+  background:
+    var(--quickdeck-art-icon-search-small) 0.48rem center / 1rem 1rem no-repeat,
+    var(--quickdeck-art-layout-search-input-frame-wide) center / 100% 100% no-repeat,
+    rgba(8, 8, 10, 0.74);
+}
+
+.quickdeck-open-pdf-sources-button,
+.quickdeck-minimize-button,
+.quickdeck-clear-button,
+.quickdeck-add-button,
+.quickdeck-remove-button,
+.quickdeck-open-sheet-button,
+.quickdeck-drop-token-button,
+.quickdeck-flow-button,
+.quickdeck-resource-buttons button,
+.quickdeck-roll-button,
+.quickdeck-favorite-toggle,
+.quickdeck-defense-button,
+.quickdeck-drawer-tab,
+.quickdeck-link-button {
+  position: relative;
+}
+
+.quickdeck-open-pdf-sources-button::before,
+.quickdeck-minimize-button::before,
+.quickdeck-clear-button::before,
+.quickdeck-add-button::before,
+.quickdeck-remove-button::before,
+.quickdeck-open-sheet-button::before,
+.quickdeck-drop-token-button::before,
+.quickdeck-flow-button::before,
+.quickdeck-roll-button::before,
+.quickdeck-favorite-toggle::before,
+.quickdeck-defense-button::before,
+.quickdeck-drawer-tab::before,
+.quickdeck-reference-drawer-card::before,
+.quickdeck-cockpit-empty::before {
+  content: "";
+  pointer-events: none;
+  flex: 0 0 auto;
+  display: inline-block;
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.32rem;
+  vertical-align: -0.18em;
+  background: center / contain no-repeat;
+}
+
+.quickdeck-open-pdf-sources-button,
+.quickdeck-minimize-button,
+.quickdeck-clear-button,
+.quickdeck-add-button,
+.quickdeck-remove-button,
+.quickdeck-open-sheet-button,
+.quickdeck-drop-token-button,
+.quickdeck-flow-button,
+.quickdeck-resource-buttons button,
+.quickdeck-favorite-toggle {
+  background:
+    var(--quickdeck-art-component-small-bronze-button) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(122, 83, 36, 0.9), rgba(43, 29, 16, 0.96));
+}
+
+.quickdeck-add-button {
+  background:
+    var(--quickdeck-art-component-small-green-button) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(57, 108, 54, 0.88), rgba(23, 53, 27, 0.96));
+}
+
+.quickdeck-clear-button,
+.quickdeck-remove-button {
+  background:
+    var(--quickdeck-art-component-small-red-button) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(116, 52, 41, 0.88), rgba(61, 21, 18, 0.96));
+}
+
+.quickdeck-open-pdf-sources-button::before { background-image: var(--quickdeck-art-icon-book-small); }
+.quickdeck-minimize-button::before { background-image: var(--quickdeck-art-icon-minimize-small); }
+.quickdeck-clear-button::before,
+.quickdeck-remove-button::before { background-image: var(--quickdeck-art-icon-trash-small); }
+.quickdeck-add-button::before { background-image: var(--quickdeck-art-icon-plus-small); }
+.quickdeck-open-sheet-button::before { background-image: var(--quickdeck-art-icon-open-sheet-button); }
+.quickdeck-drop-token-button::before { background-image: var(--quickdeck-art-icon-drop-token-button); }
+.quickdeck-flow-button[data-action="open-chat"]::before { background-image: var(--quickdeck-art-icon-chat-front-button); }
+.quickdeck-flow-button[data-action="clear-targets"]::before { background-image: var(--quickdeck-art-icon-clear-targets-button); }
+.quickdeck-flow-button[data-action="next-actor"]::before { background-image: var(--quickdeck-art-icon-next-actor-button); }
+.quickdeck-flow-button[data-action="repeat-last-attack"]::before { background-image: var(--quickdeck-art-icon-repeat-attack-button); }
+
+.quickdeck-actor-header,
+.quickdeck-combat-flow-controls {
+  border-radius: 14px;
+  padding: 0.58rem;
+  background:
+    var(--quickdeck-art-layout-cockpit-action-panel) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(59, 39, 21, 0.6), rgba(8, 8, 10, 0.5));
+}
+
+.quickdeck-type-pill {
+  background:
+    var(--quickdeck-art-component-type-pill) center / 100% 100% no-repeat,
+    rgba(40, 29, 18, 0.78);
+}
+
+.quickdeck-points-pill {
+  background:
+    var(--quickdeck-art-component-points-pill) center / 100% 100% no-repeat,
+    rgba(40, 29, 18, 0.78);
+}
+
+.quickdeck-resource-card,
+.quickdeck-move-card {
+  background:
+    var(--quickdeck-art-layout-resource-card-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(45, 31, 20, 0.76), rgba(9, 9, 12, 0.72));
+}
+
+.quickdeck-resource-card:first-child dt::before,
+.quickdeck-resource-card:first-child .quickdeck-resource-value-line::before {
+  content: "";
+  display: inline-block;
+  width: 0.95rem;
+  height: 0.95rem;
+  margin-right: 0.25rem;
+  background: var(--quickdeck-art-icon-heart-small) center / contain no-repeat;
+  vertical-align: -0.15em;
+}
+
+.quickdeck-resource-card:nth-child(2) dt::before,
+.quickdeck-resource-card:nth-child(2) .quickdeck-resource-value-line::before {
+  content: "";
+  display: inline-block;
+  width: 0.95rem;
+  height: 0.95rem;
+  margin-right: 0.25rem;
+  background: var(--quickdeck-art-icon-fatigue-small) center / contain no-repeat;
+  vertical-align: -0.15em;
+}
+
+.quickdeck-move-card dt::before {
+  content: "";
+  display: inline-block;
+  width: 0.95rem;
+  height: 0.95rem;
+  margin-right: 0.25rem;
+  background: var(--quickdeck-art-icon-move-small) center / contain no-repeat;
+  vertical-align: -0.15em;
+}
+
+.quickdeck-large-resource-bar,
+.quickdeck-mini-resource-bar {
+  background:
+    var(--quickdeck-art-component-hp-bar-track) center / 100% 100% no-repeat,
+    rgba(8, 8, 10, 0.72);
+}
+
+.quickdeck-resource-card:nth-child(2) .quickdeck-large-resource-bar,
+.quickdeck-roster-resource:nth-child(2) .quickdeck-mini-resource-bar {
+  background:
+    var(--quickdeck-art-component-fp-bar-track) center / 100% 100% no-repeat,
+    rgba(8, 8, 10, 0.72);
+}
+
+.quickdeck-large-resource-bar > span,
+.quickdeck-mini-resource-bar > span {
+  background:
+    var(--quickdeck-art-component-hp-bar-fill) left center / 100% 100% no-repeat,
+    linear-gradient(90deg, #7f1f1c, #dc6147);
+}
+
+.quickdeck-resource-card:nth-child(2) .quickdeck-large-resource-bar > span,
+.quickdeck-roster-resource:nth-child(2) .quickdeck-mini-resource-bar > span {
+  background:
+    var(--quickdeck-art-component-fp-bar-fill) left center / 100% 100% no-repeat,
+    linear-gradient(90deg, #284a7d, #70a4df);
+}
+
+.quickdeck-defense-button {
+  background:
+    var(--quickdeck-art-layout-defense-button-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(118, 78, 30, 0.9), rgba(46, 30, 15, 0.98));
+}
+
+.quickdeck-defense-button::before { background-image: var(--quickdeck-art-icon-defense-small); }
+
+.quickdeck-favorite-attacks,
+.quickdeck-favorite-spells,
+.quickdeck-pinned-skills-summary {
+  background:
+    var(--quickdeck-art-layout-combat-favorites-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(52, 34, 18, 0.62), rgba(10, 9, 8, 0.72));
+}
+
+.quickdeck-favorite-attack-card {
+  background:
+    var(--quickdeck-art-component-combat-favorite-card) center / 100% 100% no-repeat,
+    rgba(8, 8, 10, 0.36);
+}
+
+.quickdeck-favorite-spell-card {
+  background:
+    var(--quickdeck-art-component-spell-favorite-card) center / 100% 100% no-repeat,
+    rgba(8, 8, 10, 0.36);
+}
+
+.quickdeck-pinned-skill-chip,
+.quickdeck-quick-skill-row {
+  background:
+    var(--quickdeck-art-component-quick-skill-card) center / 100% 100% no-repeat,
+    rgba(8, 8, 10, 0.36);
+}
+
+.quickdeck-favorite-attacks-hint,
+.quickdeck-empty,
+.quickdeck-cockpit-empty {
+  background:
+    var(--quickdeck-art-component-empty-state-plaque) center / 100% 100% no-repeat,
+    rgba(70, 47, 22, 0.24);
+}
+
+.quickdeck-right-drawer .quickdeck-drawer-tabs {
+  background:
+    var(--quickdeck-art-layout-drawer-content-panel) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(61, 37, 19, 0.72), rgba(10, 9, 10, 0.48));
+}
+
+.quickdeck-right-drawer .quickdeck-drawer-tab {
+  background:
+    var(--quickdeck-art-component-small-bronze-button) center / 100% 100% no-repeat,
+    rgba(35, 23, 15, 0.88);
+}
+
+.quickdeck-right-drawer .quickdeck-drawer-tab.is-active {
+  background:
+    var(--quickdeck-art-component-drawer-tab-active-glow) center / 100% 100% no-repeat,
+    var(--quickdeck-art-component-small-bronze-button) center / 100% 100% no-repeat,
+    rgba(90, 58, 27, 0.94);
+  box-shadow: 0 0 14px rgba(255, 199, 94, 0.28);
+}
+
+.quickdeck-drawer-tab[data-drawer="combat"]::before { background-image: var(--quickdeck-art-icon-damage-small); }
+.quickdeck-drawer-tab[data-drawer="skills"]::before,
+.quickdeck-drawer-tab[data-drawer="quick-skills"]::before { background-image: var(--quickdeck-art-icon-skill-small); }
+.quickdeck-drawer-tab[data-drawer="spells"]::before { background-image: var(--quickdeck-art-icon-spell-small); }
+.quickdeck-drawer-tab[data-drawer="reference"]::before { background-image: var(--quickdeck-art-icon-book-small); }
+.quickdeck-drawer-tab[data-drawer="settings"]::before { background-image: var(--quickdeck-art-icon-gear-small); }
+
+.quickdeck-right-drawer .quickdeck-panel-content {
+  background:
+    var(--quickdeck-art-layout-drawer-content-panel) center / 100% 100% no-repeat,
+    rgba(10, 9, 8, 0.34);
+}
+
+.quickdeck-panel-reference {
+  background:
+    var(--quickdeck-art-layout-reference-drawer-frame) center / 100% 100% no-repeat,
+    rgba(10, 9, 8, 0.34) !important;
+}
+
+.quickdeck-panel-settings {
+  background:
+    var(--quickdeck-art-layout-settings-drawer-frame) center / 100% 100% no-repeat,
+    rgba(10, 9, 8, 0.34) !important;
+}
+
+.quickdeck-attacks-section,
+.quickdeck-panel-combat {
+  background:
+    var(--quickdeck-art-component-combat-section-panel) center / 100% 100% no-repeat,
+    transparent;
+}
+
+.quickdeck-attack-card {
+  background:
+    var(--quickdeck-art-component-attack-card-compact) center / 100% 100% no-repeat,
+    var(--quickdeck-art-layout-row-frame-attack) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(57, 43, 28, 0.42), rgba(17, 18, 23, 0.72));
+}
+
+.quickdeck-attack-icon {
+  background-image: var(--quickdeck-art-icon-damage-small);
+}
+
+.quickdeck-combat-icon {
+  background: center / contain no-repeat;
+}
+
+.quickdeck-combat-icon > i {
+  opacity: 0;
+}
+
+.quickdeck-target-anchor .quickdeck-combat-icon { background-image: var(--quickdeck-art-icon-target-small); }
+.quickdeck-modifier-anchor .quickdeck-combat-icon { background-image: var(--quickdeck-art-icon-modifier-small); }
+.quickdeck-combat-icon-tray .quickdeck-combat-icon:first-child { background-image: var(--quickdeck-art-icon-3d6-small); }
+.quickdeck-combat-icon-tray .quickdeck-combat-icon:nth-child(2) { background-image: var(--quickdeck-art-icon-target-small); }
+
+.quickdeck-target-anchor {
+  background:
+    var(--quickdeck-art-layout-target-button-frame) center / 100% 100% no-repeat,
+    rgba(18, 15, 12, 0.72);
+}
+
+.quickdeck-modifier-anchor {
+  background:
+    var(--quickdeck-art-layout-modifier-bucket-button) center / 100% 100% no-repeat,
+    rgba(18, 15, 12, 0.72);
+}
+
+.quickdeck-roll-button,
+.quickdeck-attack-button {
+  background:
+    var(--quickdeck-art-layout-roll-button-3d6) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(126, 86, 36, 0.92), rgba(45, 30, 16, 0.98));
+}
+
+.quickdeck-roll-button::before { background-image: var(--quickdeck-art-icon-3d6-small); }
+.quickdeck-favorite-toggle::before { background-image: var(--quickdeck-art-icon-star-empty-small); }
+.quickdeck-favorite-toggle.is-selected::before { background-image: var(--quickdeck-art-icon-star-small); }
+.quickdeck-favorite-toggle > i,
+.quickdeck-remove-button > i,
+.quickdeck-attack-button > i { display: none; }
+
+.quickdeck-skill-row {
+  background:
+    var(--quickdeck-art-layout-row-frame-skill) center / 100% 100% no-repeat,
+    var(--quickdeck-art-component-quick-skill-card) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(57, 43, 28, 0.42), rgba(17, 18, 23, 0.72));
+}
+
+.quickdeck-skill-checkbox {
+  background: var(--quickdeck-art-component-checkbox-frame) center / contain no-repeat;
+}
+
+.quickdeck-spells-section {
+  background:
+    var(--quickdeck-art-component-spell-section-panel) center / 100% 100% no-repeat,
+    transparent;
+}
+
+.quickdeck-spell-row {
+  background:
+    var(--quickdeck-art-component-spell-card-compact) center / 100% 100% no-repeat,
+    var(--quickdeck-art-layout-row-frame-skill) center / 100% 100% no-repeat,
+    rgba(8, 8, 10, 0.34);
+}
+
+.quickdeck-reference-drawer-card {
+  background:
+    var(--quickdeck-art-component-reference-source-plaque) center / 100% 100% no-repeat,
+    var(--quickdeck-art-component-source-row-frame) center / 100% 100% no-repeat,
+    rgba(70, 47, 22, 0.2);
+}
+
+.quickdeck-reference-drawer-card::before {
+  width: 1.25rem;
+  height: 1.25rem;
+  margin: 0;
+  background-image: var(--quickdeck-art-icon-book-small);
+}
+
+.quickdeck-panel-settings .quickdeck-reference-drawer-card {
+  background:
+    var(--quickdeck-art-component-settings-row-frame) center / 100% 100% no-repeat,
+    var(--quickdeck-art-component-local-override-chip) right 0.7rem bottom 0.7rem / 8rem auto no-repeat,
+    rgba(70, 47, 22, 0.2);
+}
+
+.quickdeck-panel-settings .quickdeck-reference-drawer-card::before {
+  background-image: var(--quickdeck-art-icon-settings-button);
+}
+
+.quickdeck-link-button::before {
+  content: "";
+  pointer-events: none;
+  display: inline-block;
+  width: 0.85rem;
+  height: 0.85rem;
+  margin-right: 0.22rem;
+  background: var(--quickdeck-art-icon-book-small) center / contain no-repeat;
+  vertical-align: -0.12em;
+}
+
+.quickdeck-attack-icon.quickdeck-combat-icon {
+  background-image: var(--quickdeck-art-icon-damage-small);
+}
