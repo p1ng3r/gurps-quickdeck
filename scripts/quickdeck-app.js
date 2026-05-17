@@ -24,7 +24,7 @@ export class QuickDeckApp extends Application {
     super(options);
     this.rosterActorIds = [];
     this.activeActorId = null;
-    this.activeDrawer = null;
+    this.activeDrawer = "combat";
     this.availableSearch = "";
     this.combatSearch = "";
     this.skillsSearch = "";
@@ -3650,7 +3650,7 @@ export class QuickDeckApp extends Application {
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer) return;
 
-      this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
+      this.activeDrawer = drawer;
       this.render();
     });
 
