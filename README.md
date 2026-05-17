@@ -5,9 +5,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 ## What's New in v0.6.1 (Reference UI Foundation)
 
 - Started from the clean v0.6.0 release baseline and abandoned the failed v0.6.1 visual experiment direction.
-- Reframed the main QuickDeck window toward the approved mockup: left roster column, center selected-actor command cockpit, and right-side tab/drawer controls with dark leather, bronze, and parchment CSS-only styling.
+- Wired the existing transparent WEBP q75 layout assets under `assets/ui/layout/` into the v0.6.1 command-desk frame, including the main shell, top command bar, roster frame, selected-actor cockpit, right drawer, combat favorites, rows, tabs, search inputs, 3d6 buttons, Target, and ModifierBucket controls.
+- Reframed the main QuickDeck window toward the approved mockup: left roster column, center selected-actor command cockpit, and right-side tab/drawer controls with the actual dark leather / bronze / parchment layout art as the primary visual layer instead of CSS-only placeholder gradients.
 - Moved Combat Favorites directly under the selected actor cockpit while keeping the full attack list in the Combat drawer and preserving the existing per-actor favorite workflow.
-- Clarified roll affordances as **3d6** controls for attacks, skills, quick skills, and spells without changing their native GURPS passthrough handlers.
+- Clarified roll affordances as **3d6** controls for attacks, skills, quick skills, and spells, now backed by the `roll-button-3d6.webp` art while retaining readable fallback text and native GURPS passthrough handlers.
 - Kept Reference Sources / Local Overrides visible as the current copyright-safe metadata surface; future Local PDF Sources should point to user-owned local PDFs without bundling, scraping, or distributing copyrighted text.
 - Left native GURPS behavior unchanged: attacks, defenses, damage follow-ups, skills, spells, targeting, ModifierBucket access/status, windows/focus, token placement cleanup, minimize/restore, and reference popup scrolling remain delegated to the existing v0.6.0 hooks.
 
