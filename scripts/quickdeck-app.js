@@ -13,7 +13,7 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition"
 };
-const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
+const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells", "reference", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
@@ -3225,10 +3225,10 @@ export class QuickDeckApp extends Application {
       }));
 
     const activeActor = this.getActiveActor();
-    const shouldHydrateDerivedData = Boolean(activeActor && this.activeDrawer);
-    const includeAttacks = this.activeDrawer === "combat";
-    const includeSkills = this.activeDrawer === "skills" || this.activeDrawer === "quick-skills";
-    const includeSpells = this.activeDrawer === "spells";
+    const shouldHydrateDerivedData = Boolean(activeActor);
+    const includeAttacks = shouldHydrateDerivedData;
+    const includeSkills = shouldHydrateDerivedData;
+    const includeSpells = shouldHydrateDerivedData;
     const derivedData = shouldHydrateDerivedData
       ? this.getDerivedActorData(activeActor, { includeAttacks, includeSkills, includeSpells })
       : {
@@ -3444,6 +3444,8 @@ export class QuickDeckApp extends Application {
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
       isSpellsDrawerOpen: this.activeDrawer === "spells",
+      isReferenceDrawerOpen: this.activeDrawer === "reference",
+      isSettingsDrawerOpen: this.activeDrawer === "settings",
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
