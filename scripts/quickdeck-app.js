@@ -3024,6 +3024,19 @@ export class QuickDeckApp extends Application {
     return result;
   }
 
+  restoreAndBringToFront() {
+    if (this.isMinimized) {
+      this.isMinimized = false;
+      this.persistMinimizedState();
+    }
+    if (this.rendered) {
+      this.syncMinimizedPresentation();
+      return this;
+    }
+    this.render(true);
+    return this;
+  }
+
   syncMinimizedPresentation() {
     if (!this.rendered) return;
     if (this.isMinimized) {
