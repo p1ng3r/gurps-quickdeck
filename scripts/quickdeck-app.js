@@ -69,8 +69,8 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 840,
-      height: 560,
+      width: 1360,
+      height: 760,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
@@ -3405,7 +3405,14 @@ export class QuickDeckApp extends Application {
             id: activeActor.id,
             name: activeActor.name,
             img: activeActor.img || "icons/svg/mystery-man.svg",
-            actorType: activeActor.type ? String(activeActor.type) : null
+            actorType: activeActor.type ? String(activeActor.type) : null,
+            pointsDisplay: this.getFirstDefinedValue(activeActor, [
+              "system.totalpoints",
+              "system.totalPoints",
+              "system.points",
+              "system.calc.points",
+              "system.profile.points"
+            ])
           }
         : null,
       activeActorName: activeActor?.name ?? null,

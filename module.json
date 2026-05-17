@@ -29,7 +29,7 @@
   "languages": [],
   "url": "https://github.com/p1ng3r/gurps-quickdeck",
   "manifest": "https://raw.githubusercontent.com/p1ng3r/gurps-quickdeck/main/module.json",
-  "download": "https://github.com/p1ng3r/gurps-quickdeck/releases/download/v0.6.1/gurps-quickdeck.zip",
+  "download": "https://github.com/p1ng3r/gurps-quickdeck/releases/download/v0.6.0/gurps-quickdeck.zip",
   "license": "LICENSE",
   "readme": "README.md"
 }
