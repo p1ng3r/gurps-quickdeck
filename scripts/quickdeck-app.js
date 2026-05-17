@@ -25,6 +25,7 @@ export class QuickDeckApp extends Application {
     this.rosterActorIds = [];
     this.activeActorId = null;
     this.activeDrawer = null;
+    this.rosterSearch = "";
     this.availableSearch = "";
     this.combatSearch = "";
     this.skillsSearch = "";
@@ -346,6 +347,8 @@ export class QuickDeckApp extends Application {
       sourcePath: sourceMeta.sourcePath ?? null,
       sourceKey: sourceMeta.sourceKey ?? null,
       sourceCollection: sourceMeta.sourceCollection ?? null,
+      mode: this.getFirstDefinedValue(attack, ["mode", "usage", "attackMode"]),
+      notes: this.getFirstDefinedValue(attack, ["notes", "note", "description", "desc"]),
       raw: attack
     };
   }
@@ -478,6 +481,7 @@ export class QuickDeckApp extends Application {
       class: this.getFirstDefinedValue(spell, ["class", "spellClass", "category", "college"]),
       college: this.getFirstDefinedValue(spell, ["college"]),
       cost: this.getFirstDefinedValue(spell, ["cost", "casting.cost", "castCost"]),
+      castingTime: this.getFirstDefinedValue(spell, ["time", "castTime", "castingTime", "casting.time", "castingtime"]),
       maintain: this.getFirstDefinedValue(spell, ["maintain", "maintenance", "maint"]),
       duration: this.getFirstDefinedValue(spell, ["duration"]),
       reference: this.getFirstDefinedValue(spell, ["reference", "ref", "book"]),
@@ -709,6 +713,8 @@ export class QuickDeckApp extends Application {
         spell.class,
         spell.college,
         spell.cost,
+        spell.castingTime,
+        spell.maintain,
         spell.duration,
         spell.reference,
         spell.pageHint
@@ -1098,6 +1104,16 @@ export class QuickDeckApp extends Application {
     }
 
     return { visible, total: rows.length };
+  }
+
+  applyRosterActorFilter(html) {
+    const { visible, total } = this.applyDomFilterBySelector(
+      html,
+      "[data-search-row='roster']",
+      this.rosterSearch
+    );
+    this.updateCountText(html, "roster-visible", visible);
+    this.updateCountText(html, "roster-total", total);
   }
 
   applyAvailableActorFilter(html) {
@@ -3312,7 +3328,18 @@ export class QuickDeckApp extends Application {
         ...spell,
         spellKey,
         isFavoriteSpell: isFavorite,
-        favoriteToggleLabel: isFavorite ? "Unpin spell" : "Pin spell"
+        favoriteToggleLabel: isFavorite ? "Unpin spell" : "Pin spell",
+        levelDisplay: spell.level === undefined || spell.level === null ? "—" : String(spell.level),
+        costDisplay: spell.cost === undefined || spell.cost === null ? null : String(spell.cost),
+        castingTimeDisplay: spell.castingTime === undefined || spell.castingTime === null ? null : String(spell.castingTime),
+        durationDisplay: spell.duration === undefined || spell.duration === null ? null : String(spell.duration),
+        maintainDisplay: spell.maintain === undefined || spell.maintain === null ? null : String(spell.maintain),
+        collegeDisplay: spell.college === undefined || spell.college === null ? null : String(spell.college),
+        classDisplay: spell.class === undefined || spell.class === null ? null : String(spell.class),
+        referenceDisplay:
+          (spell.reference ?? spell.pageHint) === undefined || (spell.reference ?? spell.pageHint) === null
+            ? null
+            : String(spell.reference ?? spell.pageHint)
       };
     });
     const favoriteSpells = indexedSpells.filter((spell) => spell.isFavoriteSpell);
@@ -3389,6 +3416,7 @@ export class QuickDeckApp extends Application {
     };
 
     return {
+      rosterSearch: this.rosterSearch,
       availableSearch: this.availableSearch,
       combatSearch,
       skillsSearch,
@@ -3396,6 +3424,7 @@ export class QuickDeckApp extends Application {
       spellsSearch,
       availableActors,
       visibleAvailableCount: this.getVisibleCountBySearchText(availableActors, this.availableSearch),
+      visibleRosterCount: this.getVisibleCountBySearchText(rosterActors.map((actor) => ({ searchText: this.buildSearchText([actor.name, actor.type]) })), this.rosterSearch),
       rosterCount: rosterActors.length,
       availableCount: availableActors.length,
       rosterActors: rosterActors.map((actor) => {
@@ -3416,7 +3445,8 @@ export class QuickDeckApp extends Application {
           hpPercent: hp.percent,
           fpDisplay: fp.display,
           fpMaxDisplay: fp.maxDisplay,
-          fpPercent: fp.percent
+          fpPercent: fp.percent,
+          searchText: this.buildSearchText([actor.name, actor.type, this.getCombatBadgeText(combatantByActorId.get(actor.id))])
         };
       }),
       activeActor: activeActor
@@ -3565,6 +3595,12 @@ export class QuickDeckApp extends Application {
       this.activeActorId = actorId;
       this.openActorSheet(actorId);
       this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='roster-search']").on("input", (event) => {
+      const searchValue = event.currentTarget?.value;
+      this.rosterSearch = typeof searchValue === "string" ? searchValue : "";
+      this.applyRosterActorFilter(html);
     });
 
     html.find("[data-action='available-search']").on("input", (event) => {
