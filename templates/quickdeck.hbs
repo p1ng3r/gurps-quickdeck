@@ -121,7 +121,7 @@
 
   <main class="quickdeck-main">
     <div class="quickdeck-window-actions">
-      <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button">Local Overrides</button>
+      <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button">Reference Sources / Local Overrides</button>
       <button type="button" data-action="toggle-minimize" class="quickdeck-minimize-button">Minimize</button>
     </div>
     <section class="quickdeck-content">
@@ -135,7 +135,7 @@
             data-drawer="combat"
             class="quickdeck-drawer-tab {{#if isCombatDrawerOpen}}is-active{{/if}}"
           >
-            Combat Burst
+            Combat
           </button>
           <button
             type="button"
@@ -310,23 +310,10 @@
                           <strong>{{gurpsData.display.block}}</strong>
                         </button>
                       </div>
-                    </section>
-                  </div>
 
-                  <section class="quickdeck-attacks-section">
-                    <h4>Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> / <span data-count="attacks-total">{{attackCount}}</span>)</h4>
-                    <input
-                      type="search"
-                      class="quickdeck-drawer-search"
-                      value="{{combatSearch}}"
-                      data-action="combat-search"
-                      placeholder="Search attacks..."
-                      autocomplete="off"
-                    />
-
-                    <section class="quickdeck-favorite-attacks" aria-label="Favorite Attacks">
+                    <section class="quickdeck-favorite-attacks" aria-label="Combat Favorites">
                       <div class="quickdeck-favorite-attacks-heading">
-                        <h5>Favorite Attacks</h5>
+                        <h5>Combat Favorites</h5>
                         {{#if favoriteAttackCount}}
                           <span>{{favoriteAttackCount}} pinned</span>
                         {{/if}}
@@ -364,6 +351,19 @@
                         <p class="quickdeck-favorite-attacks-hint">Pin attacks with ★ for quick access.</p>
                       {{/if}}
                     </section>
+                    </section>
+                  </div>
+
+                  <section class="quickdeck-attacks-section">
+                    <h4>Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> / <span data-count="attacks-total">{{attackCount}}</span>)</h4>
+                    <input
+                      type="search"
+                      class="quickdeck-drawer-search"
+                      value="{{combatSearch}}"
+                      data-action="combat-search"
+                      placeholder="Search attacks..."
+                      autocomplete="off"
+                    />
 
                     {{#if indexedAttacks.length}}
                       <h5 class="quickdeck-subsection-title">Melee</h5>
@@ -679,7 +679,7 @@
                               data-skill-index="{{skill.index}}"
                               class="quickdeck-roll-button"
                             >
-                              Roll Skill
+                              Skill
                             </button>
                           </article>
                         {{/each}}
@@ -778,7 +778,7 @@
                                 data-skill-index="{{skill.index}}"
                                 class="quickdeck-roll-button"
                               >
-                                Roll
+                                Skill
                               </button>
                               <button
                                 type="button"
@@ -936,7 +936,7 @@
                               data-spell-index="{{spell.index}}"
                               class="quickdeck-roll-button"
                             >
-                              Cast Spell
+                              Spell
                             </button>
                           </article>
                         {{/each}}

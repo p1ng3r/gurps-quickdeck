@@ -3207,3 +3207,294 @@
     grid-column: 1 / -1;
   }
 }
+
+/* v0.6.1 reference UI foundation: clean v0.6.0 baseline, QuickDeck-faithful command desk.
+   Future pass: collapse the roster and right drawer into edge tabs without changing the current handlers. */
+.gurps-quickdeck {
+  --quickdeck-asset-leather-grain: none;
+  --quickdeck-asset-bronze-corner: none;
+  --quickdeck-asset-parchment-panel: none;
+  --quickdeck-command-gap: 0.62rem;
+}
+
+.quickdeck-shell {
+  grid-template-columns: clamp(248px, 26vw, 306px) minmax(0, 1fr);
+  background:
+    var(--quickdeck-asset-leather-grain),
+    radial-gradient(circle at 20% 12%, rgba(202, 140, 58, 0.12), transparent 30%),
+    radial-gradient(circle at 92% 82%, rgba(229, 187, 102, 0.1), transparent 34%),
+    linear-gradient(145deg, #090807 0%, #17120f 44%, #08090d 100%);
+}
+
+.quickdeck-main {
+  border-left: 1px solid rgba(255, 226, 171, 0.08);
+  background:
+    linear-gradient(90deg, rgba(103, 68, 31, 0.12), transparent 20%, transparent 78%, rgba(103, 68, 31, 0.12)),
+    radial-gradient(circle at 52% 8%, rgba(232, 183, 89, 0.09), transparent 38%);
+}
+
+.quickdeck-window-actions {
+  gap: 0.4rem;
+  align-items: center;
+  border-bottom: 1px solid rgba(191, 145, 73, 0.22);
+  padding: 0.44rem 0.62rem;
+  background: linear-gradient(180deg, rgba(33, 21, 14, 0.72), rgba(10, 9, 10, 0.48));
+}
+
+.quickdeck-open-pdf-sources-button,
+.quickdeck-minimize-button {
+  border: 1px solid rgba(220, 174, 91, 0.5);
+  border-radius: 999px;
+  padding: 0.22rem 0.58rem;
+  color: #f6e6c3;
+  background: linear-gradient(180deg, rgba(79, 55, 28, 0.9), rgba(22, 15, 10, 0.94));
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.quickdeck-content {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.quickdeck-stage {
+  grid-area: 1 / 1;
+  pointer-events: none;
+}
+
+.quickdeck-stage::before,
+.quickdeck-stage::after,
+.quickdeck-favorite-attacks::after,
+.quickdeck-selected-cockpit::after,
+.quickdeck-attack-card::before,
+.quickdeck-skill-row::before,
+.quickdeck-drawer-tab::before,
+.quickdeck-drawer-tab::after {
+  pointer-events: none;
+}
+
+.quickdeck-drawer-stack {
+  grid-area: 1 / 1;
+  min-width: 0;
+  flex-direction: row-reverse;
+  gap: 0;
+}
+
+.quickdeck-drawer-tabs {
+  flex: 0 0 auto;
+  border-right: 0;
+  border-left: 1px solid rgba(225, 178, 89, 0.38);
+  box-shadow: -12px 0 28px rgba(0, 0, 0, 0.28);
+  background:
+    linear-gradient(180deg, rgba(61, 37, 19, 0.84), rgba(10, 9, 10, 0.95)),
+    radial-gradient(circle at 50% 0, rgba(232, 185, 99, 0.14), transparent 48%);
+}
+
+.quickdeck-drawer-tab {
+  min-height: 92px;
+  border-radius: 12px 0 0 12px;
+  box-shadow: inset 1px 0 0 rgba(255, 235, 184, 0.08), 0 3px 12px rgba(0, 0, 0, 0.22);
+}
+
+.quickdeck-drawer-tab.is-active {
+  transform: translateX(-2px);
+}
+
+.quickdeck-panel {
+  flex: 1 1 auto;
+  width: auto;
+  max-width: none;
+  border-left: 0;
+  border-right: 1px solid rgba(209, 164, 82, 0.26);
+  background:
+    linear-gradient(135deg, rgba(35, 24, 16, 0.92), rgba(12, 12, 15, 0.97) 46%, rgba(32, 22, 14, 0.92)),
+    var(--quickdeck-asset-parchment-panel);
+}
+
+.quickdeck-panel-content.quickdeck-panel-combat {
+  display: grid;
+  grid-template-columns: minmax(300px, 0.82fr) minmax(420px, 1.18fr);
+  align-items: stretch;
+  gap: var(--quickdeck-command-gap);
+  overflow: hidden;
+  padding: var(--quickdeck-command-gap);
+}
+
+.quickdeck-panel-combat .quickdeck-panel-scroll-root,
+.quickdeck-panel-combat .quickdeck-attacks-section {
+  min-height: 0;
+  overflow-y: auto;
+  border: 1px solid rgba(221, 174, 88, 0.28);
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, rgba(255, 235, 188, 0.055), rgba(0, 0, 0, 0.18)),
+    radial-gradient(circle at 18% 0, rgba(229, 180, 88, 0.12), transparent 40%);
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.25), inset 0 0 0 1px rgba(255, 241, 202, 0.035);
+}
+
+.quickdeck-panel-combat .quickdeck-panel-scroll-root {
+  position: relative;
+  top: auto;
+  z-index: auto;
+  padding: 0.62rem;
+  border-bottom: 1px solid rgba(221, 174, 88, 0.28);
+}
+
+.quickdeck-selected-cockpit {
+  height: 100%;
+  align-content: start;
+}
+
+.quickdeck-panel-combat .quickdeck-actor-header {
+  grid-template-columns: minmax(86px, 128px) minmax(0, 1fr);
+  grid-template-areas:
+    "portrait identity"
+    "portrait actions";
+  align-items: stretch;
+  padding: 0.5rem;
+}
+
+.quickdeck-panel-combat .quickdeck-actor-header img {
+  grid-area: portrait;
+  width: 100%;
+  height: 100%;
+  min-height: 148px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.quickdeck-panel-combat .quickdeck-actor-identity {
+  grid-area: identity;
+  align-self: end;
+}
+
+.quickdeck-panel-combat .quickdeck-actor-header-actions {
+  grid-area: actions;
+  justify-content: flex-start;
+  align-self: start;
+}
+
+.quickdeck-panel-combat .quickdeck-attacks-section {
+  padding: 0.62rem;
+}
+
+.quickdeck-attacks-section h4,
+.quickdeck-skills-section h4,
+.quickdeck-favorite-attacks-heading h5 {
+  color: #f6dba0;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.62);
+}
+
+.quickdeck-favorite-attacks {
+  margin-top: 0.18rem;
+}
+
+.quickdeck-favorite-attack-main::before,
+.quickdeck-roll-button::before {
+  content: "3d6";
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2.05rem;
+  margin-right: 0.32rem;
+  border: 1px solid rgba(255, 232, 178, 0.34);
+  border-radius: 999px;
+  padding: 0.05rem 0.24rem;
+  color: #201307;
+  background: linear-gradient(180deg, #f1d28a, #b67b2c);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+}
+
+.quickdeck-roll-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quickdeck-roll-button .fa-dice-d6 {
+  display: none;
+}
+
+.quickdeck-attack-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.quickdeck-attack-actions .quickdeck-roll-button {
+  width: auto;
+  min-width: 8.25rem;
+}
+
+.quickdeck-combat-anchor-row {
+  border-color: rgba(216, 170, 83, 0.3);
+  background: linear-gradient(180deg, rgba(31, 21, 14, 0.78), rgba(10, 10, 12, 0.54));
+}
+
+.quickdeck-target-anchor,
+.quickdeck-modifier-anchor {
+  border-color: rgba(226, 183, 100, 0.42);
+}
+
+.quickdeck-link-button {
+  color: #f5d897;
+  text-decoration-color: rgba(245, 216, 151, 0.46);
+  text-underline-offset: 0.16rem;
+}
+
+.quickdeck-link-button:hover,
+.quickdeck-link-button:focus-visible {
+  color: #fff2c9;
+  text-decoration: underline;
+}
+
+.quickdeck-sidebar {
+  background:
+    linear-gradient(180deg, rgba(15, 10, 7, 0.88), rgba(34, 22, 14, 0.82)),
+    radial-gradient(circle at 50% 0, rgba(224, 171, 83, 0.1), transparent 42%);
+}
+
+.quickdeck-sidebar-block,
+.quickdeck-roster-button,
+.quickdeck-available-actor {
+  border-radius: 12px;
+}
+
+.quickdeck-roster-button img,
+.quickdeck-available-actor img {
+  border-radius: 8px;
+}
+
+@media (max-width: 1180px) {
+  .quickdeck-panel-content.quickdeck-panel-combat {
+    grid-template-columns: minmax(280px, 0.9fr) minmax(360px, 1.1fr);
+  }
+}
+
+@media (max-width: 940px) {
+  .quickdeck-shell {
+    grid-template-columns: minmax(220px, 0.38fr) minmax(0, 0.62fr);
+  }
+
+  .quickdeck-panel-content.quickdeck-panel-combat {
+    grid-template-columns: minmax(0, 1fr);
+    overflow-y: auto;
+  }
+
+  .quickdeck-panel-combat .quickdeck-panel-scroll-root,
+  .quickdeck-panel-combat .quickdeck-attacks-section {
+    overflow-y: visible;
+  }
+}
+
+.quickdeck-roll-button-secondary::before {
+  content: none;
+}
