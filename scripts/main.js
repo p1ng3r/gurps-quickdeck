@@ -90,7 +90,9 @@ Hooks.once("init", () => {
       combat: "Combat",
       skills: "Skills",
       "quick-skills": "Quick Skills",
-      spells: "Spells"
+      spells: "Spells",
+      reference: "Reference",
+      settings: "Settings"
     },
     default: "none"
   });
