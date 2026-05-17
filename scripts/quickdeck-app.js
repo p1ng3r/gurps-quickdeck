@@ -3029,12 +3029,71 @@ export class QuickDeckApp extends Application {
       this.isMinimized = false;
       this.persistMinimizedState();
     }
+
     if (this.rendered) {
       this.syncMinimizedPresentation();
+      this.rescueWindowPositionIfNeeded();
+      this.bringQuickDeckToTop();
       return this;
     }
+
     this.render(true);
+    this.scheduleBringToFrontAfterRender();
     return this;
+  }
+
+  scheduleBringToFrontAfterRender() {
+    const bringForward = () => {
+      if (!this.rendered) return;
+      this.syncMinimizedPresentation();
+      this.rescueWindowPositionIfNeeded();
+      this.bringQuickDeckToTop();
+    };
+
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(bringForward);
+    }
+    setTimeout(bringForward, 0);
+  }
+
+  bringQuickDeckToTop() {
+    this.bringToTop?.();
+  }
+
+  rescueWindowPositionIfNeeded() {
+    if (!this.rendered || this.isMinimized) return;
+
+    const element = this.element?.[0] ?? this.element;
+    if (!element?.getBoundingClientRect || typeof window === "undefined") return;
+
+    const rect = element.getBoundingClientRect();
+    const viewportWidth = Math.max(0, Number(window.innerWidth) || 0);
+    const viewportHeight = Math.max(0, Number(window.innerHeight) || 0);
+    if (!viewportWidth || !viewportHeight) return;
+
+    const width = Number(rect.width);
+    const height = Number(rect.height);
+    const left = Number(rect.left);
+    const top = Number(rect.top);
+    const hasBadDimensions = !Number.isFinite(width) || !Number.isFinite(height) || width < 160 || height < 120;
+    const isOffscreen = !Number.isFinite(left) || !Number.isFinite(top) || rect.right < 32 || rect.bottom < 32 || left > viewportWidth - 32 || top > viewportHeight - 32;
+    const isHidden = element.offsetParent === null && getComputedStyle(element).position !== "fixed";
+    if (!hasBadDimensions && !isOffscreen && !isHidden) return;
+
+    const fallbackWidth = Math.min(Math.max(Number(this.options?.width) || 1180, 640), Math.max(320, viewportWidth - 48));
+    const fallbackHeight = Math.min(Math.max(Number(this.options?.height) || 720, 420), Math.max(240, viewportHeight - 48));
+    const safeWidth = hasBadDimensions ? fallbackWidth : Math.min(width, Math.max(160, viewportWidth - 48));
+    const safeHeight = hasBadDimensions ? fallbackHeight : Math.min(height, Math.max(120, viewportHeight - 48));
+    const maxLeft = Math.max(24, viewportWidth - safeWidth - 24);
+    const maxTop = Math.max(24, viewportHeight - safeHeight - 24);
+    const nextLeft = Math.min(Math.max(Number.isFinite(left) ? left : 24, 24), maxLeft);
+    const nextTop = Math.min(Math.max(Number.isFinite(top) ? top : 24, 24), maxTop);
+    const position = { left: nextLeft, top: nextTop };
+    if (hasBadDimensions) {
+      position.width = safeWidth;
+      position.height = safeHeight;
+    }
+    this.setPosition?.(position);
   }
 
   syncMinimizedPresentation() {
