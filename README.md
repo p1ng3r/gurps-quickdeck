@@ -9,6 +9,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 - Quick Skills is now the pinned-only fast-access surface for curated skills; the full Skills drawer remains the place to browse, search, and pin skills.
 - The local QuickDeck Reference popup now uses a parchment-style presentation with source/page metadata and an independently scrollable body for longer bundled or local override entries.
 - The fantasy UI polish pass adds CSS-only leather, bronze, parchment, engraved-tab, shield-plate, pinned-slip, and restore-pill ornamentation without changing QuickDeck's runtime rules behavior.
+- The final v0.6.1 polish pass wires the pre-added reusable `assets/ui/components/` polish art for roster title banners, section plaques, bronze utility controls, selected-actor treatments, restore-pill framing, scroll popup caps/cards, and compact combat stat strips.
 - QuickDeck remains native-GURPS-first: it does not add custom damage, DR, wounding, shock, knockback, crippling, spell, skill, targeting, or ModifierBucket math rules. Attacks, defenses, damage follow-ups, skills, spells, and modifiers continue to route to native Foundry/GURPS behavior wherever available.
 
 ## What's New in v0.4.0 (Draft)

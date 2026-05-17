@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - v0.6.0 release candidate
 
 ### Added
+- Wired the pre-added final v0.6.1 reusable polish assets under `assets/ui/components/` for roster banners, section plaques, bronze controls, selected-actor highlights, restore-pill framing, scroll popup cards, and compact stat strips.
 - Added per-actor/client Combat Favorites with compact pinned attack rows, full-list star toggles, and native GURPS attack passthrough preserved for favorite launches.
 - Added per-actor/client Spell Favorites with compact pinned spell rows, full-list star toggles, stable spell keys, and native GURPS spell passthrough preserved for favorite launches.
 - Added selected-character HP/FP pass-through controls, roster HP/FP chips, large Dodge/Parry/Block buttons, and compact combat helper controls for common table flow.
@@ -16,6 +17,7 @@ All notable changes to this project will be documented in this file.
 - Refined Quick Skills into a pinned-only fast-access drawer with compact rows, native skill-roll passthrough, visible level/relative/points/reference metadata, and an in-row unpin control.
 - Restyled the reference popup as a parchment-style local reference window with a dark leather header, ink-toned sections, source/page metadata, and CSS-only scroll-edge shading.
 - Applied the v0.6.0 fantasy UI polish pass: dark leather framing, bronze trim, parchment ledger rows, engraved drawer tabs, shield-like defense plates, pinned-slip favorites, and a bronze/leather restore pill.
+- Applied final v0.6.1 visual polish for art-backed roster/available headers, compact settings/minimize controls, stronger selected actor treatments, connected drawer tabs, red destructive Clear Roster styling, scroll-like reference popup cards, and tighter combat/stat rows without changing GURPS behavior.
 - Preserved QuickDeck's native-GURPS-first behavior: attacks, defenses, damage, skills, spells, targeting, ModifierBucket behavior, and rule resolution remain delegated to Foundry/GURPS instead of custom QuickDeck damage or math rules.
 
 ### Fixed

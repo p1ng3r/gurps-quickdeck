@@ -2668,6 +2668,17 @@
   --quickdeck-art-scroll-rail: url("../assets/ui/components/scroll-rail.webp");
   --quickdeck-art-scroll-thumb: url("../assets/ui/components/scroll-thumb.webp");
   --quickdeck-art-restore-badge: url("../assets/ui/bronze/restore-pill-badge.webp");
+  /* v0.6.1 polish component asset hooks. */
+  --quickdeck-art-polish-roster-title-banner: url("../assets/ui/components/roster-title-banner.webp");
+  --quickdeck-art-polish-section-title-plaque: url("../assets/ui/components/section-title-plaque.webp");
+  --quickdeck-art-polish-bronze-neutral-button: url("../assets/ui/components/bronze-neutral-button.webp");
+  --quickdeck-art-polish-bronze-small-button: url("../assets/ui/components/bronze-small-button.webp");
+  --quickdeck-art-polish-selected-actor-banner: url("../assets/ui/components/selected-actor-banner.webp");
+  --quickdeck-art-polish-selected-roster-glow: url("../assets/ui/components/selected-roster-glow.webp");
+  --quickdeck-art-polish-restore-pill-full: url("../assets/ui/components/restore-pill-full.webp");
+  --quickdeck-art-polish-scroll-header-roll: url("../assets/ui/components/scroll-header-roll.webp");
+  --quickdeck-art-polish-scroll-section-card: url("../assets/ui/components/scroll-section-card.webp");
+  --quickdeck-art-polish-compact-stat-strip: url("../assets/ui/components/compact-stat-strip.webp");
 }
 
 .gurps-quickdeck .window-header,
@@ -4338,4 +4349,435 @@
 
 .quickdeck-attack-stats.quickdeck-attack-stats-compact {
   grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+
+/* v0.6.1 final targeted polish: art-backed headers, scroll cards, compact controls. */
+.quickdeck-shell {
+  grid-template-columns: 274px minmax(0, 1fr);
+}
+
+.quickdeck-sidebar {
+  padding: 0.46rem;
+  gap: 0.46rem;
+}
+
+.quickdeck-main {
+  min-width: 0;
+}
+
+.quickdeck-window-actions {
+  align-items: center;
+  gap: 0.34rem;
+  min-height: 2.2rem;
+  padding: 0.32rem 0.5rem 0.08rem;
+  background:
+    linear-gradient(90deg, transparent 0 34%, rgba(29, 18, 10, 0.82) 50%, rgba(78, 48, 20, 0.62) 100%),
+    var(--quickdeck-art-toolbar-rail) right center / min(24rem, 72%) 100% no-repeat;
+}
+
+.quickdeck-open-pdf-sources-button,
+.quickdeck-minimize-button {
+  min-height: 1.62rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.62rem;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  background:
+    var(--quickdeck-art-polish-bronze-small-button) center / 100% 100% no-repeat,
+    var(--quickdeck-v061-neutral-button);
+  background-blend-mode: screen, normal;
+}
+
+
+.quickdeck-open-sheet-button,
+.quickdeck-drop-token-button,
+.quickdeck-roll-button,
+.quickdeck-reference-index-button,
+.quickdeck-reference-search-button,
+.quickdeck-pdf-file-picker-button,
+.quickdeck-reference-open-button,
+.quickdeck-reference-copy-button {
+  background:
+    var(--quickdeck-art-polish-bronze-neutral-button) center / 100% 100% no-repeat,
+    var(--quickdeck-v061-neutral-button);
+  background-blend-mode: screen, normal;
+}
+
+.quickdeck-open-pdf-sources-button::before,
+.quickdeck-minimize-button::before {
+  font-family: "Font Awesome 6 Free", "Font Awesome 5 Free";
+  font-weight: 900;
+  margin-right: 0.28rem;
+  opacity: 0.86;
+}
+
+.quickdeck-open-pdf-sources-button::before {
+  content: "\f013";
+}
+
+.quickdeck-minimize-button::before {
+  content: "\f2d1";
+}
+
+.quickdeck-content {
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0;
+}
+
+.quickdeck-drawer-stack {
+  margin-left: -0.32rem;
+  border-left: 1px solid rgba(222, 170, 80, 0.24);
+  background: linear-gradient(90deg, rgba(18, 11, 7, 0.56), rgba(18, 11, 7, 0.14));
+}
+
+.quickdeck-drawer-tabs {
+  padding: 0.34rem 0 0.34rem 0.16rem;
+  border-left: 0;
+  border-right: 1px solid rgba(233, 177, 76, 0.34);
+  background:
+    var(--quickdeck-art-tab-rail) right center / 100% 100% repeat-y,
+    linear-gradient(180deg, rgba(38, 23, 13, 0.96), rgba(10, 8, 8, 0.98));
+}
+
+.quickdeck-drawer-tab {
+  margin-right: -1px;
+  min-height: 78px;
+  padding: 0.32rem 0.24rem;
+  border-radius: 8px 0 0 8px;
+  border-right-color: rgba(15, 10, 7, 0.92);
+}
+
+.quickdeck-drawer-tab.is-active {
+  transform: translateX(2px);
+  border-right-color: rgba(29, 18, 10, 0.96);
+}
+
+.quickdeck-panel {
+  width: 414px;
+  max-width: min(58vw, 536px);
+  border-left-color: rgba(236, 181, 84, 0.58);
+}
+
+.quickdeck-panel-content {
+  padding: 0.36rem;
+  gap: 0.32rem;
+}
+
+.quickdeck-selected-cockpit {
+  gap: 0.3rem;
+  padding: 0.42rem;
+}
+
+.quickdeck-block-title-row {
+  position: relative;
+  min-height: 2.48rem;
+  align-items: center;
+  padding: 0.22rem 0.36rem;
+  border-radius: 10px;
+  background:
+    var(--quickdeck-art-polish-roster-title-banner) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(88, 54, 23, 0.94), rgba(23, 14, 9, 0.96));
+  background-blend-mode: screen, normal;
+  box-shadow:
+    0 1px 0 rgba(255, 237, 177, 0.16) inset,
+    0 7px 14px rgba(0, 0, 0, 0.24);
+}
+
+.quickdeck-block-title-row::after {
+  display: none;
+}
+
+.quickdeck-block-title-row h3 {
+  min-width: 0;
+  flex: 1 1 auto;
+  justify-content: center;
+  font-size: 0.98rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow:
+    0 1px 0 #2a1608,
+    0 2px 8px rgba(0, 0, 0, 0.82);
+}
+
+.quickdeck-block-title-row .quickdeck-badge {
+  min-width: 1.15rem;
+  padding: 0.04rem 0.3rem;
+  font-size: 0.62rem;
+}
+
+.quickdeck-block-title-row .quickdeck-clear-button {
+  flex: 0 0 auto;
+}
+
+.quickdeck-available-header h4 {
+  justify-self: start;
+  min-height: 2rem;
+  min-width: min(100%, 12rem);
+  padding: 0.38rem 0.76rem 0.34rem;
+  justify-content: center;
+  border: 1px solid rgba(228, 177, 81, 0.5);
+  border-radius: 9px;
+  background:
+    var(--quickdeck-art-polish-section-title-plaque) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(80, 49, 22, 0.92), rgba(27, 17, 12, 0.96));
+  background-blend-mode: screen, normal;
+  font-size: 0.83rem;
+  letter-spacing: 0.065em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.86);
+}
+
+.quickdeck-available-header input,
+.quickdeck-drawer-search {
+  height: 2rem;
+  min-height: 2rem;
+  padding: 0.32rem 0.62rem 0.32rem 2.15rem;
+  line-height: 1.25;
+  background-position: center, center;
+  background-size: 100% 100%, auto;
+}
+
+.quickdeck-available-header input::placeholder,
+.quickdeck-drawer-search::placeholder {
+  color: rgba(245, 226, 187, 0.62);
+  opacity: 1;
+}
+
+.quickdeck-clear-button {
+  border-color: rgba(231, 91, 69, 0.78);
+  color: #ffe6dc;
+  background:
+    var(--quickdeck-art-red-button) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(132, 36, 25, 0.96), rgba(49, 15, 13, 0.98));
+  background-blend-mode: screen, normal;
+  box-shadow:
+    0 1px 0 rgba(255, 206, 188, 0.16) inset,
+    0 0 12px rgba(146, 25, 18, 0.22);
+}
+
+.quickdeck-clear-button:hover {
+  border-color: rgba(255, 139, 113, 0.96);
+  background:
+    var(--quickdeck-art-red-button) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(162, 48, 32, 0.98), rgba(64, 18, 14, 0.98));
+}
+
+.quickdeck-roster-button.is-active,
+.quickdeck-roster-button.is-current-turn {
+  border-color: rgba(255, 224, 142, 0.96);
+  background:
+    var(--quickdeck-art-polish-selected-roster-glow) center / 100% 100% no-repeat,
+    var(--quickdeck-art-chip-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(94, 59, 24, 0.98), rgba(29, 19, 12, 0.98));
+  box-shadow:
+    0 0 0 1px rgba(255, 232, 166, 0.18) inset,
+    0 0 16px rgba(232, 169, 69, 0.28);
+}
+
+.quickdeck-roster-button.is-active::before,
+.quickdeck-roster-button.is-current-turn::before {
+  background-image: var(--quickdeck-art-polish-selected-roster-glow);
+  opacity: 0.95;
+}
+
+.quickdeck-actor-header {
+  padding: 0.38rem 0.46rem 0.42rem;
+  border: 1px solid rgba(230, 176, 82, 0.44);
+  border-radius: 10px;
+  background:
+    var(--quickdeck-art-polish-selected-actor-banner) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(78, 47, 20, 0.94), rgba(22, 14, 10, 0.96));
+  background-blend-mode: screen, normal;
+}
+
+.quickdeck-actor-header::before,
+.quickdeck-actor-header::after {
+  opacity: 0.18;
+}
+
+.quickdeck-actor-header h3 {
+  font-size: 1rem;
+  line-height: 1.08;
+}
+
+.quickdeck-actor-header p {
+  gap: 0.16rem 0.28rem;
+  font-size: 0.72rem;
+  line-height: 1.28;
+}
+
+.quickdeck-type-pill {
+  padding: 0.04rem 0.24rem;
+  border-color: rgba(216, 179, 107, 0.38);
+  color: rgba(246, 228, 191, 0.86);
+  background:
+    linear-gradient(180deg, rgba(62, 42, 24, 0.7), rgba(26, 21, 18, 0.78));
+  font-size: 0.54rem;
+  letter-spacing: 0.05em;
+}
+
+.quickdeck-attack-card {
+  padding: 0.28rem 0.34rem;
+  gap: 0.22rem;
+  background:
+    var(--quickdeck-art-polish-compact-stat-strip) center / 100% 100% repeat-y,
+    var(--quickdeck-art-attack-row) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(50, 30, 18, 0.9), rgba(11, 10, 10, 0.94));
+}
+
+.quickdeck-attack-stats {
+  gap: 0.14rem;
+}
+
+.quickdeck-attack-stats div,
+.quickdeck-combat-anchor,
+.quickdeck-combat-icon-tray {
+  background:
+    var(--quickdeck-art-polish-compact-stat-strip) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(57, 36, 19, 0.62), rgba(13, 11, 10, 0.7));
+  background-blend-mode: screen, normal;
+}
+
+.quickdeck-attack-stats div {
+  padding: 0.13rem 0.2rem;
+}
+
+.quickdeck-favorite-attack-card,
+.quickdeck-spell-row,
+.quickdeck-skill-row,
+.quickdeck-quick-skill-row {
+  background:
+    var(--quickdeck-art-polish-compact-stat-strip) center / 100% 100% repeat-y,
+    linear-gradient(180deg, rgba(44, 31, 20, 0.88), rgba(12, 11, 11, 0.92));
+}
+
+.quickdeck-floating-restore,
+.quickdeck-restore-pill {
+  background:
+    var(--quickdeck-art-restore-badge) left 0.1rem center / 1.85rem 1.85rem no-repeat,
+    var(--quickdeck-art-polish-restore-pill-full) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(65, 39, 18, 0.98), rgba(14, 10, 8, 0.98));
+  background-blend-mode: screen, screen, normal;
+}
+
+.quickdeck-reference-shell {
+  padding-top: 1.05rem;
+  background:
+    var(--quickdeck-art-popup-frame) center / 100% 100% no-repeat,
+    var(--quickdeck-art-polish-scroll-header-roll) center top / calc(100% - 1.1rem) 1.35rem no-repeat,
+    var(--quickdeck-art-reference-backplate) center / cover no-repeat,
+    var(--quickdeck-art-parchment-panel) center / cover repeat,
+    linear-gradient(180deg, #f8e8c2, #dec184);
+}
+
+.quickdeck-reference-header {
+  margin: -0.18rem -0.14rem 0.5rem;
+  padding: 0.68rem 0.82rem 0.58rem;
+  border-color: rgba(91, 53, 19, 0.54);
+  background:
+    var(--quickdeck-art-polish-scroll-header-roll) center / 100% 100% no-repeat,
+    linear-gradient(135deg, #28160d, #553115 62%, #7c5524);
+  background-blend-mode: multiply, normal;
+}
+
+.quickdeck-reference-header::after,
+.quickdeck-reference-sources::before {
+  pointer-events: none;
+}
+
+.quickdeck-reference-body {
+  align-content: start;
+  grid-auto-rows: min-content;
+  gap: 0.52rem;
+  padding: 0.16rem 0.52rem 0.16rem 0.04rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.quickdeck-reference-sources,
+.quickdeck-reference-roll-summary,
+.quickdeck-reference-bundled-summary,
+.quickdeck-reference-match-meta {
+  min-width: 0;
+  min-height: 0;
+  border-color: rgba(125, 76, 28, 0.32);
+  border-radius: 11px;
+  background:
+    var(--quickdeck-art-polish-scroll-section-card) center / 100% 100% no-repeat,
+    rgba(255, 244, 211, 0.62);
+  background-blend-mode: multiply, normal;
+}
+
+.quickdeck-reference-sources {
+  padding: 0.66rem 0.72rem;
+  gap: 0.42rem;
+}
+
+.quickdeck-reference-meta {
+  min-width: 0;
+}
+
+.quickdeck-reference-meta div {
+  grid-template-columns: minmax(5.75rem, 32%) minmax(0, 1fr);
+  min-width: 0;
+  gap: 0.48rem;
+}
+
+.quickdeck-reference-meta dt,
+.quickdeck-reference-meta dd,
+.quickdeck-reference-body p {
+  line-height: 1.46;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  white-space: normal;
+}
+
+.quickdeck-reference-sources h3 {
+  line-height: 1.22;
+}
+
+@media (max-width: 980px) {
+  .quickdeck-shell {
+    grid-template-columns: 258px minmax(0, 1fr);
+  }
+
+  .quickdeck-panel {
+    width: 392px;
+  }
+}
+
+@media (max-width: 720px) {
+  .quickdeck-shell {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .quickdeck-sidebar {
+    min-height: 0;
+  }
+
+  .quickdeck-drawer-stack {
+    margin-left: 0;
+  }
+
+  .quickdeck-window-actions {
+    justify-content: flex-start;
+  }
+
+  .quickdeck-block-title-row {
+    grid-template-columns: 1fr;
+    flex-wrap: wrap;
+  }
+
+  .quickdeck-panel {
+    max-width: min(100vw, 536px);
+  }
+}
+
+.quickdeck-open-pdf-sources-button::before,
+.quickdeck-minimize-button::before {
+  pointer-events: none;
 }
