@@ -192,13 +192,13 @@
               <dd>
                 <div class="quickdeck-resource-control" data-resource-control="HP">
                   <div class="quickdeck-large-resource-bar" aria-hidden="true"><span style="width: {{gurpsData.hpPercent}}%;"></span></div>
-                  <div class="quickdeck-resource-value-line">
-                    <input type="text" inputmode="decimal" data-action="set-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" value="{{gurpsData.display.hp}}" aria-label="Current HP" />
-                    <span class="quickdeck-resource-max">/ {{gurpsData.display.hpMax}}</span>
-                  </div>
-                  <div class="quickdeck-resource-buttons" aria-label="Adjust HP">
-                    <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="-1" aria-label="Reduce HP by 1">−</button>
-                    <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="1" aria-label="Increase HP by 1">+</button>
+                  <div class="quickdeck-resource-value-line" aria-label="Adjust HP">
+                    <button type="button" class="quickdeck-resource-stepper quickdeck-resource-stepper-minus" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="-1" aria-label="Reduce HP by 1">−</button>
+                    <span class="quickdeck-resource-readout">
+                      <input type="text" inputmode="decimal" data-action="set-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" value="{{gurpsData.display.hp}}" aria-label="Current HP" />
+                      <span class="quickdeck-resource-max">/ {{gurpsData.display.hpMax}}</span>
+                    </span>
+                    <button type="button" class="quickdeck-resource-stepper quickdeck-resource-stepper-plus" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="1" aria-label="Increase HP by 1">+</button>
                   </div>
                 </div>
               </dd>
@@ -208,13 +208,13 @@
               <dd>
                 <div class="quickdeck-resource-control" data-resource-control="FP">
                   <div class="quickdeck-large-resource-bar" aria-hidden="true"><span style="width: {{gurpsData.fpPercent}}%;"></span></div>
-                  <div class="quickdeck-resource-value-line">
-                    <input type="text" inputmode="decimal" data-action="set-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" value="{{gurpsData.display.fp}}" aria-label="Current FP" />
-                    <span class="quickdeck-resource-max">/ {{gurpsData.display.fpMax}}</span>
-                  </div>
-                  <div class="quickdeck-resource-buttons" aria-label="Adjust FP">
-                    <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="-1" aria-label="Reduce FP by 1">−</button>
-                    <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="1" aria-label="Increase FP by 1">+</button>
+                  <div class="quickdeck-resource-value-line" aria-label="Adjust FP">
+                    <button type="button" class="quickdeck-resource-stepper quickdeck-resource-stepper-minus" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="-1" aria-label="Reduce FP by 1">−</button>
+                    <span class="quickdeck-resource-readout">
+                      <input type="text" inputmode="decimal" data-action="set-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" value="{{gurpsData.display.fp}}" aria-label="Current FP" />
+                      <span class="quickdeck-resource-max">/ {{gurpsData.display.fpMax}}</span>
+                    </span>
+                    <button type="button" class="quickdeck-resource-stepper quickdeck-resource-stepper-plus" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="1" aria-label="Increase FP by 1">+</button>
                   </div>
                 </div>
               </dd>
@@ -307,7 +307,6 @@
           <button type="button" data-action="toggle-drawer" data-drawer="skills" class="quickdeck-drawer-tab {{#if isSkillsDrawerOpen}}is-active{{/if}}">Skills</button>
           <button type="button" data-action="toggle-drawer" data-drawer="quick-skills" class="quickdeck-drawer-tab {{#if isQuickSkillsDrawerOpen}}is-active{{/if}}">Quick Skills</button>
           <button type="button" data-action="toggle-drawer" data-drawer="spells" class="quickdeck-drawer-tab {{#if isSpellsDrawerOpen}}is-active{{/if}}">Spells</button>
-          <button type="button" data-action="toggle-drawer" data-drawer="reference" class="quickdeck-drawer-tab {{#if isReferenceDrawerOpen}}is-active{{/if}}">Reference</button>
           <button type="button" data-action="toggle-drawer" data-drawer="settings" class="quickdeck-drawer-tab {{#if isSettingsDrawerOpen}}is-active{{/if}}">Settings</button>
         </nav>
 
@@ -439,7 +438,7 @@
               {{/if}}
 
               {{#unless activeDrawer}}
-                <div class="quickdeck-panel-content"><p class="quickdeck-empty">Choose a drawer tab for Combat, Skills, Quick Skills, Spells, Reference, or Settings.</p></div>
+                <div class="quickdeck-panel-content"><p class="quickdeck-empty">Choose a drawer tab for Combat, Skills, Quick Skills, Spells, or Settings.</p></div>
               {{/unless}}
             {{/if}}
           {{/if}}
