@@ -18,7 +18,7 @@ function openQuickDeck() {
     quickDeckApp = new QuickDeckApp();
   }
 
-  quickDeckApp.render(true);
+  quickDeckApp.restoreAndBringToFront?.();
   return quickDeckApp;
 }
 
