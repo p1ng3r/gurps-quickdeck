@@ -4173,3 +4173,260 @@
   position: relative;
   z-index: 1;
 }
+
+/* v0.6.1 component UI asset pass: local component frames and controls. */
+:root {
+  --quickdeck-asset-component-input-frame: url("../assets/ui/components/input-frame.webp");
+  --quickdeck-asset-component-search-frame: url("../assets/ui/components/search-frame.webp");
+  --quickdeck-asset-component-resource-bar-track: url("../assets/ui/components/resource-bar-track.webp");
+  --quickdeck-asset-component-resource-bar-fill-red: url("../assets/ui/components/resource-bar-fill-red.webp");
+  --quickdeck-asset-component-resource-bar-fill-gold: url("../assets/ui/components/resource-bar-fill-gold.webp");
+  --quickdeck-asset-component-resource-card-frame: url("../assets/ui/components/resource-card-frame.webp");
+  --quickdeck-asset-component-actor-portrait-bezel: url("../assets/ui/components/actor-portrait-bezel.webp");
+  --quickdeck-asset-component-actor-chip-frame: url("../assets/ui/components/actor-chip-frame.webp");
+  --quickdeck-asset-component-pill-label-frame: url("../assets/ui/components/pill-label-frame.webp");
+  --quickdeck-asset-component-small-green-button-frame: url("../assets/ui/components/small-green-button-frame.webp");
+  --quickdeck-asset-component-small-red-button-frame: url("../assets/ui/components/small-red-button-frame.webp");
+  --quickdeck-asset-component-disabled-button-frame: url("../assets/ui/components/disabled-button-frame.webp");
+  --quickdeck-asset-component-remove-button-frame: url("../assets/ui/components/remove-button-frame.webp");
+  --quickdeck-asset-component-scroll-rail: url("../assets/ui/components/scroll-rail.webp");
+  --quickdeck-asset-component-scroll-thumb: url("../assets/ui/components/scroll-thumb.webp");
+  --quickdeck-asset-component-footer-rail: url("../assets/ui/components/footer-rail.webp");
+  --quickdeck-asset-component-empty-state-plaque: url("../assets/ui/components/empty-state-plaque.webp");
+}
+
+.gurps-quickdeck {
+  --quickdeck-component-frame-opacity: 0.72;
+  --quickdeck-component-button-opacity: 0.86;
+  --quickdeck-component-label-opacity: 0.78;
+}
+
+.quickdeck-drawer-search,
+.quickdeck-available-header input[type="search"] {
+  border-color: rgba(238, 193, 104, 0.64);
+  background:
+    var(--quickdeck-asset-component-search-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(17, 11, 8, 0.9), rgba(5, 6, 9, 0.78));
+  background-blend-mode: screen, normal;
+  box-shadow:
+    0 1px 0 rgba(255, 239, 190, 0.1) inset,
+    0 0 0 1px rgba(0, 0, 0, 0.24),
+    0 0 10px rgba(216, 157, 62, 0.08);
+}
+
+.quickdeck-drawer-search:focus,
+.quickdeck-available-header input[type="search"]:focus {
+  outline: 1px solid rgba(255, 220, 145, 0.72);
+  outline-offset: 1px;
+}
+
+.quickdeck-resource-value-line input,
+.quickdeck-reference-index-search-label input,
+.quickdeck-reference-index-import textarea,
+.quickdeck-pdf-source-row input,
+.quickdeck-pdf-source-row textarea {
+  border-color: rgba(224, 186, 112, 0.44);
+  background:
+    var(--quickdeck-asset-component-input-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(18, 12, 8, 0.72), rgba(6, 7, 10, 0.64));
+  background-blend-mode: screen, normal;
+}
+
+.quickdeck-resource-card,
+.quickdeck-move-card {
+  position: relative;
+  border-color: rgba(229, 181, 91, 0.44);
+  background:
+    var(--quickdeck-asset-component-resource-card-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(91, 63, 28, 0.28), rgba(6, 7, 10, 0.24));
+  background-blend-mode: screen, normal;
+}
+
+.quickdeck-large-resource-bar,
+.quickdeck-mini-resource-bar {
+  border-color: rgba(229, 181, 91, 0.5);
+  background:
+    var(--quickdeck-asset-component-resource-bar-track) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(8, 7, 8, 0.9), rgba(21, 15, 10, 0.84));
+  background-blend-mode: screen, normal;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.34) inset,
+    0 1px 0 rgba(255, 238, 190, 0.08);
+}
+
+.quickdeck-large-resource-bar span,
+.quickdeck-mini-resource-bar span {
+  background:
+    var(--quickdeck-resource-fill-art, var(--quickdeck-asset-component-resource-bar-fill-red)) left center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(153, 33, 33, 0.95), rgba(230, 139, 62, 0.98));
+  background-blend-mode: screen, normal;
+  box-shadow: 0 0 8px rgba(255, 204, 118, 0.14) inset;
+}
+
+.quickdeck-resource-control[data-resource-control="HP"] .quickdeck-large-resource-bar,
+.quickdeck-roster-resource:first-child .quickdeck-mini-resource-bar {
+  --quickdeck-resource-fill-art: var(--quickdeck-asset-component-resource-bar-fill-red);
+}
+
+.quickdeck-resource-control[data-resource-control="FP"] .quickdeck-large-resource-bar,
+.quickdeck-roster-resource:nth-child(2) .quickdeck-mini-resource-bar {
+  --quickdeck-resource-fill-art: var(--quickdeck-asset-component-resource-bar-fill-gold);
+}
+
+.quickdeck-resource-control[data-resource-control="FP"] .quickdeck-large-resource-bar span,
+.quickdeck-roster-resource:nth-child(2) .quickdeck-mini-resource-bar span {
+  background:
+    var(--quickdeck-asset-component-resource-bar-fill-gold) left center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(152, 103, 25, 0.96), rgba(245, 195, 82, 0.98));
+}
+
+.quickdeck-roster-button img,
+.quickdeck-actor-header img,
+.quickdeck-available-actor img {
+  border: 3px solid transparent;
+  border-image: var(--quickdeck-asset-component-actor-portrait-bezel) 18 fill / 3px / 2px stretch;
+  background:
+    var(--quickdeck-asset-component-actor-portrait-bezel) center / 100% 100% no-repeat,
+    rgba(10, 8, 6, 0.82);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 0 10px rgba(218, 160, 70, 0.16);
+}
+
+.quickdeck-actor-header img {
+  border-width: 4px;
+  border-image-width: 4px;
+  border-image-outset: 3px;
+}
+
+.quickdeck-type-pill {
+  border-color: rgba(233, 188, 96, 0.54);
+  background:
+    var(--quickdeck-asset-component-actor-chip-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(72, 53, 29, 0.88), rgba(31, 27, 24, 0.88));
+  background-blend-mode: screen, normal;
+  color: rgba(255, 239, 205, 0.98);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.quickdeck-badge,
+.quickdeck-combat-pill,
+.quickdeck-attack-mode,
+.quickdeck-section-note,
+.quickdeck-favorite-attacks-heading span,
+.quickdeck-debug-count {
+  border-color: rgba(224, 183, 105, 0.5);
+  background:
+    var(--quickdeck-asset-component-pill-label-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(85, 61, 31, 0.86), rgba(37, 29, 21, 0.9));
+  background-blend-mode: screen, normal;
+  color: rgba(255, 238, 204, 0.96);
+}
+
+.quickdeck-add-button {
+  border-color: rgba(134, 198, 119, 0.64);
+  background:
+    var(--quickdeck-asset-component-small-green-button-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(54, 106, 46, 0.86), rgba(25, 56, 29, 0.94));
+  background-blend-mode: screen, normal;
+  color: #e7ffd9;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.quickdeck-add-button:disabled,
+.quickdeck-flow-button:disabled,
+.quickdeck-target-opponent-button:disabled,
+.quickdeck-reference-search-button[disabled] {
+  border-color: rgba(139, 128, 109, 0.48);
+  background:
+    var(--quickdeck-asset-component-disabled-button-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(69, 65, 58, 0.72), rgba(34, 34, 35, 0.88));
+  background-blend-mode: screen, normal;
+  color: rgba(232, 225, 211, 0.72);
+  filter: saturate(0.72) brightness(0.9);
+}
+
+.quickdeck-remove-button,
+.quickdeck-unpin-button {
+  border-color: rgba(229, 116, 96, 0.58);
+  background:
+    var(--quickdeck-asset-component-remove-button-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(101, 31, 24, 0.82), rgba(48, 19, 18, 0.92));
+  background-blend-mode: screen, normal;
+  color: #ffd0c5;
+}
+
+.quickdeck-clear-button {
+  background:
+    var(--quickdeck-asset-component-small-red-button-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(92, 37, 28, 0.82), rgba(43, 22, 19, 0.94));
+  background-blend-mode: screen, normal;
+  border-color: rgba(222, 128, 93, 0.54);
+  color: #ffd8c4;
+}
+
+.quickdeck-empty,
+.quickdeck-empty-compact,
+.quickdeck-favorite-attacks-hint {
+  border-color: rgba(217, 173, 95, 0.42);
+  background:
+    var(--quickdeck-asset-component-empty-state-plaque) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(92, 62, 28, 0.22), rgba(8, 9, 12, 0.22));
+  background-blend-mode: screen, normal;
+  color: rgba(247, 237, 215, 0.95);
+}
+
+.quickdeck-footer-hint {
+  border-top-color: rgba(232, 183, 91, 0.38);
+  background:
+    var(--quickdeck-asset-component-footer-rail) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(25, 14, 8, 0.76), rgba(58, 39, 20, 0.58), rgba(25, 14, 8, 0.76));
+  background-blend-mode: screen, normal;
+  color: rgba(255, 239, 207, 0.88);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.quickdeck-panel-content,
+.quickdeck-available-list,
+.quickdeck-sidebar,
+.quickdeck-reference-body {
+  scrollbar-color: rgba(166, 103, 35, 0.88) rgba(64, 38, 18, 0.36);
+  scrollbar-width: thin;
+}
+
+.quickdeck-panel-content::-webkit-scrollbar,
+.quickdeck-available-list::-webkit-scrollbar,
+.quickdeck-sidebar::-webkit-scrollbar,
+.quickdeck-reference-body::-webkit-scrollbar {
+  width: 0.62rem;
+}
+
+.quickdeck-panel-content::-webkit-scrollbar-track,
+.quickdeck-available-list::-webkit-scrollbar-track,
+.quickdeck-sidebar::-webkit-scrollbar-track,
+.quickdeck-reference-body::-webkit-scrollbar-track {
+  border-radius: 999px;
+  background:
+    var(--quickdeck-asset-component-scroll-rail) center / 100% 100% repeat-y,
+    rgba(64, 38, 18, 0.28);
+}
+
+.quickdeck-panel-content::-webkit-scrollbar-thumb,
+.quickdeck-available-list::-webkit-scrollbar-thumb,
+.quickdeck-sidebar::-webkit-scrollbar-thumb,
+.quickdeck-reference-body::-webkit-scrollbar-thumb {
+  border: 1px solid rgba(246, 222, 164, 0.42);
+  border-radius: 999px;
+  background:
+    var(--quickdeck-asset-component-scroll-thumb) center / 100% 100% no-repeat,
+    rgba(151, 89, 30, 0.78);
+}
+
+.quickdeck-panel-content::-webkit-scrollbar-thumb:hover,
+.quickdeck-available-list::-webkit-scrollbar-thumb:hover,
+.quickdeck-sidebar::-webkit-scrollbar-thumb:hover,
+.quickdeck-reference-body::-webkit-scrollbar-thumb:hover {
+  background:
+    var(--quickdeck-asset-component-scroll-thumb) center / 100% 100% no-repeat,
+    rgba(181, 111, 40, 0.9);
+}
