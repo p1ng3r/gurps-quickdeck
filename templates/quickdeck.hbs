@@ -131,7 +131,7 @@
       </div>
     </header>
 
-    <section class="quickdeck-main quickdeck-three-zone-layout">
+    <section class="quickdeck-workbench quickdeck-main quickdeck-three-zone-layout">
       <section class="quickdeck-center-cockpit" aria-label="Selected actor cockpit">
         {{#if activeActor}}
           <header class="quickdeck-actor-header quickdeck-cockpit-hero">
@@ -312,7 +312,25 @@
         </nav>
 
         <section class="quickdeck-panel">
-          {{#if activeActor}}
+          {{#if isReferenceDrawerOpen}}
+            <div class="quickdeck-panel-content quickdeck-panel-reference">
+              <section class="quickdeck-reference-drawer-card">
+                <h4>Reference</h4>
+                <p>Open the source manager for configured reference sources and local overrides.</p>
+                <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Reference Sources / Local Overrides" aria-label="Reference Sources / Local Overrides">Sources</button>
+              </section>
+            </div>
+          {{else}}
+            {{#if isSettingsDrawerOpen}}
+              <div class="quickdeck-panel-content quickdeck-panel-settings">
+                <section class="quickdeck-reference-drawer-card">
+                  <h4>Settings</h4>
+                  <p>QuickDeck client settings remain in Foundry's module configuration. Reference Sources / Local Overrides stay available here for this shell pass.</p>
+                  <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Reference Sources / Local Overrides" aria-label="Reference Sources / Local Overrides">Sources</button>
+                </section>
+              </div>
+            {{else}}
+              {{#if activeActor}}
             {{#if isCombatDrawerOpen}}
               <div class="quickdeck-panel-content quickdeck-panel-combat">
                 <section class="quickdeck-attacks-section">
@@ -416,32 +434,15 @@
                 </section>
               </div>
             {{/if}}
-          {{else}}
-            <div class="quickdeck-panel-content"><p class="quickdeck-empty">Select a roster actor to use the drawer tabs.</p></div>
-          {{/if}}
+              {{else}}
+                <div class="quickdeck-panel-content"><p class="quickdeck-empty">Select a roster actor to use the Combat, Skills, Quick Skills, or Spells drawers.</p></div>
+              {{/if}}
 
-          {{#if isReferenceDrawerOpen}}
-            <div class="quickdeck-panel-content quickdeck-panel-reference">
-              <section class="quickdeck-reference-drawer-card">
-                <h4>Reference</h4>
-                <p>Open the source manager for configured references and future local overrides.</p>
-                <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Reference Sources / Local Overrides" aria-label="Reference Sources / Local Overrides">Sources</button>
-              </section>
-            </div>
+              {{#unless activeDrawer}}
+                <div class="quickdeck-panel-content"><p class="quickdeck-empty">Choose a drawer tab for Combat, Skills, Quick Skills, Spells, Reference, or Settings.</p></div>
+              {{/unless}}
+            {{/if}}
           {{/if}}
-
-          {{#if isSettingsDrawerOpen}}
-            <div class="quickdeck-panel-content quickdeck-panel-settings">
-              <section class="quickdeck-reference-drawer-card">
-                <h4>Settings</h4>
-                <p>QuickDeck client settings remain in Foundry's module configuration. This panel reserves the reference layout slot without changing GURPS behavior.</p>
-              </section>
-            </div>
-          {{/if}}
-
-          {{#unless activeDrawer}}
-            <div class="quickdeck-panel-content"><p class="quickdeck-empty">Choose a drawer tab for Combat, Skills, Quick Skills, Spells, Reference, or Settings.</p></div>
-          {{/unless}}
         </section>
       </aside>
     </section>

@@ -94,7 +94,7 @@ Hooks.once("init", () => {
       reference: "Reference",
       settings: "Settings"
     },
-    default: "none"
+    default: "combat"
   });
 
   game.settings.register(MODULE_ID, SETTING_KEYS.MINIMIZED, {
