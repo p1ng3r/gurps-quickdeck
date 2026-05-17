@@ -121,7 +121,7 @@
 
   <main class="quickdeck-main">
     <div class="quickdeck-window-actions">
-      <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button">Reference Sources / Local Overrides</button>
+      <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Reference Sources / Local Overrides" aria-label="Reference Sources / Local Overrides">Sources</button>
       <button type="button" data-action="toggle-minimize" class="quickdeck-minimize-button">Minimize</button>
     </div>
     <section class="quickdeck-content">
@@ -178,6 +178,9 @@
                             Combat snapshot
                             {{#if activeActor.actorType}}
                               <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
+                            {{/if}}
+                            {{#if activeActor.pointsDisplay}}
+                              <span class="quickdeck-type-pill quickdeck-points-pill">{{activeActor.pointsDisplay}} pts</span>
                             {{/if}}
                           </p>
                         </div>
@@ -670,7 +673,18 @@
                                   {{skill.name}}
                                 </button>
                               </h5>
-                              <p>Level {{#if skill.level}}{{skill.level}}{{else}}—{{/if}}</p>
+                              <p class="quickdeck-skill-meta">
+                                <span>Level {{skill.levelDisplay}}</span>
+                                {{#if skill.relativeLevelDisplay}}
+                                  <span>Rel {{skill.relativeLevelDisplay}}</span>
+                                {{/if}}
+                                {{#if skill.pointsDisplay}}
+                                  <span>{{skill.pointsDisplay}} pts</span>
+                                {{/if}}
+                                {{#if skill.referenceDisplay}}
+                                  <span>{{skill.referenceDisplay}}</span>
+                                {{/if}}
+                              </p>
                             </div>
                             <button
                               type="button"

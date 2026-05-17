@@ -69,8 +69,8 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 840,
-      height: 560,
+      width: 1180,
+      height: 720,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
@@ -3341,6 +3341,25 @@ export class QuickDeckApp extends Application {
     const maxHp = derivedData.maxHp;
     const maxFp = derivedData.maxFp;
 
+    const activeActorPoints = activeActor
+      ? this.getFirstDefinedValue(activeActor, [
+          "system.totalpoints.value",
+          "system.totalpoints",
+          "system.points.total",
+          "system.points",
+          "system.traits.points.total",
+          "system.calc.points",
+          "system.attributes.points",
+          "data.data.totalpoints.value",
+          "data.data.totalpoints",
+          "data.data.points.total",
+          "data.data.points"
+        ])
+      : null;
+    const activeActorPointsDisplay = ["number", "string"].includes(typeof activeActorPoints)
+      ? String(activeActorPoints)
+      : null;
+
     const gurpsData = {
       hp: currentHp ?? null,
       fp: currentFp ?? null,
@@ -3405,7 +3424,8 @@ export class QuickDeckApp extends Application {
             id: activeActor.id,
             name: activeActor.name,
             img: activeActor.img || "icons/svg/mystery-man.svg",
-            actorType: activeActor.type ? String(activeActor.type) : null
+            actorType: activeActor.type ? String(activeActor.type) : null,
+            pointsDisplay: activeActorPointsDisplay
           }
         : null,
       activeActorName: activeActor?.name ?? null,
