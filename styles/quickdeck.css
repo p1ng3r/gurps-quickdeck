@@ -3579,3 +3579,597 @@
 .quickdeck-reference-body {
   background: var(--quickdeck-asset-parchment-scroll-tab-edge) left 0.32rem top 0.24rem / 16px 58px no-repeat;
 }
+
+/* v0.6.1 Hero UI asset pack: bold dark-leather GM screen / bronze war-table pass. */
+:root {
+  --quickdeck-asset-hero-dark-leather-main-backplate: url("../assets/ui/hero/dark-leather-main-backplate.webp");
+  --quickdeck-asset-hero-bronze-command-banner: url("../assets/ui/hero/bronze-command-banner.webp");
+  --quickdeck-asset-hero-bronze-button-bank: url("../assets/ui/hero/bronze-button-bank.webp");
+  --quickdeck-asset-hero-bronze-roster-card-frame: url("../assets/ui/hero/bronze-roster-card-frame.webp");
+  --quickdeck-asset-hero-bronze-cockpit-frame: url("../assets/ui/hero/bronze-cockpit-frame.webp");
+  --quickdeck-asset-hero-parchment-reference-backplate: url("../assets/ui/hero/parchment-reference-backplate.webp");
+  --quickdeck-asset-hero-parchment-info-card: url("../assets/ui/hero/parchment-info-card.webp");
+  --quickdeck-asset-hero-bronze-title-ribbon: url("../assets/ui/hero/bronze-title-ribbon.webp");
+  --quickdeck-asset-hero-divider-wide: url("../assets/ui/hero/hero-divider-wide.webp");
+  --quickdeck-asset-hero-divider-medium: url("../assets/ui/hero/hero-divider-medium.webp");
+  --quickdeck-asset-hero-corner-flourish-top-left: url("../assets/ui/hero/corner-flourish-top-left.webp");
+  --quickdeck-asset-hero-corner-flourish-top-right: url("../assets/ui/hero/corner-flourish-top-right.webp");
+  --quickdeck-asset-hero-corner-flourish-bottom-left: url("../assets/ui/hero/corner-flourish-bottom-left.webp");
+  --quickdeck-asset-hero-corner-flourish-bottom-right: url("../assets/ui/hero/corner-flourish-bottom-right.webp");
+  --quickdeck-asset-hero-vertical-tab-plate: url("../assets/ui/hero/vertical-tab-hero-plate.webp");
+  --quickdeck-asset-hero-small-action-button-frame: url("../assets/ui/hero/small-action-button-hero-frame.webp");
+  --quickdeck-asset-hero-favorite-section-frame: url("../assets/ui/hero/favorite-section-frame.webp");
+  --quickdeck-asset-hero-spell-row-frame: url("../assets/ui/hero/spell-row-frame.webp");
+  --quickdeck-asset-hero-attack-row-frame: url("../assets/ui/hero/attack-row-frame.webp");
+  --quickdeck-asset-hero-skill-row-frame: url("../assets/ui/hero/skill-row-frame.webp");
+  --quickdeck-asset-hero-icon-helm-coin: url("../assets/ui/hero/icons/helm-coin.webp");
+  --quickdeck-asset-hero-icon-target-coin: url("../assets/ui/hero/icons/target-coin.webp");
+  --quickdeck-asset-hero-icon-book-coin: url("../assets/ui/hero/icons/book-coin.webp");
+  --quickdeck-asset-hero-icon-gear-coin: url("../assets/ui/hero/icons/gear-coin.webp");
+  --quickdeck-asset-hero-icon-heart-coin: url("../assets/ui/hero/icons/heart-coin.webp");
+  --quickdeck-asset-hero-icon-bolt-coin: url("../assets/ui/hero/icons/bolt-coin.webp");
+}
+
+.gurps-quickdeck {
+  --quickdeck-hero-shell-flourish-size: clamp(58px, 7vw, 96px);
+  --quickdeck-hero-row-frame-opacity: 0.72;
+  --quickdeck-hero-coin-size: clamp(34px, 3.8vw, 48px);
+  --quickdeck-hero-button-frame-opacity: 0.54;
+}
+
+.quickdeck-shell {
+  background:
+    linear-gradient(180deg, rgba(255, 224, 151, 0.08), rgba(0, 0, 0, 0.16) 40%, rgba(0, 0, 0, 0.28)),
+    radial-gradient(circle at 82% 12%, rgba(224, 165, 69, 0.22), transparent 25%),
+    radial-gradient(circle at 10% 86%, rgba(120, 61, 27, 0.28), transparent 35%),
+    var(--quickdeck-asset-hero-dark-leather-main-backplate) center / cover no-repeat,
+    linear-gradient(145deg, rgba(13, 8, 6, 0.99), rgba(35, 21, 13, 0.98) 44%, rgba(6, 7, 10, 0.99));
+  background-blend-mode: screen, screen, screen, multiply, normal;
+  border-color: rgba(238, 190, 96, 0.42);
+  box-shadow:
+    0 0 0 1px rgba(255, 238, 190, 0.08) inset,
+    0 0 0 5px rgba(0, 0, 0, 0.22) inset,
+    0 28px 54px rgba(0, 0, 0, 0.52);
+}
+
+.quickdeck-shell::before {
+  inset: 0.32rem;
+  opacity: 0.88;
+  border-color: rgba(233, 181, 83, 0.28);
+  background:
+    var(--quickdeck-asset-hero-corner-flourish-top-left) top left / var(--quickdeck-hero-shell-flourish-size) var(--quickdeck-hero-shell-flourish-size) no-repeat,
+    var(--quickdeck-asset-hero-corner-flourish-top-right) top right / var(--quickdeck-hero-shell-flourish-size) var(--quickdeck-hero-shell-flourish-size) no-repeat,
+    var(--quickdeck-asset-hero-corner-flourish-bottom-left) bottom left / var(--quickdeck-hero-shell-flourish-size) var(--quickdeck-hero-shell-flourish-size) no-repeat,
+    var(--quickdeck-asset-hero-corner-flourish-bottom-right) bottom right / var(--quickdeck-hero-shell-flourish-size) var(--quickdeck-hero-shell-flourish-size) no-repeat,
+    linear-gradient(90deg, rgba(235, 187, 93, 0.18), transparent 5.6rem, transparent calc(100% - 5.6rem), rgba(235, 187, 93, 0.18)),
+    linear-gradient(180deg, rgba(255, 225, 155, 0.08), transparent 24%, transparent 72%, rgba(56, 28, 11, 0.22));
+  background-blend-mode: screen, screen, screen, screen, screen, normal;
+  filter: saturate(1.14) contrast(1.05);
+}
+
+.quickdeck-shell::after {
+  opacity: 0.44;
+  background:
+    var(--quickdeck-asset-hero-divider-wide) center top 0.72rem / min(68%, 760px) 18px no-repeat,
+    var(--quickdeck-asset-hero-divider-wide) center bottom 0.72rem / min(68%, 760px) 18px no-repeat,
+    linear-gradient(180deg, rgba(255, 225, 155, 0.12), transparent 38%, transparent 66%, rgba(56, 28, 11, 0.18));
+  mix-blend-mode: screen;
+}
+
+.quickdeck-stage::before {
+  inset: 1.15rem 1.35rem auto auto;
+  width: min(38vw, 390px);
+  height: 94px;
+  border: 0;
+  border-radius: 0;
+  opacity: 0.46;
+  background: var(--quickdeck-asset-hero-bronze-command-banner) center / contain no-repeat;
+  filter: drop-shadow(0 9px 18px rgba(0, 0, 0, 0.44));
+}
+
+.quickdeck-stage::after {
+  inset: auto auto 1.15rem 1.35rem;
+  width: min(34vw, 330px);
+  height: 76px;
+  border: 0;
+  opacity: 0.38;
+  background: var(--quickdeck-asset-hero-bronze-button-bank) center / contain no-repeat;
+  transform: none;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.42));
+}
+
+.quickdeck-sidebar {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.36), transparent 12%, transparent 88%, rgba(0, 0, 0, 0.22)),
+    var(--quickdeck-asset-hero-dark-leather-main-backplate) center / cover no-repeat,
+    linear-gradient(180deg, rgba(35, 20, 13, 0.94), rgba(15, 11, 10, 0.92));
+  background-blend-mode: normal, multiply, normal;
+}
+
+.quickdeck-sidebar-block {
+  border-color: rgba(230, 180, 88, 0.42);
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(255, 238, 190, 0.06) inset;
+}
+
+.quickdeck-block-title-row h3,
+.quickdeck-available-header h4,
+.quickdeck-attacks-section h4,
+.quickdeck-skills-section h4,
+.quickdeck-subsection-title {
+  min-height: 30px;
+  padding: 0.34rem 0.72rem 0.3rem;
+  background:
+    var(--quickdeck-asset-hero-bronze-title-ribbon) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(116, 71, 25, 0.78), rgba(41, 25, 13, 0.64));
+  color: #fff0c2;
+  text-shadow: 0 1px 0 rgba(45, 20, 6, 0.95), 0 2px 9px rgba(0, 0, 0, 0.58);
+}
+
+.quickdeck-block-title-row h3,
+.quickdeck-available-header h4 {
+  flex: 1 1 auto;
+}
+
+.quickdeck-attacks-section h4::after,
+.quickdeck-skills-section h4::after,
+.quickdeck-subsection-title::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  left: 50%;
+  bottom: -0.34rem;
+  z-index: 0;
+  width: min(72%, 360px);
+  height: 11px;
+  opacity: 0.58;
+  background: var(--quickdeck-asset-hero-divider-medium) center / contain no-repeat;
+  transform: translateX(-50%);
+}
+
+.quickdeck-attacks-section h4::before,
+.quickdeck-skills-section h4::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  right: 0.72rem;
+  top: 50%;
+  z-index: 0;
+  width: 30px;
+  height: 30px;
+  opacity: 0.46;
+  background: var(--quickdeck-asset-hero-icon-gear-coin) center / contain no-repeat;
+  transform: translateY(-50%);
+}
+
+.quickdeck-attacks-section h4::before {
+  background-image: var(--quickdeck-asset-hero-icon-target-coin);
+}
+
+.quickdeck-panel-combat .quickdeck-skills-section h4::before,
+.quickdeck-spell-row ~ .quickdeck-spell-row::before {
+  background-image: var(--quickdeck-asset-hero-icon-book-coin);
+}
+
+.quickdeck-panel,
+.quickdeck-panel-scroll-root {
+  background:
+    linear-gradient(90deg, rgba(255, 230, 170, 0.06), transparent 7%, transparent 93%, rgba(0, 0, 0, 0.24)),
+    var(--quickdeck-asset-hero-dark-leather-main-backplate) center / cover no-repeat,
+    linear-gradient(180deg, rgba(28, 18, 14, 0.99), rgba(10, 10, 13, 0.98));
+  background-blend-mode: screen, multiply, normal;
+}
+
+.quickdeck-selected-cockpit,
+.quickdeck-actor-header {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.quickdeck-selected-cockpit {
+  border-color: rgba(235, 183, 91, 0.56);
+  border-radius: 15px;
+  background:
+    var(--quickdeck-asset-hero-bronze-cockpit-frame) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 225, 156, 0.14), transparent 16%, transparent 84%, rgba(91, 49, 17, 0.26)),
+    linear-gradient(180deg, rgba(42, 25, 14, 0.9), rgba(8, 9, 12, 0.8));
+  background-blend-mode: screen, normal, normal;
+  box-shadow:
+    0 0 0 1px rgba(255, 239, 196, 0.08) inset,
+    0 14px 28px rgba(0, 0, 0, 0.3),
+    0 0 20px rgba(215, 139, 39, 0.12) inset;
+}
+
+.quickdeck-selected-cockpit::before,
+.quickdeck-actor-header::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  width: var(--quickdeck-hero-coin-size);
+  height: var(--quickdeck-hero-coin-size);
+  opacity: 0.5;
+  background: var(--quickdeck-asset-hero-icon-helm-coin) center / contain no-repeat;
+  filter: drop-shadow(0 3px 7px rgba(0, 0, 0, 0.48));
+}
+
+.quickdeck-selected-cockpit::before {
+  right: 0.58rem;
+  top: 0.48rem;
+}
+
+.quickdeck-actor-header::before {
+  left: 0.5rem;
+  top: 50%;
+  opacity: 0.3;
+  transform: translateY(-50%);
+}
+
+.quickdeck-selected-cockpit > *,
+.quickdeck-actor-header > * {
+  position: relative;
+  z-index: 1;
+}
+
+.quickdeck-actor-header {
+  padding: 0.42rem 0.48rem;
+  border-color: rgba(241, 195, 105, 0.62);
+  background:
+    var(--quickdeck-asset-hero-bronze-command-banner) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 229, 158, 0.14), transparent 20%, transparent 80%, rgba(55, 29, 11, 0.28)),
+    linear-gradient(180deg, rgba(120, 78, 29, 0.76), rgba(39, 24, 13, 0.9));
+  background-blend-mode: screen, normal, normal;
+}
+
+.quickdeck-roster-button {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  min-height: 46px;
+  border-color: rgba(224, 176, 87, 0.42);
+  background:
+    var(--quickdeck-asset-hero-bronze-roster-card-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(46, 36, 24, 0.9), rgba(15, 16, 20, 0.92));
+  background-blend-mode: screen, normal;
+}
+
+.quickdeck-roster-button::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.38;
+  background: var(--quickdeck-asset-hero-bronze-roster-card-frame) center / 100% 100% no-repeat;
+  filter: saturate(1.1) contrast(1.05);
+}
+
+.quickdeck-roster-button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.quickdeck-roster-button.is-active::before,
+.quickdeck-roster-button.is-current-turn::before {
+  opacity: 0.62;
+}
+
+.quickdeck-roster-resources::before,
+.quickdeck-main-resources::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.22;
+  background: var(--quickdeck-asset-hero-icon-heart-coin) center / contain no-repeat;
+}
+
+.quickdeck-roster-resources,
+.quickdeck-main-resources {
+  position: relative;
+}
+
+.quickdeck-roster-resources::before {
+  right: 0.12rem;
+  bottom: 0.02rem;
+  width: 22px;
+  height: 22px;
+}
+
+.quickdeck-main-resources::before {
+  right: 0.38rem;
+  top: 0.34rem;
+  width: 42px;
+  height: 42px;
+}
+
+.quickdeck-main-resources > * {
+  position: relative;
+  z-index: 1;
+}
+
+.quickdeck-favorite-attacks {
+  border-color: rgba(239, 190, 91, 0.56);
+  border-radius: 14px;
+  background:
+    var(--quickdeck-asset-hero-favorite-section-frame) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 231, 176, 0.16), transparent 8%, transparent 92%, rgba(111, 65, 25, 0.2)),
+    linear-gradient(180deg, rgba(83, 55, 27, 0.44), rgba(12, 13, 17, 0.56));
+  background-blend-mode: screen, normal, normal;
+  box-shadow:
+    0 0 0 1px rgba(255, 241, 202, 0.07) inset,
+    0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.quickdeck-favorite-attacks::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.58;
+  background: var(--quickdeck-asset-hero-favorite-section-frame) center / 100% 100% no-repeat;
+}
+
+.quickdeck-favorite-attacks::after {
+  background:
+    var(--quickdeck-asset-icon-star-favorite-mark) right 0.52rem top 0.42rem / var(--quickdeck-art-batch2-favorite-mark-size) var(--quickdeck-art-batch2-favorite-mark-size) no-repeat,
+    var(--quickdeck-asset-hero-icon-target-coin) left 0.5rem top 0.38rem / 38px 38px no-repeat;
+  opacity: 0.36;
+}
+
+.quickdeck-favorite-spells::after {
+  background:
+    var(--quickdeck-asset-icon-star-favorite-mark) right 0.52rem top 0.42rem / var(--quickdeck-art-batch2-favorite-mark-size) var(--quickdeck-art-batch2-favorite-mark-size) no-repeat,
+    var(--quickdeck-asset-hero-icon-book-coin) left 0.5rem top 0.38rem / 38px 38px no-repeat;
+}
+
+.quickdeck-attack-card,
+.quickdeck-skill-row,
+.quickdeck-favorite-attack-main {
+  border-color: rgba(229, 179, 89, 0.44);
+  box-shadow:
+    0 1px 0 rgba(255, 237, 194, 0.07) inset,
+    0 8px 16px rgba(0, 0, 0, 0.14);
+}
+
+.quickdeck-attack-card {
+  background:
+    var(--quickdeck-asset-hero-attack-row-frame) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 239, 196, 0.08), transparent 16%, transparent 84%, rgba(99, 58, 22, 0.16)),
+    linear-gradient(180deg, rgba(65, 48, 29, 0.48), rgba(17, 18, 23, 0.76));
+  background-blend-mode: screen, normal, normal;
+}
+
+.quickdeck-attack-card::after {
+  opacity: var(--quickdeck-hero-row-frame-opacity);
+  background:
+    var(--quickdeck-asset-hero-icon-target-coin) right 0.68rem bottom 0.36rem / 42px 42px no-repeat,
+    var(--quickdeck-asset-hero-attack-row-frame) center / 100% 100% no-repeat;
+  filter: saturate(1.08) brightness(1.02) contrast(1.06);
+}
+
+.quickdeck-skill-row {
+  background:
+    var(--quickdeck-asset-hero-skill-row-frame) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 239, 196, 0.07), transparent 16%, transparent 84%, rgba(99, 58, 22, 0.13)),
+    linear-gradient(180deg, rgba(57, 43, 28, 0.44), rgba(17, 18, 23, 0.72));
+  background-blend-mode: screen, normal, normal;
+}
+
+.quickdeck-skill-row::after {
+  opacity: calc(var(--quickdeck-hero-row-frame-opacity) * 0.86);
+  background:
+    var(--quickdeck-asset-hero-icon-gear-coin) right 0.72rem center / 34px 34px no-repeat,
+    var(--quickdeck-asset-hero-skill-row-frame) center / 100% 100% no-repeat;
+}
+
+.quickdeck-spell-row {
+  background:
+    var(--quickdeck-asset-hero-spell-row-frame) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 239, 196, 0.07), transparent 16%, transparent 84%, rgba(99, 58, 22, 0.13)),
+    linear-gradient(180deg, rgba(57, 43, 28, 0.44), rgba(17, 18, 23, 0.72));
+  background-blend-mode: screen, normal, normal;
+}
+
+.quickdeck-spell-row::after {
+  opacity: calc(var(--quickdeck-hero-row-frame-opacity) * 0.9);
+  background:
+    var(--quickdeck-asset-hero-icon-book-coin) right 0.72rem center / 34px 34px no-repeat,
+    var(--quickdeck-asset-hero-spell-row-frame) center / 100% 100% no-repeat;
+}
+
+.quickdeck-favorite-attack-main {
+  background:
+    var(--quickdeck-asset-hero-attack-row-frame) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 239, 196, 0.07), transparent 18%, transparent 82%, rgba(99, 58, 22, 0.14)),
+    linear-gradient(180deg, rgba(49, 39, 27, 0.78), rgba(15, 17, 22, 0.9));
+  background-blend-mode: screen, normal, normal;
+}
+
+.quickdeck-favorite-spell-main {
+  background:
+    var(--quickdeck-asset-hero-spell-row-frame) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 239, 196, 0.07), transparent 18%, transparent 82%, rgba(99, 58, 22, 0.14)),
+    linear-gradient(180deg, rgba(49, 39, 27, 0.78), rgba(15, 17, 22, 0.9));
+}
+
+.quickdeck-drawer-tab {
+  border-color: rgba(237, 188, 92, 0.62);
+  background:
+    var(--quickdeck-asset-hero-vertical-tab-plate) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 229, 157, 0.14), transparent 34%, rgba(66, 35, 13, 0.26)),
+    linear-gradient(180deg, rgba(105, 68, 27, 0.94), rgba(30, 21, 15, 0.98));
+  background-blend-mode: screen, normal, normal;
+}
+
+.quickdeck-drawer-tab::before {
+  opacity: 0.78;
+  background: var(--quickdeck-asset-hero-vertical-tab-plate) center / 100% 100% no-repeat;
+  filter: saturate(1.2) contrast(1.1) brightness(1.08);
+}
+
+.quickdeck-drawer-tab.is-active::before {
+  opacity: 0.95;
+}
+
+.quickdeck-flow-button,
+.quickdeck-attack-button,
+.quickdeck-open-pdf-sources-button,
+.quickdeck-open-sheet-button,
+.quickdeck-drop-token-button,
+.quickdeck-minimize-button {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border-color: rgba(231, 181, 88, 0.58);
+  background:
+    var(--quickdeck-asset-hero-small-action-button-frame) center / 100% 100% no-repeat,
+    linear-gradient(180deg, rgba(83, 58, 26, 0.88), rgba(25, 19, 14, 0.96));
+  background-blend-mode: screen, normal;
+  color: #fff0ca;
+}
+
+.quickdeck-flow-button::before,
+.quickdeck-attack-button::before,
+.quickdeck-open-pdf-sources-button::before,
+.quickdeck-open-sheet-button::before,
+.quickdeck-drop-token-button::before,
+.quickdeck-minimize-button::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  inset: 0;
+  z-index: 0;
+  opacity: var(--quickdeck-hero-button-frame-opacity);
+  background: var(--quickdeck-asset-hero-small-action-button-frame) center / 100% 100% no-repeat;
+}
+
+.quickdeck-flow-button > *,
+.quickdeck-attack-button > *,
+.quickdeck-open-pdf-sources-button > *,
+.quickdeck-open-sheet-button > *,
+.quickdeck-drop-token-button > *,
+.quickdeck-minimize-button > * {
+  position: relative;
+  z-index: 1;
+}
+
+.quickdeck-flow-button:nth-child(4)::after,
+.quickdeck-attack-button::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  right: 0.34rem;
+  top: 50%;
+  z-index: 0;
+  width: 22px;
+  height: 22px;
+  opacity: 0.32;
+  background: var(--quickdeck-asset-hero-icon-bolt-coin) center / contain no-repeat;
+  transform: translateY(-50%);
+}
+
+.quickdeck-open-pdf-sources-button::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  right: 0.28rem;
+  top: 50%;
+  z-index: 0;
+  width: 20px;
+  height: 20px;
+  opacity: 0.26;
+  background: var(--quickdeck-asset-hero-icon-gear-coin) center / contain no-repeat;
+  transform: translateY(-50%);
+}
+
+.quickdeck-defense-buttons {
+  background:
+    var(--quickdeck-asset-hero-bronze-button-bank) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(255, 225, 151, 0.08), transparent 22%, transparent 78%, rgba(82, 44, 15, 0.22)),
+    rgba(6, 5, 6, 0.34);
+  background-blend-mode: screen, normal, normal;
+}
+
+.quickdeck-combat-anchor {
+  border-color: rgba(198, 159, 85, 0.44);
+  background:
+    linear-gradient(90deg, rgba(255, 239, 196, 0.06), transparent 72%),
+    linear-gradient(180deg, rgba(34, 32, 28, 0.78), rgba(10, 12, 17, 0.64));
+}
+
+.quickdeck-combat-icon {
+  border-radius: 999px;
+  background:
+    var(--quickdeck-asset-hero-icon-target-coin) center / 22px 22px no-repeat,
+    linear-gradient(180deg, rgba(75, 58, 31, 0.78), rgba(37, 35, 35, 0.92));
+}
+
+.quickdeck-modifier-bucket-icon,
+.quickdeck-combat-icon-muted:first-child {
+  background-image:
+    var(--quickdeck-asset-hero-icon-gear-coin),
+    linear-gradient(180deg, rgba(75, 58, 31, 0.78), rgba(37, 35, 35, 0.92));
+}
+
+.quickdeck-combat-icon-muted:last-child {
+  background-image:
+    var(--quickdeck-asset-hero-icon-bolt-coin),
+    linear-gradient(180deg, rgba(75, 58, 31, 0.78), rgba(37, 35, 35, 0.92));
+}
+
+.quickdeck-spell-row .quickdeck-combat-icon,
+.quickdeck-favorite-spells .quickdeck-combat-icon {
+  background:
+    var(--quickdeck-asset-hero-icon-book-coin) center / 22px 22px no-repeat,
+    linear-gradient(180deg, rgba(75, 58, 31, 0.78), rgba(37, 35, 35, 0.92));
+}
+
+.quickdeck-reference-shell {
+  background:
+    var(--quickdeck-asset-hero-parchment-reference-backplate) center / cover no-repeat,
+    var(--quickdeck-asset-parchment-panel) center / cover no-repeat,
+    radial-gradient(circle at 14% 18%, rgba(255, 250, 218, 0.34), transparent 18%),
+    linear-gradient(180deg, #f2dfaa 0%, var(--quickdeck-reference-parchment) 48%, #d8ba77 100%);
+  background-blend-mode: multiply, multiply, normal, normal;
+}
+
+.quickdeck-reference-panel,
+.quickdeck-reference-sources,
+.quickdeck-reference-help,
+.quickdeck-reference-status,
+.quickdeck-reference-empty {
+  background-image:
+    var(--quickdeck-asset-hero-parchment-info-card),
+    linear-gradient(180deg, rgba(255, 252, 226, 0.3), rgba(191, 133, 51, 0.08));
+  background-size: 100% 100%, auto;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply, normal;
+}
+
+.quickdeck-reference-header {
+  position: relative;
+  isolation: isolate;
+}
+
+.quickdeck-reference-header::before {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  right: 0.68rem;
+  top: 50%;
+  z-index: 0;
+  width: 42px;
+  height: 42px;
+  opacity: 0.34;
+  background: var(--quickdeck-asset-hero-icon-book-coin) center / contain no-repeat;
+  transform: translateY(-50%);
+}
+
+.quickdeck-reference-header > * {
+  position: relative;
+  z-index: 1;
+}
