@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.6.1 reference UI foundation
+
+### Changed
+- Started from the clean v0.6.0 release baseline and abandoned the failed v0.6.1 visual experiment direction.
+- Reworked the QuickDeck shell toward the approved QuickDeck-faithful mockup with a left roster, center selected-actor command cockpit, right-side drawer tabs, and CSS-only dark leather / bronze / parchment styling hooks.
+- Moved Combat Favorites under the selected actor cockpit and kept the Combat drawer focused on the full attack list with existing target, ModifierBucket, favorite, and native damage controls exposed.
+- Updated attack, skill, quick-skill, and spell roll labels/visual affordances to read as 3d6 controls rather than play/launch controls.
+- Renamed the top reference action to **Reference Sources / Local Overrides** to keep the current metadata workflow visible while leaving future user-owned Local PDF Sources for a later safe pass.
+
+### Safety
+- Did not change native GURPS attack, defense, damage, spell, skill, target, ModifierBucket, window focus, restore pill, token placement, or reference popup behavior.
+- Decorative CSS layers remain non-interactive and do not add JavaScript listeners.
+
 ## [Unreleased] - v0.6.0 release candidate
 
 ### Added

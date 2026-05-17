@@ -2,6 +2,15 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.6.1 (Reference UI Foundation)
+
+- Started from the clean v0.6.0 release baseline and abandoned the failed v0.6.1 visual experiment direction.
+- Reframed the main QuickDeck window toward the approved mockup: left roster column, center selected-actor command cockpit, and right-side tab/drawer controls with dark leather, bronze, and parchment CSS-only styling.
+- Moved Combat Favorites directly under the selected actor cockpit while keeping the full attack list in the Combat drawer and preserving the existing per-actor favorite workflow.
+- Clarified roll affordances as **3d6** controls for attacks, skills, quick skills, and spells without changing their native GURPS passthrough handlers.
+- Kept Reference Sources / Local Overrides visible as the current copyright-safe metadata surface; future Local PDF Sources should point to user-owned local PDFs without bundling, scraping, or distributing copyrighted text.
+- Left native GURPS behavior unchanged: attacks, defenses, damage follow-ups, skills, spells, targeting, ModifierBucket access/status, windows/focus, token placement cleanup, minimize/restore, and reference popup scrolling remain delegated to the existing v0.6.0 hooks.
+
 ## What's New in v0.6.0 (Release Candidate)
 
 - QuickDeck's selected-actor cockpit has been rebuilt with a clearer identity header, compact GM helper strip, redesigned HP/FP resource cards, prominent Dodge/Parry/Block controls, and dense attack rows for fast table use.
@@ -71,7 +80,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - Minimized `QD QuickDeck` restore pill position persists per client/user.
   - Missing/deleted actors are cleaned up defensively.
 - Drawer tools:
-  - **Combat Burst**: large Dodge/Parry/Block buttons, selected-character HP/FP pass-through controls, roster HP/FP bars, pinned favorite attacks, the full attack list, native-token **Target Opponent** controls, native chat/target/actor helper buttons, roll buttons, and native damage handoff prompts.
+  - **Combat**: selected-actor cockpit, large Dodge/Parry/Block buttons, selected-character HP/FP pass-through controls, roster HP/FP bars, Combat Favorites under the cockpit, the full attack list, native-token **Target Opponent** controls, native ModifierBucket access/status, native chat/target/actor helper buttons, 3d6 attack buttons, and native damage handoff prompts.
   - **Skills**: extracted nested GURPS skills + quick-pin checkboxes; roll buttons route through native GURPS sheet-style skill handling where possible.
   - **Quick Skills**: pinned skills with independent search and native sheet-style roll actions.
   - **Spells**: pinned favorite spells plus the full searchable spell list; cast buttons route through native GURPS sheet-style spell handling where possible.
@@ -102,6 +111,8 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 ## Design Specs
 
 - [QuickDeck Favorites and Scroll Reference Popup UI Spec](docs/ui-favorites-scroll-reference-spec.md): planned direction for Combat favorites, Spell favorites, Quick Skills curation, and scroll-styled reference popups.
+- v0.6.1 intentionally uses CSS gradients, borders, and placeholder CSS variables instead of a binary asset pack; future asset cuts should be small leather grain, bronze corner, and parchment panel textures wired through the existing CSS variables.
+- Future collapse work should add roster and right-drawer edge tabs without replacing the current Application v1 handlers or permanent-listener cleanup guarantees.
 
 ## Installation / Local Development
 
