@@ -2506,3 +2506,306 @@ button.quickdeck-favorite-toggle {
 .quickdeck-combat-icon {
   background: var(--quickdeck-art-icon-button) center / 100% 100% no-repeat;
 }
+
+/* v0.6.1 source-image proportion pass: increase command-board scale and rebalance zones. */
+.gurps-quickdeck {
+  --quickdeck-command-gap: 0.72rem;
+}
+
+.quickdeck-shell {
+  grid-template-columns: clamp(268px, 20vw, 318px) minmax(0, 1fr);
+}
+
+.quickdeck-sidebar {
+  grid-template-rows: minmax(300px, 1.22fr) minmax(190px, 0.78fr);
+  gap: 0.72rem;
+  padding: 0.82rem 0.7rem 0.82rem 0.82rem;
+}
+
+.quickdeck-sidebar-block {
+  gap: 0.56rem;
+  padding: 0.72rem;
+}
+
+.quickdeck-roster-list,
+.quickdeck-available-list {
+  gap: 0.42rem;
+}
+
+.quickdeck-roster-button {
+  grid-template-columns: 46px minmax(0, 1fr);
+  min-height: 66px;
+  gap: 0.52rem;
+  padding: 0.42rem 0.48rem;
+}
+
+.quickdeck-roster-button img,
+.quickdeck-available-actor img {
+  width: 46px;
+  height: 46px;
+}
+
+.quickdeck-roster-name {
+  font-size: 0.88rem;
+}
+
+.quickdeck-roster-resources {
+  gap: 0.34rem;
+  font-size: 0.68rem;
+}
+
+.quickdeck-command-desk {
+  gap: var(--quickdeck-command-gap);
+  padding: 0.78rem 0.9rem 0.74rem 0.72rem;
+}
+
+.quickdeck-top-bar {
+  min-height: 64px;
+  padding: 0.62rem 0.95rem;
+  border-radius: 15px;
+}
+
+.quickdeck-top-bar-title strong {
+  font-size: clamp(1.28rem, 1.3vw, 1.55rem);
+  letter-spacing: 0.055em;
+}
+
+.quickdeck-top-bar .quickdeck-kicker {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+}
+
+.quickdeck-window-actions {
+  gap: 0.6rem;
+}
+
+.quickdeck-workbench,
+.quickdeck-main {
+  grid-template-columns: minmax(560px, 1.22fr) minmax(430px, 0.78fr);
+  gap: 0.72rem;
+}
+
+.quickdeck-center-cockpit {
+  gap: 0.74rem;
+  padding: 0.78rem;
+  border-radius: 18px;
+}
+
+.quickdeck-actor-header {
+  grid-template-columns: 104px minmax(0, 1fr) minmax(128px, auto);
+  gap: 0.78rem;
+  min-height: 130px;
+  padding: 0.9rem 0.92rem;
+  align-items: center;
+}
+
+.quickdeck-portrait-bezel {
+  flex-basis: 104px;
+  width: 104px;
+  height: 104px;
+  padding: 0.5rem;
+}
+
+.quickdeck-actor-identity h3 {
+  font-size: clamp(1.55rem, 2vw, 2.05rem);
+  letter-spacing: 0.015em;
+}
+
+.quickdeck-actor-identity p {
+  gap: 0.42rem;
+}
+
+.quickdeck-actor-header-actions {
+  flex-basis: 132px;
+  gap: 0.48rem;
+}
+
+.quickdeck-combat-flow-controls {
+  gap: 0.48rem;
+  padding: 0.5rem;
+}
+
+.quickdeck-main-resources {
+  gap: 0.62rem;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(82px, 0.44fr);
+}
+
+.quickdeck-main-resources .quickdeck-resource-card,
+.quickdeck-main-resources .quickdeck-move-card {
+  padding: 0.62rem;
+}
+
+.quickdeck-large-resource-bar {
+  height: 11px;
+}
+
+.quickdeck-resource-value-line input {
+  width: 3.5rem;
+  min-height: 1.72rem;
+  font-size: 0.92rem;
+}
+
+.quickdeck-move-card dd {
+  font-size: 1.72rem;
+}
+
+.quickdeck-defense-buttons {
+  gap: 0.58rem;
+  padding: 0.48rem;
+}
+
+.quickdeck-defense-button {
+  min-height: 64px;
+}
+
+.quickdeck-defense-button strong {
+  font-size: 1.52rem;
+}
+
+.quickdeck-favorite-attacks,
+.quickdeck-pinned-skills-summary {
+  margin-top: 0;
+  gap: 0.5rem;
+  padding: 0.58rem;
+}
+
+.quickdeck-favorite-attacks-list,
+.quickdeck-pinned-skills-list {
+  max-height: 190px;
+  gap: 0.42rem;
+}
+
+.quickdeck-favorite-attack-card,
+.quickdeck-pinned-skill-chip {
+  gap: 0.5rem;
+  min-height: 46px;
+  padding: 0.46rem 0.52rem;
+}
+
+.quickdeck-right-drawer {
+  grid-template-columns: 96px minmax(0, 1fr);
+  padding: 0.62rem 0.62rem 0.62rem 0.42rem;
+  border-radius: 18px;
+}
+
+.quickdeck-drawer-tabs {
+  gap: 0.26rem;
+  padding: 0.58rem 0.22rem 0.58rem 0.32rem;
+}
+
+.quickdeck-drawer-tab,
+button.quickdeck-drawer-tab {
+  min-height: 2.55rem;
+  padding: 0.24rem 0.34rem;
+  font-size: 0.76rem;
+  line-height: 1.12;
+}
+
+.quickdeck-panel {
+  padding: 0.62rem;
+}
+
+.quickdeck-panel-content {
+  padding: 0.64rem;
+}
+
+.quickdeck-panel-content > section {
+  gap: 0.62rem;
+}
+
+.quickdeck-attack-card {
+  gap: 0.44rem;
+  padding: 0.52rem 0.58rem;
+  border-radius: 12px;
+}
+
+.quickdeck-attack-title-row {
+  gap: 0.44rem;
+}
+
+.quickdeck-attack-title-block h5 {
+  font-size: 0.95rem;
+}
+
+.quickdeck-attack-mode,
+.quickdeck-attack-stats dt,
+.quickdeck-anchor-label {
+  font-size: 0.68rem;
+}
+
+.quickdeck-attack-stats {
+  grid-template-columns: minmax(0, 0.74fr) minmax(0, 1.26fr);
+  gap: 0.38rem;
+}
+
+.quickdeck-attack-stats div {
+  padding: 0.28rem 0.34rem;
+}
+
+.quickdeck-attack-stats dd {
+  font-size: 0.86rem;
+}
+
+.quickdeck-combat-anchors {
+  grid-template-columns: minmax(0, 1.06fr) minmax(0, 1.06fr) minmax(42px, auto);
+  gap: 0.38rem;
+}
+
+.quickdeck-combat-anchor {
+  min-height: 2.55rem;
+  gap: 0.4rem;
+  padding: 0.34rem 0.42rem;
+}
+
+.quickdeck-anchor-value {
+  font-size: 0.8rem;
+}
+
+.quickdeck-combat-icon-tray {
+  min-width: 42px;
+}
+
+.quickdeck-attack-actions {
+  gap: 0.42rem;
+  justify-content: flex-end;
+}
+
+button.quickdeck-roll-button,
+button.quickdeck-attack-button {
+  min-height: 2.05rem;
+  padding-inline: 0.72rem;
+}
+
+button.quickdeck-favorite-toggle {
+  min-width: 2.05rem;
+  min-height: 2.05rem;
+}
+
+.quickdeck-skill-row {
+  gap: 0.46rem;
+  padding: 0.46rem 0.56rem;
+}
+
+@media (max-width: 1280px) {
+  .quickdeck-shell { grid-template-columns: 252px minmax(0, 1fr); }
+  .quickdeck-workbench,
+  .quickdeck-main { grid-template-columns: minmax(470px, 1.12fr) minmax(390px, 0.88fr); }
+  .quickdeck-right-drawer { grid-template-columns: 84px minmax(0, 1fr); }
+  .quickdeck-drawer-tab,
+  button.quickdeck-drawer-tab { font-size: 0.7rem; }
+  .quickdeck-actor-header { grid-template-columns: 86px minmax(0, 1fr); }
+  .quickdeck-actor-header-actions { grid-column: 1 / -1; flex-direction: row; }
+  .quickdeck-portrait-bezel { flex-basis: 86px; width: 86px; height: 86px; }
+}
+
+@media (max-width: 1080px) {
+  .quickdeck-shell { grid-template-columns: 230px minmax(0, 1fr); }
+  .quickdeck-workbench,
+  .quickdeck-main { grid-template-columns: minmax(0, 1fr); overflow-y: auto; }
+  .quickdeck-right-drawer { grid-template-columns: 88px minmax(0, 1fr); min-height: 440px; }
+  .quickdeck-center-cockpit { overflow-y: visible; }
+}
+
+.quickdeck-actor-header.quickdeck-cockpit-hero {
+  display: grid;
+}

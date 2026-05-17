@@ -69,8 +69,8 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 1180,
-      height: 720,
+      width: 1380,
+      height: 780,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
