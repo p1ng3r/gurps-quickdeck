@@ -3063,3 +3063,72 @@
 .quickdeck-command-desk-shell .quickdeck-block-title-row > .quickdeck-clear-button {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.92);
 }
+
+
+/* v0.7 drawer collapse + native header minimize integration */
+.gurps-quickdeck .window-header .quickdeck-header-minimize .label {
+  font-weight: 900;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions {
+  justify-content: flex-end;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > .quickdeck-minimize-button {
+  display: none !important;
+}
+
+.quickdeck-command-desk-shell .quickdeck-content {
+  display: grid;
+  grid-template-columns: minmax(420px, 1fr) auto;
+  gap: 0.56rem;
+  min-width: 0;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-stack {
+  display: grid;
+  grid-template-columns: auto minmax(250px, 34vw);
+  align-items: start;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-stack.is-drawer-collapsed {
+  grid-template-columns: auto;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tabs {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  width: 4.8rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tab {
+  writing-mode: horizontal-tb;
+  min-height: 2rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-stack.is-drawer-collapsed .quickdeck-panel,
+.quickdeck-command-desk-shell .quickdeck-drawer-stack.is-drawer-collapsed .quickdeck-drawer-collapse {
+  display: none;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-collapse {
+  justify-self: end;
+  align-self: start;
+  width: 1.8rem;
+  height: 1.8rem;
+  line-height: 1;
+}
+
+@media (max-width: 1280px) {
+  .quickdeck-command-desk-shell .quickdeck-content {
+    grid-template-columns: minmax(360px, 1fr) auto;
+  }
+  .quickdeck-command-desk-shell .quickdeck-drawer-tabs {
+    width: 4.2rem;
+  }
+}
