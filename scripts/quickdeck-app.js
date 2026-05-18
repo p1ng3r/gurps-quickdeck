@@ -18,7 +18,7 @@ const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
 const QUICKDECK_EXPANDED_WIDTH = 1580;
-const QUICKDECK_COLLAPSED_WIDTH = 1120;
+const QUICKDECK_COLLAPSED_WIDTH = 1016;
 
 
 export class QuickDeckApp extends Application {
