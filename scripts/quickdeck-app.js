@@ -17,6 +17,8 @@ const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
+const QUICKDECK_EXPANDED_WIDTH = 1580;
+const QUICKDECK_COLLAPSED_WIDTH = 1120;
 
 
 export class QuickDeckApp extends Application {
@@ -3033,8 +3035,27 @@ export class QuickDeckApp extends Application {
 
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
+    this.syncDrawerWindowWidth();
     this.syncMinimizedPresentation();
     return result;
+  }
+
+  syncDrawerWindowWidth() {
+    if (!this.rendered || !this.position) return;
+    const targetWidth = this.activeDrawer ? QUICKDECK_EXPANDED_WIDTH : QUICKDECK_COLLAPSED_WIDTH;
+    if (Math.abs((this.position.width ?? 0) - targetWidth) < 2) return;
+
+    const viewportWidth = window?.innerWidth ?? targetWidth;
+    const currentLeft = Number.isFinite(this.position.left) ? this.position.left : 0;
+    const maxLeft = Math.max(0, viewportWidth - targetWidth);
+    const clampedLeft = Math.min(Math.max(currentLeft, 0), maxLeft);
+
+    this.setPosition({
+      left: clampedLeft,
+      width: targetWidth,
+      height: this.position.height,
+      top: this.position.top
+    });
   }
 
   syncMinimizedPresentation() {
