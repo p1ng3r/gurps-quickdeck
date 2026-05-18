@@ -76,6 +76,36 @@ export class QuickDeckApp extends Application {
     });
   }
 
+  _getHeaderButtons() {
+    const buttons = super._getHeaderButtons();
+    const minimizeButton = {
+      label: "−",
+      title: "Minimize QuickDeck",
+      class: "quickdeck-header-minimize",
+      icon: "",
+      onclick: (event) => {
+        event?.preventDefault?.();
+        this.toggleMinimizedState();
+      }
+    };
+    const existingMinimizeIndex = buttons.findIndex((button) =>
+      button.class === "minimize" || button.class === "quickdeck-header-minimize"
+    );
+
+    if (existingMinimizeIndex >= 0) {
+      buttons.splice(existingMinimizeIndex, 1);
+    }
+
+    const closeIndex = buttons.findIndex((button) => button.class === "close");
+    if (closeIndex >= 0) {
+      buttons.splice(closeIndex, 0, minimizeButton);
+    } else {
+      buttons.push(minimizeButton);
+    }
+
+    return buttons;
+  }
+
   getCombatActors() {
     return game.actors
       .filter((actor) => {
@@ -3021,8 +3051,18 @@ export class QuickDeckApp extends Application {
 
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
+    this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
     return result;
+  }
+
+  syncHeaderMinimizeButton() {
+    this.element
+      ?.find?.(".quickdeck-header-minimize")
+      ?.attr?.({
+        title: "Minimize QuickDeck",
+        "aria-label": "Minimize QuickDeck"
+      });
   }
 
   syncMinimizedPresentation() {
