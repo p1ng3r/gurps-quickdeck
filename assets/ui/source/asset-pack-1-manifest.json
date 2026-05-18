@@ -1,0 +1,170 @@
+[
+  {
+    "path": "assets/ui/source/shell/qd-main-shell-wide.webp",
+    "description": "Main wide shell frame for the full QuickDeck window",
+    "size": [
+      1664,
+      1120
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      2,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-command-title-band.webp",
+    "description": "Command Desk header/title band",
+    "size": [
+      1180,
+      96
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      4,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-left-roster-frame.webp",
+    "description": "Left roster panel frame",
+    "size": [
+      360,
+      820
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      4,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-center-cockpit-frame.webp",
+    "description": "Center cockpit panel frame",
+    "size": [
+      720,
+      820
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      3,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-right-drawer-frame.webp",
+    "description": "Right drawer panel frame",
+    "size": [
+      520,
+      820
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      3,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-popout-scroll-frame.webp",
+    "description": "Reference popout scroll frame",
+    "size": [
+      320,
+      620
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      4,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-bottom-gurps-footer.webp",
+    "description": "Bottom footer rail with central GURPS plaque",
+    "size": [
+      1664,
+      84
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      4,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-chat-hotbar-rail.webp",
+    "description": "Bottom chat/hotbar rail",
+    "size": [
+      640,
+      106
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      5,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-panel-collapse-handle-left.webp",
+    "description": "Left panel collapse/expand handle",
+    "size": [
+      48,
+      96
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      9,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-panel-collapse-handle-right.webp",
+    "description": "Right panel collapse/expand handle",
+    "size": [
+      48,
+      96
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      9,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-panel-scrollbar-track.webp",
+    "description": "Panel scrollbar track art",
+    "size": [
+      14,
+      260
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      185
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/shell/qd-panel-scrollbar-thumb.webp",
+    "description": "Panel scrollbar thumb art",
+    "size": [
+      14,
+      74
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      230
+    ],
+    "transparent": true
+  }
+]
