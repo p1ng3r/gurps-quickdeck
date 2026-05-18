@@ -3207,3 +3207,397 @@
     grid-column: 1 / -1;
   }
 }
+/* v0.6.1 Command Desk layout polish: center the selected actor cockpit before asset work. */
+.gurps-quickdeck {
+  --quickdeck-center-console-min: 19.5rem;
+  --quickdeck-right-drawer-width: clamp(22.5rem, 39vw, 31rem);
+}
+
+.gurps-quickdeck .window-header {
+  border-bottom-color: rgba(244, 202, 118, 0.72);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 235, 177, 0.12),
+      transparent 12%,
+      transparent 88%,
+      rgba(255, 235, 177, 0.12)
+    ),
+    linear-gradient(
+      180deg,
+      rgba(150, 99, 38, 0.9),
+      rgba(67, 38, 18, 0.98) 54%,
+      rgba(16, 10, 7, 0.99)
+    );
+  box-shadow:
+    0 1px 0 rgba(255, 240, 198, 0.18) inset,
+    0 -1px 0 rgba(28, 13, 5, 0.88) inset,
+    0 8px 20px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(255, 227, 162, 0.08);
+}
+
+.gurps-quickdeck .window-title {
+  color: #fff2cf;
+  letter-spacing: 0.085em;
+  text-shadow:
+    0 1px 0 rgba(44, 20, 7, 0.94),
+    0 3px 10px rgba(0, 0, 0, 0.62);
+}
+
+.quickdeck-shell {
+  grid-template-columns: 286px minmax(38rem, 1fr);
+}
+
+.quickdeck-main {
+  min-width: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 220, 146, 0.035),
+      transparent 8%,
+      transparent 92%,
+      rgba(32, 15, 7, 0.22)
+    ),
+    radial-gradient(circle at 42% 18%, rgba(226, 177, 89, 0.1), transparent 32%);
+}
+
+.quickdeck-content {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(var(--quickdeck-center-console-min), 1fr) auto;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.quickdeck-stage {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  min-height: 0;
+  border-inline: 1px solid rgba(221, 170, 84, 0.08);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 231, 169, 0.045),
+      transparent 11%,
+      transparent 89%,
+      rgba(71, 37, 13, 0.13)
+    ),
+    radial-gradient(
+      ellipse at 42% 24%,
+      rgba(235, 189, 98, 0.12),
+      transparent 36%
+    ),
+    radial-gradient(
+      ellipse at 48% 78%,
+      rgba(104, 58, 27, 0.16),
+      transparent 48%
+    );
+}
+
+.quickdeck-stage::before {
+  inset: 1.15rem auto auto 50%;
+  width: min(24rem, 58%);
+  height: min(24rem, 70%);
+  border-color: rgba(226, 179, 90, 0.2);
+  border-radius: 999px;
+  transform: translateX(-64%);
+  box-shadow:
+    0 0 0 1px rgba(255, 235, 184, 0.055) inset,
+    0 0 44px rgba(0, 0, 0, 0.14) inset;
+  opacity: 0.24;
+}
+
+.quickdeck-stage::after {
+  inset: auto auto 1.2rem 50%;
+  width: min(18rem, 46%);
+  height: min(18rem, 52%);
+  border-color: rgba(170, 126, 62, 0.18);
+  transform: translateX(-58%) rotate(45deg);
+  opacity: 0.2;
+}
+
+.quickdeck-drawer-stack {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+}
+
+.quickdeck-drawer-tabs {
+  grid-column: 2;
+  grid-row: 1;
+  border-left-color: rgba(229, 178, 88, 0.5);
+  box-shadow:
+    9px 0 20px rgba(0, 0, 0, 0.22) inset,
+    -1px 0 0 rgba(255, 231, 173, 0.1) inset;
+}
+
+.quickdeck-panel {
+  grid-column: 1;
+  grid-row: 1;
+  justify-self: stretch;
+  width: 100%;
+  max-width: none;
+  border-left: 0;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(12, 10, 9, 0.3),
+      transparent 34%,
+      rgba(231, 181, 91, 0.06) 34.2%,
+      rgba(31, 20, 15, 0.99) 34.6%
+    ),
+    linear-gradient(180deg, rgba(21, 14, 12, 0.55), rgba(8, 8, 11, 0.84));
+  box-shadow: none;
+}
+
+.quickdeck-panel-content {
+  scrollbar-color: rgba(185, 132, 57, 0.74) rgba(34, 20, 12, 0.62);
+}
+
+.quickdeck-panel-content:not(.quickdeck-panel-combat) {
+  width: var(--quickdeck-right-drawer-width);
+  max-width: min(62vw, 34rem);
+  margin-left: auto;
+  border-left: 1px solid rgba(226, 177, 89, 0.44);
+  background:
+    linear-gradient(180deg, rgba(238, 210, 151, 0.055), rgba(0, 0, 0, 0.08)),
+    repeating-linear-gradient(
+      0deg,
+      rgba(244, 215, 154, 0.014) 0,
+      rgba(244, 215, 154, 0.014) 1px,
+      transparent 1px,
+      transparent 7px
+    );
+}
+
+.quickdeck-panel-combat {
+  display: grid;
+  grid-template-columns:
+    minmax(var(--quickdeck-center-console-min), 1fr)
+    minmax(21.5rem, var(--quickdeck-right-drawer-width));
+  grid-template-rows: minmax(0, 1fr);
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.quickdeck-panel-combat > .quickdeck-panel-scroll-root {
+  grid-column: 1;
+  grid-row: 1;
+  position: relative;
+  top: auto;
+  z-index: 1;
+  align-self: stretch;
+  display: grid;
+  align-items: center;
+  min-height: 0;
+  padding: clamp(0.65rem, 1.5vw, 1rem);
+  border-right: 1px solid rgba(229, 178, 88, 0.38);
+  border-bottom: 0;
+  background:
+    radial-gradient(
+      ellipse at 50% 20%,
+      rgba(238, 184, 89, 0.15),
+      transparent 40%
+    ),
+    linear-gradient(180deg, rgba(43, 26, 17, 0.62), rgba(10, 10, 13, 0.42));
+  box-shadow:
+    -14px 0 24px rgba(0, 0, 0, 0.22) inset,
+    1px 0 0 rgba(255, 234, 184, 0.08);
+}
+
+.quickdeck-panel-combat > .quickdeck-attacks-section {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  padding: 0.55rem;
+  overflow-y: auto;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 231, 176, 0.09),
+      transparent 6%,
+      transparent 94%,
+      rgba(111, 65, 25, 0.12)
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(244, 215, 154, 0.018) 0,
+      rgba(244, 215, 154, 0.018) 1px,
+      transparent 1px,
+      transparent 8px
+    ),
+    linear-gradient(180deg, rgba(46, 31, 20, 0.76), rgba(12, 13, 17, 0.92));
+  box-shadow: 10px 0 20px rgba(0, 0, 0, 0.22) inset;
+}
+
+.quickdeck-panel-combat .quickdeck-selected-cockpit {
+  width: min(100%, 36rem);
+  justify-self: center;
+  gap: clamp(0.5rem, 1.05vw, 0.72rem);
+  padding: clamp(0.52rem, 1.2vw, 0.82rem);
+  border-color: rgba(238, 189, 96, 0.5);
+  border-radius: 15px;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 232, 174, 0.1),
+      transparent 12%,
+      transparent 88%,
+      rgba(88, 46, 15, 0.18)
+    ),
+    radial-gradient(circle at 18% 0, rgba(238, 184, 89, 0.19), transparent 38%),
+    linear-gradient(180deg, rgba(43, 26, 17, 0.96), rgba(9, 10, 13, 0.86));
+  box-shadow:
+    0 0 0 1px rgba(255, 239, 196, 0.07) inset,
+    0 17px 32px rgba(0, 0, 0, 0.28),
+    0 0 34px rgba(229, 168, 75, 0.09);
+}
+
+.quickdeck-panel-combat .quickdeck-selected-cockpit::before {
+  content: "COMMAND CONSOLE";
+  justify-self: center;
+  margin: -0.06rem 0 0.05rem;
+  color: rgba(255, 224, 153, 0.78);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.65);
+}
+
+.quickdeck-panel-combat .quickdeck-actor-header {
+  grid-template-columns: 54px minmax(0, 1fr) auto;
+  padding: 0.42rem;
+}
+
+.quickdeck-panel-combat .quickdeck-actor-header img {
+  width: 54px;
+  height: 54px;
+}
+
+.quickdeck-panel-combat .quickdeck-main-resources {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(4.5rem, 0.45fr);
+  gap: 0.42rem;
+}
+
+.quickdeck-panel-combat .quickdeck-defense-buttons {
+  align-items: stretch;
+  gap: 0.42rem;
+  padding: 0.34rem;
+  border-color: rgba(229, 176, 87, 0.46);
+  background:
+    radial-gradient(
+      ellipse at 50% 0,
+      rgba(255, 225, 151, 0.11),
+      transparent 50%
+    ),
+    rgba(6, 5, 6, 0.35);
+}
+
+.quickdeck-panel-combat .quickdeck-defense-button {
+  min-height: 3.85rem;
+  border-radius: 999px;
+  clip-path: none;
+}
+
+.quickdeck-panel-combat .quickdeck-defense-button strong {
+  font-size: 1.34rem;
+  line-height: 1.12;
+}
+
+.quickdeck-attacks-section h4,
+.quickdeck-skills-section h4 {
+  margin-top: 0;
+  padding-bottom: 0.24rem;
+  border-bottom: 1px solid rgba(225, 179, 91, 0.28);
+}
+
+.quickdeck-footer-hint {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0.34rem 0.7rem;
+  border-top: 1px solid rgba(229, 181, 93, 0.52);
+  color: rgba(255, 235, 190, 0.9);
+  background:
+    linear-gradient(
+      90deg,
+      rgba(255, 231, 169, 0.1),
+      transparent 18%,
+      transparent 82%,
+      rgba(255, 231, 169, 0.1)
+    ),
+    linear-gradient(180deg, rgba(72, 43, 20, 0.92), rgba(18, 11, 8, 0.98));
+  box-shadow:
+    0 1px 0 rgba(255, 240, 199, 0.12) inset,
+    0 -2px 0 rgba(0, 0, 0, 0.28) inset,
+    0 -8px 18px rgba(0, 0, 0, 0.24);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.115em;
+  text-transform: uppercase;
+  text-shadow:
+    0 1px 0 rgba(42, 20, 7, 0.92),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+
+.quickdeck-footer-hint::before,
+.quickdeck-footer-hint::after {
+  content: "";
+  flex: 1 1 4rem;
+  max-width: 12rem;
+  height: 1px;
+  margin-inline: 0.75rem;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(245, 205, 124, 0.62),
+    transparent
+  );
+}
+
+@media (max-width: 1080px) {
+  .quickdeck-shell {
+    grid-template-columns: 270px minmax(0, 1fr);
+  }
+
+  .quickdeck-panel-combat {
+    grid-template-columns: minmax(18rem, 0.92fr) minmax(20.5rem, 1.08fr);
+  }
+
+  .quickdeck-panel-combat .quickdeck-actor-header {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .quickdeck-panel-combat .quickdeck-actor-header-actions {
+    grid-column: 1 / -1;
+    justify-content: stretch;
+  }
+
+  .quickdeck-panel-combat .quickdeck-actor-header-actions > * {
+    flex: 1 1 9rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .quickdeck-content {
+    overflow: auto;
+  }
+
+  .quickdeck-drawer-stack {
+    min-width: 40rem;
+  }
+
+  .quickdeck-panel-combat {
+    grid-template-columns: minmax(18rem, 0.9fr) minmax(20rem, 1.1fr);
+  }
+}
