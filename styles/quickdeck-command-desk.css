@@ -2120,3 +2120,143 @@
   background-image: linear-gradient(180deg, rgba(255, 250, 218, 0.54), rgba(186, 120, 40, 0.2));
   filter: brightness(1.02);
 }
+
+/* v0.7 buttons/tabs text fit pass
+ * CSS-only label fitting for the manual ornate button and drawer tab art.
+ * Keep the large-plate rules scoped to top-level controls so compact drawer
+ * row buttons retain their smaller existing treatment.
+ */
+.quickdeck-command-desk-shell .quickdeck-window-actions > button,
+.quickdeck-command-desk-shell .quickdeck-block-title-row > .quickdeck-clear-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column nowrap;
+  gap: 0;
+  min-width: 0;
+  padding: 0.62rem 1.08rem 0.66rem;
+  color: #fff0c4;
+  font-size: 0.76rem;
+  font-weight: 900;
+  letter-spacing: 0.035em;
+  line-height: 0.98;
+  text-align: center;
+  text-transform: none;
+  white-space: normal;
+  overflow: hidden;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > button {
+  min-width: 126px;
+  min-height: 48px;
+  padding-inline: 1rem;
+  flex: 0 0 auto;
+  font-size: 0.72rem;
+  line-height: 0.96;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > .quickdeck-minimize-button {
+  min-width: 112px;
+  font-size: 0.76rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > .quickdeck-open-pdf-sources-button {
+  min-width: 132px;
+  font-size: 0.68rem;
+  letter-spacing: 0.018em;
+}
+
+.quickdeck-command-desk-shell .quickdeck-block-title-row > .quickdeck-clear-button {
+  min-width: 112px;
+  min-height: 44px;
+  padding: 0.54rem 0.92rem 0.58rem;
+  font-size: 0.66rem;
+  letter-spacing: 0.024em;
+}
+
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button {
+  min-height: 52px;
+  padding: 0.58rem 1.02rem 0.62rem;
+  font-size: 0.74rem;
+  line-height: 0.98;
+  letter-spacing: 0.032em;
+}
+
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button {
+  min-height: 52px;
+  padding: 0.54rem 0.94rem 0.58rem;
+  font-size: clamp(0.62rem, 0.5rem + 0.22vw, 0.72rem);
+  line-height: 0.96;
+  letter-spacing: 0.018em;
+}
+
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button[data-action="repeat-last-attack"] {
+  font-size: clamp(0.58rem, 0.48rem + 0.2vw, 0.66rem);
+  letter-spacing: 0.006em;
+  line-height: 0.94;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > button:disabled,
+.quickdeck-command-desk-shell .quickdeck-block-title-row > .quickdeck-clear-button:disabled,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button:disabled,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button:disabled,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button:disabled {
+  color: rgba(255, 236, 190, 0.9);
+  text-shadow:
+    0 1px 0 rgba(38, 20, 5, 0.9),
+    0 1px 3px rgba(0, 0, 0, 0.78);
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tabs {
+  gap: 0.24rem;
+  min-height: 52px;
+  padding: 0 0.4rem;
+  align-items: end;
+  grid-auto-columns: minmax(0, 1fr);
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tab,
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab,
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab,
+.gurps-quickdeck .quickdeck-command-desk-shell .quickdeck-drawer-tab,
+.quickdeck-command-desk-shell .quickdeck-drawer-tab.is-active,
+.quickdeck-command-desk-shell .quickdeck-drawer-tab[aria-selected="true"],
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab.is-active,
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab[aria-selected="true"],
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab.is-active,
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab[aria-selected="true"] {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 50px;
+  max-height: 50px;
+  padding: 0.74rem 0.42rem 0.5rem;
+  font-size: clamp(0.58rem, 0.48rem + 0.18vw, 0.66rem);
+  font-weight: 900;
+  letter-spacing: 0.018em;
+  line-height: 0.94;
+  text-align: center;
+  white-space: normal;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  overflow: hidden;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tab[data-drawer="combat"],
+.quickdeck-command-desk-shell .quickdeck-drawer-tab[data-drawer="quick-skills"] {
+  font-size: clamp(0.55rem, 0.46rem + 0.16vw, 0.62rem);
+  letter-spacing: 0.004em;
+}
