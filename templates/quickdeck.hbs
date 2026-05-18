@@ -1,4 +1,6 @@
 <section class="quickdeck-shell">
+  <span class="quickdeck-collapse-handle quickdeck-collapse-handle-left" aria-hidden="true"></span>
+  <span class="quickdeck-collapse-handle quickdeck-collapse-handle-right" aria-hidden="true"></span>
   <aside class="quickdeck-sidebar">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
@@ -187,7 +189,7 @@
           </div>
 
           <dl class="quickdeck-stats quickdeck-main-resources" aria-label="Selected actor resources">
-            <div class="quickdeck-resource-card">
+            <div class="quickdeck-resource-card quickdeck-resource-card-hp">
               <dt>HP</dt>
               <dd>
                 <div class="quickdeck-resource-control" data-resource-control="HP">
@@ -203,7 +205,7 @@
                 </div>
               </dd>
             </div>
-            <div class="quickdeck-resource-card">
+            <div class="quickdeck-resource-card quickdeck-resource-card-fp">
               <dt>FP</dt>
               <dd>
                 <div class="quickdeck-resource-control" data-resource-control="FP">
