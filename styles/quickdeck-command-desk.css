@@ -32,6 +32,11 @@
 }
 
 /* Main window shell */
+/*
+ * Repeated leather backgrounds intentionally use qd-leather-tile-dark.webp.
+ * The black qd-leather tile variant is avoided because it contains baked
+ * source UI text, so do not use it for tiled or repeated panel backgrounds.
+ */
 .gurps-quickdeck-app .window-content,
 .gurps-quickdeck .window-content {
   padding: 0;
@@ -73,7 +78,7 @@
     url("../assets/ui/command-desk/frames/qd-shell-left-rail.webp") top left / 18px 100% no-repeat,
     url("../assets/ui/command-desk/frames/qd-shell-right-rail.webp") top right / 18px 100% no-repeat,
     radial-gradient(circle at 58% 18%, rgba(212, 146, 52, 0.12), transparent 30%),
-    url("../assets/ui/command-desk/panels/qd-leather-tile-black.webp") repeat,
+    url("../assets/ui/command-desk/panels/qd-leather-tile-dark.webp") repeat,
     #070504;
   border: 1px solid rgba(199, 154, 56, 0.72);
   box-shadow:
@@ -728,7 +733,7 @@
   padding: 0.82rem 0.72rem;
   background:
     linear-gradient(90deg, rgba(0, 0, 0, 0.34), transparent 14%, transparent 84%, rgba(0, 0, 0, 0.36)),
-    url("../assets/ui/command-desk/panels/qd-leather-tile-black.webp") repeat;
+    url("../assets/ui/command-desk/panels/qd-leather-tile-dark.webp") repeat;
 }
 
 .quickdeck-main {
@@ -738,7 +743,7 @@
   padding: 0.72rem 0.84rem 0;
   background:
     radial-gradient(ellipse at 42% 28%, rgba(181, 118, 37, 0.16), transparent 42%),
-    url("../assets/ui/command-desk/panels/qd-leather-tile-black.webp") repeat;
+    url("../assets/ui/command-desk/panels/qd-leather-tile-dark.webp") repeat;
 }
 
 .quickdeck-window-actions {

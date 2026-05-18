@@ -37,6 +37,11 @@ assets/ui/command-desk/defense/qd-defense-block-clean.webp
 assets/ui/command-desk/footer/qd-gurps-nameplate-clean.webp
 ```
 
+
+## Deprecated / do not use
+
+- `assets/ui/command-desk/panels/qd-leather-tile-black.webp` is deprecated for repeated backgrounds because it contains baked source UI text, including “Open Sheet”. Use `assets/ui/command-desk/panels/qd-leather-tile-dark.webp` instead.
+
 ## Later polish candidates
 
 Use the direct source crops later for detailed frame matching:
