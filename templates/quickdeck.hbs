@@ -310,22 +310,21 @@
                 <div class="quickdeck-panel-content quickdeck-panel-combat">
                   <section class="quickdeck-attacks-section">
                     <h4>Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> / <span data-count="attacks-total">{{attackCount}}</span>)</h4>
-                    <input
-                      type="search"
-                      class="quickdeck-drawer-search"
-                      value="{{combatSearch}}"
-                      data-action="combat-search"
-                      placeholder="Search attacks..."
-                      autocomplete="off"
-                    />
-
-                    <section class="quickdeck-favorite-attacks" aria-label="Favorite Attacks">
-                      <div class="quickdeck-favorite-attacks-heading">
-                        <h5>Favorite Attacks</h5>
-                        {{#if favoriteAttackCount}}
-                          <span>{{favoriteAttackCount}} pinned</span>
-                        {{/if}}
-                      </div>
+                    <div class="quickdeck-drawer-sticky-tools">
+                      <input
+                        type="search"
+                        class="quickdeck-drawer-search"
+                        value="{{combatSearch}}"
+                        data-action="combat-search"
+                        placeholder="Search attacks..."
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="quickdeck-drawer-scroll-content">
+                    <details class="quickdeck-favorite-attacks quickdeck-collapsible-favorites" aria-label="Favorite Attacks" open>
+                      <summary class="quickdeck-favorite-attacks-heading">
+                        <h5>Favorite Attacks ({{favoriteAttackCount}})</h5>
+                      </summary>
                       {{#if favoriteAttackCount}}
                         <div class="quickdeck-favorite-attacks-list">
                           {{#each favoriteAttacks as |attack|}}
@@ -356,9 +355,9 @@
                           {{/each}}
                         </div>
                       {{else}}
-                        <p class="quickdeck-favorite-attacks-hint">Pin attacks with ★ for quick access.</p>
+                        <p class="quickdeck-favorite-attacks-hint">No favorite attacks.</p>
                       {{/if}}
-                    </section>
+                    </details>
 
                     {{#if indexedAttacks.length}}
                       <h5 class="quickdeck-subsection-title">Melee</h5>
@@ -587,6 +586,7 @@
                     {{else}}
                       <p class="quickdeck-empty">No attacks match this search.</p>
                     {{/if}}
+                    </div>
                   </section>
                 </div>
               {{/if}}
@@ -599,22 +599,21 @@
                       Skills (<span data-count="skills-visible">{{visibleSkillsCount}}</span> /
                       <span data-count="skills-total">{{skillsCount}}</span>)
                     </h4>
-                    <input
-                      type="search"
-                      class="quickdeck-drawer-search"
-                      value="{{skillsSearch}}"
-                      data-action="skills-search"
-                      placeholder="Search skills..."
-                      autocomplete="off"
-                    />
-
-                    <section class="quickdeck-favorite-attacks quickdeck-skill-favorites" aria-label="Skill Favorites">
-                      <div class="quickdeck-favorite-attacks-heading">
-                        <h5>Skill Favorites</h5>
-                        {{#if quickSkillsCount}}
-                          <span>{{quickSkillsCount}} pinned</span>
-                        {{/if}}
-                      </div>
+                    <div class="quickdeck-drawer-sticky-tools">
+                      <input
+                        type="search"
+                        class="quickdeck-drawer-search"
+                        value="{{skillsSearch}}"
+                        data-action="skills-search"
+                        placeholder="Search skills..."
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="quickdeck-drawer-scroll-content">
+                    <details class="quickdeck-favorite-attacks quickdeck-skill-favorites quickdeck-collapsible-favorites" aria-label="Skill Favorites" open>
+                      <summary class="quickdeck-favorite-attacks-heading">
+                        <h5>Skill Favorites ({{quickSkillsCount}})</h5>
+                      </summary>
                       {{#if indexedQuickSkills.length}}
                         <div class="quickdeck-skills-list quickdeck-skill-favorites-list">
                           {{#each indexedQuickSkills as |skill|}}
@@ -637,15 +636,15 @@
                               </div>
                               <div class="quickdeck-quick-skill-actions">
                                 <button type="button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" class="quickdeck-roll-button">Roll</button>
-                                <button type="button" data-action="unpin-quick-skill" data-actor-id="{{../activeActor.id}}" data-quick-skill-key="{{skill.quickSkillKey}}" class="quickdeck-unpin-button" title="Unpin skill" aria-label="Unpin skill"><i class="fas fa-times" aria-hidden="true"></i></button>
+                                <button type="button" data-action="unpin-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" class="quickdeck-unpin-button" title="Unpin skill" aria-label="Unpin skill"><i class="fas fa-times" aria-hidden="true"></i></button>
                               </div>
                             </article>
                           {{/each}}
                         </div>
                       {{else}}
-                        <p class="quickdeck-favorite-attacks-hint">Pin skills with ★ for quick access.</p>
+                        <p class="quickdeck-favorite-attacks-hint">No skill favorites.</p>
                       {{/if}}
-                    </section>
+                    </details>
 
                     {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
@@ -691,6 +690,7 @@
                     {{else}}
                       <p class="quickdeck-empty">No skills match this search.</p>
                     {{/if}}
+                    </div>
                   </section>
                 </div>
               {{/if}}
@@ -703,22 +703,21 @@
                       Spells (<span data-count="spells-visible">{{visibleSpellsCount}}</span> /
                       <span data-count="spells-total">{{spellsCount}}</span>)
                     </h4>
-                    <input
-                      type="search"
-                      class="quickdeck-drawer-search"
-                      value="{{spellsSearch}}"
-                      data-action="spells-search"
-                      placeholder="Search spells..."
-                      autocomplete="off"
-                    />
-
-                    <section class="quickdeck-favorite-attacks quickdeck-favorite-spells" aria-label="Favorite Spells">
-                      <div class="quickdeck-favorite-attacks-heading">
-                        <h5>Favorite Spells</h5>
-                        {{#if favoriteSpellCount}}
-                          <span>{{favoriteSpellCount}} pinned</span>
-                        {{/if}}
-                      </div>
+                    <div class="quickdeck-drawer-sticky-tools">
+                      <input
+                        type="search"
+                        class="quickdeck-drawer-search"
+                        value="{{spellsSearch}}"
+                        data-action="spells-search"
+                        placeholder="Search spells..."
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="quickdeck-drawer-scroll-content">
+                    <details class="quickdeck-favorite-attacks quickdeck-favorite-spells quickdeck-collapsible-favorites" aria-label="Favorite Spells" open>
+                      <summary class="quickdeck-favorite-attacks-heading">
+                        <h5>Favorite Spells ({{favoriteSpellCount}})</h5>
+                      </summary>
                       {{#if favoriteSpellCount}}
                         <div class="quickdeck-favorite-attacks-list quickdeck-favorite-spells-list">
                           {{#each favoriteSpells as |spell|}}
@@ -749,9 +748,9 @@
                           {{/each}}
                         </div>
                       {{else}}
-                        <p class="quickdeck-favorite-attacks-hint">Pin spells with ★ for quick access.</p>
+                        <p class="quickdeck-favorite-attacks-hint">No favorite spells.</p>
                       {{/if}}
-                    </section>
+                    </details>
 
                     {{#if indexedSpells.length}}
                       <div class="quickdeck-skills-list">
@@ -807,6 +806,7 @@
                     {{else}}
                       <p class="quickdeck-empty">No spells found for this actor yet.</p>
                     {{/if}}
+                    </div>
                   </section>
                 </div>
               {{/if}}
