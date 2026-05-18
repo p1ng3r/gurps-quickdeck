@@ -1,0 +1,118 @@
+/*
+ * GURPS QuickDeck v0.7.0 Command Desk art skin.
+ *
+ * Purpose:
+ * - art and layout skin only
+ * - no GURPS logic changes
+ * - no actor.sheet hacks
+ * - no data-action changes
+ *
+ * This file is intentionally conservative. Wire selectors to the actual
+ * QuickDeck DOM in small passes.
+ */
+
+.gurps-quickdeck-app,
+.gurps-quickdeck {
+  --qd-art-root: "../assets/ui/command-desk";
+  --qd-brass: #c79a38;
+  --qd-brass-dim: #7c5a1f;
+  --qd-ink: #1a1208;
+  --qd-parchment-text: #20140a;
+}
+
+/* Main window shell */
+.gurps-quickdeck-app .window-content,
+.gurps-quickdeck .window-content {
+  background:
+    url("../assets/ui/command-desk/panels/qd-leather-tile-dark.webp") repeat,
+    #090805;
+  color: #f4e6be;
+}
+
+/* Generic leather panels */
+.gurps-quickdeck .qd-panel,
+.gurps-quickdeck .qd-card,
+.gurps-quickdeck .qd-section {
+  background-image: url("../assets/ui/command-desk/panels/qd-clean-leather-panel.webp");
+  background-size: 100% 100%;
+  border-color: rgba(199, 154, 56, 0.55);
+}
+
+/* Right drawer parchment */
+.gurps-quickdeck .qd-drawer,
+.gurps-quickdeck .qd-tab-content,
+.gurps-quickdeck .qd-spells-list,
+.gurps-quickdeck .qd-skills-list {
+  background-image: url("../assets/ui/command-desk/parchment/qd-clean-parchment-panel.webp");
+  background-size: 100% 100%;
+  color: var(--qd-parchment-text);
+}
+
+/* Parchment rows */
+.gurps-quickdeck .qd-row,
+.gurps-quickdeck .qd-spell-row,
+.gurps-quickdeck .qd-skill-row {
+  background-image: url("../assets/ui/command-desk/parchment/qd-clean-parchment-row.webp");
+  background-size: 100% 100%;
+}
+
+/* Buttons */
+.gurps-quickdeck button,
+.gurps-quickdeck .qd-button {
+  background-image: url("../assets/ui/command-desk/buttons/qd-button-brass-idle.webp");
+  background-size: 100% 100%;
+  border: 0;
+  color: #f7e7bf;
+  text-shadow: 0 1px 2px #000;
+}
+
+.gurps-quickdeck button:hover,
+.gurps-quickdeck .qd-button:hover {
+  background-image: url("../assets/ui/command-desk/buttons/qd-button-brass-hover.webp");
+}
+
+.gurps-quickdeck button:active,
+.gurps-quickdeck .qd-button:active {
+  background-image: url("../assets/ui/command-desk/buttons/qd-button-brass-active.webp");
+}
+
+/* Tabs */
+.gurps-quickdeck .qd-tab {
+  background-image: url("../assets/ui/command-desk/tabs/qd-tab-idle.webp");
+  background-size: 100% 100%;
+}
+
+.gurps-quickdeck .qd-tab.active,
+.gurps-quickdeck .qd-tab[aria-selected="true"] {
+  background-image: url("../assets/ui/command-desk/tabs/qd-tab-active.webp");
+}
+
+/* Defense medallions: bind these selectors to actual DOM classes during the CSS pass. */
+.gurps-quickdeck .qd-defense-dodge {
+  background-image: url("../assets/ui/command-desk/defense/qd-defense-dodge-clean.webp");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.gurps-quickdeck .qd-defense-parry {
+  background-image: url("../assets/ui/command-desk/defense/qd-defense-parry-clean.webp");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.gurps-quickdeck .qd-defense-block {
+  background-image: url("../assets/ui/command-desk/defense/qd-defense-block-clean.webp");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+/* Decorative pseudo-elements must never block clicks. */
+.gurps-quickdeck::before,
+.gurps-quickdeck::after,
+.gurps-quickdeck *::before,
+.gurps-quickdeck *::after {
+  pointer-events: none;
+}
