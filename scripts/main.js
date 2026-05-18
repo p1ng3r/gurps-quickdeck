@@ -18,7 +18,7 @@ function openQuickDeck() {
     quickDeckApp = new QuickDeckApp();
   }
 
-  quickDeckApp.render(true);
+  quickDeckApp.restoreAndBringToFront?.();
   return quickDeckApp;
 }
 
@@ -90,9 +90,11 @@ Hooks.once("init", () => {
       combat: "Combat",
       skills: "Skills",
       "quick-skills": "Quick Skills",
-      spells: "Spells"
+      spells: "Spells",
+      reference: "Reference",
+      settings: "Settings"
     },
-    default: "none"
+    default: "combat"
   });
 
   game.settings.register(MODULE_ID, SETTING_KEYS.MINIMIZED, {

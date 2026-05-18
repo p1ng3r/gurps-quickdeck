@@ -13,7 +13,7 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition"
 };
-const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
+const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells", "reference", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
@@ -24,7 +24,7 @@ export class QuickDeckApp extends Application {
     super(options);
     this.rosterActorIds = [];
     this.activeActorId = null;
-    this.activeDrawer = null;
+    this.activeDrawer = "combat";
     this.availableSearch = "";
     this.combatSearch = "";
     this.skillsSearch = "";
@@ -69,8 +69,8 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 840,
-      height: 560,
+      width: 1380,
+      height: 780,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
@@ -3024,6 +3024,78 @@ export class QuickDeckApp extends Application {
     return result;
   }
 
+  restoreAndBringToFront() {
+    if (this.isMinimized) {
+      this.isMinimized = false;
+      this.persistMinimizedState();
+    }
+
+    if (this.rendered) {
+      this.syncMinimizedPresentation();
+      this.rescueWindowPositionIfNeeded();
+      this.bringQuickDeckToTop();
+      return this;
+    }
+
+    this.render(true);
+    this.scheduleBringToFrontAfterRender();
+    return this;
+  }
+
+  scheduleBringToFrontAfterRender() {
+    const bringForward = () => {
+      if (!this.rendered) return;
+      this.syncMinimizedPresentation();
+      this.rescueWindowPositionIfNeeded();
+      this.bringQuickDeckToTop();
+    };
+
+    if (typeof requestAnimationFrame === "function") {
+      requestAnimationFrame(bringForward);
+    }
+    setTimeout(bringForward, 0);
+  }
+
+  bringQuickDeckToTop() {
+    this.bringToTop?.();
+  }
+
+  rescueWindowPositionIfNeeded() {
+    if (!this.rendered || this.isMinimized) return;
+
+    const element = this.element?.[0] ?? this.element;
+    if (!element?.getBoundingClientRect || typeof window === "undefined") return;
+
+    const rect = element.getBoundingClientRect();
+    const viewportWidth = Math.max(0, Number(window.innerWidth) || 0);
+    const viewportHeight = Math.max(0, Number(window.innerHeight) || 0);
+    if (!viewportWidth || !viewportHeight) return;
+
+    const width = Number(rect.width);
+    const height = Number(rect.height);
+    const left = Number(rect.left);
+    const top = Number(rect.top);
+    const hasBadDimensions = !Number.isFinite(width) || !Number.isFinite(height) || width < 160 || height < 120;
+    const isOffscreen = !Number.isFinite(left) || !Number.isFinite(top) || rect.right < 32 || rect.bottom < 32 || left > viewportWidth - 32 || top > viewportHeight - 32;
+    const isHidden = element.offsetParent === null && getComputedStyle(element).position !== "fixed";
+    if (!hasBadDimensions && !isOffscreen && !isHidden) return;
+
+    const fallbackWidth = Math.min(Math.max(Number(this.options?.width) || 1180, 640), Math.max(320, viewportWidth - 48));
+    const fallbackHeight = Math.min(Math.max(Number(this.options?.height) || 720, 420), Math.max(240, viewportHeight - 48));
+    const safeWidth = hasBadDimensions ? fallbackWidth : Math.min(width, Math.max(160, viewportWidth - 48));
+    const safeHeight = hasBadDimensions ? fallbackHeight : Math.min(height, Math.max(120, viewportHeight - 48));
+    const maxLeft = Math.max(24, viewportWidth - safeWidth - 24);
+    const maxTop = Math.max(24, viewportHeight - safeHeight - 24);
+    const nextLeft = Math.min(Math.max(Number.isFinite(left) ? left : 24, 24), maxLeft);
+    const nextTop = Math.min(Math.max(Number.isFinite(top) ? top : 24, 24), maxTop);
+    const position = { left: nextLeft, top: nextTop };
+    if (hasBadDimensions) {
+      position.width = safeWidth;
+      position.height = safeHeight;
+    }
+    this.setPosition?.(position);
+  }
+
   syncMinimizedPresentation() {
     if (!this.rendered) return;
     if (this.isMinimized) {
@@ -3225,10 +3297,10 @@ export class QuickDeckApp extends Application {
       }));
 
     const activeActor = this.getActiveActor();
-    const shouldHydrateDerivedData = Boolean(activeActor && this.activeDrawer);
-    const includeAttacks = this.activeDrawer === "combat";
-    const includeSkills = this.activeDrawer === "skills" || this.activeDrawer === "quick-skills";
-    const includeSpells = this.activeDrawer === "spells";
+    const shouldHydrateDerivedData = Boolean(activeActor);
+    const includeAttacks = shouldHydrateDerivedData;
+    const includeSkills = shouldHydrateDerivedData;
+    const includeSpells = shouldHydrateDerivedData;
     const derivedData = shouldHydrateDerivedData
       ? this.getDerivedActorData(activeActor, { includeAttacks, includeSkills, includeSpells })
       : {
@@ -3341,6 +3413,25 @@ export class QuickDeckApp extends Application {
     const maxHp = derivedData.maxHp;
     const maxFp = derivedData.maxFp;
 
+    const activeActorPoints = activeActor
+      ? this.getFirstDefinedValue(activeActor, [
+          "system.totalpoints.value",
+          "system.totalpoints",
+          "system.points.total",
+          "system.points",
+          "system.traits.points.total",
+          "system.calc.points",
+          "system.attributes.points",
+          "data.data.totalpoints.value",
+          "data.data.totalpoints",
+          "data.data.points.total",
+          "data.data.points"
+        ])
+      : null;
+    const activeActorPointsDisplay = ["number", "string"].includes(typeof activeActorPoints)
+      ? String(activeActorPoints)
+      : null;
+
     const gurpsData = {
       hp: currentHp ?? null,
       fp: currentFp ?? null,
@@ -3405,7 +3496,8 @@ export class QuickDeckApp extends Application {
             id: activeActor.id,
             name: activeActor.name,
             img: activeActor.img || "icons/svg/mystery-man.svg",
-            actorType: activeActor.type ? String(activeActor.type) : null
+            actorType: activeActor.type ? String(activeActor.type) : null,
+            pointsDisplay: activeActorPointsDisplay
           }
         : null,
       activeActorName: activeActor?.name ?? null,
@@ -3424,6 +3516,8 @@ export class QuickDeckApp extends Application {
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
       isSpellsDrawerOpen: this.activeDrawer === "spells",
+      isReferenceDrawerOpen: this.activeDrawer === "reference",
+      isSettingsDrawerOpen: this.activeDrawer === "settings",
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
@@ -3628,7 +3722,7 @@ export class QuickDeckApp extends Application {
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer) return;
 
-      this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
+      this.activeDrawer = drawer;
       this.render();
     });
 

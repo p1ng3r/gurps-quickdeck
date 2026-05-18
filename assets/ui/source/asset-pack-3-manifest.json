@@ -1,0 +1,240 @@
+[
+  {
+    "path": "assets/ui/source/drawer/qd-tab-active.webp",
+    "description": "Active right drawer tab",
+    "size": [
+      108,
+      48
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-tab-inactive.webp",
+    "description": "Inactive right drawer tab",
+    "size": [
+      108,
+      48
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-tab-strip.webp",
+    "description": "Right drawer tab strip backing",
+    "size": [
+      560,
+      58
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      4,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-clean-parchment-panel.webp",
+    "description": "Clean parchment panel without lined-paper effect",
+    "size": [
+      560,
+      640
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      2,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-clean-skill-row.webp",
+    "description": "Clean skill row without horizontal ruled-paper lines",
+    "size": [
+      520,
+      62
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      1,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-clean-spell-row.webp",
+    "description": "Clean spell row without internal divider line",
+    "size": [
+      520,
+      68
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      1,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-clean-combat-card.webp",
+    "description": "Combat weapon card with compact square control wells",
+    "size": [
+      520,
+      146
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      3,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-combat-target-square.webp",
+    "description": "Square Target button",
+    "size": [
+      64,
+      64
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      6,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-combat-mods-square.webp",
+    "description": "Square Mods / ModifierBucket button",
+    "size": [
+      64,
+      64
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      6,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-combat-attack-square.webp",
+    "description": "Square Attack button with small 3d6 icon",
+    "size": [
+      64,
+      64
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      6,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-combat-damage-square.webp",
+    "description": "Square damage button",
+    "size": [
+      64,
+      64
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      6,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-combat-favorite-square.webp",
+    "description": "Square favorite/star button",
+    "size": [
+      64,
+      64
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      6,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-combat-dice-3d6-icon.webp",
+    "description": "Standalone 3d6 dice icon button art",
+    "size": [
+      64,
+      64
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      6,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-skill-roll-button.webp",
+    "description": "Skill roll button",
+    "size": [
+      76,
+      38
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      6,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-spell-roll-button.webp",
+    "description": "Spell roll button",
+    "size": [
+      76,
+      38
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      6,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-search-box.webp",
+    "description": "Drawer search box",
+    "size": [
+      500,
+      42
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      2,
+      220
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/drawer/qd-filter-button.webp",
+    "description": "Drawer filter button",
+    "size": [
+      42,
+      42
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      6,
+      255
+    ],
+    "transparent": true
+  }
+]

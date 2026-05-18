@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.6.1 reference UI foundation
+
+### Changed
+- Started from the clean v0.6.0 release baseline and abandoned the failed v0.6.1 visual experiment direction.
+- Wired the existing transparent WEBP q75 layout assets from `assets/ui/layout/` into the reference UI foundation for the main shell, top command bar, roster, cockpit, right drawer, tabs, search inputs, combat favorites, attack/skill rows, 3d6 roll buttons, Target controls, ModifierBucket controls, resource/defense cards, and bronze dividers.
+- Reduced CSS-only placeholder framing so the approved asset-backed dark leather / bronze / parchment command-desk art is the primary visible UI layer, with gradients retained as fallback/readability support.
+- Reworked the QuickDeck shell toward the approved QuickDeck-faithful mockup with a left roster, center selected-actor command cockpit, right-side drawer tabs, and dark leather / bronze / parchment asset-backed styling hooks.
+- Moved Combat Favorites under the selected actor cockpit and kept the Combat drawer focused on the full attack list with existing target, ModifierBucket, favorite, and native damage controls exposed.
+- Updated attack, skill, quick-skill, and spell roll labels/visual affordances to read as 3d6 controls rather than play/launch controls.
+- Renamed the top reference action to **Reference Sources / Local Overrides** to keep the current metadata workflow visible while leaving future user-owned Local PDF Sources for a later safe pass.
+
+### Safety
+- Did not change native GURPS attack, defense, damage, spell, skill, target, ModifierBucket, window focus, restore pill, token placement, or reference popup behavior.
+- Decorative CSS layers remain non-interactive and do not add JavaScript listeners.
+- No binary files were added, edited, replaced, regenerated, or committed in this asset wiring pass.
+
 ## [Unreleased] - v0.6.0 release candidate
 
 ### Added
