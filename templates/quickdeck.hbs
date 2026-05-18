@@ -9,8 +9,9 @@
           data-action="clear-roster"
           class="quickdeck-clear-button"
           title="Clear QuickDeck roster"
+          aria-label="Clear QuickDeck roster"
         >
-          Clear Roster
+          Clear
         </button>
       </div>
       <p class="quickdeck-hint">Click selects · Double-click opens sheet · Drag actors here.</p>
@@ -122,7 +123,7 @@
 
   <main class="quickdeck-main">
     <div class="quickdeck-window-actions">
-      <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button">Local Overrides</button>
+      <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Local Overrides" aria-label="Local Overrides">Overrides</button>
       <button type="button" data-action="toggle-minimize" class="quickdeck-minimize-button">Minimize</button>
     </div>
     <section class="quickdeck-content">
@@ -148,32 +149,37 @@
                   data-action="drop-token"
                   data-actor-id="{{activeActor.id}}"
                   class="quickdeck-drop-token-button qd-primary-drop-token {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                  title="Drop Token"
+                  aria-label="Drop Token"
                 >
-                  {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
+                  {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop{{/if}}
                 </button>
                 <button
                   type="button"
                   data-action="open-sheet"
                   data-actor-id="{{activeActor.id}}"
                   class="quickdeck-open-sheet-button qd-primary-open-sheet"
+                  title="Open Sheet"
+                  aria-label="Open Sheet"
                 >
-                  Open Sheet
+                  Sheet
                 </button>
               </div>
             </header>
 
             <div class="quickdeck-combat-flow-controls" aria-label="Combat flow helpers">
-              <button type="button" data-action="open-chat" class="quickdeck-flow-button">Chat Front</button>
-              <button type="button" data-action="clear-targets" class="quickdeck-flow-button">Clear Targets</button>
-              <button type="button" data-action="next-actor" class="quickdeck-flow-button">Next Actor</button>
+              <button type="button" data-action="open-chat" class="quickdeck-flow-button" title="Chat Front" aria-label="Chat Front">Chat</button>
+              <button type="button" data-action="clear-targets" class="quickdeck-flow-button" title="Clear Targets" aria-label="Clear Targets">Targets</button>
+              <button type="button" data-action="next-actor" class="quickdeck-flow-button" title="Next Actor" aria-label="Next Actor">Next</button>
               <button
                 type="button"
                 data-action="repeat-last-attack"
                 class="quickdeck-flow-button"
-                title="Repeat {{lastAttackName}}"
+                title="Repeat Last Attack{{#if lastAttackName}}: {{lastAttackName}}{{/if}}"
+                aria-label="Repeat Last Attack"
                 {{#unless canRepeatLastAttack}}disabled{{/unless}}
               >
-                Repeat Last Attack
+                Repeat
               </button>
             </div>
 
@@ -331,7 +337,7 @@
             data-drawer="combat"
             class="quickdeck-drawer-tab {{#if isCombatDrawerOpen}}is-active{{/if}}"
           >
-            Combat Burst
+            Combat
           </button>
           <button
             type="button"
@@ -345,7 +351,9 @@
             type="button"
             data-action="toggle-drawer"
             data-drawer="quick-skills"
-            class="quickdeck-drawer-tab {{#if isQuickSkillsDrawerOpen}}is-active{{/if}}"
+            class="quickdeck-drawer-tab qd-hidden-drawer-tab {{#if isQuickSkillsDrawerOpen}}is-active{{/if}}"
+            aria-hidden="true"
+            tabindex="-1"
           >
             Quick Skills
           </button>
