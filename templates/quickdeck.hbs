@@ -656,36 +656,26 @@
 
               {{#if isSkillsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <header class="quickdeck-actor-header">
-                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
-                    <div>
-                      <h3>{{activeActor.name}}</h3>
-                      <p>
-                        Skills snapshot
-                        {{#if activeActor.actorType}}
-                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
-                        {{/if}}
-                      </p>
-                    </div>
-                    <div class="quickdeck-actor-header-actions">
-                      <button
-                        type="button"
-                        data-action="drop-token"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                      >
-                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                      </button>
-                      <button
-                        type="button"
-                        data-action="open-sheet"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-open-sheet-button"
-                      >
-                        Open Sheet
-                      </button>
-                    </div>
-                  </header>
+                  <div class="quickdeck-drawer-actor-utilities" hidden aria-hidden="true">
+                    <button
+                      type="button"
+                      data-action="drop-token"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      tabindex="-1"
+                    >
+                      {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
+                    </button>
+                    <button
+                      type="button"
+                      data-action="open-sheet"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-open-sheet-button"
+                      tabindex="-1"
+                    >
+                      Open Sheet
+                    </button>
+                  </div>
 
                   <section class="quickdeck-skills-section">
                     <h4>
@@ -751,36 +741,26 @@
 
               {{#if isQuickSkillsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <header class="quickdeck-actor-header">
-                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
-                    <div>
-                      <h3>{{activeActor.name}}</h3>
-                      <p>
-                        Quick Skills
-                        {{#if activeActor.actorType}}
-                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
-                        {{/if}}
-                      </p>
-                    </div>
-                    <div class="quickdeck-actor-header-actions">
-                      <button
-                        type="button"
-                        data-action="drop-token"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                      >
-                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                      </button>
-                      <button
-                        type="button"
-                        data-action="open-sheet"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-open-sheet-button"
-                      >
-                        Open Sheet
-                      </button>
-                    </div>
-                  </header>
+                  <div class="quickdeck-drawer-actor-utilities" hidden aria-hidden="true">
+                    <button
+                      type="button"
+                      data-action="drop-token"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      tabindex="-1"
+                    >
+                      {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
+                    </button>
+                    <button
+                      type="button"
+                      data-action="open-sheet"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-open-sheet-button"
+                      tabindex="-1"
+                    >
+                      Open Sheet
+                    </button>
+                  </div>
 
                   <section class="quickdeck-skills-section">
                     <h4>
@@ -862,36 +842,26 @@
 
               {{#if isSpellsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <header class="quickdeck-actor-header">
-                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
-                    <div>
-                      <h3>{{activeActor.name}}</h3>
-                      <p>
-                        Spells snapshot
-                        {{#if activeActor.actorType}}
-                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
-                        {{/if}}
-                      </p>
-                    </div>
-                    <div class="quickdeck-actor-header-actions">
-                      <button
-                        type="button"
-                        data-action="drop-token"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                      >
-                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                      </button>
-                      <button
-                        type="button"
-                        data-action="open-sheet"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-open-sheet-button"
-                      >
-                        Open Sheet
-                      </button>
-                    </div>
-                  </header>
+                  <div class="quickdeck-drawer-actor-utilities" hidden aria-hidden="true">
+                    <button
+                      type="button"
+                      data-action="drop-token"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      tabindex="-1"
+                    >
+                      {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
+                    </button>
+                    <button
+                      type="button"
+                      data-action="open-sheet"
+                      data-actor-id="{{activeActor.id}}"
+                      class="quickdeck-open-sheet-button"
+                      tabindex="-1"
+                    >
+                      Open Sheet
+                    </button>
+                  </div>
 
                   <section class="quickdeck-skills-section">
                     <h4>

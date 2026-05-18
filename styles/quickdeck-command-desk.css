@@ -243,22 +243,14 @@
 }
 
 /* Brass buttons and tabs. */
-.gurps-quickdeck button,
-.gurps-quickdeck .qd-button,
-.quickdeck-open-pdf-sources-button,
-.quickdeck-clear-button,
-.quickdeck-open-sheet-button,
-.quickdeck-drop-token-button,
-.quickdeck-minimize-button,
-.quickdeck-add-button,
-.quickdeck-remove-button,
-.quickdeck-roll-button,
-.quickdeck-flow-button,
-.quickdeck-link-button,
-.quickdeck-unpin-button,
-.quickdeck-favorite-toggle,
-.quickdeck-spell-favorite-toggle,
-.quickdeck-resource-control button {
+.quickdeck-window-actions > button,
+.quickdeck-block-title-row > button,
+.quickdeck-available-list .quickdeck-add-button,
+.quickdeck-available-list .quickdeck-remove-button,
+.quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button,
+.quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button,
+.quickdeck-selected-cockpit .quickdeck-flow-button,
+.quickdeck-selected-cockpit .quickdeck-resource-control button {
   border: 1px solid rgba(239, 203, 122, 0.54);
   color: #f9e8bd;
   background:
@@ -268,21 +260,14 @@
   box-shadow: inset 0 0 0 1px rgba(255, 244, 204, 0.06), 0 2px 5px rgba(0, 0, 0, 0.28);
 }
 
-.gurps-quickdeck button:hover:not(:disabled),
-.gurps-quickdeck .qd-button:hover,
-.quickdeck-open-pdf-sources-button:hover:not(:disabled),
-.quickdeck-clear-button:hover:not(:disabled),
-.quickdeck-open-sheet-button:hover:not(:disabled),
-.quickdeck-drop-token-button:hover:not(:disabled),
-.quickdeck-minimize-button:hover:not(:disabled),
-.quickdeck-add-button:hover:not(:disabled),
-.quickdeck-remove-button:hover:not(:disabled),
-.quickdeck-roll-button:hover:not(:disabled),
-.quickdeck-flow-button:hover:not(:disabled),
-.quickdeck-link-button:hover:not(:disabled),
-.quickdeck-unpin-button:hover:not(:disabled),
-.quickdeck-favorite-toggle:hover:not(:disabled),
-.quickdeck-resource-control button:hover:not(:disabled) {
+.quickdeck-window-actions > button:hover:not(:disabled),
+.quickdeck-block-title-row > button:hover:not(:disabled),
+.quickdeck-available-list .quickdeck-add-button:hover:not(:disabled),
+.quickdeck-available-list .quickdeck-remove-button:hover:not(:disabled),
+.quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button:hover:not(:disabled),
+.quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button:hover:not(:disabled),
+.quickdeck-selected-cockpit .quickdeck-flow-button:hover:not(:disabled),
+.quickdeck-selected-cockpit .quickdeck-resource-control button:hover:not(:disabled) {
   border-color: rgba(255, 228, 152, 0.92);
   background-image:
     linear-gradient(180deg, rgba(255, 245, 195, 0.18), rgba(91, 59, 19, 0.18)),
@@ -290,10 +275,11 @@
   box-shadow: inset 0 0 0 1px rgba(255, 244, 204, 0.1), 0 0 12px rgba(230, 174, 65, 0.26);
 }
 
-.gurps-quickdeck button:active:not(:disabled),
-.gurps-quickdeck .qd-button:active,
-.quickdeck-roll-button:active:not(:disabled),
-.quickdeck-flow-button:active:not(:disabled) {
+.quickdeck-window-actions > button:active:not(:disabled),
+.quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button:active:not(:disabled),
+.quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button:active:not(:disabled),
+.quickdeck-selected-cockpit .quickdeck-flow-button:active:not(:disabled),
+.quickdeck-selected-cockpit .quickdeck-resource-control button:active:not(:disabled) {
   background-image:
     linear-gradient(180deg, rgba(85, 52, 13, 0.14), rgba(255, 237, 174, 0.08)),
     url("../assets/ui/command-desk/buttons/qd-button-brass-active.webp");
@@ -313,7 +299,9 @@
 }
 
 .quickdeck-add-button:disabled,
-.gurps-quickdeck button:disabled {
+.gurps-quickdeck .quickdeck-panel button:disabled,
+.gurps-quickdeck .quickdeck-selected-cockpit button:disabled,
+.gurps-quickdeck .quickdeck-window-actions button:disabled {
   cursor: default;
   opacity: 0.55;
   filter: saturate(0.55);
@@ -1056,4 +1044,335 @@
   .quickdeck-content {
     grid-template-columns: minmax(600px, 1fr) 520px;
   }
+}
+
+
+/* v0.7 containment/scaling bugfix: keep Command Desk in three clipped zones. */
+.gurps-quickdeck,
+.gurps-quickdeck *,
+.gurps-quickdeck *::before,
+.gurps-quickdeck *::after {
+  box-sizing: border-box;
+}
+
+#gurps-quickdeck-app,
+.gurps-quickdeck-app {
+  min-width: 1100px;
+  min-height: 650px;
+  max-width: calc(100vw - 24px);
+  max-height: calc(100vh - 24px);
+}
+
+.quickdeck-shell {
+  grid-template-columns: clamp(280px, 20vw, 320px) minmax(0, 1fr);
+  min-width: 0;
+  width: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.quickdeck-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.62rem;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.quickdeck-sidebar-block {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.quickdeck-sidebar-roster,
+.quickdeck-sidebar-available {
+  display: flex;
+  flex-direction: column;
+}
+
+.quickdeck-sidebar-roster {
+  flex: 1 1 55%;
+}
+
+.quickdeck-sidebar-available {
+  flex: 1 1 45%;
+}
+
+.quickdeck-roster-list,
+.quickdeck-available-list {
+  min-height: 0;
+  overflow: hidden auto;
+  scrollbar-gutter: stable;
+}
+
+.quickdeck-main {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.quickdeck-window-actions {
+  min-height: 64px;
+  margin-bottom: 0.5rem;
+  padding: 0.56rem 0.72rem;
+}
+
+.quickdeck-content {
+  grid-template-columns: minmax(0, 1fr) clamp(420px, 32vw, 500px);
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.quickdeck-stage {
+  height: 100%;
+  overflow: hidden auto;
+  scrollbar-gutter: stable;
+}
+
+.quickdeck-selected-cockpit {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.quickdeck-drawer-stack {
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.quickdeck-drawer-tabs {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.quickdeck-drawer-tab,
+.gurps-quickdeck .quickdeck-drawer-tab {
+  min-width: 0;
+  min-height: 40px;
+  padding: 0.36rem 0.4rem;
+  font-size: 0.68rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quickdeck-panel,
+.gurps-quickdeck .qd-drawer,
+.gurps-quickdeck .qd-tab-content {
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.quickdeck-panel-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden auto;
+  scrollbar-gutter: stable;
+}
+
+.quickdeck-panel .quickdeck-attacks-section,
+.quickdeck-panel .quickdeck-skills-section,
+.quickdeck-panel .quickdeck-favorite-attacks,
+.quickdeck-panel .quickdeck-favorite-spells {
+  min-width: 0;
+}
+
+.quickdeck-attacks-list,
+.quickdeck-skills-list,
+.quickdeck-favorite-attacks-list {
+  min-width: 0;
+}
+
+.quickdeck-footer-hint {
+  flex: none;
+  margin-top: 0.5rem;
+  min-height: 34px;
+  overflow: hidden;
+}
+
+/* Drawer controls use compact row styling instead of cockpit brass medallion styling. */
+.quickdeck-panel button,
+.quickdeck-panel .quickdeck-roll-button,
+.quickdeck-panel .quickdeck-attack-button,
+.quickdeck-panel .quickdeck-roll-button-secondary,
+.quickdeck-panel .quickdeck-target-opponent-button,
+.quickdeck-panel .quickdeck-modifier-bucket-button,
+.quickdeck-panel .quickdeck-favorite-toggle,
+.quickdeck-panel .quickdeck-spell-favorite-toggle,
+.quickdeck-panel .quickdeck-unpin-button,
+.quickdeck-panel .quickdeck-link-button {
+  max-width: 100%;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.quickdeck-panel .quickdeck-roll-button,
+.quickdeck-panel .quickdeck-attack-button,
+.quickdeck-panel .quickdeck-roll-button-secondary {
+  min-height: 30px;
+  width: auto;
+  margin: 0;
+  padding: 0.28rem 0.52rem;
+  border: 1px solid rgba(142, 91, 31, 0.42);
+  border-radius: 6px;
+  color: #2a1909;
+  background: rgba(244, 220, 171, 0.5);
+  font-size: 0.68rem;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.quickdeck-panel .quickdeck-attack-actions {
+  align-content: start;
+  justify-items: stretch;
+  gap: 0.28rem;
+}
+
+.quickdeck-panel .quickdeck-attack-actions .quickdeck-roll-button {
+  width: 100%;
+}
+
+.quickdeck-panel .quickdeck-roll-button-secondary {
+  font-size: 0.62rem;
+  white-space: normal;
+}
+
+.quickdeck-panel .quickdeck-target-opponent-button,
+.quickdeck-panel .quickdeck-modifier-bucket-button {
+  min-height: 34px;
+  padding: 0.28rem 0.36rem;
+  border-radius: 6px;
+  font-size: 0.68rem;
+  line-height: 1.15;
+}
+
+.quickdeck-panel .quickdeck-combat-anchor {
+  grid-template-columns: 20px minmax(0, 1fr);
+  gap: 0.28rem;
+  padding: 0.28rem 0.34rem;
+}
+
+.quickdeck-panel .quickdeck-combat-icon,
+.quickdeck-panel .quickdeck-attack-icon {
+  width: 20px;
+  height: 20px;
+  font-size: 0.64rem;
+}
+
+.quickdeck-panel .quickdeck-anchor-label {
+  font-size: 0.56rem;
+}
+
+.quickdeck-panel .quickdeck-anchor-value,
+.quickdeck-panel .quickdeck-modifier-bucket-total,
+.quickdeck-panel .quickdeck-modifier-bucket-detail {
+  font-size: 0.64rem;
+}
+
+.quickdeck-panel .quickdeck-favorite-toggle,
+.quickdeck-panel .quickdeck-spell-favorite-toggle,
+.quickdeck-panel .quickdeck-unpin-button {
+  width: 1.65rem;
+  height: 1.65rem;
+  min-width: 1.65rem;
+  min-height: 1.65rem;
+  padding: 0;
+  border-radius: 999px;
+  font-size: 0.68rem;
+}
+
+.quickdeck-panel .quickdeck-link-button {
+  width: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+}
+
+.quickdeck-panel .quickdeck-attack-card,
+.quickdeck-panel .quickdeck-skill-row,
+.gurps-quickdeck .qd-row,
+.gurps-quickdeck .qd-spell-row,
+.gurps-quickdeck .qd-skill-row {
+  min-height: 0;
+  padding: 0.5rem 0.56rem;
+  overflow: hidden;
+}
+
+.quickdeck-panel .quickdeck-attack-stats {
+  gap: 0.22rem;
+}
+
+.quickdeck-panel .quickdeck-attack-stats div {
+  padding: 0.18rem 0.24rem;
+}
+
+.quickdeck-panel .quickdeck-skill-row .quickdeck-roll-button,
+.quickdeck-panel .quickdeck-quick-skill-actions .quickdeck-roll-button,
+.quickdeck-panel .quickdeck-spell-row .quickdeck-roll-button {
+  min-width: 0;
+  padding: 0.24rem 0.46rem;
+}
+
+@media (max-width: 1420px) {
+  #gurps-quickdeck-app,
+  .gurps-quickdeck-app {
+    min-width: 1040px;
+  }
+
+  .quickdeck-shell {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+
+  .quickdeck-content {
+    grid-template-columns: minmax(0, 1fr) minmax(380px, 44%);
+  }
+}
+
+/* Preserve the intended large circular Dodge/Parry/Block cockpit medallions. */
+.quickdeck-defense-buttons {
+  grid-template-columns: repeat(3, minmax(110px, 1fr));
+  align-items: center;
+}
+
+.quickdeck-defense-button,
+.gurps-quickdeck .quickdeck-defense-button {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  align-content: center;
+  aspect-ratio: 1;
+  min-height: 112px;
+  max-height: 138px;
+  padding: 1.1rem 0.72rem;
+  border: 0;
+  border-radius: 999px;
+  background: url("../assets/ui/command-desk/defense/qd-defense-ring-clean.webp") center / contain no-repeat;
+  box-shadow: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.42));
+  overflow: visible;
+}
+
+.quickdeck-defense-button::before {
+  inset: 9%;
+  width: auto;
+  height: auto;
+}
+
+.quickdeck-defense-button span,
+.quickdeck-defense-button strong {
+  grid-column: 1;
+}
+
+.quickdeck-drawer-actor-utilities[hidden] {
+  display: none !important;
 }
