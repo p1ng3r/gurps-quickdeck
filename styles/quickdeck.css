@@ -217,7 +217,7 @@
 .quickdeck-drop-hint {
   margin: 0 0 0.55rem;
   padding: 0.34rem 0.45rem;
-  font-size: 0.72rem;
+  font-size: clamp(0.62rem, 0.9vw, 0.68rem);
 }
 
 .quickdeck-empty {
@@ -967,6 +967,7 @@
 }
 
 .quickdeck-defense-buttons {
+  margin-top: 0.16rem;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   justify-items: center;
   padding: 0.44rem;
@@ -976,7 +977,7 @@
 }
 
 .quickdeck-defense-button {
-  width: clamp(5.1rem, 8vw, 6.3rem);
+  width: clamp(4.2rem, 6.2vw, 5rem);
   aspect-ratio: 1;
   min-width: 0;
   min-height: 0;
@@ -1019,7 +1020,7 @@
 .quickdeck-defense-button strong {
   margin-top: 0.2rem;
   color: #fff6dc;
-  font-size: 1.42rem;
+  font-size: clamp(1.12rem, 1.7vw, 1.28rem);
   line-height: 1;
   font-variant-numeric: tabular-nums;
 }
@@ -1709,7 +1710,7 @@
   }
 
   .quickdeck-defense-button {
-    width: 5.1rem;
+    width: clamp(4.1rem, 5.4vw, 4.75rem);
   }
 }
 
