@@ -105,6 +105,46 @@
   background-image: url("../assets/ui/command-desk/frames/qd-shell-corner-br.webp");
 }
 
+
+.quickdeck-command-desk-shell .quickdeck-dev-badge {
+  position: absolute;
+  top: 0.32rem;
+  left: 0.42rem;
+  z-index: 3;
+  max-width: calc(100% - 1rem);
+  padding: 0.12rem 0.42rem;
+  border: 1px solid rgba(240, 205, 122, 0.58);
+  border-radius: 999px;
+  color: #ffe9ad;
+  background: rgba(12, 8, 4, 0.78);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.38);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  text-shadow: 0 1px 2px #000;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* v0.7 uses one visible cockpit Open Sheet button; duplicate drawer/compat buttons are intentionally suppressed because they caused background spam. */
+.quickdeck-command-desk-shell .quickdeck-open-sheet-button:not(.qd-primary-open-sheet) {
+  display: none !important;
+  visibility: hidden !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+  position: absolute !important;
+  inset: auto !important;
+}
+
 .quickdeck-sidebar,
 .quickdeck-main {
   position: relative;
