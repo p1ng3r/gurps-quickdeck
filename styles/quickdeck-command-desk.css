@@ -1905,3 +1905,218 @@
     drop-shadow(0 8px 13px rgba(0, 0, 0, 0.5))
     drop-shadow(0 0 10px var(--qd-defense-glow));
 }
+
+/* v0.7 manual button/tab asset fit pass
+ * The manual WebP plates are the visible controls now; keep legacy CSS boxes,
+ * borders, and stacked gradients from showing around or behind them.
+ */
+.quickdeck-command-desk-shell .quickdeck-window-actions > button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: 0.72rem 1.08rem 0.78rem;
+  border: 0;
+  border-radius: 0;
+  color: #fff0c4;
+  background-color: transparent;
+  background-image: url("../assets/ui/command-desk/buttons/qd-button-brass-idle.webp");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  filter: none;
+  font-weight: 900;
+  letter-spacing: 0.055em;
+  line-height: 1.1;
+  text-align: center;
+  text-shadow:
+    0 1px 0 rgba(44, 24, 6, 0.96),
+    0 2px 4px rgba(0, 0, 0, 0.86);
+  overflow: visible;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > button {
+  min-width: 142px;
+  min-height: 50px;
+  padding-inline: 1.15rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button {
+  width: 100%;
+  min-height: 58px;
+}
+
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button {
+  min-height: 56px;
+  padding-inline: 0.82rem;
+  white-space: normal;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button:hover:not(:disabled) {
+  color: #fff7d8;
+  background-color: transparent;
+  background-image: url("../assets/ui/command-desk/buttons/qd-button-brass-hover.webp");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  filter: brightness(1.035) saturate(1.04);
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > button:active:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button:active:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button:active:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button:active:not(:disabled) {
+  color: #ffeab5;
+  background-color: transparent;
+  background-image: url("../assets/ui/command-desk/buttons/qd-button-brass-active.webp");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  filter: brightness(0.98) saturate(1.02);
+  transform: translateY(1px);
+}
+
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button.is-armed,
+.quickdeck-command-desk-shell .quickdeck-add-button:not(:disabled) {
+  background-color: transparent;
+  background-image: url("../assets/ui/command-desk/buttons/qd-button-green-idle.webp");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.quickdeck-command-desk-shell .quickdeck-remove-button,
+.quickdeck-command-desk-shell .quickdeck-clear-button,
+.quickdeck-command-desk-shell [data-action*="remove"],
+.quickdeck-command-desk-shell [data-action*="delete"] {
+  background-color: transparent;
+  background-image: url("../assets/ui/command-desk/buttons/qd-button-red-idle.webp");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+}
+
+.quickdeck-command-desk-shell button:disabled,
+.quickdeck-command-desk-shell .quickdeck-window-actions > button:disabled,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit button:disabled {
+  cursor: default;
+  opacity: 0.56;
+  filter: grayscale(0.24) saturate(0.58) brightness(0.9);
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  align-items: end;
+  gap: 0.28rem;
+  min-height: 50px;
+  padding: 0 0.48rem;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: visible;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tab,
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab,
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab,
+.gurps-quickdeck .quickdeck-command-desk-shell .quickdeck-drawer-tab {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 50px;
+  padding: 0.55rem 0.62rem 0.62rem;
+  border: 0;
+  border-radius: 0;
+  color: #f7ddb0;
+  background-color: transparent;
+  background-image: url("../assets/ui/command-desk/tabs/qd-tab-idle.webp");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  filter: none;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  line-height: 1.05;
+  text-align: center;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.94);
+  text-orientation: mixed;
+  white-space: nowrap;
+  writing-mode: horizontal-tb;
+  overflow: visible;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tab:hover:not(:disabled) {
+  color: #fff0c5;
+  background-image: url("../assets/ui/command-desk/tabs/qd-tab-idle.webp");
+  filter: brightness(1.035) saturate(1.03);
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tab.is-active,
+.quickdeck-command-desk-shell .quickdeck-drawer-tab[aria-selected="true"],
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab.is-active,
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab[aria-selected="true"],
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab.is-active,
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab[aria-selected="true"] {
+  min-height: 52px;
+  color: #2c1807;
+  background-color: transparent;
+  background-image: url("../assets/ui/command-desk/tabs/qd-tab-active.webp");
+  background-position: center;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  box-shadow: none;
+  filter: none;
+  text-shadow: 0 1px 0 rgba(255, 238, 190, 0.5);
+}
+
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-roll-button,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-attack-button,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-roll-button-secondary,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-target-opponent-button,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-modifier-bucket-button,
+.quickdeck-command-desk-shell .quickdeck-available-list .quickdeck-add-button,
+.quickdeck-command-desk-shell .quickdeck-available-list .quickdeck-remove-button {
+  min-height: auto;
+  padding: 0.28rem 0.56rem;
+  border: 1px solid rgba(137, 86, 24, 0.58);
+  border-radius: 6px;
+  box-shadow: inset 0 1px 0 rgba(255, 250, 218, 0.22), 0 1px 2px rgba(74, 41, 10, 0.14);
+  font-size: 0.78rem;
+  line-height: 1.15;
+}
+
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-roll-button,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-attack-button,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-roll-button-secondary,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-target-opponent-button,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-modifier-bucket-button {
+  color: #2a1707;
+  background-color: rgba(236, 199, 122, 0.28);
+  background-image: linear-gradient(180deg, rgba(255, 246, 206, 0.48), rgba(167, 104, 33, 0.18));
+}
+
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-roll-button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-attack-button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-roll-button-secondary:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-target-opponent-button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-modifier-bucket-button:hover:not(:disabled) {
+  background-image: linear-gradient(180deg, rgba(255, 250, 218, 0.54), rgba(186, 120, 40, 0.2));
+  filter: brightness(1.02);
+}
