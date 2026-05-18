@@ -1,4 +1,5 @@
-<section class="quickdeck-shell">
+<section class="quickdeck-shell quickdeck-command-desk-shell">
+  <div class="quickdeck-dev-badge" aria-hidden="true">QD v0.7 OpenSheet Fix</div>
   <aside class="quickdeck-sidebar">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
@@ -146,7 +147,7 @@
                   type="button"
                   data-action="drop-token"
                   data-actor-id="{{activeActor.id}}"
-                  class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                  class="quickdeck-drop-token-button qd-primary-drop-token {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
                 >
                   {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
                 </button>
@@ -154,7 +155,7 @@
                   type="button"
                   data-action="open-sheet"
                   data-actor-id="{{activeActor.id}}"
-                  class="quickdeck-open-sheet-button"
+                  class="quickdeck-open-sheet-button qd-primary-open-sheet"
                 >
                   Open Sheet
                 </button>
@@ -656,31 +657,7 @@
 
               {{#if isSkillsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <div class="quickdeck-drawer-actor-utilities qd-command-desk-compat-hidden" hidden aria-hidden="true">
-                    <button
-                      type="button"
-                      data-action="drop-token"
-                      data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-drop-token-button qd-command-desk-compat-hidden {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                      aria-hidden="true"
-                      hidden
-                      tabindex="-1"
-                    >
-                      {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                    </button>
-                    <button
-                      type="button"
-                      data-action="open-sheet"
-                      data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-open-sheet-button qd-command-desk-compat-hidden"
-                      aria-hidden="true"
-                      hidden
-                      tabindex="-1"
-                    >
-                      Open Sheet
-                    </button>
-                  </div>
-
+                  {{!-- v0.7 keeps one visible cockpit Open Sheet button; duplicate drawer/compat buttons were removed because they caused background spam. --}}
                   <section class="quickdeck-skills-section">
                     <h4>
                       Skills (<span data-count="skills-visible">{{visibleSkillsCount}}</span> /
@@ -745,31 +722,7 @@
 
               {{#if isQuickSkillsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <div class="quickdeck-drawer-actor-utilities qd-command-desk-compat-hidden" hidden aria-hidden="true">
-                    <button
-                      type="button"
-                      data-action="drop-token"
-                      data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-drop-token-button qd-command-desk-compat-hidden {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                      aria-hidden="true"
-                      hidden
-                      tabindex="-1"
-                    >
-                      {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                    </button>
-                    <button
-                      type="button"
-                      data-action="open-sheet"
-                      data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-open-sheet-button qd-command-desk-compat-hidden"
-                      aria-hidden="true"
-                      hidden
-                      tabindex="-1"
-                    >
-                      Open Sheet
-                    </button>
-                  </div>
-
+                  {{!-- v0.7 keeps one visible cockpit Open Sheet button; duplicate drawer/compat buttons were removed because they caused background spam. --}}
                   <section class="quickdeck-skills-section">
                     <h4>
                       Quick Skills (<span data-count="quick-skills-visible">{{visibleQuickSkillsCount}}</span> /
@@ -850,31 +803,7 @@
 
               {{#if isSpellsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <div class="quickdeck-drawer-actor-utilities qd-command-desk-compat-hidden" hidden aria-hidden="true">
-                    <button
-                      type="button"
-                      data-action="drop-token"
-                      data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-drop-token-button qd-command-desk-compat-hidden {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                      aria-hidden="true"
-                      hidden
-                      tabindex="-1"
-                    >
-                      {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                    </button>
-                    <button
-                      type="button"
-                      data-action="open-sheet"
-                      data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-open-sheet-button qd-command-desk-compat-hidden"
-                      aria-hidden="true"
-                      hidden
-                      tabindex="-1"
-                    >
-                      Open Sheet
-                    </button>
-                  </div>
-
+                  {{!-- v0.7 keeps one visible cockpit Open Sheet button; duplicate drawer/compat buttons were removed because they caused background spam. --}}
                   <section class="quickdeck-skills-section">
                     <h4>
                       Spells (<span data-count="spells-visible">{{visibleSpellsCount}}</span> /
