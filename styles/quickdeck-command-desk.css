@@ -2970,3 +2970,96 @@
 .quickdeck-command-desk-shell .quickdeck-combat-pill { background: transparent !important; box-shadow: none !important; }
 .quickdeck-command-desk-shell .quickdeck-roster-button *,
 .quickdeck-command-desk-shell .quickdeck-available-actor * { text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
+
+/* v0.7.0 final polish: header minimize + left roster pill cleanup. */
+.quickdeck-command-desk-shell .quickdeck-window-actions {
+  position: absolute;
+  top: 0.24rem;
+  right: 2.25rem;
+  z-index: 14;
+  margin: 0;
+  padding: 0;
+  min-height: 0;
+  gap: 0.22rem;
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  pointer-events: none;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > button {
+  pointer-events: auto;
+  min-height: 22px;
+  height: 22px;
+  min-width: 22px;
+  padding: 0.04rem 0.38rem;
+  border-radius: 4px;
+  font-size: 0.74rem;
+  line-height: 1;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > .quickdeck-minimize-button {
+  min-width: 22px;
+  padding: 0.02rem 0.34rem 0.08rem;
+  font-size: 1.02rem;
+  font-weight: 800;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > .quickdeck-minimize-button::before {
+  content: none !important;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > .quickdeck-open-pdf-sources-button {
+  display: none;
+}
+
+.quickdeck-command-desk-shell .quickdeck-roster-button,
+.quickdeck-command-desk-shell .quickdeck-available-list li,
+.quickdeck-command-desk-shell .quickdeck-available-actor,
+.quickdeck-command-desk-shell .quickdeck-block-title-row,
+.quickdeck-command-desk-shell .quickdeck-available-header,
+.quickdeck-command-desk-shell .quickdeck-remove-button,
+.quickdeck-command-desk-shell .quickdeck-add-button,
+.quickdeck-command-desk-shell .quickdeck-roster-name,
+.quickdeck-command-desk-shell .quickdeck-roster-title-row,
+.quickdeck-command-desk-shell .quickdeck-roster-resource,
+.quickdeck-command-desk-shell .quickdeck-sidebar .quickdeck-badge {
+  background-image: none !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.quickdeck-command-desk-shell .quickdeck-roster-button,
+.quickdeck-command-desk-shell .quickdeck-available-list li {
+  border-color: rgba(225, 189, 109, 0.28);
+}
+
+.quickdeck-command-desk-shell .quickdeck-roster-button.is-active,
+.quickdeck-command-desk-shell .quickdeck-roster-button.is-current-turn {
+  border-color: rgba(255, 222, 141, 0.8);
+  background: linear-gradient(180deg, rgba(150, 105, 40, 0.2), rgba(58, 36, 14, 0.2)) !important;
+}
+
+.quickdeck-command-desk-shell .quickdeck-type-pill,
+.quickdeck-command-desk-shell .quickdeck-combat-pill {
+  padding: 0.03rem 0.34rem;
+  border-width: 1px;
+  border-color: rgba(240, 205, 122, 0.45);
+  background: linear-gradient(180deg, rgba(95, 62, 21, 0.25), rgba(22, 13, 6, 0.2)) !important;
+  box-shadow: none;
+}
+
+.quickdeck-command-desk-shell .quickdeck-add-button:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-remove-button,
+.quickdeck-command-desk-shell .quickdeck-block-title-row > .quickdeck-clear-button {
+  background: linear-gradient(180deg, rgba(150, 103, 39, 0.24), rgba(51, 32, 12, 0.22)) !important;
+  border-color: rgba(240, 206, 123, 0.5);
+}
+
+.quickdeck-command-desk-shell .quickdeck-roster-button *,
+.quickdeck-command-desk-shell .quickdeck-available-actor *,
+.quickdeck-command-desk-shell .quickdeck-add-button,
+.quickdeck-command-desk-shell .quickdeck-remove-button,
+.quickdeck-command-desk-shell .quickdeck-block-title-row > .quickdeck-clear-button {
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.92);
+}
