@@ -1,5 +1,5 @@
 import { REFERENCE_INDEX_SETTING_KEY } from "./reference-index-store.js";
-import { QuickDeckApp } from "./quickdeck-app.js";
+import { QuickDeckApp, QuickDeckArtPrototypeApp } from "./quickdeck-app.js";
 
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
@@ -13,6 +13,7 @@ const SETTING_KEYS = {
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY
 };
 let quickDeckApp = null;
+let quickDeckArtPrototypeApp = null;
 function openQuickDeck() {
   if (!quickDeckApp) {
     quickDeckApp = new QuickDeckApp();
@@ -20,6 +21,15 @@ function openQuickDeck() {
 
   quickDeckApp.restoreAndBringToFront?.();
   return quickDeckApp;
+}
+
+function openQuickDeckArtPrototype() {
+  if (!quickDeckArtPrototypeApp) {
+    quickDeckArtPrototypeApp = new QuickDeckArtPrototypeApp();
+  }
+
+  quickDeckArtPrototypeApp.render(true, { focus: true });
+  return quickDeckArtPrototypeApp;
 }
 
 function renderQuickDeckIfOpen() {
@@ -32,6 +42,7 @@ Hooks.once("ready", () => {
   console.log(`${MODULE_ID} | Ready`);
   game.gurpsQuickDeckDebug = {
     open: () => openQuickDeck(),
+    openArtPrototype: () => openQuickDeckArtPrototype(),
     dumpActiveActorData: () => {
       if (!quickDeckApp) {
         console.warn(`${MODULE_ID} | QuickDeck is not open; open it first to dump active actor data.`);
@@ -135,19 +146,34 @@ Hooks.on("renderActorDirectory", (app, html) => {
   const headerActions = root.querySelector(".header-actions");
   if (!headerActions) return;
 
-  if (headerActions.querySelector(`[data-action='${MODULE_ID}-open']`)) return;
+  if (!headerActions.querySelector(`[data-action='${MODULE_ID}-open']`)) {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.classList.add("quickdeck-open-button");
+    button.dataset.action = `${MODULE_ID}-open`;
+    button.innerHTML = '<i class="fas fa-id-card"></i> QuickDeck';
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      openQuickDeck();
+    });
 
-  const button = document.createElement("button");
-  button.type = "button";
-  button.classList.add("quickdeck-open-button");
-  button.dataset.action = `${MODULE_ID}-open`;
-  button.innerHTML = '<i class="fas fa-id-card"></i> QuickDeck';
-  button.addEventListener("click", (event) => {
-    event.preventDefault();
-    openQuickDeck();
-  });
+    headerActions.appendChild(button);
+  }
 
-  headerActions.appendChild(button);
+  if (game.user?.isGM && !headerActions.querySelector(`[data-action='${MODULE_ID}-art-prototype']`)) {
+    const prototypeButton = document.createElement("button");
+    prototypeButton.type = "button";
+    prototypeButton.classList.add("quickdeck-open-button");
+    prototypeButton.dataset.action = `${MODULE_ID}-art-prototype`;
+    prototypeButton.innerHTML = '<i class="fas fa-palette"></i> Art Prototype';
+    prototypeButton.title = "Open the static QuickDeck art prototype with sample data only";
+    prototypeButton.addEventListener("click", (event) => {
+      event.preventDefault();
+      openQuickDeckArtPrototype();
+    });
+
+    headerActions.appendChild(prototypeButton);
+  }
 });
 
 Hooks.on("deleteActor", (actor) => {

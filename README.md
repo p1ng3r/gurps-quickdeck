@@ -2,6 +2,13 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## Static Art Prototype Note
+
+- This branch adds a separate, static art-first QuickDeck prototype at `templates/quickdeck-art-prototype.hbs` with scoped styles in `styles/quickdeck-art-prototype.css`.
+- The prototype uses sample markup only and is not wired to actor selection, rolls, HP/FP adjustment, targeting, ModifierBucket, drag/drop, or native GURPS behavior.
+- GM users can open it from the Actor Directory via **Art Prototype**, or developers can call `game.gurpsQuickDeckDebug.openArtPrototype()` in the console.
+- The next step is to migrate approved live controls into the prototype structure piece by piece after visual review, leaving the current live `templates/quickdeck.hbs` behavior intact until each slice is ready.
+
 ## What's New in v0.6.1 (Reference UI Foundation)
 
 - Started from the clean v0.6.0 release baseline and abandoned the failed v0.6.1 visual experiment direction.
