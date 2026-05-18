@@ -1376,3 +1376,83 @@
 .quickdeck-drawer-actor-utilities[hidden] {
   display: none !important;
 }
+
+/* Hidden Command Desk compatibility controls retain runtime hooks without rendering or occupying layout. */
+.qd-command-desk-compat-hidden,
+.quickdeck-drawer-actor-utilities.qd-command-desk-compat-hidden,
+.quickdeck-drawer-actor-utilities[hidden],
+.quickdeck-drawer-actor-utilities[aria-hidden="true"] {
+  display: none !important;
+  inline-size: 0 !important;
+  block-size: 0 !important;
+  min-inline-size: 0 !important;
+  min-block-size: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Responsive Dodge/Parry/Block medallions: prominent at default size, clamped for smaller windows. */
+.quickdeck-defense-buttons {
+  --qd-defense-ring-size: clamp(86px, 7.4vw, 124px);
+  --qd-defense-icon-size: clamp(58px, 5.8vw, 92px);
+  --qd-defense-label-size: clamp(0.68rem, 0.54rem + 0.28vw, 0.88rem);
+  --qd-defense-value-size: clamp(1.48rem, 1rem + 1.35vw, 2.22rem);
+  --qd-defense-padding: clamp(0.48rem, 0.32rem + 0.42vw, 0.9rem);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(0.34rem, 0.22rem + 0.55vw, 0.72rem);
+  justify-items: center;
+  align-items: center;
+}
+
+.quickdeck-defense-button,
+.gurps-quickdeck .quickdeck-defense-button {
+  display: grid;
+  grid-template-columns: 1fr;
+  place-items: center;
+  align-content: center;
+  inline-size: 100%;
+  max-inline-size: var(--qd-defense-ring-size);
+  min-inline-size: 0;
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: 1;
+  padding: var(--qd-defense-padding);
+  border: 0;
+  border-radius: 999px;
+  background: url("../assets/ui/command-desk/defense/qd-defense-ring-clean.webp") center / contain no-repeat;
+  box-shadow: none;
+  filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.42));
+  overflow: visible;
+}
+
+.quickdeck-defense-button::before {
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  width: min(76%, var(--qd-defense-icon-size));
+  height: auto;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+}
+
+.quickdeck-defense-button span,
+.quickdeck-defense-button strong {
+  grid-column: 1;
+}
+
+.quickdeck-defense-button span {
+  align-self: end;
+  margin-top: 0;
+  font-size: var(--qd-defense-label-size);
+  line-height: 1;
+}
+
+.quickdeck-defense-button strong {
+  align-self: start;
+  margin-top: clamp(0.04rem, 0.02rem + 0.18vw, 0.14rem);
+  font-size: var(--qd-defense-value-size);
+  line-height: 1;
+}

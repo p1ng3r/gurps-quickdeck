@@ -656,12 +656,14 @@
 
               {{#if isSkillsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <div class="quickdeck-drawer-actor-utilities" hidden aria-hidden="true">
+                  <div class="quickdeck-drawer-actor-utilities qd-command-desk-compat-hidden" hidden aria-hidden="true">
                     <button
                       type="button"
                       data-action="drop-token"
                       data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      class="quickdeck-drop-token-button qd-command-desk-compat-hidden {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      aria-hidden="true"
+                      hidden
                       tabindex="-1"
                     >
                       {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
@@ -670,7 +672,9 @@
                       type="button"
                       data-action="open-sheet"
                       data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-open-sheet-button"
+                      class="quickdeck-open-sheet-button qd-command-desk-compat-hidden"
+                      aria-hidden="true"
+                      hidden
                       tabindex="-1"
                     >
                       Open Sheet
@@ -741,12 +745,14 @@
 
               {{#if isQuickSkillsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <div class="quickdeck-drawer-actor-utilities" hidden aria-hidden="true">
+                  <div class="quickdeck-drawer-actor-utilities qd-command-desk-compat-hidden" hidden aria-hidden="true">
                     <button
                       type="button"
                       data-action="drop-token"
                       data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      class="quickdeck-drop-token-button qd-command-desk-compat-hidden {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      aria-hidden="true"
+                      hidden
                       tabindex="-1"
                     >
                       {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
@@ -755,7 +761,9 @@
                       type="button"
                       data-action="open-sheet"
                       data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-open-sheet-button"
+                      class="quickdeck-open-sheet-button qd-command-desk-compat-hidden"
+                      aria-hidden="true"
+                      hidden
                       tabindex="-1"
                     >
                       Open Sheet
@@ -842,12 +850,14 @@
 
               {{#if isSpellsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <div class="quickdeck-drawer-actor-utilities" hidden aria-hidden="true">
+                  <div class="quickdeck-drawer-actor-utilities qd-command-desk-compat-hidden" hidden aria-hidden="true">
                     <button
                       type="button"
                       data-action="drop-token"
                       data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      class="quickdeck-drop-token-button qd-command-desk-compat-hidden {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                      aria-hidden="true"
+                      hidden
                       tabindex="-1"
                     >
                       {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
@@ -856,7 +866,9 @@
                       type="button"
                       data-action="open-sheet"
                       data-actor-id="{{activeActor.id}}"
-                      class="quickdeck-open-sheet-button"
+                      class="quickdeck-open-sheet-button qd-command-desk-compat-hidden"
+                      aria-hidden="true"
+                      hidden
                       tabindex="-1"
                     >
                       Open Sheet

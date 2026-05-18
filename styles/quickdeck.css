@@ -3207,3 +3207,20 @@
     grid-column: 1 / -1;
   }
 }
+
+/* Command Desk compatibility controls must be inert when hidden. */
+.qd-command-desk-compat-hidden,
+.quickdeck-drawer-actor-utilities.qd-command-desk-compat-hidden,
+.quickdeck-drawer-actor-utilities[hidden],
+.quickdeck-drawer-actor-utilities[aria-hidden="true"] {
+  display: none !important;
+  inline-size: 0 !important;
+  block-size: 0 !important;
+  min-inline-size: 0 !important;
+  min-block-size: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
+}
