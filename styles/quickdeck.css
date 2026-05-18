@@ -4366,3 +4366,156 @@ button.quickdeck-art-spell-roll {
   background: var(--quickdeck-art-spell-roll-button) center / 100% 100% no-repeat;
   box-shadow: none;
 }
+
+/* v0.6.1 safe scaling pass: CSS-only spacing and sizing, layered on the current Command Desk shell. */
+.gurps-quickdeck {
+  --quickdeck-defense-size: clamp(4.25rem, 6.4vw, 5.35rem);
+  --quickdeck-cockpit-gap: clamp(0.48rem, 0.72vw, 0.72rem);
+  --quickdeck-panel-padding: clamp(0.46rem, 0.72vw, 0.68rem);
+  --quickdeck-drawer-width: clamp(380px, 38vw, 500px);
+  --quickdeck-cockpit-min-width: 420px;
+  --quickdeck-resource-gap: clamp(0.34rem, 0.58vw, 0.5rem);
+  --quickdeck-footer-height: clamp(1.45rem, 2vw, 2rem);
+}
+
+.quickdeck-workbench,
+.quickdeck-main {
+  grid-template-columns: minmax(var(--quickdeck-cockpit-min-width), 1fr) minmax(360px, var(--quickdeck-drawer-width));
+  gap: var(--quickdeck-cockpit-gap);
+}
+
+.quickdeck-center-cockpit,
+.quickdeck-right-drawer,
+.quickdeck-panel {
+  min-width: 0;
+  padding: var(--quickdeck-panel-padding);
+}
+
+.quickdeck-center-cockpit {
+  gap: var(--quickdeck-cockpit-gap);
+}
+
+.quickdeck-panel-content {
+  padding: var(--quickdeck-panel-padding);
+}
+
+.quickdeck-main-resources,
+.quickdeck-stats.quickdeck-main-resources {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(4.6rem, 0.58fr);
+  gap: var(--quickdeck-resource-gap);
+}
+
+.quickdeck-main-resources .quickdeck-resource-card,
+.quickdeck-main-resources .quickdeck-move-card {
+  min-width: 0;
+  padding: clamp(0.42rem, 0.62vw, 0.58rem);
+}
+
+.quickdeck-defense-buttons {
+  grid-template-columns: repeat(3, minmax(4.15rem, var(--quickdeck-defense-size)));
+  gap: clamp(0.3rem, 0.55vw, 0.48rem);
+  justify-content: center;
+}
+
+.quickdeck-defense-button {
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(0.58rem, 1vw, 0.82rem) 0.42rem clamp(0.48rem, 0.86vw, 0.72rem);
+  grid-template-rows: auto auto;
+  place-items: center;
+}
+
+.quickdeck-defense-button span,
+.quickdeck-defense-button strong {
+  max-width: 100%;
+  line-height: 1;
+  text-align: center;
+}
+
+.quickdeck-defense-button span {
+  font-size: clamp(0.54rem, 0.7vw, 0.62rem);
+}
+
+.quickdeck-defense-button strong {
+  font-size: clamp(1.08rem, 1.22vw, 1.34rem);
+}
+
+.quickdeck-footer-hint {
+  min-height: var(--quickdeck-footer-height);
+  padding-block: clamp(0.16rem, 0.36vw, 0.32rem);
+}
+
+@media (max-width: 1280px) {
+  .gurps-quickdeck {
+    --quickdeck-defense-size: clamp(4rem, 6vw, 4.9rem);
+    --quickdeck-cockpit-gap: 0.52rem;
+    --quickdeck-panel-padding: 0.52rem;
+    --quickdeck-cockpit-min-width: 390px;
+  }
+
+  .quickdeck-workbench,
+  .quickdeck-main {
+    grid-template-columns: minmax(var(--quickdeck-cockpit-min-width), 1fr) minmax(350px, 0.9fr);
+  }
+
+  .quickdeck-actor-header.quickdeck-cockpit-hero {
+    gap: 0.56rem;
+    padding: 0.66rem;
+  }
+}
+
+@media (max-width: 1080px) {
+  .gurps-quickdeck {
+    --quickdeck-defense-size: clamp(3.85rem, 12vw, 4.6rem);
+    --quickdeck-cockpit-gap: 0.48rem;
+    --quickdeck-panel-padding: 0.48rem;
+  }
+
+  .quickdeck-workbench,
+  .quickdeck-main {
+    grid-template-columns: minmax(0, 1fr);
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .quickdeck-center-cockpit {
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  .quickdeck-right-drawer {
+    min-height: clamp(300px, 48vh, 400px);
+    overflow: hidden;
+  }
+
+  .quickdeck-panel-content,
+  .quickdeck-center-cockpit {
+    scrollbar-gutter: stable;
+  }
+}
+
+@media (max-width: 760px) {
+  .gurps-quickdeck {
+    --quickdeck-defense-size: clamp(3.65rem, 17vw, 4.25rem);
+    --quickdeck-resource-gap: 0.34rem;
+  }
+
+  .quickdeck-main-resources,
+  .quickdeck-stats.quickdeck-main-resources {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quickdeck-main-resources .quickdeck-move-card {
+    grid-column: 1 / -1;
+  }
+
+  .quickdeck-defense-buttons {
+    grid-template-columns: repeat(3, minmax(3.55rem, var(--quickdeck-defense-size)));
+  }
+
+  .quickdeck-drawer-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
