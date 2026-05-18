@@ -76,6 +76,21 @@ export class QuickDeckApp extends Application {
     });
   }
 
+  _getHeaderButtons() {
+    const buttons = super._getHeaderButtons ? super._getHeaderButtons() : [];
+    buttons.unshift({
+      label: "−",
+      class: "quickdeck-header-minimize",
+      icon: "",
+      title: "Minimize QuickDeck",
+      onclick: (event) => {
+        event?.preventDefault?.();
+        this.toggleMinimizedState();
+      }
+    });
+    return buttons;
+  }
+
   getCombatActors() {
     return game.actors
       .filter((actor) => {
@@ -3421,6 +3436,8 @@ export class QuickDeckApp extends Application {
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
+      isDrawerOpen: Boolean(this.activeDrawer),
+      isDrawerCollapsed: !this.activeDrawer,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
@@ -3631,6 +3648,13 @@ export class QuickDeckApp extends Application {
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
 
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
+      this.render();
+    });
+
+    html.find("[data-action='collapse-drawer']").on("click", (event) => {
+      event.preventDefault();
+      if (!this.activeDrawer) return;
+      this.activeDrawer = null;
       this.render();
     });
 
