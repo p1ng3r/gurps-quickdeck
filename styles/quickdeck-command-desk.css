@@ -678,3 +678,382 @@
 .gurps-quickdeck *::after {
   pointer-events: none;
 }
+
+/* v0.7 structural Command Desk rebuild: fixed three-zone cockpit/drawer grid. */
+#gurps-quickdeck-app,
+.gurps-quickdeck-app {
+  min-width: 1360px;
+  min-height: 720px;
+}
+
+.quickdeck-shell {
+  display: grid;
+  grid-template-columns: clamp(320px, 21vw, 360px) minmax(680px, 1fr);
+  min-width: 1320px;
+  height: 100%;
+  padding: 18px 18px 14px;
+  gap: 0;
+}
+
+.quickdeck-sidebar {
+  min-width: 0;
+  padding: 0.82rem 0.72rem;
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.34), transparent 14%, transparent 84%, rgba(0, 0, 0, 0.36)),
+    url("../assets/ui/command-desk/panels/qd-leather-tile-black.webp") repeat;
+}
+
+.quickdeck-main {
+  min-width: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  padding: 0.72rem 0.84rem 0;
+  background:
+    radial-gradient(ellipse at 42% 28%, rgba(181, 118, 37, 0.16), transparent 42%),
+    url("../assets/ui/command-desk/panels/qd-leather-tile-black.webp") repeat;
+}
+
+.quickdeck-window-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-height: 82px;
+  margin: 0 0 0.58rem;
+  padding: 0.7rem 0.86rem;
+  border: 1px solid rgba(199, 154, 56, 0.58);
+  border-radius: 12px;
+  background:
+    linear-gradient(90deg, rgba(17, 10, 5, 0.94), rgba(48, 30, 12, 0.84) 48%, rgba(12, 7, 4, 0.96)),
+    url("../assets/ui/command-desk/panels/qd-leather-tile-dark.webp") repeat;
+  box-shadow: inset 0 0 0 1px rgba(255, 232, 167, 0.07), 0 8px 18px rgba(0, 0, 0, 0.38);
+}
+
+.quickdeck-window-actions::before {
+  content: "GURPS QUICKDECK\A Command Desk";
+  white-space: pre;
+  margin-right: auto;
+  color: #ffe3a2;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  line-height: 1.55;
+  text-transform: uppercase;
+  text-shadow: 0 2px 3px #000, 0 0 8px rgba(240, 194, 91, 0.3);
+}
+
+.quickdeck-content {
+  display: grid;
+  grid-template-columns: minmax(680px, 820px) clamp(520px, 36vw, 620px);
+  gap: 0.72rem;
+  min-height: 0;
+  height: auto;
+}
+
+.quickdeck-stage {
+  display: grid;
+  align-content: start;
+  gap: 0.58rem;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  overflow: hidden auto;
+  scrollbar-gutter: stable;
+}
+
+.quickdeck-stage-backdrop,
+.quickdeck-stage::before,
+.quickdeck-stage::after {
+  display: none;
+}
+
+.quickdeck-sidebar-block,
+.quickdeck-selected-cockpit,
+.quickdeck-attacks-section,
+.quickdeck-skills-section,
+.quickdeck-favorite-attacks,
+.quickdeck-favorite-spells,
+.quickdeck-cockpit-folder {
+  background:
+    linear-gradient(180deg, rgba(255, 232, 167, 0.055), rgba(0, 0, 0, 0.16)),
+    url("../assets/ui/command-desk/panels/qd-leather-tile-dark.webp") repeat;
+}
+
+.quickdeck-selected-cockpit {
+  display: grid;
+  gap: 0.7rem;
+  padding: 0.72rem;
+  border-radius: 12px;
+}
+
+.quickdeck-actor-header {
+  grid-template-columns: 124px minmax(0, 1fr) 150px;
+  gap: 0.82rem;
+  min-height: 124px;
+  padding: 0.55rem 0.55rem 0.78rem;
+}
+
+.quickdeck-actor-header img {
+  width: 112px;
+  height: 112px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+.quickdeck-eyebrow {
+  display: block;
+  color: var(--qd-brass-bright);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.quickdeck-actor-header h3 {
+  margin-top: 0.08rem;
+  font-size: clamp(1.7rem, 2.4vw, 2.55rem);
+  line-height: 1.05;
+}
+
+.quickdeck-actor-header-actions {
+  display: grid;
+  align-content: center;
+  grid-template-columns: 1fr;
+}
+
+.quickdeck-combat-flow-controls {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
+.quickdeck-flow-button {
+  min-height: 58px;
+  font-size: 0.82rem;
+  white-space: normal;
+}
+
+.quickdeck-main-resources {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 132px;
+  gap: 0.56rem;
+}
+
+.quickdeck-stats > div,
+.quickdeck-resource-card,
+.quickdeck-move-card {
+  min-height: 82px;
+  padding: 0.54rem 0.62rem;
+}
+
+.quickdeck-move-card dd {
+  display: grid;
+  place-items: center;
+  min-height: 38px;
+  font-size: 2rem;
+}
+
+.quickdeck-defense-buttons {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.72rem;
+}
+
+.quickdeck-defense-button,
+.gurps-quickdeck .quickdeck-defense-button {
+  grid-template-columns: 92px minmax(0, 1fr);
+  justify-items: center;
+  min-height: 122px;
+  padding: 0.9rem 0.82rem;
+  background:
+    url("../assets/ui/command-desk/defense/qd-defense-ring-clean.webp") 0.7rem center / 92px 92px no-repeat,
+    linear-gradient(180deg, rgba(46, 27, 10, 0.92), rgba(8, 5, 3, 0.95));
+  border: 1px solid rgba(199, 154, 56, 0.58);
+  border-radius: 10px;
+  aspect-ratio: auto;
+}
+
+.quickdeck-defense-button::before {
+  inset: auto auto auto 0.96rem;
+  width: 82px;
+  height: 82px;
+}
+
+.quickdeck-defense-button span,
+.quickdeck-defense-button strong {
+  grid-column: 2;
+}
+
+.quickdeck-defense-button span {
+  align-self: end;
+  font-size: 0.9rem;
+}
+
+.quickdeck-defense-button strong {
+  align-self: start;
+  font-size: 2.35rem;
+}
+
+.quickdeck-cockpit-favorites {
+  display: grid;
+  gap: 0.48rem;
+}
+
+.quickdeck-cockpit-folder {
+  border: 1px solid rgba(199, 154, 56, 0.52);
+  border-radius: 10px;
+  color: #f6e4b8;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 231, 170, 0.05);
+}
+
+.quickdeck-cockpit-folder summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 48px;
+  padding: 0.65rem 0.82rem;
+  cursor: pointer;
+  color: #f4cd79;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  background: url("../assets/ui/command-desk/dividers/qd-thin-gold-line-horizontal.webp") left bottom / 100% 2px no-repeat;
+}
+
+.quickdeck-cockpit-folder > p,
+.quickdeck-cockpit-favorite-list {
+  margin: 0;
+  padding: 0.62rem 0.72rem 0.72rem;
+}
+
+.quickdeck-cockpit-favorite-list {
+  display: grid;
+  gap: 0.42rem;
+}
+
+.quickdeck-drawer-stack {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: stretch;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+}
+
+.quickdeck-drawer-tabs {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(0, 1fr);
+  gap: 0.32rem;
+  padding: 0 0.45rem;
+  border: 0;
+  border-radius: 12px 12px 0 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.quickdeck-drawer-tab,
+.gurps-quickdeck .quickdeck-drawer-tab {
+  min-height: 48px;
+  padding: 0.45rem 0.52rem;
+  border-radius: 9px 9px 0 0;
+  writing-mode: horizontal-tb;
+  text-orientation: mixed;
+  white-space: normal;
+  letter-spacing: 0.07em;
+}
+
+.quickdeck-panel,
+.gurps-quickdeck .qd-drawer,
+.gurps-quickdeck .qd-tab-content,
+.gurps-quickdeck .qd-spells-list,
+.gurps-quickdeck .qd-skills-list {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  height: 100%;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(255, 251, 221, 0.18), rgba(115, 71, 23, 0.05)),
+    url("../assets/ui/command-desk/parchment/qd-parchment-tile.webp") repeat;
+}
+
+.quickdeck-panel-content {
+  padding: 0.86rem;
+}
+
+.quickdeck-panel .quickdeck-actor-header {
+  grid-template-columns: 52px minmax(0, 1fr) auto;
+  min-height: 0;
+  padding: 0 0 0.52rem;
+}
+
+.quickdeck-panel .quickdeck-actor-header img {
+  width: 52px;
+  height: 52px;
+}
+
+.quickdeck-panel .quickdeck-actor-header h3 {
+  font-size: 1rem;
+}
+
+.quickdeck-panel .quickdeck-actor-header-actions {
+  display: flex;
+}
+
+.quickdeck-attack-card,
+.quickdeck-skill-row,
+.gurps-quickdeck .qd-row,
+.gurps-quickdeck .qd-spell-row,
+.gurps-quickdeck .qd-skill-row {
+  box-sizing: border-box;
+  min-height: 72px;
+  padding: 0.68rem 0.76rem;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 251, 228, 0.32), rgba(156, 101, 37, 0.08)),
+    url("../assets/ui/command-desk/parchment/qd-clean-parchment-row.webp") center / 100% 100% no-repeat,
+    url("../assets/ui/command-desk/parchment/qd-parchment-tile.webp") repeat;
+  overflow: hidden;
+}
+
+.quickdeck-skill-row {
+  grid-template-columns: auto minmax(0, 1fr) minmax(86px, auto);
+  border-radius: 8px;
+}
+
+.quickdeck-quick-skill-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.quickdeck-skill-main h5,
+.quickdeck-skill-main p,
+.quickdeck-favorite-attack-name,
+.quickdeck-favorite-attack-meta {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.quickdeck-footer-hint {
+  margin-top: 0.58rem;
+  min-height: 42px;
+}
+
+@media (max-width: 1420px) {
+  #gurps-quickdeck-app,
+  .gurps-quickdeck-app {
+    min-width: 1260px;
+  }
+
+  .quickdeck-shell {
+    grid-template-columns: 320px minmax(930px, 1fr);
+    min-width: 1250px;
+  }
+
+  .quickdeck-content {
+    grid-template-columns: minmax(600px, 1fr) 520px;
+  }
+}
