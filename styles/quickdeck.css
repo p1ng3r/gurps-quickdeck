@@ -4367,217 +4367,109 @@ button.quickdeck-art-spell-roll {
   box-shadow: none;
 }
 
-/* v0.6.1 safe UI scaling pass: keep the Command Desk shell while allowing Foundry window sizes to compress gracefully. */
+/* v0.6.1 safe scaling pass: CSS-only spacing and sizing, layered on the current Command Desk shell. */
 .gurps-quickdeck {
-  --quickdeck-shell-roster-width: clamp(220px, 19vw, 300px);
-  --quickdeck-command-gap: clamp(0.46rem, 0.9vw, 0.72rem);
-  --quickdeck-panel-padding: clamp(0.42rem, 0.75vw, 0.72rem);
-  --quickdeck-cockpit-gap: clamp(0.42rem, 0.75vw, 0.74rem);
-  --quickdeck-cockpit-min-width: 360px;
-  --quickdeck-drawer-min-width: 360px;
-  --quickdeck-drawer-width: clamp(360px, 42%, 500px);
-  --quickdeck-defense-size: clamp(4.35rem, 16cqw, 5.7rem);
-  --quickdeck-defense-gap: clamp(0.28rem, 0.75vw, 0.5rem);
-  --quickdeck-portrait-size: clamp(4.6rem, 8.2vw, 6.3rem);
-  --quickdeck-control-min-height: clamp(2rem, 3.2vw, 2.55rem);
-  --quickdeck-footer-height: clamp(1.55rem, 2.3vw, 2.2rem);
-}
-
-.quickdeck-shell {
-  grid-template-columns: minmax(200px, var(--quickdeck-shell-roster-width)) minmax(0, 1fr);
-}
-
-.quickdeck-command-desk {
-  container: quickdeck-desk / inline-size;
-  gap: var(--quickdeck-command-gap);
-  padding: var(--quickdeck-panel-padding);
-}
-
-.quickdeck-top-bar {
-  min-height: clamp(3rem, 5.2vw, 4rem);
-  padding: clamp(0.44rem, 0.75vw, 0.66rem) clamp(0.58rem, 1vw, 0.95rem);
+  --quickdeck-defense-size: clamp(4.25rem, 6.4vw, 5.35rem);
+  --quickdeck-cockpit-gap: clamp(0.48rem, 0.72vw, 0.72rem);
+  --quickdeck-panel-padding: clamp(0.46rem, 0.72vw, 0.68rem);
+  --quickdeck-drawer-width: clamp(380px, 38vw, 500px);
+  --quickdeck-cockpit-min-width: 420px;
+  --quickdeck-resource-gap: clamp(0.34rem, 0.58vw, 0.5rem);
+  --quickdeck-footer-height: clamp(1.45rem, 2vw, 2rem);
 }
 
 .quickdeck-workbench,
 .quickdeck-main {
-  grid-template-columns:
-    minmax(min(100%, var(--quickdeck-cockpit-min-width)), 1fr)
-    minmax(min(100%, var(--quickdeck-drawer-min-width)), var(--quickdeck-drawer-width));
-  gap: var(--quickdeck-command-gap);
+  grid-template-columns: minmax(var(--quickdeck-cockpit-min-width), 1fr) minmax(360px, var(--quickdeck-drawer-width));
+  gap: var(--quickdeck-cockpit-gap);
+}
+
+.quickdeck-center-cockpit,
+.quickdeck-right-drawer,
+.quickdeck-panel {
+  min-width: 0;
+  padding: var(--quickdeck-panel-padding);
 }
 
 .quickdeck-center-cockpit {
   gap: var(--quickdeck-cockpit-gap);
+}
+
+.quickdeck-panel-content {
   padding: var(--quickdeck-panel-padding);
-}
-
-.quickdeck-actor-header.quickdeck-cockpit-hero {
-  grid-template-columns: var(--quickdeck-portrait-size) minmax(0, 1fr) minmax(7rem, auto);
-  gap: clamp(0.46rem, 0.9vw, 0.78rem);
-  min-height: clamp(5.85rem, 10vw, 8.1rem);
-  padding: clamp(0.56rem, 0.85vw, 0.9rem);
-}
-
-.quickdeck-portrait-bezel {
-  flex-basis: var(--quickdeck-portrait-size);
-  width: var(--quickdeck-portrait-size);
-  height: var(--quickdeck-portrait-size);
-  padding: clamp(0.34rem, 0.5vw, 0.5rem);
-}
-
-.quickdeck-actor-identity h3 {
-  font-size: clamp(1.22rem, 2.4cqw, 1.9rem);
-}
-
-.quickdeck-actor-header-actions,
-.quickdeck-window-actions {
-  gap: clamp(0.3rem, 0.6vw, 0.55rem);
-}
-
-.quickdeck-combat-flow-controls {
-  gap: clamp(0.28rem, 0.6vw, 0.42rem);
-  padding: clamp(0.32rem, 0.6vw, 0.46rem);
-}
-
-.quickdeck-flow-button,
-.quickdeck-drop-token-button,
-.quickdeck-open-sheet-button,
-.quickdeck-open-pdf-sources-button,
-.quickdeck-minimize-button,
-.quickdeck-clear-button,
-.quickdeck-add-button {
-  min-height: var(--quickdeck-control-min-height);
 }
 
 .quickdeck-main-resources,
 .quickdeck-stats.quickdeck-main-resources {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(4.25rem, 0.56fr);
-  gap: clamp(0.3rem, 0.65vw, 0.5rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(4.6rem, 0.58fr);
+  gap: var(--quickdeck-resource-gap);
 }
 
 .quickdeck-main-resources .quickdeck-resource-card,
 .quickdeck-main-resources .quickdeck-move-card {
-  padding: clamp(0.42rem, 0.72vw, 0.62rem);
-}
-
-.quickdeck-resource-control {
-  gap: clamp(0.24rem, 0.5vw, 0.34rem);
-}
-
-.quickdeck-resource-value-line {
-  gap: clamp(0.18rem, 0.35vw, 0.26rem);
-}
-
-.quickdeck-resource-control button,
-.quickdeck-resource-stepper,
-.quickdeck-resource-value-line .quickdeck-resource-stepper {
-  width: clamp(1.35rem, 2.3vw, 1.55rem);
-  height: clamp(1.35rem, 2.3vw, 1.55rem);
-}
-
-.quickdeck-resource-value-line input {
-  width: clamp(2.45rem, 4.2vw, 2.95rem);
+  min-width: 0;
+  padding: clamp(0.42rem, 0.62vw, 0.58rem);
 }
 
 .quickdeck-defense-buttons {
-  grid-template-columns: repeat(3, minmax(4.1rem, var(--quickdeck-defense-size)));
+  grid-template-columns: repeat(3, minmax(4.15rem, var(--quickdeck-defense-size)));
+  gap: clamp(0.3rem, 0.55vw, 0.48rem);
   justify-content: center;
-  gap: var(--quickdeck-defense-gap);
-  padding: clamp(0.14rem, 0.42vw, 0.3rem);
-  overflow: visible;
 }
 
 .quickdeck-defense-button {
   aspect-ratio: 1 / 1;
   min-width: 0;
   min-height: 0;
-  padding: clamp(0.54rem, 1.4cqw, 0.86rem) clamp(0.28rem, 0.75cqw, 0.46rem) clamp(0.46rem, 1.1cqw, 0.74rem);
+  padding: clamp(0.58rem, 1vw, 0.82rem) 0.42rem clamp(0.48rem, 0.86vw, 0.72rem);
   grid-template-rows: auto auto;
   place-items: center;
 }
 
+.quickdeck-defense-button span,
+.quickdeck-defense-button strong {
+  max-width: 100%;
+  line-height: 1;
+  text-align: center;
+}
+
 .quickdeck-defense-button span {
-  font-size: clamp(0.54rem, 1.15cqw, 0.64rem);
+  font-size: clamp(0.54rem, 0.7vw, 0.62rem);
 }
 
 .quickdeck-defense-button strong {
-  font-size: clamp(1.06rem, 2.4cqw, 1.42rem);
-}
-
-.quickdeck-right-drawer {
-  min-width: 0;
-  gap: clamp(0.32rem, 0.65vw, 0.5rem);
-  padding: var(--quickdeck-panel-padding);
-}
-
-.quickdeck-drawer-tabs {
-  gap: clamp(0.18rem, 0.38vw, 0.3rem);
-  padding: clamp(0.3rem, 0.55vw, 0.45rem);
-}
-
-.quickdeck-drawer-tab,
-button.quickdeck-drawer-tab {
-  min-height: clamp(2.05rem, 3.2vw, 2.35rem);
-  padding: 0.22rem clamp(0.22rem, 0.44vw, 0.34rem);
-  font-size: clamp(0.62rem, 1.15cqw, 0.72rem);
-}
-
-.quickdeck-panel {
-  padding: var(--quickdeck-panel-padding);
-}
-
-.quickdeck-panel-content {
-  padding: clamp(0.48rem, 0.72vw, 0.62rem);
+  font-size: clamp(1.08rem, 1.22vw, 1.34rem);
 }
 
 .quickdeck-footer-hint {
   min-height: var(--quickdeck-footer-height);
-  padding: clamp(0.16rem, 0.45vw, 0.38rem) clamp(0.45rem, 1vw, 0.85rem);
+  padding-block: clamp(0.16rem, 0.36vw, 0.32rem);
 }
 
-.quickdeck-collapse-handle-left {
-  left: var(--quickdeck-shell-roster-width);
-}
+@media (max-width: 1280px) {
+  .gurps-quickdeck {
+    --quickdeck-defense-size: clamp(4rem, 6vw, 4.9rem);
+    --quickdeck-cockpit-gap: 0.52rem;
+    --quickdeck-panel-padding: 0.52rem;
+    --quickdeck-cockpit-min-width: 390px;
+  }
 
-@container quickdeck-desk (max-width: 900px) {
   .quickdeck-workbench,
   .quickdeck-main {
-    grid-template-columns:
-      minmax(min(100%, 320px), 1fr)
-      minmax(min(100%, 330px), clamp(330px, 40%, 430px));
-  }
-
-  .quickdeck-defense-buttons {
-    --quickdeck-defense-size: clamp(4.15rem, 15cqw, 5.1rem);
-  }
-
-  .quickdeck-actor-header.quickdeck-cockpit-hero,
-  .quickdeck-portrait-bezel {
-    --quickdeck-portrait-size: clamp(4.25rem, 9cqw, 5.4rem);
+    grid-template-columns: minmax(var(--quickdeck-cockpit-min-width), 1fr) minmax(350px, 0.9fr);
   }
 
   .quickdeck-actor-header.quickdeck-cockpit-hero {
-    grid-template-columns: var(--quickdeck-portrait-size) minmax(0, 1fr);
-  }
-
-  .quickdeck-actor-header-actions {
-    grid-column: 1 / -1;
-    flex-direction: row;
-  }
-
-  .quickdeck-combat-flow-controls {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.56rem;
+    padding: 0.66rem;
   }
 }
 
-@container quickdeck-desk (max-width: 760px) {
-  .quickdeck-defense-buttons {
-    --quickdeck-defense-size: clamp(4rem, 21cqw, 4.85rem);
-  }
-
-  .quickdeck-actor-header.quickdeck-cockpit-hero,
-  .quickdeck-portrait-bezel {
-    --quickdeck-portrait-size: clamp(4rem, 13cqw, 5rem);
+@media (max-width: 1080px) {
+  .gurps-quickdeck {
+    --quickdeck-defense-size: clamp(3.85rem, 12vw, 4.6rem);
+    --quickdeck-cockpit-gap: 0.48rem;
+    --quickdeck-panel-padding: 0.48rem;
   }
 
   .quickdeck-workbench,
@@ -4587,57 +4479,27 @@ button.quickdeck-drawer-tab {
     overflow-y: auto;
   }
 
-  .quickdeck-center-cockpit,
-  .quickdeck-right-drawer {
-    min-height: clamp(320px, 54vh, 420px);
-    overflow: visible;
+  .quickdeck-center-cockpit {
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .quickdeck-right-drawer {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto minmax(0, 1fr);
+    min-height: clamp(300px, 48vh, 400px);
+    overflow: hidden;
   }
 
-  .quickdeck-drawer-tabs {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .quickdeck-panel-content,
+  .quickdeck-center-cockpit {
+    scrollbar-gutter: stable;
   }
 }
 
-@container quickdeck-desk (max-width: 560px) {
-  .quickdeck-command-desk {
-    gap: 0.42rem;
-    padding: 0.42rem;
-  }
-
-  .quickdeck-center-cockpit,
-  .quickdeck-right-drawer,
-  .quickdeck-panel {
-    padding: 0.42rem;
-  }
-
-  .quickdeck-center-cockpit {
-    gap: 0.38rem;
-  }
-
-  .quickdeck-defense-buttons {
-    --quickdeck-defense-size: clamp(3.85rem, 25cqw, 4.5rem);
-  }
-
-  .quickdeck-top-bar,
-  .quickdeck-window-actions {
-    align-items: stretch;
-  }
-
-  .quickdeck-top-bar {
-    flex-wrap: wrap;
-  }
-
-  .quickdeck-window-actions {
-    width: 100%;
-  }
-
-  .quickdeck-window-actions > button {
-    flex: 1 1 8rem;
+@media (max-width: 760px) {
+  .gurps-quickdeck {
+    --quickdeck-defense-size: clamp(3.65rem, 17vw, 4.25rem);
+    --quickdeck-resource-gap: 0.34rem;
   }
 
   .quickdeck-main-resources,
@@ -4650,10 +4512,10 @@ button.quickdeck-drawer-tab {
   }
 
   .quickdeck-defense-buttons {
-    grid-template-columns: repeat(3, minmax(3.75rem, 1fr));
+    grid-template-columns: repeat(3, minmax(3.55rem, var(--quickdeck-defense-size)));
   }
 
-  .quickdeck-combat-flow-controls {
-    grid-template-columns: minmax(0, 1fr);
+  .quickdeck-drawer-tabs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
