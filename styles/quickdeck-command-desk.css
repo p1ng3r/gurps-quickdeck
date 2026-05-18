@@ -3117,3 +3117,43 @@
 .quickdeck-command-desk-shell .quickdeck-block-title-row > .quickdeck-clear-button {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.92);
 }
+
+/* v0.7.0 rotated ornate tab spine for collapsed drawer state. */
+.quickdeck-command-desk-shell .quickdeck-window-actions > .quickdeck-minimize-button,
+.quickdeck-command-desk-shell [data-action="minimize"] {
+  display: none !important;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-stack.is-collapsed {
+  position: relative;
+  width: 66px;
+  min-width: 66px;
+  overflow: visible;
+  justify-self: end;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tabs.is-collapsed {
+  position: absolute;
+  top: 6px;
+  right: -2px;
+  display: flex;
+  flex-direction: row;
+  gap: 0.28rem;
+  width: 256px;
+  padding: 0.28rem 0.2rem;
+  transform-origin: top right;
+  transform: rotate(90deg) translateY(-100%);
+  border-radius: 10px 10px 0 0;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-tabs.is-collapsed .quickdeck-drawer-tab,
+.gurps-quickdeck .quickdeck-command-desk-shell .quickdeck-drawer-tabs.is-collapsed .quickdeck-drawer-tab {
+  writing-mode: horizontal-tb;
+  transform: none;
+  min-height: 40px;
+  min-width: 0;
+  width: 60px;
+  padding: 0.32rem 0.28rem;
+  border-radius: 8px 8px 0 0;
+  text-align: center;
+}
