@@ -76,6 +76,18 @@ export class QuickDeckApp extends Application {
     });
   }
 
+  _getHeaderButtons() {
+    const buttons = super._getHeaderButtons();
+    buttons.unshift({
+      class: "quickdeck-header-minimize",
+      icon: "",
+      label: "−",
+      title: "Minimize QuickDeck",
+      onclick: () => this.toggleMinimizedState()
+    });
+    return buttons;
+  }
+
   getCombatActors() {
     return game.actors
       .filter((actor) => {
@@ -3489,11 +3501,6 @@ export class QuickDeckApp extends Application {
       }
     });
 
-    html.find("[data-action='toggle-minimize']").on("click", (event) => {
-      event.preventDefault();
-      this.toggleMinimizedState();
-    });
-
     html.find("[data-action='open-reference-index']").on("click", (event) => {
       event.preventDefault();
       this.openReferenceIndexManager();
@@ -3631,6 +3638,12 @@ export class QuickDeckApp extends Application {
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
 
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
+      this.render();
+    });
+
+    html.find("[data-action='collapse-drawer']").on("click", (event) => {
+      event.preventDefault();
+      this.activeDrawer = null;
       this.render();
     });
 

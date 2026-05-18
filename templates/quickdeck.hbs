@@ -125,7 +125,6 @@
   <main class="quickdeck-main">
     <div class="quickdeck-window-actions">
       <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Local Overrides" aria-label="Local Overrides">Overrides</button>
-      <button type="button" data-action="toggle-minimize" class="quickdeck-minimize-button" title="Minimize QuickDeck" aria-label="Minimize QuickDeck">−</button>
     </div>
     <section class="quickdeck-content">
       <div class="quickdeck-stage">
@@ -267,8 +266,8 @@
         {{/if}}
       </div>
 
-      <aside class="quickdeck-drawer-stack">
-        <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck side drawers">
+      <aside class="quickdeck-drawer-stack {{#unless activeDrawer}}is-collapsed{{/unless}}">
+        <nav class="quickdeck-drawer-tabs {{#unless activeDrawer}}is-collapsed{{/unless}}" aria-label="QuickDeck side drawers">
           <button
             type="button"
             data-action="toggle-drawer"
@@ -305,6 +304,17 @@
 
         {{#if activeDrawer}}
           <section class="quickdeck-panel">
+            <div class="quickdeck-drawer-panel-header">
+              <button
+                type="button"
+                data-action="collapse-drawer"
+                class="quickdeck-drawer-collapse-button"
+                title="Collapse drawer"
+                aria-label="Collapse drawer"
+              >
+                ‹
+              </button>
+            </div>
             {{#if activeActor}}
               {{#if isCombatDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-combat">
