@@ -13,7 +13,7 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition"
 };
-const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells", "settings"]);
+const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
@@ -1006,8 +1006,9 @@ export class QuickDeckApp extends Application {
     if (this.activeDrawer) return;
     const configuredDrawer = game.settings.get(MODULE_ID, SETTING_KEYS.DEFAULT_DRAWER);
     if (configuredDrawer === "none") return;
-    if (!VALID_DRAWERS.has(configuredDrawer)) return;
-    this.activeDrawer = configuredDrawer;
+    const drawer = configuredDrawer === "quick-skills" ? "skills" : configuredDrawer;
+    if (!VALID_DRAWERS.has(drawer)) return;
+    this.activeDrawer = drawer;
   }
 
   sanitizePersistentState() {
@@ -3627,7 +3628,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();
       const drawer = event.currentTarget.dataset.drawer;
-      if (!drawer) return;
+      if (!drawer || !VALID_DRAWERS.has(drawer)) return;
 
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.render();
