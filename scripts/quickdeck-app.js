@@ -2,6 +2,7 @@ import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
+const ART_PROTOTYPE_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-art-prototype.hbs";
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
@@ -18,6 +19,23 @@ const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
 
+
+
+export class QuickDeckArtPrototypeApp extends Application {
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      id: "gurps-quickdeck-art-prototype-app",
+      classes: ["gurps-quickdeck", "quickdeck-art-prototype-window"],
+      popOut: true,
+      minimizable: true,
+      resizable: true,
+      width: 1500,
+      height: 840,
+      title: "GURPS QuickDeck Art Prototype",
+      template: ART_PROTOTYPE_TEMPLATE_PATH
+    });
+  }
+}
 
 export class QuickDeckApp extends Application {
   constructor(options = {}) {

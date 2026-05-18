@@ -24,7 +24,8 @@
     "scripts/main.js"
   ],
   "styles": [
-    "styles/quickdeck.css"
+    "styles/quickdeck.css",
+    "styles/quickdeck-art-prototype.css"
   ],
   "languages": [],
   "url": "https://github.com/p1ng3r/gurps-quickdeck",
