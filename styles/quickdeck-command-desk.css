@@ -2844,3 +2844,87 @@
     padding: 0;
   }
 }
+
+/* v0.7 drawer favorites / no-pill command label cleanup. */
+.gurps-quickdeck,
+.gurps-quickdeck-app {
+  --qd-label-cushion-bg: transparent;
+  --qd-label-cushion-border: transparent;
+  --qd-label-text-shadow:
+    0 1px 1px rgba(0, 0, 0, 0.95),
+    0 0 4px rgba(0, 0, 0, 0.85),
+    0 0 6px rgba(218, 172, 74, 0.25),
+    0 2px 0 rgba(41, 22, 5, 0.84);
+  --qd-label-glow: rgba(244, 205, 121, 0.32);
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > button::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button[data-action="repeat-last-attack"]::before,
+.quickdeck-command-desk-shell .quickdeck-window-actions > button:hover:not(:disabled)::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button:hover:not(:disabled)::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button:hover:not(:disabled)::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button:hover:not(:disabled)::before,
+.quickdeck-command-desk-shell .quickdeck-window-actions > button:disabled::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button:disabled::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button:disabled::before,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button:disabled::before,
+.quickdeck-command-desk-shell .quickdeck-drawer-tab::before,
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab::before,
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab::before,
+.gurps-quickdeck .quickdeck-command-desk-shell .quickdeck-drawer-tab::before,
+.quickdeck-command-desk-shell .quickdeck-drawer-tab.is-active::before,
+.quickdeck-command-desk-shell .quickdeck-drawer-tab[aria-selected="true"]::before,
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab.is-active::before,
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab[aria-selected="true"]::before,
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab.is-active::before,
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab[aria-selected="true"]::before {
+  content: none;
+  display: none;
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button,
+.quickdeck-command-desk-shell .quickdeck-drawer-tab,
+.gurps-quickdeck.quickdeck-command-desk-shell .quickdeck-drawer-tab,
+.quickdeck-command-desk-shell.gurps-quickdeck .quickdeck-drawer-tab,
+.gurps-quickdeck .quickdeck-command-desk-shell .quickdeck-drawer-tab {
+  color: #fff0c5;
+  text-shadow: var(--qd-label-text-shadow);
+}
+
+.quickdeck-command-desk-shell .quickdeck-window-actions > button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit .quickdeck-flow-button:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-drawer-tab:hover:not(:disabled),
+.quickdeck-command-desk-shell .quickdeck-drawer-tab.is-active,
+.quickdeck-command-desk-shell .quickdeck-drawer-tab[aria-selected="true"] {
+  color: #fff8dc;
+  text-shadow:
+    var(--qd-label-text-shadow),
+    0 0 8px var(--qd-label-glow);
+}
+
+.quickdeck-command-desk-shell .quickdeck-stage {
+  grid-template-rows: minmax(0, auto);
+  align-content: start;
+}
+
+.quickdeck-command-desk-shell .quickdeck-skill-favorites {
+  margin-top: 0.58rem;
+  margin-bottom: 0.68rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-skill-favorites-list {
+  gap: 0.34rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-skill-favorites .quickdeck-skill-row {
+  min-height: 0;
+  padding-block: 0.38rem;
+}

@@ -259,69 +259,6 @@
             </div>
           </section>
 
-          <section class="quickdeck-cockpit-favorites" aria-label="Selected actor favorites">
-            <details class="quickdeck-cockpit-folder" open>
-              <summary>Combat Favorites <span>({{favoriteAttackCount}})</span></summary>
-              {{#if favoriteAttackCount}}
-                <div class="quickdeck-cockpit-favorite-list">
-                  {{#each favoriteAttacks as |attack|}}
-                    <article class="quickdeck-favorite-attack-card">
-                      <button type="button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-favorite-attack-main" title="Attack with {{attack.name}}">
-                        <span class="quickdeck-favorite-attack-name">{{attack.name}}</span>
-                        <span class="quickdeck-favorite-attack-meta">{{attack.type}} · {{#if attack.level}}{{attack.level}}{{else}}—{{/if}} · {{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</span>
-                      </button>
-                      <button type="button" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" class="quickdeck-favorite-toggle is-selected" title="Unpin attack" aria-label="Unpin attack">
-                        <i class="fas fa-star" aria-hidden="true"></i>
-                      </button>
-                    </article>
-                  {{/each}}
-                </div>
-              {{else}}
-                <p>Pin attacks with ★ for quick access.</p>
-              {{/if}}
-            </details>
-            <details class="quickdeck-cockpit-folder" open>
-              <summary>Spell Favorites <span>({{favoriteSpellCount}})</span></summary>
-              {{#if favoriteSpellCount}}
-                <div class="quickdeck-cockpit-favorite-list">
-                  {{#each favoriteSpells as |spell|}}
-                    <article class="quickdeck-favorite-spell-card">
-                      <button type="button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" class="quickdeck-favorite-attack-main quickdeck-favorite-spell-main" title="Cast {{spell.name}}">
-                        <span class="quickdeck-favorite-attack-name">{{spell.name}}</span>
-                        <span class="quickdeck-favorite-attack-meta">Level {{#if spell.level}}{{spell.level}}{{else}}—{{/if}}{{#if spell.class}} · {{spell.class}}{{/if}}{{#if spell.cost}} · Cost {{spell.cost}}{{/if}}</span>
-                      </button>
-                      <button type="button" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" class="quickdeck-favorite-toggle is-selected" title="Unpin spell" aria-label="Unpin spell">
-                        <i class="fas fa-star" aria-hidden="true"></i>
-                      </button>
-                    </article>
-                  {{/each}}
-                </div>
-              {{else}}
-                <p>Pin spells with ★ for quick access.</p>
-              {{/if}}
-            </details>
-            <details class="quickdeck-cockpit-folder" open>
-              <summary>Quick Skills <span>({{quickSkillsCount}})</span></summary>
-              {{#if indexedQuickSkills.length}}
-                <div class="quickdeck-cockpit-favorite-list">
-                  {{#each indexedQuickSkills as |skill|}}
-                    <article class="quickdeck-skill-row quickdeck-quick-skill-row is-quick-skill-selected">
-                      <div class="quickdeck-skill-main">
-                        <h5>{{skill.name}}</h5>
-                        <p class="quickdeck-skill-meta">Level {{skill.levelDisplay}}</p>
-                      </div>
-                      <div class="quickdeck-quick-skill-actions">
-                        <button type="button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" class="quickdeck-roll-button">Roll</button>
-                        <button type="button" data-action="unpin-quick-skill" data-actor-id="{{../activeActor.id}}" data-quick-skill-key="{{skill.quickSkillKey}}" class="quickdeck-unpin-button" title="Unpin skill" aria-label="Unpin skill"><i class="fas fa-times" aria-hidden="true"></i></button>
-                      </div>
-                    </article>
-                  {{/each}}
-                </div>
-              {{else}}
-                <p>Pin skills from the Skills tab for cockpit access.</p>
-              {{/if}}
-            </details>
-          </section>
         {{else}}
           <section class="quickdeck-selected-cockpit quickdeck-selected-cockpit-empty" aria-label="No selected actor">
             <h3>Select a roster actor</h3>
@@ -347,16 +284,6 @@
             class="quickdeck-drawer-tab {{#if isSkillsDrawerOpen}}is-active{{/if}}"
           >
             Skills
-          </button>
-          <button
-            type="button"
-            data-action="toggle-drawer"
-            data-drawer="quick-skills"
-            class="quickdeck-drawer-tab qd-hidden-drawer-tab {{#if isQuickSkillsDrawerOpen}}is-active{{/if}}"
-            aria-hidden="true"
-            tabindex="-1"
-          >
-            Quick Skills
           </button>
           <button
             type="button"
@@ -681,6 +608,45 @@
                       autocomplete="off"
                     />
 
+                    <section class="quickdeck-favorite-attacks quickdeck-skill-favorites" aria-label="Skill Favorites">
+                      <div class="quickdeck-favorite-attacks-heading">
+                        <h5>Skill Favorites</h5>
+                        {{#if quickSkillsCount}}
+                          <span>{{quickSkillsCount}} pinned</span>
+                        {{/if}}
+                      </div>
+                      {{#if indexedQuickSkills.length}}
+                        <div class="quickdeck-skills-list quickdeck-skill-favorites-list">
+                          {{#each indexedQuickSkills as |skill|}}
+                            <article class="quickdeck-skill-row quickdeck-quick-skill-row is-quick-skill-selected" data-search-row="quick-skills" data-search-text="{{skill.searchText}}">
+                              <div class="quickdeck-skill-main">
+                                <h5>
+                                  <button
+                                    type="button"
+                                    class="quickdeck-link-button"
+                                    data-action="open-reference"
+                                    data-ref-type="skill"
+                                    data-ref-name="{{skill.name}}"
+                                    data-ref-page="{{skill.pageHint}}"
+                                    data-ref-source="{{skill.reference}}"
+                                  >
+                                    {{skill.name}}
+                                  </button>
+                                </h5>
+                                <p class="quickdeck-skill-meta">Level {{skill.levelDisplay}}</p>
+                              </div>
+                              <div class="quickdeck-quick-skill-actions">
+                                <button type="button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" class="quickdeck-roll-button">Roll</button>
+                                <button type="button" data-action="unpin-quick-skill" data-actor-id="{{../activeActor.id}}" data-quick-skill-key="{{skill.quickSkillKey}}" class="quickdeck-unpin-button" title="Unpin skill" aria-label="Unpin skill"><i class="fas fa-times" aria-hidden="true"></i></button>
+                              </div>
+                            </article>
+                          {{/each}}
+                        </div>
+                      {{else}}
+                        <p class="quickdeck-favorite-attacks-hint">Pin skills with ★ for quick access.</p>
+                      {{/if}}
+                    </section>
+
                     {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
                         {{#each indexedSkills as |skill|}}
@@ -724,87 +690,6 @@
                       </div>
                     {{else}}
                       <p class="quickdeck-empty">No skills match this search.</p>
-                    {{/if}}
-                  </section>
-                </div>
-              {{/if}}
-
-              {{#if isQuickSkillsDrawerOpen}}
-                <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  {{!-- v0.7 keeps one visible cockpit Open Sheet button; duplicate drawer/compat buttons were removed because they caused background spam. --}}
-                  <section class="quickdeck-skills-section">
-                    <h4>
-                      Quick Skills (<span data-count="quick-skills-visible">{{visibleQuickSkillsCount}}</span> /
-                      <span data-count="quick-skills-total">{{quickSkillsCount}}</span>)
-                      <span class="quickdeck-section-note">Pinned only</span>
-                    </h4>
-                    <input
-                      type="search"
-                      class="quickdeck-drawer-search"
-                      value="{{quickSkillsSearch}}"
-                      data-action="quick-skills-search"
-                      placeholder="Search pinned skills..."
-                      autocomplete="off"
-                    />
-
-                    {{#if indexedQuickSkills.length}}
-                      <div class="quickdeck-skills-list">
-                        {{#each indexedQuickSkills as |skill|}}
-                          <article class="quickdeck-skill-row quickdeck-quick-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}" data-search-row="quick-skills" data-search-text="{{skill.searchText}}">
-                            <div class="quickdeck-skill-main">
-                              <h5>
-                                <button
-                                  type="button"
-                                  class="quickdeck-link-button"
-                                  data-action="open-reference"
-                                  data-ref-type="skill"
-                                  data-ref-name="{{skill.name}}"
-                                  data-ref-page="{{skill.pageHint}}"
-                                  data-ref-source="{{skill.reference}}"
-                                >
-                                  {{skill.name}}
-                                </button>
-                              </h5>
-                              <p class="quickdeck-skill-meta">
-                                <span>Level {{skill.levelDisplay}}</span>
-                                {{#if skill.relativeLevelDisplay}}
-                                  <span>Rel {{skill.relativeLevelDisplay}}</span>
-                                {{/if}}
-                                {{#if skill.pointsDisplay}}
-                                  <span>{{skill.pointsDisplay}} pts</span>
-                                {{/if}}
-                                {{#if skill.referenceDisplay}}
-                                  <span>{{skill.referenceDisplay}}</span>
-                                {{/if}}
-                              </p>
-                            </div>
-                            <div class="quickdeck-quick-skill-actions">
-                              <button
-                                type="button"
-                                data-action="roll-skill"
-                                data-actor-id="{{../activeActor.id}}"
-                                data-skill-index="{{skill.index}}"
-                                class="quickdeck-roll-button"
-                              >
-                                Roll
-                              </button>
-                              <button
-                                type="button"
-                                data-action="unpin-quick-skill"
-                                data-actor-id="{{../activeActor.id}}"
-                                data-skill-key="{{skill.quickSkillKey}}"
-                                class="quickdeck-unpin-button"
-                                title="Unpin {{skill.name}} from Quick Skills"
-                                aria-label="Unpin {{skill.name}} from Quick Skills"
-                              >
-                                ★
-                              </button>
-                            </div>
-                          </article>
-                        {{/each}}
-                      </div>
-                    {{else}}
-                      <p class="quickdeck-empty quickdeck-empty-compact">Pin skills from the Skills tab for quick access.</p>
                     {{/if}}
                   </section>
                 </div>
