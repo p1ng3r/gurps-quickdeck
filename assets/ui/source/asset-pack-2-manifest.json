@@ -1,0 +1,184 @@
+[
+  {
+    "path": "assets/ui/source/cockpit/qd-selected-actor-banner.webp",
+    "description": "Selected actor banner with portrait and action wells",
+    "size": [
+      680,
+      112
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-portrait-frame.webp",
+    "description": "Large portrait frame",
+    "size": [
+      120,
+      120
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      1,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-resource-card-hp.webp",
+    "description": "HP resource card with red bar",
+    "size": [
+      220,
+      86
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      1,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-resource-card-fp.webp",
+    "description": "FP resource card with blue bar",
+    "size": [
+      220,
+      86
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      1,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-resource-card-move.webp",
+    "description": "Move resource card",
+    "size": [
+      116,
+      86
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      1,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-small-square-minus.webp",
+    "description": "Small square minus button",
+    "size": [
+      36,
+      36
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      3,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-small-square-plus.webp",
+    "description": "Small square plus button",
+    "size": [
+      36,
+      36
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      3,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-defense-dodge-circle.webp",
+    "description": "Dodge circular defense icon with running figure",
+    "size": [
+      128,
+      128
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-defense-parry-circle.webp",
+    "description": "Parry circular defense icon with crossed swords",
+    "size": [
+      128,
+      128
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-defense-block-circle.webp",
+    "description": "Block circular defense icon with shield",
+    "size": [
+      128,
+      128
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-favorites-row.webp",
+    "description": "Favorites row frame",
+    "size": [
+      680,
+      66
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      1,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-collapsible-section-row.webp",
+    "description": "Collapsible section row frame",
+    "size": [
+      680,
+      66
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      1,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/cockpit/qd-collapsible-arrow.webp",
+    "description": "Small collapsible arrow button",
+    "size": [
+      34,
+      34
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      220
+    ],
+    "transparent": true
+  }
+]
