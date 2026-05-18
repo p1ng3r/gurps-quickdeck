@@ -2928,3 +2928,45 @@
   min-height: 0;
   padding-block: 0.38rem;
 }
+
+/* v0.7.0 drawer favorites usability follow-up fixes. */
+.quickdeck-command-desk-shell .quickdeck-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.quickdeck-command-desk-shell .quickdeck-panel-content,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-attacks-section,
+.quickdeck-command-desk-shell .quickdeck-panel .quickdeck-skills-section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+.quickdeck-command-desk-shell .quickdeck-drawer-sticky-tools {
+  position: sticky;
+  top: 0;
+  z-index: 6;
+  background: linear-gradient(180deg, rgba(22, 12, 5, 0.97), rgba(22, 12, 5, 0.9));
+}
+.quickdeck-command-desk-shell .quickdeck-drawer-scroll-content { min-height: 0; overflow: auto; }
+.quickdeck-command-desk-shell .quickdeck-collapsible-favorites > summary {
+  list-style: none; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+  padding: 0.3rem 0.48rem; border-radius: 8px; border: 1px solid rgba(198,153,55,0.42); background: rgba(18,10,4,0.56);
+}
+.quickdeck-command-desk-shell .quickdeck-collapsible-favorites > summary::-webkit-details-marker { display: none; }
+.quickdeck-command-desk-shell .quickdeck-collapsible-favorites > summary::after { content: "▾"; color: rgba(255,230,170,0.9); font-size: 0.84rem; }
+.quickdeck-command-desk-shell .quickdeck-collapsible-favorites:not([open]) > summary::after { content: "▸"; }
+.quickdeck-command-desk-shell .quickdeck-collapsible-favorites > summary h5 { margin: 0; }
+.quickdeck-command-desk-shell .quickdeck-window-actions { justify-content: flex-end; margin-bottom: 0.2rem; }
+.quickdeck-command-desk-shell .quickdeck-window-actions > .quickdeck-minimize-button { min-width: auto; padding: 0.2rem 0.45rem; font-size: 0.72rem; }
+.quickdeck-command-desk-shell .quickdeck-window-actions > .quickdeck-minimize-button::before { content: "— "; }
+.quickdeck-command-desk-shell .quickdeck-roster-button,
+.quickdeck-command-desk-shell .quickdeck-available-actor,
+.quickdeck-command-desk-shell .quickdeck-available-header,
+.quickdeck-command-desk-shell .quickdeck-block-title-row,
+.quickdeck-command-desk-shell .quickdeck-sidebar .quickdeck-badge,
+.quickdeck-command-desk-shell .quickdeck-type-pill,
+.quickdeck-command-desk-shell .quickdeck-combat-pill { background: transparent !important; box-shadow: none !important; }
+.quickdeck-command-desk-shell .quickdeck-roster-button *,
+.quickdeck-command-desk-shell .quickdeck-available-actor * { text-shadow: 0 1px 2px rgba(0,0,0,0.8); }
