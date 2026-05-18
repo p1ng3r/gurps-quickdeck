@@ -4153,3 +4153,204 @@ button.quickdeck-favorite-toggle { background: linear-gradient(180deg, rgba(84, 
 @media (max-width: 820px) {
   .quickdeck-combat-anchors { grid-template-columns: minmax(58px, 1fr); }
 }
+
+/* v0.6.1 component-scoped art restore: keep PR #211 shell safeguards, re-enable only bounded assets. */
+.quickdeck-top-bar {
+  background:
+    linear-gradient(90deg, rgba(32, 18, 8, 0.18), rgba(255, 226, 158, 0.05) 42%, rgba(32, 18, 8, 0.2)),
+    var(--quickdeck-art-top-bar) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(61, 36, 18, 0.96), rgba(14, 13, 15, 0.92));
+}
+
+.quickdeck-footer-hint {
+  background:
+    linear-gradient(90deg, rgba(8, 6, 4, 0.12), rgba(255, 230, 170, 0.04), rgba(8, 6, 4, 0.14)),
+    var(--quickdeck-art-footer-rail) center / 100% 100% no-repeat,
+    linear-gradient(90deg, rgba(45, 27, 13, 0.92), rgba(17, 14, 13, 0.9));
+}
+
+.quickdeck-main-resources .quickdeck-resource-card,
+.quickdeck-main-resources .quickdeck-move-card {
+  border: 0;
+  overflow: hidden;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  box-shadow: none;
+}
+
+.quickdeck-main-resources .quickdeck-resource-card-hp,
+.quickdeck-main-resources .quickdeck-resource-card:nth-of-type(1) {
+  background-image: var(--quickdeck-art-resource-card-hp);
+}
+
+.quickdeck-main-resources .quickdeck-resource-card-fp,
+.quickdeck-main-resources .quickdeck-resource-card:nth-of-type(2) {
+  background-image: var(--quickdeck-art-resource-card-fp);
+}
+
+.quickdeck-main-resources .quickdeck-move-card {
+  background-image: var(--quickdeck-art-resource-card-move);
+}
+
+.quickdeck-resource-stepper,
+.quickdeck-resource-value-line .quickdeck-resource-stepper {
+  border: 0;
+  border-radius: 6px;
+  color: #fff2c6;
+  text-shadow: 0 1px 1px rgba(22, 10, 3, 0.95);
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  box-shadow: none;
+}
+
+.quickdeck-resource-stepper-minus { background-image: var(--quickdeck-art-stepper-minus); }
+.quickdeck-resource-stepper-plus { background-image: var(--quickdeck-art-stepper-plus); }
+
+.quickdeck-defense-button {
+  border: 0;
+  border-radius: 50%;
+  padding: 0.86rem 0.42rem 0.74rem;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  box-shadow: none;
+}
+
+.quickdeck-defense-button[data-defense="Dodge"] { background-image: var(--quickdeck-art-defense-dodge); }
+.quickdeck-defense-button[data-defense="Parry"] { background-image: var(--quickdeck-art-defense-parry); }
+.quickdeck-defense-button[data-defense="Block"] { background-image: var(--quickdeck-art-defense-block); }
+
+.quickdeck-defense-button span,
+.quickdeck-defense-button strong {
+  max-width: 88%;
+  line-height: 1;
+  color: #fff2c6;
+  text-shadow: 0 1px 2px rgba(16, 7, 2, 0.98);
+}
+
+.quickdeck-defense-button span { font-size: clamp(0.56rem, 0.78vw, 0.64rem); }
+.quickdeck-defense-button strong { font-size: clamp(1.12rem, 1.35vw, 1.38rem); }
+
+.quickdeck-attack-card {
+  border: 0;
+  color: #2a1607;
+  background: var(--quickdeck-art-attack-card) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+.quickdeck-attack-card h5,
+.quickdeck-attack-card dt,
+.quickdeck-attack-card dd,
+.quickdeck-attack-mode {
+  color: #2a1607;
+  text-shadow: 0 1px 0 rgba(255, 239, 195, 0.58);
+}
+
+.quickdeck-combat-anchor,
+.quickdeck-target-anchor,
+.quickdeck-modifier-anchor,
+.quickdeck-target-opponent-button,
+.quickdeck-modifier-bucket-button,
+.quickdeck-combat-icon-tray {
+  min-height: 2.75rem;
+  max-height: 3.1rem;
+  border: 0;
+  border-radius: 10px;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  box-shadow: none;
+}
+
+.quickdeck-target-anchor,
+.quickdeck-target-opponent-button { background-image: var(--quickdeck-art-target-button); }
+.quickdeck-modifier-anchor,
+.quickdeck-modifier-bucket-button { background-image: var(--quickdeck-art-modifier-button); }
+.quickdeck-combat-icon-tray { background-image: var(--quickdeck-art-attack-button-square); }
+
+.quickdeck-combat-icon-tray .quickdeck-combat-icon:first-child {
+  background: var(--quickdeck-art-3d6-icon) center / contain no-repeat;
+}
+
+.quickdeck-anchor-label,
+.quickdeck-anchor-value,
+.quickdeck-modifier-bucket-total,
+.quickdeck-modifier-bucket-detail {
+  color: #fff0c6;
+  text-shadow: 0 1px 2px rgba(13, 6, 2, 0.96);
+}
+
+button.quickdeck-attack-button {
+  width: auto;
+  min-width: 4.35rem;
+  min-height: 2.75rem;
+  border: 0;
+  border-radius: 10px;
+  color: #fff0c6;
+  background: var(--quickdeck-art-attack-button-square) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+button.quickdeck-attack-button i {
+  background: var(--quickdeck-art-3d6-icon) center / contain no-repeat;
+  color: transparent;
+}
+
+button.quickdeck-favorite-toggle {
+  border: 0;
+  background: var(--quickdeck-art-star-button) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+.quickdeck-skill-row,
+.quickdeck-right-drawer article.quickdeck-skill-row,
+.quickdeck-right-drawer article.quickdeck-skill-row.quickdeck-quick-skill-row {
+  border: 0;
+  color: #241104;
+  background: var(--quickdeck-art-skill-card) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+.quickdeck-spell-row,
+.quickdeck-right-drawer article.quickdeck-skill-row.quickdeck-spell-row {
+  border: 0;
+  color: #241104;
+  background: var(--quickdeck-art-spell-row) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+.quickdeck-skill-row .quickdeck-skill-main,
+.quickdeck-spell-row .quickdeck-skill-main {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.quickdeck-skill-row .quickdeck-link-button,
+.quickdeck-skill-row p,
+.quickdeck-skill-meta,
+.quickdeck-spell-row .quickdeck-link-button,
+.quickdeck-spell-row p {
+  color: #241104;
+  text-shadow: 0 1px 0 rgba(255, 239, 190, 0.62);
+}
+
+.quickdeck-skill-row button.quickdeck-roll-button {
+  border: 0;
+  color: #fff1c8;
+  background: var(--quickdeck-art-skill-roll-button) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
+
+.quickdeck-spell-row button.quickdeck-roll-button {
+  border: 0;
+  color: #fff1c8;
+  background: var(--quickdeck-art-spell-roll-button) center / 100% 100% no-repeat;
+  box-shadow: none;
+}
