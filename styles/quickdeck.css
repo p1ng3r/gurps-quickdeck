@@ -3466,12 +3466,12 @@
 }
 
 
-/* v0.7.1 right-drawer closed state: keep drawer tabs available while removing dead space. */
+/* v0.7.1 right-drawer closed state: keep tab controls visible and hide only drawer body space. */
 .quickdeck-shell.is-right-drawer-closed {
-  grid-template-columns: clamp(280px, 20vw, 340px) minmax(460px, 1fr) clamp(72px, 7vw, 96px);
+  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 600px) clamp(360px, 24vw, 430px);
 }
 
 .quickdeck-command-desk-shell.quickdeck-shell.is-right-drawer-closed {
-  grid-template-columns: clamp(300px, 21vw, 360px) minmax(640px, 1fr) clamp(72px, 7vw, 96px);
-  min-width: 840px;
+  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 600px) clamp(360px, 24vw, 430px);
+  min-width: 1180px;
 }
