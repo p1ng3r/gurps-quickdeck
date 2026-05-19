@@ -13,7 +13,8 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
   LEFT_PANEL_COLLAPSED: "leftPanelCollapsed",
-  RIGHT_PANEL_COLLAPSED: "rightPanelCollapsed"
+  RIGHT_PANEL_COLLAPSED: "rightPanelCollapsed",
+  EXPANDED_WINDOW_WIDTH: "expandedWindowWidth"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
@@ -63,6 +64,8 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusLock = null;
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
+    this.expandedWindowWidth = 1580;
+    this._collapseWindowSizeInitialized = false;
     this.loadPersistedState();
   }
 
@@ -981,6 +984,7 @@ export class QuickDeckApp extends Application {
     this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
     this.leftPanelCollapsed = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.LEFT_PANEL_COLLAPSED));
     this.rightPanelCollapsed = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.RIGHT_PANEL_COLLAPSED));
+    this.expandedWindowWidth = Number(game.settings.get(MODULE_ID, SETTING_KEYS.EXPANDED_WINDOW_WIDTH)) || 1580;
 
     this._stateLoadedFromSettings = true;
   }
@@ -1029,15 +1033,52 @@ export class QuickDeckApp extends Application {
     game.settings.set(MODULE_ID, SETTING_KEYS.RIGHT_PANEL_COLLAPSED, Boolean(this.rightPanelCollapsed));
   }
 
+  getPanelCollapseLayoutWidth() {
+    if (this.leftPanelCollapsed && this.rightPanelCollapsed) return 860;
+    if (this.rightPanelCollapsed) return 1140;
+    if (this.leftPanelCollapsed) return 1300;
+    return Math.max(1500, Number(this.expandedWindowWidth) || 1580);
+  }
+
+  persistExpandedWindowWidth(width) {
+    const value = Number(width);
+    if (!Number.isFinite(value) || value < 1200) return;
+    this.expandedWindowWidth = value;
+    if (!game?.settings) return;
+    game.settings.set(MODULE_ID, SETTING_KEYS.EXPANDED_WINDOW_WIDTH, value);
+  }
+
+  applyPanelCollapseWindowSize({ rememberExpanded = false } = {}) {
+    const pos = this.position ?? {};
+    const currentWidth = Number(pos.width) || this.options?.width || 1580;
+    if (rememberExpanded && !this.leftPanelCollapsed && !this.rightPanelCollapsed) {
+      this.persistExpandedWindowWidth(currentWidth);
+    }
+
+    const targetWidth = this.getPanelCollapseLayoutWidth();
+    if (!Number.isFinite(targetWidth)) return;
+    if (Math.abs(currentWidth - targetWidth) < 2) return;
+
+    this.setPosition({ width: targetWidth, height: pos.height });
+  }
+
   toggleLeftPanelCollapsed() {
+    if (!this.leftPanelCollapsed && !this.rightPanelCollapsed) {
+      this.persistExpandedWindowWidth(this.position?.width);
+    }
     this.leftPanelCollapsed = !this.leftPanelCollapsed;
     this.persistPanelCollapseState();
+    this.applyPanelCollapseWindowSize();
     this.render(false, { focus: false });
   }
 
   toggleRightPanelCollapsed() {
+    if (!this.leftPanelCollapsed && !this.rightPanelCollapsed) {
+      this.persistExpandedWindowWidth(this.position?.width);
+    }
     this.rightPanelCollapsed = !this.rightPanelCollapsed;
     this.persistPanelCollapseState();
+    this.applyPanelCollapseWindowSize();
     this.render(false, { focus: false });
   }
 
@@ -3091,8 +3132,22 @@ export class QuickDeckApp extends Application {
     return super.close(options);
   }
 
+
+  setPosition(position = {}) {
+    const result = super.setPosition(position);
+    const width = Number(result?.width ?? position?.width);
+    if (!this.leftPanelCollapsed && !this.rightPanelCollapsed && Number.isFinite(width) && width >= 1200) {
+      this.persistExpandedWindowWidth(width);
+    }
+    return result;
+  }
+
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
+    if (!this._collapseWindowSizeInitialized) {
+      this.applyPanelCollapseWindowSize();
+      this._collapseWindowSizeInitialized = true;
+    }
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
     return result;

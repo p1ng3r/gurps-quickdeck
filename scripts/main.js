@@ -12,6 +12,7 @@ const SETTING_KEYS = {
   RESTORE_PILL_POSITION: "restorePillPosition",
   LEFT_PANEL_COLLAPSED: "leftPanelCollapsed",
   RIGHT_PANEL_COLLAPSED: "rightPanelCollapsed",
+  EXPANDED_WINDOW_WIDTH: "expandedWindowWidth",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY
 };
 let quickDeckApp = null;
@@ -134,6 +135,15 @@ Hooks.once("init", () => {
     default: false
   });
 
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.EXPANDED_WINDOW_WIDTH, {
+    name: "QuickDeck Expanded Window Width",
+    hint: "Client-side saved expanded QuickDeck width.",
+    scope: "client",
+    config: false,
+    type: Number,
+    default: 1580
+  });
   game.settings.register(MODULE_ID, SETTING_KEYS.REFERENCE_INDEX, {
     name: "QuickDeck Local Overrides Metadata",
     hint: "Client-side JSON list of manual local override entries used by QuickDeck Reference.",
