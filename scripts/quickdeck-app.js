@@ -3069,14 +3069,21 @@ export class QuickDeckApp extends Application {
   }
 
   getRightDrawerClosedWindowWidth() {
-    return 1380;
+    return 1240;
   }
 
   getRightDrawerOpenWindowWidth() {
     return this._rightDrawerOpenWindowWidth || this.position?.width || this.options?.width || 1580;
   }
 
+  syncRightDrawerClosedWindowClass() {
+    const root = this.element?.[0];
+    if (!root) return;
+    root.classList.toggle("is-right-drawer-closed", !this.activeDrawer);
+  }
+
   applyRightDrawerWindowSize() {
+    this.syncRightDrawerClosedWindowClass();
     const targetWidth = this.activeDrawer
       ? this.getRightDrawerOpenWindowWidth()
       : this.getRightDrawerClosedWindowWidth();
@@ -3090,6 +3097,8 @@ export class QuickDeckApp extends Application {
 
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
+    this.syncRightDrawerClosedWindowClass();
+    this.applyRightDrawerWindowSize();
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
     return result;
