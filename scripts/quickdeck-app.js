@@ -1930,13 +1930,27 @@ export class QuickDeckApp extends Application {
     this.scheduleNativeWindowFocus(this._lastNativeWindowIds);
   }
 
+  changeSidebarTab(tabName) {
+    try {
+      const sidebar = ui?.sidebar;
+      if (typeof sidebar?.changeTab === "function") {
+        sidebar.changeTab(tabName);
+        return;
+      }
+      if (typeof sidebar?.activateTab === "function") {
+        sidebar.activateTab(tabName);
+      }
+    } catch (_error) {
+      // Sidebar focus is best-effort only.
+    }
+  }
+
   focusChatSidebar() {
     try {
       ui?.sidebar?.expand?.();
-      ui?.sidebar?.activateTab?.("chat");
+      this.changeSidebarTab("chat");
       ui?.chat?.render?.(true);
-      ui?.chat?.bringToFront?.();
-      ui?.chat?.bringToTop?.();
+      this.raiseNativeWindow(ui?.chat);
     } catch (_error) {
       // Chat focus is best-effort and must not block native GURPS handling.
     }
@@ -3083,7 +3097,7 @@ export class QuickDeckApp extends Application {
       this.bringNativeWindowsToFront(this._nativeWindowFocusLock.previousWindowIds);
       return;
     }
-    this.bringToTop();
+    this.raiseNativeWindow(this);
   }
 
   ensureFloatingRestoreIcon() {
