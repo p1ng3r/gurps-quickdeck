@@ -3248,3 +3248,53 @@
 .quickdeck-command-desk-shell .quickdeck-available-list {
   overflow: auto;
 }
+
+/* v0.7.1 center-panel correction after true 3-panel split. */
+.quickdeck-command-desk-shell.quickdeck-shell {
+  grid-template-columns: clamp(300px, 21vw, 360px) minmax(640px, 1fr) clamp(320px, 26vw, 430px);
+}
+
+.quickdeck-command-desk-shell .quickdeck-center-panel {
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.quickdeck-command-desk-shell .quickdeck-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+}
+
+.quickdeck-command-desk-shell .quickdeck-stage {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  min-height: 0;
+  flex: 1 1 auto;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit,
+.quickdeck-command-desk-shell .quickdeck-actor-header,
+.quickdeck-command-desk-shell .quickdeck-combat-flow-controls,
+.quickdeck-command-desk-shell .quickdeck-main-resources,
+.quickdeck-command-desk-shell .quickdeck-defense-buttons {
+  width: 100%;
+  max-width: none;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.quickdeck-command-desk-shell .quickdeck-actor-header-actions {
+  min-width: 0;
+}
