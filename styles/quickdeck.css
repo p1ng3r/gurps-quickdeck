@@ -3468,10 +3468,10 @@
 
 /* v0.7.1 right-drawer closed state: keep tab controls visible and hide only drawer body space. */
 .quickdeck-shell.is-right-drawer-closed {
-  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 600px) clamp(360px, 24vw, 430px);
+  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 580px) clamp(360px, 24vw, 420px);
 }
 
 .quickdeck-command-desk-shell.quickdeck-shell.is-right-drawer-closed {
-  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 600px) clamp(360px, 24vw, 430px);
-  min-width: 1180px;
+  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 580px) clamp(360px, 24vw, 420px);
+  min-width: 1120px;
 }
