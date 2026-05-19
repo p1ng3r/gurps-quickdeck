@@ -1,0 +1,42 @@
+.gurps-quickdeck.is-right-drawer-closed {
+  --quickdeck-window-min-width: min(1040px, calc(100vw - 48px));
+  min-width: var(--quickdeck-window-min-width);
+}
+
+.gurps-quickdeck.is-right-drawer-closed .quickdeck-shell.is-right-drawer-closed,
+.gurps-quickdeck.is-right-drawer-closed .quickdeck-command-desk-shell.quickdeck-shell.is-right-drawer-closed {
+  grid-template-columns: clamp(280px, 20vw, 320px) clamp(460px, 36vw, 560px) 64px;
+  min-width: 0;
+}
+
+.gurps-quickdeck.is-right-drawer-closed .quickdeck-right-panel {
+  width: 64px;
+  max-width: 64px;
+  min-width: 0;
+  overflow: visible;
+}
+
+.gurps-quickdeck.is-right-drawer-closed .quickdeck-drawer-tabs {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.45rem;
+  width: 64px;
+  height: 100%;
+  margin: 0;
+}
+
+.gurps-quickdeck.is-right-drawer-closed .quickdeck-drawer-tab {
+  width: 2.75rem;
+  height: 7.4rem;
+  min-width: 2.75rem;
+  min-height: 7.4rem;
+  padding: 0.28rem 0.18rem;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  text-align: center;
+}
+
+.gurps-quickdeck.is-right-drawer-closed .quickdeck-panel {
+  display: none;
+}
