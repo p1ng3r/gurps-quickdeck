@@ -1,6 +1,6 @@
 <section class="quickdeck-shell quickdeck-command-desk-shell">
   <div class="quickdeck-dev-badge" aria-hidden="true">QD v0.7 OpenSheet Fix</div>
-  <aside class="quickdeck-sidebar">
+  <aside class="quickdeck-sidebar quickdeck-left-panel" aria-label="QuickDeck left panel">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
         <h3>QuickDeck Roster <span class="quickdeck-badge">{{rosterCount}}</span></h3>
@@ -122,7 +122,7 @@
     </section>
   </aside>
 
-  <main class="quickdeck-main">
+  <main class="quickdeck-main quickdeck-center-panel" aria-label="QuickDeck center panel">
     <div class="quickdeck-window-actions">
       <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Local Overrides" aria-label="Local Overrides">Overrides</button>
     </div>
@@ -267,7 +267,7 @@
         {{/if}}
       </div>
 
-      <aside class="quickdeck-drawer-stack">
+      <aside class="quickdeck-drawer-stack quickdeck-right-panel" aria-label="QuickDeck right panel">
         <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck side drawers">
           <button
             type="button"

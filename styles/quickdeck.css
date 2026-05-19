@@ -3404,3 +3404,63 @@
   overflow: hidden !important;
   pointer-events: none !important;
 }
+
+/* v0.7.1 foundation: explicit three-panel shell sizing and internal scroll boundaries. */
+.quickdeck-shell {
+  grid-template-columns: clamp(255px, 22vw, 320px) minmax(0, 1fr) clamp(300px, 28vw, 430px);
+  align-items: stretch;
+}
+
+.quickdeck-left-panel,
+.quickdeck-center-panel,
+.quickdeck-right-panel,
+.quickdeck-content,
+.quickdeck-stage,
+.quickdeck-drawer-stack,
+.quickdeck-panel,
+.quickdeck-panel-content,
+.quickdeck-sidebar-block,
+.quickdeck-roster-list,
+.quickdeck-available-list {
+  min-width: 0;
+  min-height: 0;
+}
+
+.quickdeck-shell,
+.quickdeck-left-panel,
+.quickdeck-center-panel,
+.quickdeck-right-panel,
+.quickdeck-content,
+.quickdeck-panel {
+  overflow: hidden;
+}
+
+.quickdeck-left-panel {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.quickdeck-center-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.quickdeck-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.quickdeck-stage {
+  overflow: auto;
+}
+
+.quickdeck-right-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.quickdeck-panel-content,
+.quickdeck-drawer-scroll-content {
+  overflow: auto;
+}

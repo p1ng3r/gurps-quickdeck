@@ -3208,3 +3208,43 @@
   min-height: 26px;
   font-size: 1.45rem;
 }
+
+/* v0.7.1 foundation overrides: keep command-desk styling while enforcing three-panel stability. */
+.quickdeck-command-desk-shell.quickdeck-shell {
+  grid-template-columns: clamp(255px, 22vw, 315px) minmax(0, 1fr) clamp(320px, 30vw, 450px);
+  min-width: 980px;
+}
+
+.quickdeck-command-desk-shell .quickdeck-left-panel,
+.quickdeck-command-desk-shell .quickdeck-center-panel,
+.quickdeck-command-desk-shell .quickdeck-right-panel {
+  min-width: 0;
+  min-height: 0;
+}
+
+.quickdeck-command-desk-shell .quickdeck-left-panel {
+  overflow: hidden;
+}
+
+.quickdeck-command-desk-shell .quickdeck-center-panel {
+  overflow: hidden;
+}
+
+.quickdeck-command-desk-shell .quickdeck-right-panel,
+.quickdeck-command-desk-shell .quickdeck-panel,
+.quickdeck-command-desk-shell .quickdeck-panel-content,
+.quickdeck-command-desk-shell .quickdeck-drawer-scroll-content {
+  min-height: 0;
+}
+
+.quickdeck-command-desk-shell .quickdeck-drawer-stack {
+  overflow: hidden;
+}
+
+.quickdeck-command-desk-shell .quickdeck-panel-content,
+.quickdeck-command-desk-shell .quickdeck-drawer-scroll-content,
+.quickdeck-command-desk-shell .quickdeck-stage,
+.quickdeck-command-desk-shell .quickdeck-roster-list,
+.quickdeck-command-desk-shell .quickdeck-available-list {
+  overflow: auto;
+}
