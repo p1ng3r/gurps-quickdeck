@@ -3464,3 +3464,18 @@
 .quickdeck-drawer-scroll-content {
   overflow: auto;
 }
+
+
+/* v0.7.1 right-drawer closed state: remove right-column dead space when no drawer is active. */
+.quickdeck-shell.is-right-drawer-closed {
+  grid-template-columns: clamp(280px, 20vw, 340px) minmax(460px, 1fr);
+}
+
+.quickdeck-shell.is-right-drawer-closed .quickdeck-right-panel {
+  display: none;
+}
+
+.quickdeck-command-desk-shell.quickdeck-shell.is-right-drawer-closed {
+  grid-template-columns: clamp(300px, 21vw, 360px) minmax(640px, 1fr);
+  min-width: 760px;
+}
