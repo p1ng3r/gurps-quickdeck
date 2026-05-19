@@ -24,7 +24,7 @@ export class QuickDeckApp extends Application {
     super(options);
     this.rosterActorIds = [];
     this.activeActorId = null;
-    this.activeDrawer = null;
+    this.activeDrawer = "combat";
     this.availableSearch = "";
     this.combatSearch = "";
     this.skillsSearch = "";
@@ -3400,6 +3400,25 @@ export class QuickDeckApp extends Application {
     const maxHp = derivedData.maxHp;
     const maxFp = derivedData.maxFp;
 
+    const activeActorPoints = activeActor
+      ? this.getFirstDefinedValue(activeActor, [
+          "system.totalpoints.value",
+          "system.totalpoints",
+          "system.points.total",
+          "system.points",
+          "system.traits.points.total",
+          "system.calc.points",
+          "system.attributes.points",
+          "data.data.totalpoints.value",
+          "data.data.totalpoints",
+          "data.data.points.total",
+          "data.data.points"
+        ])
+      : null;
+    const activeActorPointsDisplay = ["number", "string"].includes(typeof activeActorPoints)
+      ? String(activeActorPoints)
+      : null;
+
     const gurpsData = {
       hp: currentHp ?? null,
       fp: currentFp ?? null,
@@ -3464,7 +3483,8 @@ export class QuickDeckApp extends Application {
             id: activeActor.id,
             name: activeActor.name,
             img: activeActor.img || "icons/svg/mystery-man.svg",
-            actorType: activeActor.type ? String(activeActor.type) : null
+            actorType: activeActor.type ? String(activeActor.type) : null,
+            pointsDisplay: activeActorPointsDisplay
           }
         : null,
       activeActorName: activeActor?.name ?? null,
@@ -3688,7 +3708,7 @@ export class QuickDeckApp extends Application {
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
 
-      this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
+      this.activeDrawer = drawer;
       this.render();
     });
 

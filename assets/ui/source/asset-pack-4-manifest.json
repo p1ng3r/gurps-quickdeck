@@ -1,0 +1,100 @@
+[
+  {
+    "path": "assets/ui/source/popout/qd-reference-scroll-frame.webp",
+    "description": "Full reference popout scroll frame without attack-specific art",
+    "size": [
+      360,
+      680
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/popout/qd-reference-scroll-body.webp",
+    "description": "Plain parchment scroll body for reference info",
+    "size": [
+      320,
+      540
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/popout/qd-reference-title-band.webp",
+    "description": "Reference popout title band",
+    "size": [
+      320,
+      48
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      3,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/popout/qd-reference-close-button.webp",
+    "description": "Reference popout close button",
+    "size": [
+      42,
+      42
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      5,
+      255
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/popout/qd-reference-section-divider.webp",
+    "description": "Reference scroll section divider",
+    "size": [
+      320,
+      22
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      0,
+      110
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/popout/qd-reference-related-row.webp",
+    "description": "Related attacks/reference row",
+    "size": [
+      320,
+      58
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      3,
+      220
+    ],
+    "transparent": true
+  },
+  {
+    "path": "assets/ui/source/popout/qd-reference-small-footer.webp",
+    "description": "Small reference footer rail",
+    "size": [
+      320,
+      40
+    ],
+    "quality": 75,
+    "alpha_extrema": [
+      4,
+      255
+    ],
+    "transparent": true
+  }
+]

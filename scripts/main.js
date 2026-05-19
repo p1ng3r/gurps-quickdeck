@@ -18,7 +18,13 @@ function openQuickDeck() {
     quickDeckApp = new QuickDeckApp();
   }
 
-  quickDeckApp.render(true);
+  if (typeof quickDeckApp.restoreAndBringToFront === "function") {
+    quickDeckApp.restoreAndBringToFront();
+  } else {
+    quickDeckApp.isMinimized = false;
+    quickDeckApp.persistMinimizedState?.();
+    quickDeckApp.render(true);
+  }
   return quickDeckApp;
 }
 
@@ -90,9 +96,11 @@ Hooks.once("init", () => {
       combat: "Combat",
       skills: "Skills",
       "quick-skills": "Quick Skills",
-      spells: "Spells"
+      spells: "Spells",
+      reference: "Reference",
+      settings: "Settings"
     },
-    default: "none"
+    default: "combat"
   });
 
   game.settings.register(MODULE_ID, SETTING_KEYS.MINIMIZED, {
