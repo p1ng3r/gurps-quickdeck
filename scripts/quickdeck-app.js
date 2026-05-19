@@ -1734,18 +1734,27 @@ export class QuickDeckApp extends Application {
     }
   }
 
+  raiseNativeWindow(app) {
+    try {
+      if (typeof app?.bringToFront === "function") {
+        app.bringToFront();
+        return;
+      }
+      if (typeof app?.bringToTop === "function") {
+        app.bringToTop();
+      }
+    } catch (_error) {
+      // Native window focus is best-effort only.
+    }
+  }
+
   lowerQuickDeckBelow(app) {
     const quickDeckElement = this.getQuickDeckWindowElement();
     if (!quickDeckElement) return;
 
     let nativeZIndex = this.getWindowZIndex(app);
     if (!Number.isFinite(nativeZIndex)) {
-      try {
-        app?.bringToFront?.();
-        app?.bringToTop?.();
-      } catch (_error) {
-        // Native window focus is best-effort only.
-      }
+      this.raiseNativeWindow(app);
       nativeZIndex = this.getWindowZIndex(app);
     }
 
@@ -1754,12 +1763,7 @@ export class QuickDeckApp extends Application {
   }
 
   focusNativeWindow(app) {
-    try {
-      app?.bringToFront?.();
-      app?.bringToTop?.();
-    } catch (_error) {
-      // Native window focus is best-effort only.
-    }
+    this.raiseNativeWindow(app);
 
     this.lowerQuickDeckBelow(app);
 
