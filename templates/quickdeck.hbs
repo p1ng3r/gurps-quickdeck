@@ -425,160 +425,120 @@
                               </div>
                             </dl>
 
-                            <div class="quickdeck-combat-anchors" aria-label="Future combat workflow anchors">
-                              <button
-                                type="button"
-                                class="quickdeck-combat-anchor quickdeck-target-anchor quickdeck-target-opponent-button"
-                                data-action="target-opponent"
-                                data-attack-index="{{attack.index}}"
-                                data-layout-anchor="target-opponent-display"
-                                {{#if ../isTargetOpponentModeActive}}disabled{{/if}}
-                              >
-                                <span class="quickdeck-combat-icon" aria-hidden="true"><i class="fas fa-user-shield"></i></span>
-                                <span class="quickdeck-target-anchor-copy">
-                                  <span class="quickdeck-anchor-label">Target Opponent</span>
-                                  <span class="quickdeck-anchor-value">{{../currentTargetName}}</span>
-                                </span>
-                              </button>
-                              <button
-                                type="button"
-                                class="quickdeck-combat-anchor quickdeck-modifier-anchor quickdeck-modifier-bucket-button {{../modifierBucketStatus.cssClass}}"
-                                data-action="open-modifier-bucket"
-                                data-actor-id="{{../activeActor.id}}"
-                                data-layout-anchor="modifier-bucket-display"
-                                title="{{../modifierBucketStatus.stateLabel}}: {{../modifierBucketStatus.detailLabel}}"
-                                aria-label="Open native GURPS ModifierBucket: {{../modifierBucketStatus.detailLabel}}"
-                              >
-                                <span class="quickdeck-combat-icon quickdeck-modifier-bucket-icon" aria-hidden="true"><i class="fas fa-sliders-h"></i></span>
-                                <span class="quickdeck-modifier-bucket-copy">
-                                  <span class="quickdeck-anchor-label">Modifiers</span>
-                                  <span class="quickdeck-anchor-value quickdeck-modifier-bucket-value">
-                                    <span class="quickdeck-modifier-bucket-total">{{../modifierBucketStatus.totalText}}</span>
-                                    <span class="quickdeck-modifier-bucket-detail">{{../modifierBucketStatus.detailLabel}}</span>
-                                  </span>
-                                </span>
-                              </button>
-                              <div class="quickdeck-combat-icon-tray" data-layout-anchor="combat-modifier-icons" aria-label="Combat modifier icons placeholder">
-                                <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-dice-three"></i></span>
-                                <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-bullseye"></i></span>
-                              </div>
-                            </div>
+          <section class="quickdeck-favorite-attacks" aria-label="Combat Favorites">
+            <div class="quickdeck-favorite-attacks-heading">
+              <h5>Combat Favorites</h5>
+              {{#if favoriteAttackCount}}<span>{{favoriteAttackCount}} pinned</span>{{/if}}
+            </div>
+            {{#if favoriteAttackCount}}
+              <div class="quickdeck-favorite-attacks-list">
+                {{#each favoriteAttacks as |attack|}}
+                  <article class="quickdeck-favorite-attack-card">
+                    <button type="button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-favorite-attack-main" title="Attack with {{attack.name}}">
+                      <span class="quickdeck-favorite-attack-name">{{attack.name}}</span>
+                      <span class="quickdeck-favorite-attack-meta">{{attack.type}} · {{#if attack.level}}{{attack.level}}{{else}}—{{/if}} · {{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</span>
+                    </button>
+                    <button type="button" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" class="quickdeck-favorite-toggle is-selected" title="Unpin attack" aria-label="Unpin attack"><i class="fas fa-star" aria-hidden="true"></i></button>
+                  </article>
+                {{/each}}
+              </div>
+            {{else}}
+              <p class="quickdeck-favorite-attacks-hint">Pin attacks with ★ for quick access.</p>
+            {{/if}}
+          </section>
 
-                            <div class="quickdeck-attack-actions">
-                              <button
-                                type="button"
-                                data-action="roll-attack"
-                                data-actor-id="{{../activeActor.id}}"
-                                data-attack-index="{{attack.index}}"
-                                class="quickdeck-roll-button quickdeck-attack-button"
-                              >
-                                <i class="fas fa-dice-d6" aria-hidden="true"></i>
-                                <span>Attack</span>
-                              </button>
-                              {{#if attack.showDamageFollowup}}
-                                <button
-                                  type="button"
-                                  data-action="roll-damage"
-                                  data-actor-id="{{../activeActor.id}}"
-                                  data-attack-index="{{attack.index}}"
-                                  class="quickdeck-roll-button quickdeck-roll-button-secondary"
-                                >
-                                  Show Native Damage
-                                </button>
-                              {{/if}}
-                            </div>
-                          </article>
-                        {{/each}}
-                      </div>
-                      <h5 class="quickdeck-subsection-title">Ranged</h5>
-                      <div class="quickdeck-attacks-list">
-                        {{#each rangedAttacks as |attack|}}
-                          <article class="quickdeck-attack-card" data-search-row="combat" data-search-text="{{attack.searchText}}">
-                            <header class="quickdeck-attack-card-header">
-                              <div class="quickdeck-attack-title-row">
-                                <span class="quickdeck-combat-icon quickdeck-attack-icon" aria-hidden="true">
-                                  <i class="fas fa-bullseye"></i>
-                                </span>
-                                <div class="quickdeck-attack-title-block">
-                                  <h5>{{attack.name}}</h5>
-                                  <span class="quickdeck-attack-mode">{{attack.type}}</span>
-                                </div>
-                                <button
-                                  type="button"
-                                  data-action="toggle-favorite-attack"
-                                  data-actor-id="{{../activeActor.id}}"
-                                  data-attack-key="{{attack.attackKey}}"
-                                  class="quickdeck-favorite-toggle {{#if attack.isFavoriteAttack}}is-selected{{/if}}"
-                                  title="{{attack.favoriteToggleLabel}}"
-                                  aria-label="{{attack.favoriteToggleLabel}}"
-                                >
-                                  {{#if attack.isFavoriteAttack}}
-                                    <i class="fas fa-star" aria-hidden="true"></i>
-                                  {{else}}
-                                    <i class="far fa-star" aria-hidden="true"></i>
-                                  {{/if}}
-                                </button>
-                              </div>
-                            </header>
+          <section class="quickdeck-favorite-attacks quickdeck-favorite-spells" aria-label="Favorite Spells">
+            <div class="quickdeck-favorite-attacks-heading">
+              <h5>Spell Favorites</h5>
+              {{#if favoriteSpellCount}}<span>{{favoriteSpellCount}} pinned</span>{{/if}}
+            </div>
+            {{#if favoriteSpellCount}}
+              <div class="quickdeck-favorite-attacks-list quickdeck-favorite-spells-list">
+                {{#each favoriteSpells as |spell|}}
+                  <article class="quickdeck-favorite-attack-card quickdeck-favorite-spell-card">
+                    <button type="button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" class="quickdeck-favorite-attack-main quickdeck-favorite-spell-main" title="Cast {{spell.name}}">
+                      <span class="quickdeck-favorite-attack-name">{{spell.name}}</span>
+                      <span class="quickdeck-favorite-attack-meta">Level {{#if spell.level}}{{spell.level}}{{else}}—{{/if}}{{#if spell.class}} · {{spell.class}}{{/if}}{{#if spell.cost}} · Cost {{spell.cost}}{{/if}}</span>
+                    </button>
+                    <button type="button" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" class="quickdeck-favorite-toggle is-selected" title="Unpin spell" aria-label="Unpin spell"><i class="fas fa-star" aria-hidden="true"></i></button>
+                  </article>
+                {{/each}}
+              </div>
+            {{else}}
+              <p class="quickdeck-favorite-attacks-hint">Pin spells with ★ for quick access.</p>
+            {{/if}}
+          </section>
 
-                            <dl class="quickdeck-attack-stats quickdeck-attack-stats-compact">
-                              <div>
-                                <dt>Level/Skill</dt>
-                                <dd>{{#if attack.level}}{{attack.level}}{{else}}—{{/if}}</dd>
-                              </div>
-                              <div>
-                                <dt>Damage</dt>
-                                <dd>{{#if attack.damage}}{{attack.damage}}{{else}}—{{/if}}</dd>
-                              </div>
-                            </dl>
+          <section class="quickdeck-pinned-skills-summary" aria-label="Pinned Quick Skills">
+            <div class="quickdeck-favorite-attacks-heading">
+              <h5>Quick Skills</h5>
+              {{#if quickSkillsCount}}<span>{{quickSkillsCount}} pinned</span>{{/if}}
+            </div>
+            {{#if quickSkillsCount}}
+              <div class="quickdeck-pinned-skills-list">
+                {{#each indexedQuickSkills as |skill|}}
+                  <article class="quickdeck-pinned-skill-chip">
+                    <button type="button" class="quickdeck-link-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.pageHint}}" data-ref-source="{{skill.reference}}">{{skill.name}}</button>
+                    <button type="button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" class="quickdeck-roll-button">Skill</button>
+                  </article>
+                {{/each}}
+              </div>
+            {{else}}
+              <p class="quickdeck-favorite-attacks-hint">Pin skills from the Skills tab for cockpit access.</p>
+            {{/if}}
+          </section>
+        {{else}}
+          <div class="quickdeck-cockpit-empty">
+            <h3>No actor selected</h3>
+            <p>Select a roster actor on the left to populate the central cockpit.</p>
+          </div>
+        {{/if}}
+      </section>
 
-                            <div class="quickdeck-combat-anchors" aria-label="Future combat workflow anchors">
-                              <button
-                                type="button"
-                                class="quickdeck-combat-anchor quickdeck-target-anchor quickdeck-target-opponent-button"
-                                data-action="target-opponent"
-                                data-attack-index="{{attack.index}}"
-                                data-layout-anchor="target-opponent-display"
-                                {{#if ../isTargetOpponentModeActive}}disabled{{/if}}
-                              >
-                                <span class="quickdeck-combat-icon" aria-hidden="true"><i class="fas fa-user-shield"></i></span>
-                                <span class="quickdeck-target-anchor-copy">
-                                  <span class="quickdeck-anchor-label">Target Opponent</span>
-                                  <span class="quickdeck-anchor-value">{{../currentTargetName}}</span>
-                                </span>
-                              </button>
-                              <button
-                                type="button"
-                                class="quickdeck-combat-anchor quickdeck-modifier-anchor quickdeck-modifier-bucket-button {{../modifierBucketStatus.cssClass}}"
-                                data-action="open-modifier-bucket"
-                                data-actor-id="{{../activeActor.id}}"
-                                data-layout-anchor="modifier-bucket-display"
-                                title="{{../modifierBucketStatus.stateLabel}}: {{../modifierBucketStatus.detailLabel}}"
-                                aria-label="Open native GURPS ModifierBucket: {{../modifierBucketStatus.detailLabel}}"
-                              >
-                                <span class="quickdeck-combat-icon quickdeck-modifier-bucket-icon" aria-hidden="true"><i class="fas fa-sliders-h"></i></span>
-                                <span class="quickdeck-modifier-bucket-copy">
-                                  <span class="quickdeck-anchor-label">Modifiers</span>
-                                  <span class="quickdeck-anchor-value quickdeck-modifier-bucket-value">
-                                    <span class="quickdeck-modifier-bucket-total">{{../modifierBucketStatus.totalText}}</span>
-                                    <span class="quickdeck-modifier-bucket-detail">{{../modifierBucketStatus.detailLabel}}</span>
-                                  </span>
-                                </span>
-                              </button>
-                              <div class="quickdeck-combat-icon-tray" data-layout-anchor="combat-modifier-icons" aria-label="Combat modifier icons placeholder">
-                                <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-dice-three"></i></span>
-                                <span class="quickdeck-combat-icon quickdeck-combat-icon-muted" aria-hidden="true"><i class="fas fa-crosshairs"></i></span>
-                              </div>
-                            </div>
+      <aside class="quickdeck-right-drawer" aria-label="QuickDeck active drawer">
+        <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck drawers">
+          <button type="button" data-action="toggle-drawer" data-drawer="combat" class="quickdeck-drawer-tab {{#if isCombatDrawerOpen}}is-active{{/if}}">Combat</button>
+          <button type="button" data-action="toggle-drawer" data-drawer="skills" class="quickdeck-drawer-tab {{#if isSkillsDrawerOpen}}is-active{{/if}}">Skills</button>
+          <button type="button" data-action="toggle-drawer" data-drawer="quick-skills" class="quickdeck-drawer-tab {{#if isQuickSkillsDrawerOpen}}is-active{{/if}}">Quick Skills</button>
+          <button type="button" data-action="toggle-drawer" data-drawer="spells" class="quickdeck-drawer-tab {{#if isSpellsDrawerOpen}}is-active{{/if}}">Spells</button>
+          <button type="button" data-action="toggle-drawer" data-drawer="settings" class="quickdeck-drawer-tab {{#if isSettingsDrawerOpen}}is-active{{/if}}">Settings</button>
+        </nav>
 
-                            <div class="quickdeck-attack-actions">
-                              <button type="button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-roll-button quickdeck-attack-button">
-                                <i class="fas fa-dice-d6" aria-hidden="true"></i>
-                                <span>Attack</span>
-                              </button>
-                              {{#if attack.showDamageFollowup}}
-                                <button type="button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" class="quickdeck-roll-button quickdeck-roll-button-secondary">Show Native Damage</button>
-                              {{/if}}
+        <section class="quickdeck-panel">
+          {{#if isReferenceDrawerOpen}}
+            <div class="quickdeck-panel-content quickdeck-panel-reference">
+              <section class="quickdeck-reference-drawer-card">
+                <h4>Reference</h4>
+                <p>Open the source manager for configured reference sources and local overrides.</p>
+                <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Reference Sources / Local Overrides" aria-label="Reference Sources / Local Overrides">Sources</button>
+              </section>
+            </div>
+          {{else}}
+            {{#if isSettingsDrawerOpen}}
+              <div class="quickdeck-panel-content quickdeck-panel-settings">
+                <section class="quickdeck-reference-drawer-card">
+                  <h4>Settings</h4>
+                  <p>QuickDeck client settings remain in Foundry's module configuration. Reference Sources / Local Overrides stay available here for this shell pass.</p>
+                  <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Reference Sources / Local Overrides" aria-label="Reference Sources / Local Overrides">Sources</button>
+                </section>
+              </div>
+            {{else}}
+              {{#if activeActor}}
+            {{#if isCombatDrawerOpen}}
+              <div class="quickdeck-panel-content quickdeck-panel-combat">
+                <section class="quickdeck-attacks-section">
+                  <h4>Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> / <span data-count="attacks-total">{{attackCount}}</span>)</h4>
+                  <input type="search" class="quickdeck-drawer-search" value="{{combatSearch}}" data-action="combat-search" placeholder="Search attacks..." autocomplete="off" />
+                  {{#if indexedAttacks.length}}
+                    <h5 class="quickdeck-subsection-title">Melee</h5>
+                    <div class="quickdeck-attacks-list">
+                      {{#each meleeAttacks as |attack|}}
+                        <article class="quickdeck-attack-card" data-search-row="combat" data-search-text="{{attack.searchText}}">
+                          <header class="quickdeck-attack-card-header">
+                            <div class="quickdeck-attack-title-row">
+                              <span class="quickdeck-combat-icon quickdeck-attack-icon" aria-hidden="true"><i class="fas fa-crosshairs"></i></span>
+                              <div class="quickdeck-attack-title-block"><h5>{{attack.name}}</h5><span class="quickdeck-attack-mode">{{attack.type}}</span></div>
+                              <button type="button" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" class="quickdeck-favorite-toggle {{#if attack.isFavoriteAttack}}is-selected{{/if}}" title="{{attack.favoriteToggleLabel}}" aria-label="{{attack.favoriteToggleLabel}}">{{#if attack.isFavoriteAttack}}<i class="fas fa-star" aria-hidden="true"></i>{{else}}<i class="far fa-star" aria-hidden="true"></i>{{/if}}</button>
                             </div>
                           </article>
                         {{/each}}
@@ -828,8 +788,16 @@
                 <p class="quickdeck-empty">Select a roster actor to open a drawer.</p>
               </div>
             {{/if}}
-          </section>
-        {{/if}}
+              {{else}}
+                <div class="quickdeck-panel-content"><p class="quickdeck-empty">Select a roster actor to use the Combat, Skills, Quick Skills, or Spells drawers.</p></div>
+              {{/if}}
+
+              {{#unless activeDrawer}}
+                <div class="quickdeck-panel-content"><p class="quickdeck-empty">Choose a drawer tab for Combat, Skills, Quick Skills, Spells, or Settings.</p></div>
+              {{/unless}}
+            {{/if}}
+          {{/if}}
+        </section>
       </aside>
     </section>
     <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
