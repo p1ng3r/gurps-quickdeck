@@ -25,7 +25,8 @@
   ],
   "styles": [
     "styles/quickdeck.css",
-    "styles/quickdeck-command-desk.css"
+    "styles/quickdeck-command-desk.css",
+    "styles/quickdeck-right-drawer-closed.css"
   ],
   "languages": [],
   "url": "https://github.com/p1ng3r/gurps-quickdeck",
