@@ -3407,7 +3407,7 @@
 
 /* v0.7.1 foundation: explicit three-panel shell sizing and internal scroll boundaries. */
 .quickdeck-shell {
-  grid-template-columns: clamp(255px, 22vw, 320px) minmax(0, 1fr) clamp(300px, 28vw, 430px);
+  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 600px) minmax(360px, 1fr);
   align-items: stretch;
 }
 
