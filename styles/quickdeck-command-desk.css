@@ -3298,3 +3298,21 @@
 .quickdeck-command-desk-shell .quickdeck-actor-header-actions {
   min-width: 0;
 }
+
+/* v0.7.1 sizing tune: compact center and improved resize behavior. */
+.quickdeck-command-desk-shell.quickdeck-shell {
+  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 38vw, 620px) minmax(340px, 1fr);
+  min-width: 1120px;
+}
+
+.quickdeck-command-desk-shell .quickdeck-center-panel,
+.quickdeck-command-desk-shell .quickdeck-content,
+.quickdeck-command-desk-shell .quickdeck-stage,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit {
+  width: 100%;
+  min-width: 0;
+}
+
+.quickdeck-command-desk-shell .quickdeck-stage {
+  max-width: none;
+}
