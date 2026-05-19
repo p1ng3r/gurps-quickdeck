@@ -3344,16 +3344,41 @@
     minmax(360px, 1fr);
 }
 
-.quickdeck-command-desk-shell.quickdeck-shell.is-left-panel-collapsed {
+.quickdeck-command-desk-shell.quickdeck-shell.is-left-panel-collapsed:not(.is-right-panel-collapsed) {
   grid-template-columns: 48px clamp(460px, 36vw, 600px) minmax(360px, 1fr);
 }
 
 .quickdeck-command-desk-shell.quickdeck-shell.is-right-panel-collapsed {
-  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 600px) 56px;
+  grid-template-columns:
+    clamp(280px, 20vw, 340px)
+    clamp(460px, 36vw, 600px)
+    minmax(0, 1fr)
+    56px;
 }
 
 .quickdeck-command-desk-shell.quickdeck-shell.is-left-panel-collapsed.is-right-panel-collapsed {
-  grid-template-columns: 48px clamp(500px, 42vw, 660px) 56px;
+  grid-template-columns: 48px clamp(500px, 42vw, 660px) minmax(0, 1fr) 56px;
+}
+
+.quickdeck-command-desk-shell.quickdeck-shell.is-right-panel-collapsed .quickdeck-right-panel {
+  grid-column: 4;
+  width: 56px;
+  min-width: 56px;
+  max-width: 56px;
+  overflow: hidden;
+  justify-self: stretch;
+  align-self: stretch;
+}
+
+.quickdeck-command-desk-shell.quickdeck-shell.is-left-panel-collapsed.is-right-panel-collapsed .quickdeck-right-panel {
+  grid-column: 4;
+}
+
+.quickdeck-command-desk-shell.quickdeck-shell.is-right-panel-collapsed .quickdeck-collapsed-rail-right {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
 
 .quickdeck-command-desk-shell .quickdeck-left-panel,
