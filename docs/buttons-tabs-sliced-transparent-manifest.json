@@ -1,0 +1,179 @@
+{
+  "name": "quickdeck-v0.7-buttons-tabs-sliced-transparent",
+  "webp_quality": 75,
+  "source_image": "3486d18a-aaca-4c8e-a1fc-e32bad19008e.png",
+  "items": [
+    {
+      "name": "qd-button-brass-idle",
+      "folder": "buttons",
+      "source_png": "design/source-ui/buttons-tabs/qd-button-brass-idle.png",
+      "webp": "assets/ui/command-desk/buttons/qd-button-brass-idle.webp",
+      "source_box": [
+        52,
+        166,
+        476,
+        442
+      ],
+      "expanded_box": [
+        30,
+        144,
+        498,
+        464
+      ],
+      "target_size": [
+        512,
+        160
+      ]
+    },
+    {
+      "name": "qd-button-brass-hover",
+      "folder": "buttons",
+      "source_png": "design/source-ui/buttons-tabs/qd-button-brass-hover.png",
+      "webp": "assets/ui/command-desk/buttons/qd-button-brass-hover.webp",
+      "source_box": [
+        524,
+        170,
+        934,
+        441
+      ],
+      "expanded_box": [
+        502,
+        148,
+        956,
+        463
+      ],
+      "target_size": [
+        512,
+        160
+      ]
+    },
+    {
+      "name": "qd-button-brass-active",
+      "folder": "buttons",
+      "source_png": "design/source-ui/buttons-tabs/qd-button-brass-active.png",
+      "webp": "assets/ui/command-desk/buttons/qd-button-brass-active.webp",
+      "source_box": [
+        979,
+        170,
+        1396,
+        443
+      ],
+      "expanded_box": [
+        957,
+        148,
+        1418,
+        465
+      ],
+      "target_size": [
+        512,
+        160
+      ]
+    },
+    {
+      "name": "qd-button-green-idle",
+      "folder": "buttons",
+      "source_png": "design/source-ui/buttons-tabs/qd-button-green-idle.png",
+      "webp": "assets/ui/command-desk/buttons/qd-button-green-idle.webp",
+      "source_box": [
+        244,
+        514,
+        678,
+        784
+      ],
+      "expanded_box": [
+        222,
+        492,
+        700,
+        806
+      ],
+      "target_size": [
+        512,
+        160
+      ]
+    },
+    {
+      "name": "qd-button-red-idle",
+      "folder": "buttons",
+      "source_png": "design/source-ui/buttons-tabs/qd-button-red-idle.png",
+      "webp": "assets/ui/command-desk/buttons/qd-button-red-idle.webp",
+      "source_box": [
+        768,
+        515,
+        1195,
+        785
+      ],
+      "expanded_box": [
+        746,
+        493,
+        1217,
+        807
+      ],
+      "target_size": [
+        512,
+        160
+      ]
+    },
+    {
+      "name": "qd-tab-idle",
+      "folder": "tabs",
+      "source_png": "design/source-ui/buttons-tabs/qd-tab-idle.png",
+      "webp": "assets/ui/command-desk/tabs/qd-tab-idle.webp",
+      "source_box": [
+        277,
+        879,
+        677,
+        988
+      ],
+      "expanded_box": [
+        255,
+        857,
+        699,
+        1010
+      ],
+      "target_size": [
+        384,
+        128
+      ]
+    },
+    {
+      "name": "qd-tab-active",
+      "folder": "tabs",
+      "source_png": "design/source-ui/buttons-tabs/qd-tab-active.png",
+      "webp": "assets/ui/command-desk/tabs/qd-tab-active.webp",
+      "source_box": [
+        760,
+        879,
+        1157,
+        988
+      ],
+      "expanded_box": [
+        738,
+        857,
+        1179,
+        1010
+      ],
+      "target_size": [
+        384,
+        128
+      ]
+    }
+  ],
+  "files": [
+    "assets/ui/command-desk/buttons/qd-button-brass-active.webp",
+    "assets/ui/command-desk/buttons/qd-button-brass-hover.webp",
+    "assets/ui/command-desk/buttons/qd-button-brass-idle.webp",
+    "assets/ui/command-desk/buttons/qd-button-green-idle.webp",
+    "assets/ui/command-desk/buttons/qd-button-red-idle.webp",
+    "assets/ui/command-desk/tabs/qd-tab-active.webp",
+    "assets/ui/command-desk/tabs/qd-tab-idle.webp",
+    "design/reference/buttons-tabs-source-sheet.png",
+    "design/source-ui/buttons-tabs/qd-button-brass-active.png",
+    "design/source-ui/buttons-tabs/qd-button-brass-hover.png",
+    "design/source-ui/buttons-tabs/qd-button-brass-idle.png",
+    "design/source-ui/buttons-tabs/qd-button-green-idle.png",
+    "design/source-ui/buttons-tabs/qd-button-red-idle.png",
+    "design/source-ui/buttons-tabs/qd-tab-active.png",
+    "design/source-ui/buttons-tabs/qd-tab-idle.png",
+    "docs/buttons-tabs-sliced-transparent-readme.md"
+  ]
+}

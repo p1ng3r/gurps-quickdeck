@@ -1,4 +1,5 @@
-<section class="quickdeck-shell">
+<section class="quickdeck-shell quickdeck-command-desk-shell">
+  <div class="quickdeck-dev-badge" aria-hidden="true">QD v0.7 OpenSheet Fix</div>
   <aside class="quickdeck-sidebar">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
@@ -7,9 +8,11 @@
           type="button"
           data-action="clear-roster"
           class="quickdeck-clear-button"
-          title="Clear QuickDeck roster"
+          title="Clear Roster"
+          aria-label="Clear Roster"
         >
-          Clear Roster
+          <i class="fas fa-trash" aria-hidden="true"></i>
+          <span class="sr-only">Clear Roster</span>
         </button>
       </div>
       <p class="quickdeck-hint">Click selects · Double-click opens sheet · Drag actors here.</p>
@@ -121,11 +124,148 @@
 
   <main class="quickdeck-main">
     <div class="quickdeck-window-actions">
-      <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button">Local Overrides</button>
-      <button type="button" data-action="toggle-minimize" class="quickdeck-minimize-button">Minimize</button>
+      <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Local Overrides" aria-label="Local Overrides">Overrides</button>
     </div>
     <section class="quickdeck-content">
-      <div class="quickdeck-stage" aria-hidden="true"></div>
+      <div class="quickdeck-stage">
+        <div class="quickdeck-command-title" aria-label="GURPS QuickDeck Command Desk">GURPS QUICKDECK COMMAND DESK</div>
+        <div class="quickdeck-stage-backdrop" aria-hidden="true"></div>
+        {{#if activeActor}}
+          <section class="quickdeck-selected-cockpit" aria-label="Selected actor cockpit">
+            <header class="quickdeck-actor-header">
+              <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+              <div class="quickdeck-actor-identity">
+                <span class="quickdeck-eyebrow">Selected Actor</span>
+                <h3>{{activeActor.name}}</h3>
+                <p>
+                  Cockpit
+                  {{#if activeActor.actorType}}
+                    <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
+                  {{/if}}
+                </p>
+              </div>
+              <div class="quickdeck-actor-header-actions">
+                <button
+                  type="button"
+                  data-action="drop-token"
+                  data-actor-id="{{activeActor.id}}"
+                  class="quickdeck-drop-token-button qd-primary-drop-token {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
+                  title="Drop Token"
+                  aria-label="Drop Token"
+                >
+                  {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop{{/if}}
+                </button>
+                <button
+                  type="button"
+                  data-action="open-sheet"
+                  data-actor-id="{{activeActor.id}}"
+                  class="quickdeck-open-sheet-button qd-primary-open-sheet"
+                  title="Open Sheet"
+                  aria-label="Open Sheet"
+                >
+                  Sheet
+                </button>
+              </div>
+            </header>
+
+            <div class="quickdeck-combat-flow-controls" aria-label="Combat flow helpers">
+              <button type="button" data-action="open-chat" class="quickdeck-flow-button" title="Chat Front" aria-label="Chat Front">Chat</button>
+              <button type="button" data-action="clear-targets" class="quickdeck-flow-button" title="Clear Targets" aria-label="Clear Targets">Targets</button>
+              <button type="button" data-action="next-actor" class="quickdeck-flow-button" title="Next Actor" aria-label="Next Actor">Next</button>
+              <button
+                type="button"
+                data-action="repeat-last-attack"
+                class="quickdeck-flow-button"
+                title="Repeat Last Attack{{#if lastAttackName}}: {{lastAttackName}}{{/if}}"
+                aria-label="Repeat Last Attack"
+                {{#unless canRepeatLastAttack}}disabled{{/unless}}
+              >
+                Repeat
+              </button>
+            </div>
+
+            <dl class="quickdeck-stats quickdeck-main-resources" aria-label="Selected actor resources">
+              <div class="quickdeck-resource-card">
+                <dt>HP</dt>
+                <dd>
+                  <div class="quickdeck-resource-control" data-resource-control="HP">
+                    <div class="quickdeck-large-resource-bar" aria-hidden="true">
+                      <span style="width: {{gurpsData.hpPercent}}%;"></span>
+                    </div>
+                    <div class="quickdeck-resource-value-line">
+                      <input
+                        type="text"
+                        inputmode="decimal"
+                        data-action="set-resource"
+                        data-actor-id="{{activeActor.id}}"
+                        data-resource="HP"
+                        value="{{gurpsData.display.hp}}"
+                        aria-label="Current HP"
+                      />
+                      <span class="quickdeck-resource-max">/ {{gurpsData.display.hpMax}}</span>
+                    </div>
+                    <div class="quickdeck-resource-buttons" aria-label="Adjust HP">
+                      <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="-1" aria-label="Reduce HP by 1">−</button>
+                      <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="1" aria-label="Increase HP by 1">+</button>
+                    </div>
+                  </div>
+                </dd>
+              </div>
+              <div class="quickdeck-resource-card">
+                <dt>FP</dt>
+                <dd>
+                  <div class="quickdeck-resource-control" data-resource-control="FP">
+                    <div class="quickdeck-large-resource-bar" aria-hidden="true">
+                      <span style="width: {{gurpsData.fpPercent}}%;"></span>
+                    </div>
+                    <div class="quickdeck-resource-value-line">
+                      <input
+                        type="text"
+                        inputmode="decimal"
+                        data-action="set-resource"
+                        data-actor-id="{{activeActor.id}}"
+                        data-resource="FP"
+                        value="{{gurpsData.display.fp}}"
+                        aria-label="Current FP"
+                      />
+                      <span class="quickdeck-resource-max">/ {{gurpsData.display.fpMax}}</span>
+                    </div>
+                    <div class="quickdeck-resource-buttons" aria-label="Adjust FP">
+                      <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="-1" aria-label="Reduce FP by 1">−</button>
+                      <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="1" aria-label="Increase FP by 1">+</button>
+                    </div>
+                  </div>
+                </dd>
+              </div>
+              <div class="quickdeck-move-card">
+                <dt>Move</dt>
+                <dd>{{gurpsData.display.move}}</dd>
+              </div>
+            </dl>
+
+            <div class="quickdeck-defense-buttons" aria-label="Selected character active defenses">
+              <button type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="Dodge" data-value="{{gurpsData.display.dodge}}" class="quickdeck-defense-button">
+                <span>Dodge</span>
+                <strong>{{gurpsData.display.dodge}}</strong>
+              </button>
+              <button type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="Parry" data-value="{{gurpsData.display.parry}}" class="quickdeck-defense-button">
+                <span>Parry</span>
+                <strong>{{gurpsData.display.parry}}</strong>
+              </button>
+              <button type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="Block" data-value="{{gurpsData.display.block}}" class="quickdeck-defense-button">
+                <span>Block</span>
+                <strong>{{gurpsData.display.block}}</strong>
+              </button>
+            </div>
+          </section>
+
+        {{else}}
+          <section class="quickdeck-selected-cockpit quickdeck-selected-cockpit-empty" aria-label="No selected actor">
+            <h3>Select a roster actor</h3>
+            <p>Choose an actor on the left to populate the command cockpit.</p>
+          </section>
+        {{/if}}
+      </div>
 
       <aside class="quickdeck-drawer-stack">
         <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck side drawers">
@@ -135,7 +275,7 @@
             data-drawer="combat"
             class="quickdeck-drawer-tab {{#if isCombatDrawerOpen}}is-active{{/if}}"
           >
-            Combat Burst
+            Combat
           </button>
           <button
             type="button"
@@ -148,18 +288,18 @@
           <button
             type="button"
             data-action="toggle-drawer"
-            data-drawer="quick-skills"
-            class="quickdeck-drawer-tab {{#if isQuickSkillsDrawerOpen}}is-active{{/if}}"
-          >
-            Quick Skills
-          </button>
-          <button
-            type="button"
-            data-action="toggle-drawer"
             data-drawer="spells"
             class="quickdeck-drawer-tab {{#if isSpellsDrawerOpen}}is-active{{/if}}"
           >
             Spells
+          </button>
+          <button
+            type="button"
+            data-action="toggle-drawer"
+            data-drawer="settings"
+            class="quickdeck-drawer-tab {{#if isSettingsDrawerOpen}}is-active{{/if}}"
+          >
+            Settings
           </button>
         </nav>
 
@@ -168,169 +308,23 @@
             {{#if activeActor}}
               {{#if isCombatDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-combat">
-                  <div class="quickdeck-panel-scroll-root">
-                    <section class="quickdeck-selected-cockpit" aria-label="Selected actor cockpit">
-                      <header class="quickdeck-actor-header">
-                        <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
-                        <div class="quickdeck-actor-identity">
-                          <h3>{{activeActor.name}}</h3>
-                          <p>
-                            Combat snapshot
-                            {{#if activeActor.actorType}}
-                              <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
-                            {{/if}}
-                          </p>
-                        </div>
-                        <div class="quickdeck-actor-header-actions">
-                          <button
-                            type="button"
-                            data-action="drop-token"
-                            data-actor-id="{{activeActor.id}}"
-                            class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                          >
-                            {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                          </button>
-                          <button
-                            type="button"
-                            data-action="open-sheet"
-                            data-actor-id="{{activeActor.id}}"
-                            class="quickdeck-open-sheet-button"
-                          >
-                            Open Sheet
-                          </button>
-                        </div>
-                      </header>
-
-                      <div class="quickdeck-combat-flow-controls" aria-label="Combat flow helpers">
-                        <button type="button" data-action="open-chat" class="quickdeck-flow-button">Bring Chat Front</button>
-                        <button type="button" data-action="clear-targets" class="quickdeck-flow-button">Clear Targets</button>
-                        <button type="button" data-action="next-actor" class="quickdeck-flow-button">Next Actor</button>
-                        <button
-                          type="button"
-                          data-action="repeat-last-attack"
-                          class="quickdeck-flow-button"
-                          title="Repeat {{lastAttackName}}"
-                          {{#unless canRepeatLastAttack}}disabled{{/unless}}
-                        >
-                          Repeat Last Attack
-                        </button>
-                      </div>
-
-                      <dl class="quickdeck-stats quickdeck-main-resources" aria-label="Selected actor resources">
-                        <div class="quickdeck-resource-card">
-                          <dt>HP</dt>
-                          <dd>
-                            <div class="quickdeck-resource-control" data-resource-control="HP">
-                              <div class="quickdeck-large-resource-bar" aria-hidden="true">
-                                <span style="width: {{gurpsData.hpPercent}}%;"></span>
-                              </div>
-                              <div class="quickdeck-resource-value-line">
-                                <input
-                                  type="text"
-                                  inputmode="decimal"
-                                  data-action="set-resource"
-                                  data-actor-id="{{activeActor.id}}"
-                                  data-resource="HP"
-                                  value="{{gurpsData.display.hp}}"
-                                  aria-label="Current HP"
-                                />
-                                <span class="quickdeck-resource-max">/ {{gurpsData.display.hpMax}}</span>
-                              </div>
-                              <div class="quickdeck-resource-buttons" aria-label="Adjust HP">
-                                <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="-1" aria-label="Reduce HP by 1">−</button>
-                                <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="HP" data-delta="1" aria-label="Increase HP by 1">+</button>
-                              </div>
-                            </div>
-                          </dd>
-                        </div>
-                        <div class="quickdeck-resource-card">
-                          <dt>FP</dt>
-                          <dd>
-                            <div class="quickdeck-resource-control" data-resource-control="FP">
-                              <div class="quickdeck-large-resource-bar" aria-hidden="true">
-                                <span style="width: {{gurpsData.fpPercent}}%;"></span>
-                              </div>
-                              <div class="quickdeck-resource-value-line">
-                                <input
-                                  type="text"
-                                  inputmode="decimal"
-                                  data-action="set-resource"
-                                  data-actor-id="{{activeActor.id}}"
-                                  data-resource="FP"
-                                  value="{{gurpsData.display.fp}}"
-                                  aria-label="Current FP"
-                                />
-                                <span class="quickdeck-resource-max">/ {{gurpsData.display.fpMax}}</span>
-                              </div>
-                              <div class="quickdeck-resource-buttons" aria-label="Adjust FP">
-                                <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="-1" aria-label="Reduce FP by 1">−</button>
-                                <button type="button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="FP" data-delta="1" aria-label="Increase FP by 1">+</button>
-                              </div>
-                            </div>
-                          </dd>
-                        </div>
-                        <div class="quickdeck-move-card">
-                          <dt>Move</dt>
-                          <dd>{{gurpsData.display.move}}</dd>
-                        </div>
-                      </dl>
-
-                      <div class="quickdeck-defense-buttons" aria-label="Selected character active defenses">
-                        <button
-                          type="button"
-                          data-action="roll-defense"
-                          data-actor-id="{{activeActor.id}}"
-                          data-defense="Dodge"
-                          data-value="{{gurpsData.display.dodge}}"
-                          class="quickdeck-defense-button"
-                        >
-                          <span>Dodge</span>
-                          <strong>{{gurpsData.display.dodge}}</strong>
-                        </button>
-                        <button
-                          type="button"
-                          data-action="roll-defense"
-                          data-actor-id="{{activeActor.id}}"
-                          data-defense="Parry"
-                          data-value="{{gurpsData.display.parry}}"
-                          class="quickdeck-defense-button"
-                        >
-                          <span>Parry</span>
-                          <strong>{{gurpsData.display.parry}}</strong>
-                        </button>
-                        <button
-                          type="button"
-                          data-action="roll-defense"
-                          data-actor-id="{{activeActor.id}}"
-                          data-defense="Block"
-                          data-value="{{gurpsData.display.block}}"
-                          class="quickdeck-defense-button"
-                        >
-                          <span>Block</span>
-                          <strong>{{gurpsData.display.block}}</strong>
-                        </button>
-                      </div>
-                    </section>
-                  </div>
-
                   <section class="quickdeck-attacks-section">
                     <h4>Attacks (<span data-count="attacks-visible">{{visibleAttackCount}}</span> / <span data-count="attacks-total">{{attackCount}}</span>)</h4>
-                    <input
-                      type="search"
-                      class="quickdeck-drawer-search"
-                      value="{{combatSearch}}"
-                      data-action="combat-search"
-                      placeholder="Search attacks..."
-                      autocomplete="off"
-                    />
-
-                    <section class="quickdeck-favorite-attacks" aria-label="Favorite Attacks">
-                      <div class="quickdeck-favorite-attacks-heading">
-                        <h5>Favorite Attacks</h5>
-                        {{#if favoriteAttackCount}}
-                          <span>{{favoriteAttackCount}} pinned</span>
-                        {{/if}}
-                      </div>
+                    <div class="quickdeck-drawer-sticky-tools">
+                      <input
+                        type="search"
+                        class="quickdeck-drawer-search"
+                        value="{{combatSearch}}"
+                        data-action="combat-search"
+                        placeholder="Search attacks..."
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="quickdeck-drawer-scroll-content">
+                    <details class="quickdeck-favorite-attacks quickdeck-collapsible-favorites" aria-label="Favorite Attacks" open>
+                      <summary class="quickdeck-favorite-attacks-heading">
+                        <h5>Favorite Attacks ({{favoriteAttackCount}})</h5>
+                      </summary>
                       {{#if favoriteAttackCount}}
                         <div class="quickdeck-favorite-attacks-list">
                           {{#each favoriteAttacks as |attack|}}
@@ -361,9 +355,9 @@
                           {{/each}}
                         </div>
                       {{else}}
-                        <p class="quickdeck-favorite-attacks-hint">Pin attacks with ★ for quick access.</p>
+                        <p class="quickdeck-favorite-attacks-hint">No favorite attacks.</p>
                       {{/if}}
-                    </section>
+                    </details>
 
                     {{#if indexedAttacks.length}}
                       <h5 class="quickdeck-subsection-title">Melee</h5>
@@ -592,56 +586,65 @@
                     {{else}}
                       <p class="quickdeck-empty">No attacks match this search.</p>
                     {{/if}}
+                    </div>
                   </section>
                 </div>
               {{/if}}
 
               {{#if isSkillsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <header class="quickdeck-actor-header">
-                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
-                    <div>
-                      <h3>{{activeActor.name}}</h3>
-                      <p>
-                        Skills snapshot
-                        {{#if activeActor.actorType}}
-                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
-                        {{/if}}
-                      </p>
-                    </div>
-                    <div class="quickdeck-actor-header-actions">
-                      <button
-                        type="button"
-                        data-action="drop-token"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                      >
-                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                      </button>
-                      <button
-                        type="button"
-                        data-action="open-sheet"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-open-sheet-button"
-                      >
-                        Open Sheet
-                      </button>
-                    </div>
-                  </header>
-
+                  {{!-- v0.7 keeps one visible cockpit Open Sheet button; duplicate drawer/compat buttons were removed because they caused background spam. --}}
                   <section class="quickdeck-skills-section">
                     <h4>
                       Skills (<span data-count="skills-visible">{{visibleSkillsCount}}</span> /
                       <span data-count="skills-total">{{skillsCount}}</span>)
                     </h4>
-                    <input
-                      type="search"
-                      class="quickdeck-drawer-search"
-                      value="{{skillsSearch}}"
-                      data-action="skills-search"
-                      placeholder="Search skills..."
-                      autocomplete="off"
-                    />
+                    <div class="quickdeck-drawer-sticky-tools">
+                      <input
+                        type="search"
+                        class="quickdeck-drawer-search"
+                        value="{{skillsSearch}}"
+                        data-action="skills-search"
+                        placeholder="Search skills..."
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="quickdeck-drawer-scroll-content">
+                    <details class="quickdeck-favorite-attacks quickdeck-skill-favorites quickdeck-collapsible-favorites" aria-label="Skill Favorites" open>
+                      <summary class="quickdeck-favorite-attacks-heading">
+                        <h5>Skill Favorites ({{quickSkillsCount}})</h5>
+                      </summary>
+                      {{#if indexedQuickSkills.length}}
+                        <div class="quickdeck-skills-list quickdeck-skill-favorites-list">
+                          {{#each indexedQuickSkills as |skill|}}
+                            <article class="quickdeck-skill-row quickdeck-quick-skill-row is-quick-skill-selected" data-search-row="quick-skills" data-search-text="{{skill.searchText}}">
+                              <div class="quickdeck-skill-main">
+                                <h5>
+                                  <button
+                                    type="button"
+                                    class="quickdeck-link-button"
+                                    data-action="open-reference"
+                                    data-ref-type="skill"
+                                    data-ref-name="{{skill.name}}"
+                                    data-ref-page="{{skill.pageHint}}"
+                                    data-ref-source="{{skill.reference}}"
+                                  >
+                                    {{skill.name}}
+                                  </button>
+                                </h5>
+                                <p class="quickdeck-skill-meta">Level {{skill.levelDisplay}}</p>
+                              </div>
+                              <div class="quickdeck-quick-skill-actions">
+                                <button type="button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" class="quickdeck-roll-button">Roll</button>
+                                <button type="button" data-action="unpin-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" class="quickdeck-unpin-button" title="Unpin skill" aria-label="Unpin skill"><i class="fas fa-times" aria-hidden="true"></i></button>
+                              </div>
+                            </article>
+                          {{/each}}
+                        </div>
+                      {{else}}
+                        <p class="quickdeck-favorite-attacks-hint">No skill favorites.</p>
+                      {{/if}}
+                    </details>
 
                     {{#if indexedSkills.length}}
                       <div class="quickdeck-skills-list">
@@ -687,175 +690,34 @@
                     {{else}}
                       <p class="quickdeck-empty">No skills match this search.</p>
                     {{/if}}
-                  </section>
-                </div>
-              {{/if}}
-
-              {{#if isQuickSkillsDrawerOpen}}
-                <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <header class="quickdeck-actor-header">
-                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
-                    <div>
-                      <h3>{{activeActor.name}}</h3>
-                      <p>
-                        Quick Skills
-                        {{#if activeActor.actorType}}
-                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
-                        {{/if}}
-                      </p>
                     </div>
-                    <div class="quickdeck-actor-header-actions">
-                      <button
-                        type="button"
-                        data-action="drop-token"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                      >
-                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                      </button>
-                      <button
-                        type="button"
-                        data-action="open-sheet"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-open-sheet-button"
-                      >
-                        Open Sheet
-                      </button>
-                    </div>
-                  </header>
-
-                  <section class="quickdeck-skills-section">
-                    <h4>
-                      Quick Skills (<span data-count="quick-skills-visible">{{visibleQuickSkillsCount}}</span> /
-                      <span data-count="quick-skills-total">{{quickSkillsCount}}</span>)
-                      <span class="quickdeck-section-note">Pinned only</span>
-                    </h4>
-                    <input
-                      type="search"
-                      class="quickdeck-drawer-search"
-                      value="{{quickSkillsSearch}}"
-                      data-action="quick-skills-search"
-                      placeholder="Search pinned skills..."
-                      autocomplete="off"
-                    />
-
-                    {{#if indexedQuickSkills.length}}
-                      <div class="quickdeck-skills-list">
-                        {{#each indexedQuickSkills as |skill|}}
-                          <article class="quickdeck-skill-row quickdeck-quick-skill-row {{#if skill.isQuickSkillSelected}}is-quick-skill-selected{{/if}}" data-search-row="quick-skills" data-search-text="{{skill.searchText}}">
-                            <div class="quickdeck-skill-main">
-                              <h5>
-                                <button
-                                  type="button"
-                                  class="quickdeck-link-button"
-                                  data-action="open-reference"
-                                  data-ref-type="skill"
-                                  data-ref-name="{{skill.name}}"
-                                  data-ref-page="{{skill.pageHint}}"
-                                  data-ref-source="{{skill.reference}}"
-                                >
-                                  {{skill.name}}
-                                </button>
-                              </h5>
-                              <p class="quickdeck-skill-meta">
-                                <span>Level {{skill.levelDisplay}}</span>
-                                {{#if skill.relativeLevelDisplay}}
-                                  <span>Rel {{skill.relativeLevelDisplay}}</span>
-                                {{/if}}
-                                {{#if skill.pointsDisplay}}
-                                  <span>{{skill.pointsDisplay}} pts</span>
-                                {{/if}}
-                                {{#if skill.referenceDisplay}}
-                                  <span>{{skill.referenceDisplay}}</span>
-                                {{/if}}
-                              </p>
-                            </div>
-                            <div class="quickdeck-quick-skill-actions">
-                              <button
-                                type="button"
-                                data-action="roll-skill"
-                                data-actor-id="{{../activeActor.id}}"
-                                data-skill-index="{{skill.index}}"
-                                class="quickdeck-roll-button"
-                              >
-                                Roll
-                              </button>
-                              <button
-                                type="button"
-                                data-action="unpin-quick-skill"
-                                data-actor-id="{{../activeActor.id}}"
-                                data-skill-key="{{skill.quickSkillKey}}"
-                                class="quickdeck-unpin-button"
-                                title="Unpin {{skill.name}} from Quick Skills"
-                                aria-label="Unpin {{skill.name}} from Quick Skills"
-                              >
-                                ★
-                              </button>
-                            </div>
-                          </article>
-                        {{/each}}
-                      </div>
-                    {{else}}
-                      <p class="quickdeck-empty quickdeck-empty-compact">Pin skills from the Skills tab for quick access.</p>
-                    {{/if}}
                   </section>
                 </div>
               {{/if}}
 
               {{#if isSpellsDrawerOpen}}
                 <div class="quickdeck-panel-content quickdeck-panel-skills">
-                  <header class="quickdeck-actor-header">
-                    <img src="{{activeActor.img}}" alt="{{activeActor.name}}" />
-                    <div>
-                      <h3>{{activeActor.name}}</h3>
-                      <p>
-                        Spells snapshot
-                        {{#if activeActor.actorType}}
-                          <span class="quickdeck-type-pill">{{activeActor.actorType}}</span>
-                        {{/if}}
-                      </p>
-                    </div>
-                    <div class="quickdeck-actor-header-actions">
-                      <button
-                        type="button"
-                        data-action="drop-token"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}"
-                      >
-                        {{#if isTokenDropArmedForActive}}Click Canvas…{{else}}Drop Token{{/if}}
-                      </button>
-                      <button
-                        type="button"
-                        data-action="open-sheet"
-                        data-actor-id="{{activeActor.id}}"
-                        class="quickdeck-open-sheet-button"
-                      >
-                        Open Sheet
-                      </button>
-                    </div>
-                  </header>
-
+                  {{!-- v0.7 keeps one visible cockpit Open Sheet button; duplicate drawer/compat buttons were removed because they caused background spam. --}}
                   <section class="quickdeck-skills-section">
                     <h4>
                       Spells (<span data-count="spells-visible">{{visibleSpellsCount}}</span> /
                       <span data-count="spells-total">{{spellsCount}}</span>)
                     </h4>
-                    <input
-                      type="search"
-                      class="quickdeck-drawer-search"
-                      value="{{spellsSearch}}"
-                      data-action="spells-search"
-                      placeholder="Search spells..."
-                      autocomplete="off"
-                    />
-
-                    <section class="quickdeck-favorite-attacks quickdeck-favorite-spells" aria-label="Favorite Spells">
-                      <div class="quickdeck-favorite-attacks-heading">
-                        <h5>Favorite Spells</h5>
-                        {{#if favoriteSpellCount}}
-                          <span>{{favoriteSpellCount}} pinned</span>
-                        {{/if}}
-                      </div>
+                    <div class="quickdeck-drawer-sticky-tools">
+                      <input
+                        type="search"
+                        class="quickdeck-drawer-search"
+                        value="{{spellsSearch}}"
+                        data-action="spells-search"
+                        placeholder="Search spells..."
+                        autocomplete="off"
+                      />
+                    </div>
+                    <div class="quickdeck-drawer-scroll-content">
+                    <details class="quickdeck-favorite-attacks quickdeck-favorite-spells quickdeck-collapsible-favorites" aria-label="Favorite Spells" open>
+                      <summary class="quickdeck-favorite-attacks-heading">
+                        <h5>Favorite Spells ({{favoriteSpellCount}})</h5>
+                      </summary>
                       {{#if favoriteSpellCount}}
                         <div class="quickdeck-favorite-attacks-list quickdeck-favorite-spells-list">
                           {{#each favoriteSpells as |spell|}}
@@ -886,9 +748,9 @@
                           {{/each}}
                         </div>
                       {{else}}
-                        <p class="quickdeck-favorite-attacks-hint">Pin spells with ★ for quick access.</p>
+                        <p class="quickdeck-favorite-attacks-hint">No favorite spells.</p>
                       {{/if}}
-                    </section>
+                    </details>
 
                     {{#if indexedSpells.length}}
                       <div class="quickdeck-skills-list">
@@ -944,6 +806,20 @@
                     {{else}}
                       <p class="quickdeck-empty">No spells found for this actor yet.</p>
                     {{/if}}
+                    </div>
+                  </section>
+                </div>
+              {{/if}}
+
+              {{#if isSettingsDrawerOpen}}
+                <div class="quickdeck-panel-content quickdeck-panel-settings">
+                  <header class="quickdeck-settings-header">
+                    <h3>Settings</h3>
+                    <p>Command Desk utility controls.</p>
+                  </header>
+                  <section class="quickdeck-skills-section">
+                    <h4>QuickDeck</h4>
+                    <p class="quickdeck-empty">Use the header controls for Local Overrides and minimizing the desk. Client settings and saved roster state are unchanged.</p>
                   </section>
                 </div>
               {{/if}}

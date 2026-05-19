@@ -13,7 +13,7 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition"
 };
-const VALID_DRAWERS = new Set(["combat", "skills", "quick-skills", "spells"]);
+const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
@@ -69,11 +69,41 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 840,
-      height: 560,
+      width: 1580,
+      height: 820,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
+  }
+
+  _getHeaderButtons() {
+    const buttons = super._getHeaderButtons();
+    const minimizeButton = {
+      label: "−",
+      title: "Minimize QuickDeck",
+      class: "quickdeck-header-minimize",
+      icon: "",
+      onclick: (event) => {
+        event?.preventDefault?.();
+        this.toggleMinimizedState();
+      }
+    };
+    const existingMinimizeIndex = buttons.findIndex((button) =>
+      button.class === "minimize" || button.class === "quickdeck-header-minimize"
+    );
+
+    if (existingMinimizeIndex >= 0) {
+      buttons.splice(existingMinimizeIndex, 1);
+    }
+
+    const closeIndex = buttons.findIndex((button) => button.class === "close");
+    if (closeIndex >= 0) {
+      buttons.splice(closeIndex, 0, minimizeButton);
+    } else {
+      buttons.push(minimizeButton);
+    }
+
+    return buttons;
   }
 
   getCombatActors() {
@@ -1006,8 +1036,9 @@ export class QuickDeckApp extends Application {
     if (this.activeDrawer) return;
     const configuredDrawer = game.settings.get(MODULE_ID, SETTING_KEYS.DEFAULT_DRAWER);
     if (configuredDrawer === "none") return;
-    if (!VALID_DRAWERS.has(configuredDrawer)) return;
-    this.activeDrawer = configuredDrawer;
+    const drawer = configuredDrawer === "quick-skills" ? "skills" : configuredDrawer;
+    if (!VALID_DRAWERS.has(drawer)) return;
+    this.activeDrawer = drawer;
   }
 
   sanitizePersistentState() {
@@ -1703,18 +1734,27 @@ export class QuickDeckApp extends Application {
     }
   }
 
+  raiseNativeWindow(app) {
+    try {
+      if (typeof app?.bringToFront === "function") {
+        app.bringToFront();
+        return;
+      }
+      if (typeof app?.bringToTop === "function") {
+        app.bringToTop();
+      }
+    } catch (_error) {
+      // Native window focus is best-effort only.
+    }
+  }
+
   lowerQuickDeckBelow(app) {
     const quickDeckElement = this.getQuickDeckWindowElement();
     if (!quickDeckElement) return;
 
     let nativeZIndex = this.getWindowZIndex(app);
     if (!Number.isFinite(nativeZIndex)) {
-      try {
-        app?.bringToFront?.();
-        app?.bringToTop?.();
-      } catch (_error) {
-        // Native window focus is best-effort only.
-      }
+      this.raiseNativeWindow(app);
       nativeZIndex = this.getWindowZIndex(app);
     }
 
@@ -1723,12 +1763,7 @@ export class QuickDeckApp extends Application {
   }
 
   focusNativeWindow(app) {
-    try {
-      app?.bringToFront?.();
-      app?.bringToTop?.();
-    } catch (_error) {
-      // Native window focus is best-effort only.
-    }
+    this.raiseNativeWindow(app);
 
     this.lowerQuickDeckBelow(app);
 
@@ -1895,13 +1930,27 @@ export class QuickDeckApp extends Application {
     this.scheduleNativeWindowFocus(this._lastNativeWindowIds);
   }
 
+  changeSidebarTab(tabName) {
+    try {
+      const sidebar = ui?.sidebar;
+      if (typeof sidebar?.changeTab === "function") {
+        sidebar.changeTab(tabName);
+        return;
+      }
+      if (typeof sidebar?.activateTab === "function") {
+        sidebar.activateTab(tabName);
+      }
+    } catch (_error) {
+      // Sidebar focus is best-effort only.
+    }
+  }
+
   focusChatSidebar() {
     try {
       ui?.sidebar?.expand?.();
-      ui?.sidebar?.activateTab?.("chat");
+      this.changeSidebarTab("chat");
       ui?.chat?.render?.(true);
-      ui?.chat?.bringToFront?.();
-      ui?.chat?.bringToTop?.();
+      this.raiseNativeWindow(ui?.chat);
     } catch (_error) {
       // Chat focus is best-effort and must not block native GURPS handling.
     }
@@ -3020,8 +3069,18 @@ export class QuickDeckApp extends Application {
 
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
+    this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
     return result;
+  }
+
+  syncHeaderMinimizeButton() {
+    this.element
+      ?.find?.(".quickdeck-header-minimize")
+      ?.attr?.({
+        title: "Minimize QuickDeck",
+        "aria-label": "Minimize QuickDeck"
+      });
   }
 
   syncMinimizedPresentation() {
@@ -3038,7 +3097,7 @@ export class QuickDeckApp extends Application {
       this.bringNativeWindowsToFront(this._nativeWindowFocusLock.previousWindowIds);
       return;
     }
-    this.bringToTop();
+    this.raiseNativeWindow(this);
   }
 
   ensureFloatingRestoreIcon() {
@@ -3225,10 +3284,10 @@ export class QuickDeckApp extends Application {
       }));
 
     const activeActor = this.getActiveActor();
-    const shouldHydrateDerivedData = Boolean(activeActor && this.activeDrawer);
-    const includeAttacks = this.activeDrawer === "combat";
-    const includeSkills = this.activeDrawer === "skills" || this.activeDrawer === "quick-skills";
-    const includeSpells = this.activeDrawer === "spells";
+    const shouldHydrateDerivedData = Boolean(activeActor);
+    const includeAttacks = Boolean(activeActor);
+    const includeSkills = Boolean(activeActor);
+    const includeSpells = Boolean(activeActor);
     const derivedData = shouldHydrateDerivedData
       ? this.getDerivedActorData(activeActor, { includeAttacks, includeSkills, includeSpells })
       : {
@@ -3424,6 +3483,7 @@ export class QuickDeckApp extends Application {
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
       isSpellsDrawerOpen: this.activeDrawer === "spells",
+      isSettingsDrawerOpen: this.activeDrawer === "settings",
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
@@ -3626,7 +3686,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();
       const drawer = event.currentTarget.dataset.drawer;
-      if (!drawer) return;
+      if (!drawer || !VALID_DRAWERS.has(drawer)) return;
 
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.render();
