@@ -59,6 +59,7 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusLock = null;
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
+    this._rightDrawerOpenWindowWidth = null;
     this.loadPersistedState();
   }
 
@@ -3067,8 +3068,37 @@ export class QuickDeckApp extends Application {
     return super.close(options);
   }
 
+  getRightDrawerClosedWindowWidth() {
+    return 1240;
+  }
+
+  getRightDrawerOpenWindowWidth() {
+    return this._rightDrawerOpenWindowWidth || this.position?.width || this.options?.width || 1580;
+  }
+
+  syncRightDrawerClosedWindowClass() {
+    const root = this.element?.[0];
+    if (!root) return;
+    root.classList.toggle("is-right-drawer-closed", !this.activeDrawer);
+  }
+
+  applyRightDrawerWindowSize() {
+    this.syncRightDrawerClosedWindowClass();
+    const targetWidth = this.activeDrawer
+      ? this.getRightDrawerOpenWindowWidth()
+      : this.getRightDrawerClosedWindowWidth();
+
+    const currentWidth = Number(this.element?.[0]?.getBoundingClientRect?.().width) || Number(this.position?.width);
+    if (!Number.isFinite(targetWidth)) return;
+    if (Number.isFinite(currentWidth) && Math.abs(currentWidth - targetWidth) < 2) return;
+
+    this.setPosition({ width: targetWidth, height: this.position?.height });
+  }
+
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
+    this.syncRightDrawerClosedWindowClass();
+    this.applyRightDrawerWindowSize();
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
     return result;
@@ -3688,8 +3718,17 @@ export class QuickDeckApp extends Application {
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
 
-      this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
-      this.render();
+      const nextDrawer = this.activeDrawer === drawer ? null : drawer;
+
+      if (this.activeDrawer && !nextDrawer) {
+        this._rightDrawerOpenWindowWidth = Number(this.element?.[0]?.getBoundingClientRect?.().width) || this.position?.width || this.options?.width || 1580;
+      } else if (!this.activeDrawer && nextDrawer && !Number.isFinite(Number(this._rightDrawerOpenWindowWidth))) {
+        this._rightDrawerOpenWindowWidth = 1580;
+      }
+
+      this.activeDrawer = nextDrawer;
+      this.render(false, { focus: false });
+      this.applyRightDrawerWindowSize();
     });
 
     html.find("[data-action='adjust-resource']").on("click", async (event) => {

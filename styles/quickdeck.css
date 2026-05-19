@@ -14,10 +14,15 @@
   --quickdeck-parchment-deep: #cfae69;
   --quickdeck-muted: rgba(239, 226, 197, 0.82);
   --quickdeck-shadow: rgba(0, 0, 0, 0.52);
-  min-width: min(1380px, calc(100vw - 48px));
+  --quickdeck-window-min-width: min(1380px, calc(100vw - 48px));
+  min-width: var(--quickdeck-window-min-width);
   min-height: min(780px, calc(100vh - 72px));
 }
 
+
+.gurps-quickdeck.is-right-drawer-closed {
+  --quickdeck-window-min-width: min(1240px, calc(100vw - 48px));
+}
 .gurps-quickdeck,
 .gurps-quickdeck * {
   box-sizing: border-box;
@@ -3463,4 +3468,15 @@
 .quickdeck-panel-content,
 .quickdeck-drawer-scroll-content {
   overflow: auto;
+}
+
+
+/* v0.7.1 right-drawer closed state: keep tab controls visible and hide only drawer body space. */
+.quickdeck-shell.is-right-drawer-closed {
+  grid-template-columns: clamp(280px, 20vw, 320px) clamp(460px, 36vw, 540px) 360px;
+}
+
+.quickdeck-command-desk-shell.quickdeck-shell.is-right-drawer-closed {
+  grid-template-columns: clamp(280px, 20vw, 320px) clamp(460px, 36vw, 540px) 360px;
+  min-width: 0;
 }
