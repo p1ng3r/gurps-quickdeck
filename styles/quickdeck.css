@@ -3,177 +3,157 @@
    Clean three-zone application layout: left roster, center cockpit, right drawer.
    Reference popup/index styles are preserved below this shell section. */
 .gurps-quickdeck {
-  --quickdeck-ink: #0b0c10;
-  --quickdeck-panel: rgba(20, 18, 18, 0.86);
-  --quickdeck-panel-strong: rgba(31, 25, 20, 0.94);
-  --quickdeck-panel-soft: rgba(57, 43, 29, 0.46);
-  --quickdeck-line: rgba(220, 179, 105, 0.34);
-  --quickdeck-line-strong: rgba(240, 200, 126, 0.62);
-  --quickdeck-gold: #efc878;
-  --quickdeck-gold-soft: #d7aa57;
-  --quickdeck-text: #f4ead7;
-  --quickdeck-muted: rgba(244, 234, 215, 0.72);
-  --quickdeck-danger: #b95145;
-  --quickdeck-good: #7ea95c;
-
-  --quickdeck-art-main-shell: url("../assets/ui/source/shell/qd-main-shell-wide.webp");
-  --quickdeck-art-top-bar: url("../assets/ui/source/shell/qd-command-title-band.webp");
-  --quickdeck-art-roster-frame: url("../assets/ui/source/shell/qd-left-roster-frame.webp");
-  --quickdeck-art-center-frame: url("../assets/ui/source/shell/qd-center-cockpit-frame.webp");
-  --quickdeck-art-right-frame: url("../assets/ui/source/shell/qd-right-drawer-frame.webp");
-  --quickdeck-art-drawer-panel: url("../assets/ui/source/drawer/qd-clean-parchment-panel.webp");
-  --quickdeck-art-resource-card: url("../assets/ui/source/cockpit/qd-resource-card-hp.webp");
-  --quickdeck-art-defense-button: url("../assets/ui/source/cockpit/qd-defense-dodge-circle.webp");
-  --quickdeck-art-roll-button: url("../assets/ui/source/drawer/qd-combat-dice-3d6-icon.webp");
-  --quickdeck-art-target-button: url("../assets/ui/source/drawer/qd-combat-target-square.webp");
-  --quickdeck-art-modifier-button: url("../assets/ui/source/drawer/qd-combat-mods-square.webp");
-  --quickdeck-art-portrait: url("../assets/ui/source/cockpit/qd-portrait-frame.webp");
-  --quickdeck-art-roster-card: url("../assets/ui/components/actor-roster-card.webp");
-  --quickdeck-art-roster-card-selected: url("../assets/ui/components/actor-roster-card-selected.webp");
-  --quickdeck-art-favorite-card: url("../assets/ui/components/combat-favorite-card.webp");
-  --quickdeck-art-spell-card: url("../assets/ui/components/spell-favorite-card.webp");
-  --quickdeck-art-skill-card: url("../assets/ui/source/drawer/qd-clean-skill-row.webp");
-  --quickdeck-art-attack-card: url("../assets/ui/source/drawer/qd-clean-combat-card.webp");
-  --quickdeck-art-spell-row: url("../assets/ui/source/drawer/qd-clean-spell-row.webp");
-  --quickdeck-art-type-pill: url("../assets/ui/components/type-pill.webp");
-  --quickdeck-art-points-pill: url("../assets/ui/components/points-pill.webp");
-  --quickdeck-art-empty: url("../assets/ui/components/empty-state-plaque.webp");
-  --quickdeck-art-small-button: url("../assets/ui/source/drawer/qd-filter-button.webp");
-  --quickdeck-art-medium-button: url("../assets/ui/components/medium-bronze-button.webp");
-  --quickdeck-art-red-button: url("../assets/ui/components/small-red-button.webp");
-  --quickdeck-art-green-button: url("../assets/ui/components/small-green-button.webp");
-  --quickdeck-art-tab-glow: url("../assets/ui/components/drawer-tab-active-glow.webp");
-  --quickdeck-icon-sheet: url("../assets/ui/icons/icon-sheet-small.webp");
-  --quickdeck-icon-token: url("../assets/ui/icons/icon-token-small.webp");
-  --quickdeck-icon-chat: url("../assets/ui/icons/icon-chat.webp");
-  --quickdeck-icon-next: url("../assets/ui/icons/icon-next-small.webp");
-  --quickdeck-icon-book: url("../assets/ui/icons/icon-book-small.webp");
-  --quickdeck-icon-minimize: url("../assets/ui/icons/icon-minimize.webp");
-  --quickdeck-icon-3d6: url("../assets/ui/icons/icon-3d6.webp");
-  --quickdeck-icon-target: url("../assets/ui/icons/icon-target-small.webp");
-  --quickdeck-icon-modifier: url("../assets/ui/icons/icon-modifier-small.webp");
-  --quickdeck-icon-star: url("../assets/ui/icons/icon-star-empty-small.webp");
-  --quickdeck-icon-skill: url("../assets/ui/icons/icon-skill-small.webp");
-  --quickdeck-icon-spell: url("../assets/ui/icons/icon-spell-small.webp");
-  --quickdeck-icon-gear: url("../assets/ui/icons/icon-gear-small.webp");
-  --quickdeck-art-resource-card-hp: url("../assets/ui/source/cockpit/qd-resource-card-hp.webp");
-  --quickdeck-art-resource-card-fp: url("../assets/ui/source/cockpit/qd-resource-card-fp.webp");
-  --quickdeck-art-resource-card-move: url("../assets/ui/source/cockpit/qd-resource-card-move.webp");
-  --quickdeck-art-stepper-minus: url("../assets/ui/source/cockpit/qd-small-square-minus.webp");
-  --quickdeck-art-stepper-plus: url("../assets/ui/source/cockpit/qd-small-square-plus.webp");
-  --quickdeck-art-defense-dodge: url("../assets/ui/source/cockpit/qd-defense-dodge-circle.webp");
-  --quickdeck-art-defense-parry: url("../assets/ui/source/cockpit/qd-defense-parry-circle.webp");
-  --quickdeck-art-defense-block: url("../assets/ui/source/cockpit/qd-defense-block-circle.webp");
-  --quickdeck-art-collapsible-row: url("../assets/ui/source/cockpit/qd-collapsible-section-row.webp");
-  --quickdeck-art-collapsible-arrow: url("../assets/ui/source/cockpit/qd-collapsible-arrow.webp");
-  --quickdeck-art-collapse-left: url("../assets/ui/source/shell/qd-panel-collapse-handle-left.webp");
-  --quickdeck-art-collapse-right: url("../assets/ui/source/shell/qd-panel-collapse-handle-right.webp");
-  --quickdeck-art-scrollbar-track: url("../assets/ui/source/shell/qd-panel-scrollbar-track.webp");
-  --quickdeck-art-scrollbar-thumb: url("../assets/ui/source/shell/qd-panel-scrollbar-thumb.webp");
-  --quickdeck-art-attack-button-square: url("../assets/ui/source/drawer/qd-combat-attack-square.webp");
-  --quickdeck-art-damage-button-square: url("../assets/ui/source/drawer/qd-combat-damage-square.webp");
-  --quickdeck-art-3d6-icon: url("../assets/ui/source/drawer/qd-combat-dice-3d6-icon.webp");
-  --quickdeck-art-skill-roll-button: url("../assets/ui/source/drawer/qd-skill-roll-button.webp");
-  --quickdeck-art-spell-roll-button: url("../assets/ui/source/drawer/qd-spell-roll-button.webp");
-  --quickdeck-art-search-box: url("../assets/ui/source/drawer/qd-search-box.webp");
-  --quickdeck-art-reference-scroll-frame: url("../assets/ui/source/popout/qd-reference-scroll-frame.webp");
-  --quickdeck-art-reference-scroll-body: url("../assets/ui/source/popout/qd-reference-scroll-body.webp");
-  --quickdeck-art-reference-title-band: url("../assets/ui/source/popout/qd-reference-title-band.webp");
-  --quickdeck-art-reference-close-button: url("../assets/ui/source/popout/qd-reference-close-button.webp");
-  --quickdeck-art-reference-section-divider: url("../assets/ui/source/popout/qd-reference-section-divider.webp");
-  --quickdeck-art-reference-small-footer: url("../assets/ui/source/popout/qd-reference-small-footer.webp");
+  --quickdeck-ink: #15100a;
+  --quickdeck-charcoal: #111217;
+  --quickdeck-panel-black: #0d0d10;
+  --quickdeck-leather: #25160f;
+  --quickdeck-leather-2: #392315;
+  --quickdeck-leather-3: #4b321d;
+  --quickdeck-bronze: #a87835;
+  --quickdeck-bronze-dark: #6f451e;
+  --quickdeck-gold: #e5bf72;
+  --quickdeck-gold-soft: #f3d99b;
+  --quickdeck-parchment: #ead7aa;
+  --quickdeck-parchment-light: #f6e8c8;
+  --quickdeck-parchment-deep: #cfae69;
+  --quickdeck-muted: rgba(239, 226, 197, 0.82);
+  --quickdeck-shadow: rgba(0, 0, 0, 0.52);
+  min-width: min(1380px, calc(100vw - 48px));
+  min-height: min(780px, calc(100vh - 72px));
 }
 
 .gurps-quickdeck,
 .gurps-quickdeck * { box-sizing: border-box; }
 
 .gurps-quickdeck .window-header {
-  color: var(--quickdeck-text);
-  background: linear-gradient(120deg, #211a15, #4a331d 60%, #1c1f2a);
-  border-bottom: 1px solid var(--quickdeck-line-strong);
+  color: #f8e9c2;
+  background:
+    linear-gradient(180deg, rgba(255, 225, 157, 0.13), rgba(255, 225, 157, 0) 42%),
+    linear-gradient(90deg, #160e0a 0%, #3b2414 46%, #6d451e 100%);
+  border-bottom: 1px solid rgba(229, 184, 96, 0.72);
+  box-shadow:
+    0 1px 0 rgba(255, 238, 196, 0.14) inset,
+    0 10px 22px rgba(0, 0, 0, 0.36);
 }
 
 .gurps-quickdeck .window-title {
-  color: var(--quickdeck-text);
-  font-weight: 800;
-  letter-spacing: 0.06em;
+  color: #fff0c7;
+  font-weight: 900;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
+  text-shadow: 0 1px 0 #2b1608, 0 3px 10px rgba(0, 0, 0, 0.65);
 }
 
 .gurps-quickdeck .window-content {
   padding: 0;
   overflow: hidden;
-  background: #0d0e12;
+  background: #0d0a08;
 }
 
 .quickdeck-shell {
+  position: relative;
+  isolation: isolate;
   display: grid;
-  grid-template-columns: clamp(250px, 23vw, 310px) minmax(760px, 1fr);
+  grid-template-columns: minmax(290px, 0.78fr) minmax(0, 2.9fr);
+  gap: 0.78rem;
+  width: 100%;
   height: 100%;
   min-height: 0;
-  color: var(--quickdeck-text);
+  padding: 0.82rem;
+  color: #f5ead2;
   background:
-    var(--quickdeck-art-main-shell) center / 100% 100% no-repeat,
-    radial-gradient(circle at 62% 15%, rgba(202, 149, 62, 0.16), transparent 30%),
-    linear-gradient(135deg, #111218, #21170f 58%, #0a0b0f);
+    radial-gradient(ellipse at 50% -18%, rgba(238, 184, 89, 0.23), transparent 46%),
+    linear-gradient(90deg, rgba(63, 38, 21, 0.96), rgba(23, 14, 10, 0.98) 28%, rgba(15, 16, 19, 0.98) 70%, rgba(54, 34, 20, 0.97)),
+    linear-gradient(180deg, #1a100b, #09090c);
+  border: 1px solid rgba(224, 177, 88, 0.34);
+  box-shadow:
+    0 0 0 3px rgba(0, 0, 0, 0.28) inset,
+    0 0 0 1px rgba(255, 235, 184, 0.06) inset,
+    0 26px 48px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
 }
 
-.quickdeck-command-desk,
+.quickdeck-shell::before,
+.quickdeck-shell::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.quickdeck-shell::before {
+  inset: 0.42rem;
+  border: 1px solid rgba(226, 181, 93, 0.18);
+  border-radius: 14px;
+}
+
+.quickdeck-shell::after {
+  left: 0.82rem;
+  right: 0.82rem;
+  bottom: 0.38rem;
+  height: 0.42rem;
+  border-top: 1px solid rgba(232, 190, 107, 0.42);
+  border-radius: 0 0 16px 16px;
+  background: linear-gradient(90deg, rgba(76, 44, 19, 0.6), rgba(183, 125, 48, 0.34), rgba(76, 44, 19, 0.6));
+  box-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5) inset;
+}
+
 .quickdeck-sidebar,
-.quickdeck-workbench,
-.quickdeck-main,
-.quickdeck-center-cockpit,
-.quickdeck-right-drawer,
-.quickdeck-panel,
-.quickdeck-panel-content { min-height: 0; }
+.quickdeck-main {
+  position: relative;
+  z-index: 1;
+  min-width: 0;
+  min-height: 0;
+}
 
 .quickdeck-sidebar {
   display: grid;
-  grid-template-rows: minmax(250px, 1.1fr) minmax(180px, 0.9fr);
-  gap: 0.65rem;
-  padding: 0.7rem;
+  grid-template-rows: minmax(240px, 1.15fr) minmax(180px, 0.85fr);
+  gap: 0.72rem;
   overflow: hidden;
-  border-right: 1px solid var(--quickdeck-line);
-  background:
-    var(--quickdeck-art-roster-frame) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(21, 16, 14, 0.92), rgba(10, 11, 14, 0.9));
 }
 
 .quickdeck-sidebar-block,
-.quickdeck-center-cockpit,
-.quickdeck-right-drawer,
-.quickdeck-top-bar {
-  border: 1px solid var(--quickdeck-line);
+.quickdeck-selected-cockpit,
+.quickdeck-panel {
+  border: 1px solid rgba(215, 170, 88, 0.5);
   border-radius: 14px;
-  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32), inset 0 0 0 1px rgba(255, 238, 190, 0.05);
+  box-shadow:
+    0 14px 28px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(255, 239, 196, 0.05) inset;
 }
 
 .quickdeck-sidebar-block {
   display: flex;
   flex-direction: column;
-  gap: 0.45rem;
-  padding: 0.62rem;
+  min-height: 0;
+  padding: 0.72rem;
+  background:
+    linear-gradient(180deg, rgba(255, 229, 164, 0.07), rgba(255, 229, 164, 0) 24%),
+    linear-gradient(145deg, rgba(55, 34, 20, 0.96), rgba(21, 14, 11, 0.98));
   overflow: hidden;
-  background: linear-gradient(180deg, rgba(42, 31, 22, 0.84), rgba(13, 13, 16, 0.78));
+}
+
+.quickdeck-sidebar-roster {
+  position: relative;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, transform 0.18s ease;
 }
 
 .quickdeck-sidebar-roster.is-drop-active {
-  border-color: var(--quickdeck-gold);
-  box-shadow: 0 0 0 1px rgba(239, 200, 120, 0.35), 0 0 24px rgba(239, 200, 120, 0.22);
+  border-color: rgba(246, 210, 139, 0.95);
+  box-shadow:
+    0 0 0 1px rgba(242, 208, 142, 0.45),
+    0 0 18px rgba(246, 200, 109, 0.28),
+    0 14px 28px rgba(0, 0, 0, 0.34);
+  transform: translateY(-1px);
 }
 
 .quickdeck-block-title-row,
-.quickdeck-available-header,
-.quickdeck-top-bar,
-.quickdeck-window-actions,
-.quickdeck-actor-header,
-.quickdeck-actor-header-actions,
-.quickdeck-favorite-attacks-heading,
-.quickdeck-attack-title-row,
-.quickdeck-attack-actions,
-.quickdeck-quick-skill-actions {
+.quickdeck-available-header h4,
+.quickdeck-favorite-attacks-heading {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 0.5rem;
 }
 
@@ -185,77 +165,144 @@
 
 .quickdeck-sidebar h3,
 .quickdeck-sidebar h4,
-.quickdeck-panel h4,
-.quickdeck-favorite-attacks h5,
-.quickdeck-pinned-skills-summary h5,
-.quickdeck-attack-card h5,
-.quickdeck-skill-row h5 {
+.quickdeck-attacks-section h4,
+.quickdeck-skills-section h4 {
   margin: 0;
-  color: #fff2cf;
-  line-height: 1.15;
+  color: #fff0c6;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.72);
 }
 
-.quickdeck-kicker,
+.quickdeck-sidebar h3,
+.quickdeck-sidebar h4 {
+  font-size: 0.78rem;
+}
+
+.quickdeck-badge,
+.quickdeck-type-pill,
+.quickdeck-combat-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.quickdeck-badge {
+  min-width: 1.55rem;
+  padding: 0.08rem 0.42rem;
+  border: 1px solid rgba(232, 189, 105, 0.56);
+  color: #ffe8b2;
+  background: linear-gradient(180deg, rgba(101, 70, 29, 0.96), rgba(50, 31, 15, 0.98));
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
 .quickdeck-hint,
 .quickdeck-drop-hint,
 .quickdeck-empty,
-.quickdeck-favorite-attacks-hint,
-.quickdeck-footer-hint,
-.quickdeck-subsection-title,
-.quickdeck-attack-mode,
-.quickdeck-skill-meta,
-.quickdeck-reference-drawer-card p,
-.quickdeck-actor-identity p {
+.quickdeck-empty-compact,
+.quickdeck-section-note,
+.quickdeck-footer-hint {
   color: var(--quickdeck-muted);
 }
 
-.quickdeck-hint,
+.quickdeck-hint {
+  margin: 0.4rem 0 0.35rem;
+  font-size: 0.73rem;
+}
+
 .quickdeck-drop-hint,
-.quickdeck-footer-hint { margin: 0; font-size: 0.74rem; }
-.quickdeck-drop-hint { border: 1px dashed rgba(236, 195, 118, 0.34); border-radius: 8px; padding: 0.3rem 0.4rem; background: rgba(124, 82, 31, 0.14); }
-.quickdeck-kicker { display: block; font-size: 0.67rem; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; }
-.quickdeck-badge { display: inline-flex; align-items: center; justify-content: center; min-width: 1.3rem; padding: 0.08rem 0.38rem; border: 1px solid var(--quickdeck-line); border-radius: 999px; color: #ffe4ad; background: rgba(92, 61, 27, 0.82); font-size: 0.68rem; }
+.quickdeck-empty,
+.quickdeck-empty-compact {
+  border: 1px dashed rgba(218, 174, 92, 0.42);
+  border-radius: 10px;
+  background: rgba(13, 10, 8, 0.32);
+}
+
+.quickdeck-drop-hint {
+  margin: 0 0 0.55rem;
+  padding: 0.34rem 0.45rem;
+  font-size: clamp(0.62rem, 0.9vw, 0.68rem);
+}
+
+.quickdeck-empty {
+  margin: 0.25rem 0;
+  padding: 0.62rem 0.7rem;
+}
+
+.quickdeck-empty-compact {
+  margin-top: 0.45rem;
+  padding: 0.42rem 0.52rem;
+  font-size: 0.76rem;
+}
 
 .quickdeck-roster-list,
 .quickdeck-available-list,
 .quickdeck-attacks-list,
 .quickdeck-skills-list,
 .quickdeck-favorite-attacks-list,
-.quickdeck-pinned-skills-list {
+.quickdeck-favorite-spells-list {
   margin: 0;
   padding: 0;
   list-style: none;
   display: grid;
-  gap: 0.42rem;
+}
+
+.quickdeck-roster-list,
+.quickdeck-available-list {
+  gap: 0.34rem;
   overflow-y: auto;
   min-height: 0;
+  padding-right: 0.18rem;
+  scrollbar-color: rgba(190, 139, 59, 0.82) rgba(0, 0, 0, 0.2);
 }
 
 .quickdeck-roster-list,
 .quickdeck-available-list { padding-right: 0.16rem; }
 .quickdeck-roster-list li,
-.quickdeck-available-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 0.35rem; align-items: center; }
+.quickdeck-available-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem;
+  align-items: center;
+}
 
 .quickdeck-roster-button,
-.quickdeck-available-actor {
-  min-width: 0;
-  display: grid;
-  grid-template-columns: 38px minmax(0, 1fr);
-  align-items: center;
-  gap: 0.45rem;
+.quickdeck-add-button,
+.quickdeck-remove-button,
+.quickdeck-clear-button,
+.quickdeck-open-sheet-button,
+.quickdeck-drop-token-button,
+.quickdeck-open-pdf-sources-button,
+.quickdeck-minimize-button,
+.quickdeck-drawer-tab,
+.quickdeck-roll-button,
+.quickdeck-flow-button,
+.quickdeck-defense-button,
+.quickdeck-link-button,
+.quickdeck-unpin-button,
+.quickdeck-favorite-toggle,
+.quickdeck-favorite-attack-main {
+  font-family: inherit;
 }
 
 .quickdeck-roster-button {
   width: 100%;
-  border: 1px solid rgba(228, 184, 104, 0.22);
-  border-radius: 11px;
-  padding: 0.38rem;
-  color: var(--quickdeck-text);
-  text-align: left;
-  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.48rem;
+  min-width: 0;
+  padding: 0.42rem 0.48rem;
+  border: 1px solid rgba(218, 174, 92, 0.34);
+  border-radius: 10px;
+  color: #f6ead2;
   background:
-    var(--quickdeck-art-roster-card) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(38, 33, 30, 0.92), rgba(16, 17, 21, 0.9));
+    linear-gradient(180deg, rgba(65, 43, 27, 0.9), rgba(24, 18, 15, 0.96));
+  box-shadow: 0 1px 0 rgba(255, 239, 196, 0.05) inset;
+  cursor: pointer;
 }
 .quickdeck-roster-button.is-active { border-color: var(--quickdeck-gold); background-image: var(--quickdeck-art-roster-card-selected); }
 .quickdeck-roster-button.is-current-turn { box-shadow: 0 0 0 1px rgba(126, 169, 92, 0.65), 0 0 18px rgba(126, 169, 92, 0.18); }
@@ -348,150 +395,58 @@
 .quickdeck-skills-list { overflow: visible; }
 .quickdeck-subsection-title { margin: 0.35rem 0 0; font-size: 0.74rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
 
-.quickdeck-attack-card,
-.quickdeck-skill-row { display: grid; gap: 0.46rem; border: 1px solid rgba(236, 195, 118, 0.24); border-radius: 12px; padding: 0.55rem; background: linear-gradient(180deg, rgba(42, 32, 23, 0.74), rgba(12, 13, 17, 0.76)); }
-.quickdeck-attack-card { background-image: var(--quickdeck-art-attack-card); background-size: 100% 100%; }
-.quickdeck-skill-row { grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; background-image: var(--quickdeck-art-skill-card); background-size: 100% 100%; }
-.quickdeck-spell-row { background-image: var(--quickdeck-art-spell-row); }
-.quickdeck-attack-title-block { min-width: 0; flex: 1; }
-.quickdeck-attack-title-block h5,
-.quickdeck-skill-main h5 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.quickdeck-attack-stats { margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.35rem; }
-.quickdeck-attack-stats div { border: 1px solid rgba(236, 195, 118, 0.16); border-radius: 8px; padding: 0.3rem; background: rgba(0, 0, 0, 0.18); }
-.quickdeck-attack-stats dt { color: var(--quickdeck-muted); font-size: 0.63rem; text-transform: uppercase; }
-.quickdeck-attack-stats dd { margin: 0.08rem 0 0; color: var(--quickdeck-text); font-weight: 800; }
-.quickdeck-combat-anchors { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 0.35rem; align-items: stretch; }
-.quickdeck-combat-anchor { min-width: 0; display: flex; align-items: center; gap: 0.35rem; border: 1px solid rgba(236, 195, 118, 0.24); border-radius: 10px; padding: 0.36rem; color: var(--quickdeck-text); text-align: left; }
-.quickdeck-target-anchor { background: var(--quickdeck-art-target-button) center / 100% 100% no-repeat, rgba(0, 0, 0, 0.22); }
-.quickdeck-modifier-anchor { background: var(--quickdeck-art-modifier-button) center / 100% 100% no-repeat, rgba(0, 0, 0, 0.22); }
-.quickdeck-anchor-label { display: block; color: var(--quickdeck-muted); font-size: 0.62rem; font-weight: 900; text-transform: uppercase; }
-.quickdeck-anchor-value { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.74rem; }
-.quickdeck-modifier-bucket-total { color: #fff0c5; font-weight: 900; margin-right: 0.25rem; }
-.quickdeck-combat-icon-tray { display: flex; gap: 0.25rem; align-items: center; justify-content: center; }
-.quickdeck-combat-icon { width: 1.15rem; height: 1.15rem; flex: 0 0 1.15rem; display: inline-flex; align-items: center; justify-content: center; opacity: 0.9; }
-.quickdeck-combat-icon i { pointer-events: none; }
-.quickdeck-skill-main { min-width: 0; display: grid; gap: 0.16rem; }
-.quickdeck-skill-main p,
-.quickdeck-skill-meta { margin: 0; display: flex; flex-wrap: wrap; gap: 0.35rem; font-size: 0.76rem; }
-.quickdeck-skill-checkbox input { accent-color: var(--quickdeck-gold-soft); }
-.quickdeck-quick-skill-row.is-quick-skill-selected,
-.quickdeck-skill-row.is-quick-skill-selected { border-color: rgba(126, 169, 92, 0.66); }
-.quickdeck-reference-drawer-card { display: grid; gap: 0.55rem; align-content: start; border: 1px dashed rgba(236, 195, 118, 0.34); border-radius: 13px; padding: 0.82rem; background: rgba(69, 46, 22, 0.16); }
-.quickdeck-reference-drawer-card h4 { margin: 0; color: #fff2cf; }
-.quickdeck-reference-drawer-card p { margin: 0; }
-
-button.quickdeck-clear-button,
-button.quickdeck-add-button,
-button.quickdeck-remove-button,
-button.quickdeck-open-sheet-button,
-button.quickdeck-drop-token-button,
-button.quickdeck-flow-button,
-button.quickdeck-open-pdf-sources-button,
-button.quickdeck-minimize-button,
-button.quickdeck-drawer-tab,
-button.quickdeck-roll-button,
-button.quickdeck-favorite-toggle {
-  min-height: 1.8rem;
-  border: 1px solid rgba(239, 200, 120, 0.38);
-  border-radius: 8px;
-  padding: 0.24rem 0.55rem;
-  color: var(--quickdeck-text);
-  font-weight: 800;
-  background: var(--quickdeck-art-small-button) center / 100% 100% no-repeat, linear-gradient(180deg, rgba(115, 76, 32, 0.9), rgba(45, 29, 15, 0.96));
-  cursor: pointer;
-}
-button.quickdeck-open-sheet-button,
-button.quickdeck-drop-token-button,
-button.quickdeck-open-pdf-sources-button { background-image: var(--quickdeck-art-medium-button); }
-button.quickdeck-add-button { background-image: var(--quickdeck-art-green-button); }
-button.quickdeck-remove-button,
-button.quickdeck-clear-button { background-image: var(--quickdeck-art-red-button); }
-button.quickdeck-roll-button,
-button.quickdeck-attack-button { background-image: var(--quickdeck-art-roll-button); }
-button.quickdeck-drawer-tab { min-height: 2.05rem; padding: 0.2rem 0.3rem; font-size: 0.74rem; }
-button.quickdeck-drawer-tab.is-active { border-color: var(--quickdeck-gold); color: #fff7dd; background-image: var(--quickdeck-art-tab-glow), var(--quickdeck-art-small-button); box-shadow: 0 0 14px rgba(239, 200, 120, 0.24); }
-button.quickdeck-favorite-toggle { min-width: 2rem; padding: 0.2rem; }
-button:disabled { cursor: default; opacity: 0.52; }
-button:not(:disabled):hover { filter: brightness(1.12); }
-.quickdeck-link-button { border: 0; padding: 0; color: #f8d88e; background: transparent; box-shadow: none; text-align: left; cursor: pointer; }
-.quickdeck-link-button:hover { text-decoration: underline; }
-.quickdeck-type-pill,
-.quickdeck-combat-pill { display: inline-flex; align-items: center; max-width: 100%; border: 1px solid rgba(236, 195, 118, 0.32); border-radius: 999px; padding: 0.08rem 0.36rem; color: #ffe1a5; background: var(--quickdeck-art-type-pill) center / 100% 100% no-repeat, rgba(73, 48, 21, 0.62); font-size: 0.66rem; font-weight: 800; }
-.quickdeck-points-pill { background-image: var(--quickdeck-art-points-pill); }
-
-.quickdeck-floating-restore { position: fixed; top: 8px; right: 96px; z-index: 72; display: inline-flex; align-items: center; gap: 0.38rem; border: 1px solid rgba(224, 186, 112, 0.72); border-radius: 999px; padding: 0.22rem 0.55rem 0.22rem 0.28rem; color: #f8efdc; background: linear-gradient(145deg, rgba(14, 16, 22, 0.97), rgba(48, 40, 32, 0.95)); box-shadow: 0 2px 10px rgba(0,0,0,.45), 0 0 0 1px rgba(255,222,162,.12) inset; cursor: pointer; }
-.quickdeck-floating-restore:hover { filter: brightness(1.1); }
-.quickdeck-floating-restore-mark { width: 1.22rem; height: 1.22rem; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; font-size: 0.58rem; font-weight: 800; color: #1e170d; background: linear-gradient(180deg, #f5d59b, #be913f); }
-.quickdeck-floating-restore-label { font-size: 0.68rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; }
-
-.quickdeck-center-cockpit::-webkit-scrollbar,
-.quickdeck-panel-content::-webkit-scrollbar,
-.quickdeck-roster-list::-webkit-scrollbar,
-.quickdeck-available-list::-webkit-scrollbar { width: 8px; }
-.quickdeck-center-cockpit::-webkit-scrollbar-track,
-.quickdeck-panel-content::-webkit-scrollbar-track,
-.quickdeck-roster-list::-webkit-scrollbar-track,
-.quickdeck-available-list::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.28); border-radius: 999px; }
-.quickdeck-center-cockpit::-webkit-scrollbar-thumb,
-.quickdeck-panel-content::-webkit-scrollbar-thumb,
-.quickdeck-roster-list::-webkit-scrollbar-thumb,
-.quickdeck-available-list::-webkit-scrollbar-thumb { background: rgba(211, 161, 82, 0.66); border-radius: 999px; }
-
-@media (max-width: 1120px) {
-  .quickdeck-shell { grid-template-columns: 245px minmax(720px, 1fr); }
-  .quickdeck-workbench,
-  .quickdeck-main { grid-template-columns: minmax(340px, 0.48fr) minmax(420px, 0.52fr); }
-  .quickdeck-combat-flow-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.quickdeck-roster-button:hover,
+.quickdeck-roster-button:focus-visible {
+  border-color: rgba(245, 204, 128, 0.78);
+  box-shadow: 0 0 0 1px rgba(245, 204, 128, 0.16), 0 0 14px rgba(220, 160, 66, 0.16);
+  outline: none;
 }
 
-@media (max-width: 920px) {
-  .quickdeck-shell { grid-template-columns: 230px minmax(520px, 1fr); }
-  .quickdeck-workbench,
-  .quickdeck-main { grid-template-columns: minmax(0, 1fr); overflow-y: auto; }
-  .quickdeck-right-drawer,
-  .quickdeck-center-cockpit { min-height: 420px; overflow: visible; }
-}
-
-.gurps-quickdeck-roll-fallback {
-  color: #f7f2e6;
-  border: 1px solid rgba(214, 175, 98, 0.45);
-  border-radius: 8px;
-  padding: 0.65rem 0.75rem;
-  background: linear-gradient(180deg, rgba(33, 34, 43, 0.98), rgba(15, 16, 21, 0.98));
-}
-
-.gurps-quickdeck-roll-fallback h3 {
-  margin: 0 0 0.45rem;
-  color: #fff2ce;
-  font-size: 0.95rem;
-  letter-spacing: 0.03em;
-}
-
-.gurps-quickdeck-roll-fallback p {
-  margin: 0.18rem 0;
-  color: #f0eadc;
-}
-
-.gurps-quickdeck-reference {
-  --quickdeck-reference-ink: #2d1b0f;
-  --quickdeck-reference-ink-soft: #4c3622;
-  --quickdeck-reference-muted: #6d5234;
-  --quickdeck-reference-parchment: #f0dfb8;
-  --quickdeck-reference-parchment-deep: #d9bd82;
-  --quickdeck-reference-edge: #8e5f27;
-  --quickdeck-reference-bronze: #b57831;
-  --quickdeck-reference-leather: #24140d;
-}
-
-.gurps-quickdeck-reference .window-header {
-  color: #f7e7bd;
+.quickdeck-roster-button.is-active {
+  border-color: rgba(248, 212, 140, 0.95);
   background:
-    linear-gradient(180deg, rgba(255, 221, 154, 0.12), rgba(0, 0, 0, 0) 46%),
-    linear-gradient(120deg, #21130d, #3b2415 54%, #77501f);
-  border-bottom: 1px solid rgba(226, 177, 91, 0.78);
+    linear-gradient(180deg, rgba(104, 72, 34, 0.94), rgba(45, 31, 17, 0.98));
+  box-shadow: 0 0 0 1px rgba(234, 185, 92, 0.28), 0 0 18px rgba(234, 185, 92, 0.18);
+}
+
+.quickdeck-roster-button.is-current-turn {
+  border-color: rgba(126, 211, 255, 0.9);
   box-shadow:
-    0 1px 0 rgba(255, 236, 184, 0.16) inset,
-    0 8px 20px rgba(35, 18, 7, 0.34);
+    0 0 0 1px rgba(144, 216, 255, 0.38),
+    0 0 14px rgba(80, 195, 255, 0.36);
+  animation: quickdeck-current-turn-pulse 1.45s ease-in-out infinite;
+}
+
+@keyframes quickdeck-current-turn-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 1px rgba(144, 216, 255, 0.3), 0 0 10px rgba(80, 195, 255, 0.22);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(164, 226, 255, 0.62), 0 0 18px rgba(80, 195, 255, 0.48);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quickdeck-roster-button.is-current-turn,
+  .quickdeck-target-opponent-reticle-rune {
+    animation: none;
+  }
+}
+
+.quickdeck-roster-main,
+.quickdeck-actor-identity,
+.quickdeck-attack-title-block,
+.quickdeck-skill-main,
+.quickdeck-modifier-bucket-copy,
+.quickdeck-target-anchor-copy {
+  min-width: 0;
+}
+
+.quickdeck-roster-main {
+  flex: 1 1 auto;
+  display: grid;
+  gap: 0.22rem;
 }
 
 .gurps-quickdeck-reference .window-title {
@@ -504,12 +459,14 @@ button:not(:disabled):hover { filter: brightness(1.12); }
     0 2px 8px rgba(0, 0, 0, 0.62);
 }
 
-.gurps-quickdeck-reference .window-content {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  max-height: calc(100vh - 4.5rem);
-  padding: 0.7rem 0.82rem;
+.quickdeck-roster-name,
+.quickdeck-available-actor span,
+.quickdeck-skill-main h5,
+.quickdeck-favorite-attack-name,
+.quickdeck-favorite-attack-meta,
+.quickdeck-anchor-label,
+.quickdeck-anchor-value,
+.quickdeck-modifier-bucket-detail {
   overflow: hidden;
   color: var(--quickdeck-reference-ink);
   background:
@@ -518,46 +475,31 @@ button:not(:disabled):hover { filter: brightness(1.12); }
     linear-gradient(135deg, #3a2112, #170d08 68%);
 }
 
-.quickdeck-reference-shell {
-  position: relative;
-  isolation: isolate;
+.quickdeck-roster-name {
+  flex: 1 1 auto;
+  color: #fff1d4;
+  font-weight: 800;
+}
+
+.quickdeck-roster-resources {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr);
-  width: 100%;
-  min-height: 0;
-  max-height: calc(100vh - 5.9rem);
-  gap: 0;
-  border: 1px solid rgba(106, 65, 24, 0.52);
-  border-radius: 16px;
-  padding: 0.72rem 0.8rem 0.88rem;
-  color: var(--quickdeck-reference-ink);
-  background:
-    radial-gradient(circle at 14% 18%, rgba(255, 250, 218, 0.62), transparent 18%),
-    radial-gradient(circle at 84% 8%, rgba(170, 102, 32, 0.16), transparent 20%),
-    radial-gradient(circle at 95% 88%, rgba(109, 65, 21, 0.14), transparent 22%),
-    repeating-linear-gradient(88deg, rgba(92, 55, 21, 0.035) 0, rgba(92, 55, 21, 0.035) 1px, transparent 1px, transparent 7px),
-    linear-gradient(180deg, #f6e8c2 0%, var(--quickdeck-reference-parchment) 48%, #e0c891 100%);
-  box-shadow:
-    0 18px 36px rgba(21, 10, 4, 0.44),
-    0 0 0 1px rgba(255, 248, 212, 0.24) inset,
-    0 0 28px rgba(109, 63, 20, 0.18) inset;
-  overflow: hidden;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.25rem;
 }
 
-.quickdeck-reference-shell::before,
-.quickdeck-reference-shell::after {
-  content: "";
-  position: absolute;
-  z-index: 0;
-  pointer-events: none;
+.quickdeck-roster-resource {
+  display: grid;
+  grid-template-columns: auto minmax(22px, 1fr) auto;
+  align-items: center;
+  gap: 0.18rem;
+  min-width: 0;
+  color: rgba(246, 234, 206, 0.94);
+  font-size: 0.62rem;
+  font-weight: 800;
 }
 
-.quickdeck-reference-shell::before {
-  inset: 0.22rem 0.42rem;
-  border-radius: 12px;
-  background:
-    linear-gradient(90deg, rgba(96, 56, 18, 0.22), transparent 8%, transparent 92%, rgba(96, 56, 18, 0.22)),
-    linear-gradient(180deg, rgba(255, 249, 219, 0.28), transparent 14%, transparent 84%, rgba(93, 55, 19, 0.14));
+.quickdeck-roster-resource-label {
+  color: #eac47d;
 }
 
 .quickdeck-reference-shell::after {
@@ -569,127 +511,136 @@ button:not(:disabled):hover { filter: brightness(1.12); }
   mix-blend-mode: multiply;
 }
 
-.quickdeck-reference-panel {
-  position: relative;
-  z-index: 1;
-  min-height: 0;
-  border: 0;
-  border-radius: 0;
-  padding: 0.64rem 0.72rem;
-  background: transparent;
-  box-shadow: none;
+.quickdeck-mini-resource-bar,
+.quickdeck-large-resource-bar {
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(219, 181, 106, 0.42);
+  border-radius: 999px;
+  background: rgba(6, 7, 9, 0.76);
 }
 
-.quickdeck-reference-header {
-  margin: -0.28rem -0.34rem 0.42rem;
-  border: 1px solid rgba(69, 38, 16, 0.58);
-  border-radius: 12px;
-  background:
-    linear-gradient(180deg, rgba(255, 225, 157, 0.16), rgba(255, 225, 157, 0) 36%),
-    linear-gradient(135deg, var(--quickdeck-reference-leather), #3b2111 58%, #6f471d);
-  box-shadow:
-    0 2px 0 rgba(255, 231, 174, 0.16) inset,
-    0 9px 18px rgba(75, 43, 14, 0.22),
-    0 -1px 0 rgba(70, 37, 10, 0.58) inset;
+.quickdeck-mini-resource-bar {
+  height: 0.32rem;
 }
 
-.quickdeck-reference-header::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  left: 0.68rem;
-  right: 0.68rem;
-  bottom: -0.47rem;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(115, 67, 21, 0.58), rgba(236, 205, 132, 0.64), rgba(115, 67, 21, 0.58), transparent);
+.quickdeck-large-resource-bar {
+  height: 0.55rem;
 }
 
-.quickdeck-reference-header h2 {
-  margin: 0;
-  font-size: 1.05rem;
-  letter-spacing: 0.035em;
-  color: #fff0c6;
-  text-shadow:
-    0 1px 0 #2b1608,
-    0 2px 8px rgba(0, 0, 0, 0.46);
+.quickdeck-mini-resource-bar span,
+.quickdeck-large-resource-bar span {
+  display: block;
+  height: 100%;
+  max-width: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #9c2a29, #db8d3e 72%, #eac271);
 }
 
-.quickdeck-reference-header .quickdeck-reference-meta dt {
-  color: rgba(250, 224, 165, 0.86);
+.quickdeck-roster-button img,
+.quickdeck-actor-header img,
+.quickdeck-available-actor img {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  border: 1px solid rgba(232, 190, 109, 0.48);
+  border-radius: 7px;
+  object-fit: cover;
+  background: #130d09;
 }
 
-.quickdeck-reference-header .quickdeck-reference-meta dd {
-  color: rgba(255, 246, 219, 0.96);
-}
-
-.quickdeck-reference-meta {
-  margin: 0.45rem 0 0;
-  display: grid;
-  gap: 0.38rem;
-}
-
-.quickdeck-reference-meta div {
-  display: grid;
-  grid-template-columns: 6.8rem minmax(0, 1fr);
-  gap: 0.5rem;
-  align-items: start;
-}
-
-.quickdeck-reference-meta dt {
-  font-size: 0.66rem;
+.quickdeck-type-pill {
+  padding: 0.08rem 0.35rem;
+  border: 1px solid rgba(191, 166, 119, 0.48);
+  color: rgba(251, 237, 205, 0.94);
+  background: rgba(48, 43, 37, 0.78);
+  font-size: 0.6rem;
   font-weight: 800;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--quickdeck-reference-muted);
 }
 
-.quickdeck-reference-meta dd {
-  margin: 0;
-  font-size: 0.79rem;
-  line-height: 1.3;
-  color: var(--quickdeck-reference-ink);
-  overflow-wrap: anywhere;
+.quickdeck-combat-pill {
+  padding: 0.08rem 0.36rem;
+  border: 1px solid rgba(126, 184, 255, 0.68);
+  color: rgba(225, 241, 255, 0.98);
+  background: rgba(37, 68, 104, 0.78);
+  font-size: 0.62rem;
+  font-weight: 800;
 }
 
-.quickdeck-reference-body {
-  display: grid;
-  gap: 0.56rem;
-  min-height: 0;
-  max-height: calc(100vh - 13rem);
-  padding-top: 0.15rem;
-  padding-right: 0.4rem;
-  margin-right: -0.25rem;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  scrollbar-color: rgba(125, 76, 28, 0.72) rgba(91, 52, 18, 0.14);
-  scrollbar-gutter: stable;
-  scrollbar-width: thin;
+.quickdeck-clear-button,
+.quickdeck-open-sheet-button,
+.quickdeck-drop-token-button,
+.quickdeck-open-pdf-sources-button,
+.quickdeck-minimize-button,
+.quickdeck-add-button,
+.quickdeck-remove-button {
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-.quickdeck-reference-body::-webkit-scrollbar {
-  width: 0.55rem;
+.quickdeck-clear-button,
+.quickdeck-open-sheet-button,
+.quickdeck-drop-token-button,
+.quickdeck-open-pdf-sources-button,
+.quickdeck-minimize-button {
+  border: 1px solid rgba(216, 171, 86, 0.55);
+  color: #fff0c8;
+  background: linear-gradient(180deg, rgba(92, 61, 27, 0.92), rgba(37, 24, 14, 0.98));
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  padding: 0.3rem 0.55rem;
+  text-transform: uppercase;
+  white-space: nowrap;
 }
 
-.quickdeck-reference-body::-webkit-scrollbar-track {
-  border-radius: 999px;
-  background: rgba(91, 52, 18, 0.14);
+.quickdeck-clear-button:hover,
+.quickdeck-open-sheet-button:hover,
+.quickdeck-drop-token-button:hover,
+.quickdeck-open-pdf-sources-button:hover,
+.quickdeck-minimize-button:hover,
+.quickdeck-add-button:hover,
+.quickdeck-remove-button:hover {
+  border-color: rgba(249, 213, 142, 0.9);
+  filter: brightness(1.08);
 }
 
-.quickdeck-reference-body::-webkit-scrollbar-thumb {
-  border: 1px solid rgba(246, 226, 174, 0.42);
-  border-radius: 999px;
-  background: rgba(125, 76, 28, 0.62);
+.quickdeck-drop-token-button.is-armed {
+  border-color: rgba(130, 238, 165, 0.86);
+  color: #dcffe5;
+  background: linear-gradient(180deg, rgba(39, 102, 56, 0.9), rgba(20, 55, 30, 0.98));
 }
 
-.quickdeck-reference-body::-webkit-scrollbar-thumb:hover {
-  background: rgba(105, 61, 21, 0.78);
+.quickdeck-remove-button {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 1px solid rgba(219, 117, 102, 0.52);
+  color: #f1b8ad;
+  background: rgba(88, 26, 20, 0.62);
 }
 
-.quickdeck-reference-body p {
-  margin: 0;
-  font-size: 0.8rem;
-  line-height: 1.42;
-  color: var(--quickdeck-reference-ink-soft);
+.quickdeck-add-button {
+  min-width: 52px;
+  padding: 0.32rem 0.48rem;
+  border: 1px solid rgba(121, 183, 127, 0.55);
+  color: #def3dd;
+  background: linear-gradient(180deg, rgba(42, 94, 48, 0.78), rgba(24, 62, 31, 0.94));
+  font-size: 0.74rem;
+  font-weight: 800;
+}
+
+.quickdeck-add-button:disabled {
+  cursor: default;
+  opacity: 0.65;
+  border-color: rgba(130, 130, 130, 0.4);
+  color: rgba(235, 235, 235, 0.75);
+  background: rgba(50, 50, 50, 0.5);
 }
 
 .quickdeck-reference-sources {
@@ -704,214 +655,248 @@ button:not(:disabled):hover { filter: brightness(1.12); }
     0 1px 0 rgba(255, 250, 220, 0.54) inset,
     0 -1px 0 rgba(120, 76, 26, 0.12) inset;
   display: grid;
-  gap: 0.38rem;
+  gap: 0.52rem;
+  margin-bottom: 0.58rem;
 }
 
-.quickdeck-reference-sources::before {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  left: 0.62rem;
-  right: 0.62rem;
-  top: -0.29rem;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(126, 78, 26, 0.42), rgba(245, 225, 167, 0.54), rgba(126, 78, 26, 0.42), transparent);
-}
-
-.quickdeck-reference-sources h3 {
-  margin: 0;
-  font-size: 0.77rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: #4d2c13;
-  text-shadow: 0 1px 0 rgba(255, 244, 205, 0.7);
-}
-
-.quickdeck-reference-help {
-  padding: 0.42rem 0.5rem;
-  border: 1px solid rgba(124, 76, 25, 0.38);
+.quickdeck-available-header input,
+.quickdeck-drawer-search {
+  width: 100%;
+  height: 32px;
+  border: 1px solid rgba(204, 166, 91, 0.58);
   border-radius: 8px;
-  background: rgba(255, 247, 211, 0.3);
-  color: var(--quickdeck-reference-ink-soft);
+  padding: 0.25rem 0.52rem;
+  color: #fff3db;
+  background: rgba(8, 7, 7, 0.62);
 }
 
-.quickdeck-reference-status {
-  padding: 0.38rem 0.5rem;
-  border: 1px solid rgba(129, 83, 31, 0.28);
-  border-radius: 8px;
-  background: rgba(255, 250, 224, 0.24);
-  color: var(--quickdeck-reference-ink-soft);
+.quickdeck-available-header input::placeholder,
+.quickdeck-drawer-search::placeholder {
+  color: rgba(238, 222, 190, 0.68);
 }
 
-.quickdeck-reference-empty {
-  padding: 0.52rem 0.6rem;
-  border: 1px dashed rgba(115, 70, 23, 0.5);
-  border-radius: 9px;
+.quickdeck-available-header input:focus,
+.quickdeck-drawer-search:focus,
+.quickdeck-resource-value-line input:focus {
+  outline: 1px solid rgba(255, 218, 141, 0.72);
+  outline-offset: 1px;
+  border-color: rgba(238, 197, 119, 0.82);
+}
+
+.quickdeck-available-actor {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-width: 0;
+  color: #f4ead4;
+}
+
+.quickdeck-main {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+}
+
+.quickdeck-main::before {
+  content: "Command Desk";
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.35rem;
+  margin: 0 0 0.62rem;
+  border: 1px solid rgba(224, 177, 88, 0.48);
+  border-radius: 14px;
+  color: #fff0c6;
   background:
-    linear-gradient(90deg, rgba(255, 248, 211, 0.34), rgba(190, 126, 42, 0.1));
-  color: #5e3d1e;
-}
-
-.quickdeck-reference-empty em {
-  color: inherit;
-}
-
-.quickdeck-reference-checklist p {
-  margin: 0 0 0.25rem;
-}
-
-.quickdeck-reference-checklist ul {
-  margin: 0;
-  padding-left: 1rem;
-  display: grid;
-  gap: 0.2rem;
+    linear-gradient(180deg, rgba(255, 229, 164, 0.12), rgba(255, 229, 164, 0) 36%),
+    linear-gradient(90deg, rgba(34, 21, 13, 0.98), rgba(77, 49, 24, 0.96), rgba(34, 21, 13, 0.98));
+  box-shadow: 0 1px 0 rgba(255, 238, 196, 0.1) inset, 0 10px 22px rgba(0, 0, 0, 0.28);
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 #2b1608, 0 3px 10px rgba(0, 0, 0, 0.62);
 }
 
 .quickdeck-window-actions {
-  gap: 0.5rem;
-}
-
-.quickdeck-open-pdf-sources-button {
-  border: 1px solid rgba(196, 156, 82, 0.48);
-  border-radius: 6px;
-  padding: 0.25rem 0.45rem;
-  color: #f5e7c8;
-  background: linear-gradient(180deg, rgba(60, 43, 24, 0.82), rgba(20, 18, 18, 0.92));
-  font-size: 0.68rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.quickdeck-open-pdf-sources-button:hover {
-  border-color: rgba(238, 197, 119, 0.88);
-  box-shadow: 0 0 10px rgba(241, 198, 119, 0.18);
-}
-
-.gurps-quickdeck-pdf-sources .window-header,
-.gurps-quickdeck-reference-index .window-header {
-  background:
-    linear-gradient(120deg, rgba(125, 95, 42, 0.9), rgba(48, 44, 61, 0.92)),
-    radial-gradient(circle at 20% 20%, rgba(255, 220, 150, 0.25), transparent 45%);
-  border-bottom: 1px solid rgba(222, 181, 109, 0.45);
-}
-
-.gurps-quickdeck-pdf-sources .window-content,
-.gurps-quickdeck-reference-index .window-content {
-  padding: 0.6rem;
-}
-
-.gurps-quickdeck-pdf-sources .window-content,
-.gurps-quickdeck-reference-index .window-content {
-  color: #f4ecdc;
-  background:
-    radial-gradient(circle at top right, rgba(125, 96, 44, 0.14), transparent 36%),
-    radial-gradient(circle at 15% 85%, rgba(113, 126, 148, 0.08), transparent 28%),
-    linear-gradient(145deg, rgba(10, 12, 18, 0.96), rgba(25, 24, 30, 0.95));
-}
-
-.quickdeck-pdf-sources-shell {
-  display: grid;
-  gap: 0.6rem;
-}
-
-.quickdeck-pdf-sources-header h2 {
-  margin: 0;
-  font-size: 1rem;
-  color: #f7eed8;
-}
-
-.quickdeck-pdf-sources-header p {
-  margin: 0.42rem 0 0;
-  color: rgba(241, 231, 212, 0.92);
-  font-size: 0.78rem;
-  line-height: 1.3;
-}
-
-
-.quickdeck-reference-muted {
-  opacity: 0.8;
-  font-size: 0.85em;
-}
-
-.quickdeck-pdf-sources-list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-  display: grid;
-  gap: 0.6rem;
-}
-
-.quickdeck-pdf-source-row {
-  border: 1px solid rgba(203, 167, 101, 0.3);
-  border-radius: 8px;
-  padding: 0.55rem;
-  display: grid;
-  gap: 0.5rem;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.14)),
-    radial-gradient(circle at 12% 0, rgba(222, 182, 108, 0.09), transparent 46%);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-}
-
-.quickdeck-pdf-source-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.5rem;
-}
-
-.quickdeck-pdf-source-grid label {
-  display: grid;
-  gap: 0.2rem;
-}
-
-.quickdeck-pdf-source-notes {
-  grid-column: 1 / -1;
-}
-
-.quickdeck-pdf-sources-actions {
-  margin-top: 0.65rem;
+  position: absolute;
+  z-index: 4;
+  top: 1.04rem;
+  right: 1.08rem;
   display: flex;
-  gap: 0.5rem;
+  justify-content: flex-end;
+  gap: 0.42rem;
 }
 
+.quickdeck-content {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: minmax(520px, 1fr) minmax(520px, 0.9fr);
+  gap: 0.78rem;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
 
-.quickdeck-pdf-source-grid label > span {
-  font-size: 0.68rem;
+.quickdeck-stage {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.quickdeck-stage::before,
+.quickdeck-stage::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.quickdeck-stage::before {
+  inset: 0;
+  border: 1px solid rgba(210, 160, 77, 0.48);
+  border-radius: 16px;
+  background:
+    linear-gradient(180deg, rgba(255, 232, 176, 0.08), rgba(255, 232, 176, 0) 22%),
+    linear-gradient(145deg, rgba(48, 31, 21, 0.96), rgba(15, 15, 18, 0.98));
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32), 0 0 0 1px rgba(255, 239, 196, 0.04) inset;
+}
+
+.quickdeck-stage::after {
+  left: 1.1rem;
+  right: 1.1rem;
+  bottom: 0.9rem;
+  height: 1.65rem;
+  border: 1px solid rgba(230, 186, 99, 0.34);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(75, 49, 25, 0.82), rgba(28, 19, 13, 0.9));
+  box-shadow: 0 1px 0 rgba(255, 236, 187, 0.08) inset;
+}
+
+.quickdeck-drawer-stack {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  align-items: stretch;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.quickdeck-drawer-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.4rem;
+  margin: 0 0 0.48rem;
+  padding: 0;
+}
+
+.quickdeck-drawer-tab {
+  min-width: 0;
+  min-height: 2.25rem;
+  padding: 0.36rem 0.42rem;
+  border: 1px solid rgba(212, 166, 82, 0.52);
+  border-radius: 10px 10px 6px 6px;
+  color: #f8e7be;
+  background: linear-gradient(180deg, rgba(74, 48, 25, 0.96), rgba(26, 17, 11, 0.98));
+  box-shadow: 0 1px 0 rgba(255, 238, 196, 0.08) inset;
+  cursor: pointer;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  line-height: 1.05;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: rgba(245, 217, 163, 0.88);
 }
 
-.quickdeck-pdf-source-grid input,
-.quickdeck-pdf-source-grid select,
-.quickdeck-pdf-source-grid textarea {
-  border: 1px solid rgba(203, 167, 101, 0.38);
-  border-radius: 6px;
-  color: rgba(244, 235, 219, 0.96);
-  background: linear-gradient(180deg, rgba(23, 24, 32, 0.94), rgba(14, 15, 21, 0.98));
+.quickdeck-drawer-tab:hover,
+.quickdeck-drawer-tab:focus-visible {
+  border-color: rgba(246, 207, 132, 0.9);
+  outline: none;
 }
 
-.quickdeck-pdf-source-grid input::placeholder,
-.quickdeck-pdf-source-grid textarea::placeholder {
-  color: rgba(231, 214, 177, 0.58);
+.quickdeck-drawer-tab.is-active {
+  border-color: rgba(255, 218, 141, 0.96);
+  color: #fff4d8;
+  background: linear-gradient(180deg, rgba(151, 103, 42, 0.96), rgba(65, 40, 17, 0.98));
+  box-shadow: 0 0 0 1px rgba(239, 189, 92, 0.24), 0 0 16px rgba(222, 168, 72, 0.18);
+}
+
+.quickdeck-panel {
+  width: 100%;
+  max-width: none;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  background:
+    linear-gradient(90deg, rgba(124, 79, 29, 0.12), transparent 12%, transparent 88%, rgba(124, 79, 29, 0.12)),
+    linear-gradient(180deg, var(--quickdeck-parchment-light), var(--quickdeck-parchment) 62%, #dec486);
+  color: var(--quickdeck-ink);
+  overflow: hidden;
+}
+
+.quickdeck-panel-content {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.68rem;
+  padding: 0.76rem;
+  overflow-y: auto;
+  scrollbar-color: rgba(121, 73, 27, 0.72) rgba(128, 76, 24, 0.12);
+}
+
+.quickdeck-panel-scroll-root {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  flex: 0 0 auto;
+  padding: 0 0 0.64rem;
+  border-bottom: 1px solid rgba(101, 61, 23, 0.28);
+  background:
+    linear-gradient(180deg, rgba(246, 232, 200, 0.98), rgba(235, 217, 174, 0.94));
+}
+
+.quickdeck-selected-cockpit {
+  display: grid;
+  gap: 0.64rem;
+  min-width: 0;
+  padding: 0.68rem;
+  color: #f7ead0;
+  background:
+    linear-gradient(180deg, rgba(255, 232, 176, 0.08), rgba(255, 232, 176, 0) 22%),
+    linear-gradient(145deg, rgba(49, 31, 20, 0.98), rgba(14, 14, 17, 0.98));
 }
 
 .quickdeck-pdf-file-hint-row {
   display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.4rem;
+  grid-template-columns: 64px minmax(0, 1fr) auto;
   align-items: center;
+  gap: 0.72rem;
+  min-width: 0;
+  padding: 0.52rem;
+  border: 1px solid rgba(217, 172, 90, 0.38);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgba(87, 57, 29, 0.52), rgba(8, 9, 12, 0.28));
 }
 
-.quickdeck-pdf-file-picker-button {
-  min-width: 3.6rem;
-  justify-content: center;
+.quickdeck-actor-header img {
+  width: 64px;
+  height: 64px;
+  border-color: rgba(232, 190, 109, 0.62);
+  border-radius: 10px;
+  box-shadow: 0 0 0 2px rgba(16, 12, 8, 0.78), 0 0 14px rgba(210, 155, 66, 0.2);
 }
 
-
-.quickdeck-pdf-offset-help {
-  margin-top: 0.3rem !important;
-  color: rgba(250, 226, 175, 0.92) !important;
+.quickdeck-actor-header h3 {
+  margin: 0;
+  overflow: hidden;
+  color: #fff2d3;
+  font-size: 1.08rem;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .quickdeck-pdf-offset-controls {
@@ -919,333 +904,459 @@ button:not(:disabled):hover { filter: brightness(1.12); }
   grid-template-columns: minmax(0, 115px) minmax(0, 1fr);
   gap: 0.45rem;
   align-items: center;
+  gap: 0.36rem;
+  margin: 0.16rem 0 0;
+  color: rgba(235, 220, 188, 0.9);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.quickdeck-pdf-offset-helper {
-  grid-column: 1 / -1;
-  border: 1px solid rgba(203, 167, 101, 0.25);
-  border-radius: 6px;
-  padding: 0.45rem;
+.quickdeck-actor-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.36rem;
+  min-width: 0;
+}
+
+.quickdeck-combat-flow-controls {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.45rem;
-  background: rgba(0, 0, 0, 0.2);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.38rem;
 }
 
-.quickdeck-pdf-offset-preview {
-  grid-column: 1 / -1;
+.quickdeck-flow-button {
+  min-width: 0;
+  min-height: 1.9rem;
+  overflow: hidden;
+  padding: 0.3rem 0.42rem;
+  border: 1px solid rgba(206, 162, 81, 0.52);
+  border-radius: 9px;
+  color: #f7e4bb;
+  background: linear-gradient(180deg, rgba(71, 47, 24, 0.9), rgba(25, 19, 14, 0.98));
+  cursor: pointer;
+  font-size: 0.66rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.quickdeck-flow-button:hover:not(:disabled),
+.quickdeck-flow-button:focus-visible:not(:disabled) {
+  border-color: rgba(246, 207, 132, 0.88);
+  box-shadow: 0 0 10px rgba(241, 198, 119, 0.18);
+  outline: none;
+}
+
+.quickdeck-flow-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.quickdeck-stats,
+.quickdeck-defense-buttons {
+  display: grid;
+  gap: 0.56rem;
   margin: 0;
-  font-size: 0.74rem;
-  color: rgba(239, 227, 201, 0.94);
 }
 
-.quickdeck-pdf-source-row .quickdeck-remove-button {
+.quickdeck-main-resources {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(86px, 0.42fr);
+}
+
+.quickdeck-stats > div {
+  min-width: 0;
+  overflow: hidden;
+  padding: 0.46rem;
+  border: 1px solid rgba(220, 176, 94, 0.42);
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(81, 54, 29, 0.8), rgba(22, 16, 12, 0.88));
+  box-shadow: 0 1px 0 rgba(255, 239, 196, 0.07) inset;
+}
+
+.quickdeck-resource-card {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.quickdeck-resource-card dt,
+.quickdeck-move-card dt {
+  margin: 0 0 0.25rem;
+  color: #e9c883;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.quickdeck-stats dd {
+  margin: 0;
+  color: #fff2d4;
+  font-weight: 800;
+}
+
+.quickdeck-resource-control {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "bar bar"
+    "value buttons";
+  align-items: center;
+  gap: 0.38rem 0.48rem;
+  min-width: 0;
+}
+
+.quickdeck-resource-control .quickdeck-large-resource-bar {
+  grid-area: bar;
+}
+
+.quickdeck-resource-value-line {
+  grid-area: value;
+  display: grid;
+  grid-template-columns: minmax(2.8rem, auto) auto;
+  align-items: center;
+  justify-content: start;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.quickdeck-resource-value-line input {
+  width: 3rem;
+  height: 1.48rem;
+  margin: 0;
+  border: 1px solid rgba(224, 186, 112, 0.34);
+  border-radius: 7px;
+  padding: 0.1rem 0.24rem;
+  color: #fff5dd;
+  background: rgba(8, 8, 10, 0.42);
+  font-size: 0.96rem;
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.quickdeck-resource-max {
+  color: rgba(241, 225, 191, 0.86);
+  font-weight: 800;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.quickdeck-resource-buttons {
+  grid-area: buttons;
+  display: inline-flex;
+  gap: 0.25rem;
   justify-self: end;
 }
 
-.quickdeck-reference-match-actions {
-  margin-top: 0.45rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-}
-
-.quickdeck-reference-index-actions {
-  display: flex;
-  justify-content: flex-start;
-}
-
-.quickdeck-reference-index-button,
-.quickdeck-reference-open-button,
-.quickdeck-reference-copy-button,
-.quickdeck-reference-search-button {
-  border: 1px solid rgba(223, 184, 116, 0.35);
-  border-radius: 6px;
-  font-size: 0.75rem;
-  color: #f7efdc;
-  background: linear-gradient(180deg, rgba(38, 38, 46, 0.8), rgba(21, 22, 27, 0.92));
-  padding: 0.28rem 0.55rem;
-}
-
-.quickdeck-reference-index-button:hover,
-.quickdeck-reference-open-button:hover,
-.quickdeck-reference-copy-button:hover,
-.quickdeck-reference-search-button:hover {
-  border-color: rgba(244, 205, 138, 0.72);
-  box-shadow: 0 0 10px rgba(229, 187, 108, 0.14);
-}
-
-.gurps-quickdeck-reference .quickdeck-reference-index-actions {
-  justify-content: flex-end;
-}
-
-.gurps-quickdeck-reference .quickdeck-reference-index-button {
-  border: 1px solid rgba(91, 51, 17, 0.52);
-  border-radius: 999px;
-  color: #f7e9c4;
-  background:
-    linear-gradient(180deg, rgba(187, 124, 45, 0.95), rgba(83, 45, 16, 0.96)),
-    linear-gradient(90deg, rgba(255, 230, 164, 0.16), rgba(255, 230, 164, 0));
-  box-shadow:
-    0 1px 0 rgba(255, 239, 190, 0.28) inset,
-    0 2px 6px rgba(77, 42, 12, 0.22);
-  font-weight: 800;
-  letter-spacing: 0.025em;
-}
-
-.gurps-quickdeck-reference .quickdeck-reference-index-button:hover {
-  border-color: rgba(91, 51, 17, 0.75);
-  box-shadow:
-    0 1px 0 rgba(255, 242, 201, 0.34) inset,
-    0 0 0 1px rgba(255, 228, 159, 0.22),
-    0 4px 12px rgba(77, 42, 12, 0.28);
-}
-
-.quickdeck-reference-search-button[disabled] {
-  opacity: 0.72;
-  cursor: wait;
-}
-
-.quickdeck-reference-pdf-search {
-  margin-top: 0.45rem;
-  padding: 0.45rem 0.5rem;
-  border-radius: 7px;
-  border: 1px solid rgba(203, 167, 101, 0.3);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.13));
-}
-
-.quickdeck-reference-pdf-search p {
-  margin: 0 0 0.35rem;
-}
-
-.quickdeck-reference-pdf-search-warning {
-  border-color: rgba(212, 164, 84, 0.52);
-}
-
-.quickdeck-reference-pdf-search-error {
-  border-color: rgba(214, 109, 109, 0.55);
-}
-
-.quickdeck-reference-pdf-search-success {
-  border-color: rgba(129, 200, 127, 0.45);
-}
-
-.quickdeck-reference-index-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.quickdeck-reference-index-row.is-focus-row {
-  border-color: rgba(244, 205, 138, 0.68);
-  box-shadow: 0 0 0 1px rgba(222, 180, 105, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.02);
-}
-
-.quickdeck-reference-index-tools,
-.quickdeck-reference-index-import {
-  border: 1px solid rgba(203, 167, 101, 0.3);
+.quickdeck-resource-control button {
+  width: 1.62rem;
+  height: 1.62rem;
+  border: 1px solid rgba(219, 181, 106, 0.58);
   border-radius: 8px;
-  padding: 0.55rem;
-  display: grid;
-  gap: 0.45rem;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(0, 0, 0, 0.13));
+  color: #fff3d4;
+  background: linear-gradient(180deg, rgba(91, 63, 28, 0.94), rgba(39, 27, 14, 0.98));
+  font-size: 1rem;
+  font-weight: 900;
+  line-height: 1;
+  cursor: pointer;
 }
 
-.quickdeck-reference-index-search-label {
-  display: grid;
-  gap: 0.2rem;
+.quickdeck-resource-control button:hover,
+.quickdeck-resource-control button:focus-visible {
+  border-color: rgba(255, 218, 141, 0.95);
+  box-shadow: 0 0 10px rgba(241, 177, 82, 0.22);
+  outline: none;
 }
 
-.quickdeck-reference-index-search-label > span,
-.quickdeck-reference-index-import h3 {
-  margin: 0;
-  font-size: 0.68rem;
+.quickdeck-move-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.quickdeck-move-card dd {
+  font-size: 1.3rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.quickdeck-defense-buttons {
+  margin-top: 0.16rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-items: center;
+  padding: 0.44rem;
+  border: 1px solid rgba(151, 114, 57, 0.34);
+  border-radius: 14px;
+  background: rgba(5, 6, 9, 0.24);
+}
+
+.quickdeck-defense-button {
+  width: clamp(4.2rem, 6.2vw, 5rem);
+  aspect-ratio: 1;
+  min-width: 0;
+  min-height: 0;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(229, 183, 96, 0.72);
+  border-radius: 999px;
+  padding: 0.52rem;
+  color: #fff0c8;
+  background:
+    radial-gradient(circle at 50% 24%, rgba(255, 232, 170, 0.18), transparent 34%),
+    linear-gradient(180deg, rgba(124, 82, 30, 0.94), rgba(49, 31, 14, 0.98));
+  box-shadow:
+    0 0 0 3px rgba(28, 18, 10, 0.86),
+    0 0 0 4px rgba(232, 185, 93, 0.18),
+    0 10px 18px rgba(0, 0, 0, 0.34),
+    inset 0 0 0 1px rgba(255, 235, 188, 0.08);
+  cursor: pointer;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-shadow: 0 1px 5px rgba(0, 0, 0, 0.66);
+}
+
+.quickdeck-defense-button span,
+.quickdeck-defense-button strong {
+  display: block;
+  max-width: 100%;
+}
+
+.quickdeck-defense-button span {
+  color: rgba(247, 226, 184, 0.92);
+  font-size: 0.72rem;
+  line-height: 1.05;
   text-transform: uppercase;
-  letter-spacing: 0.07em;
-  color: rgba(245, 217, 163, 0.88);
 }
 
-.quickdeck-reference-index-search-label input,
-.quickdeck-reference-index-import textarea {
-  border: 1px solid rgba(203, 167, 101, 0.38);
-  border-radius: 6px;
-  color: rgba(244, 235, 219, 0.96);
-  background: linear-gradient(180deg, rgba(23, 24, 32, 0.94), rgba(14, 15, 21, 0.98));
+.quickdeck-defense-button strong {
+  margin-top: 0.2rem;
+  color: #fff6dc;
+  font-size: clamp(1.12rem, 1.7vw, 1.28rem);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
 
-.quickdeck-reference-index-search-label input::placeholder,
-.quickdeck-reference-index-import textarea::placeholder {
-  color: rgba(231, 214, 177, 0.58);
+.quickdeck-defense-button:hover,
+.quickdeck-defense-button:focus-visible {
+  border-color: rgba(255, 218, 141, 0.98);
+  box-shadow:
+    0 0 0 3px rgba(28, 18, 10, 0.86),
+    0 0 0 4px rgba(255, 218, 141, 0.24),
+    0 0 18px rgba(241, 177, 82, 0.32),
+    inset 0 0 0 1px rgba(255, 238, 198, 0.14);
+  outline: none;
 }
 
-.quickdeck-reference-index-tool-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem;
-}
-
-.quickdeck-reference-warning {
-  margin: 0;
-  font-size: 0.74rem;
-  line-height: 1.3;
-  color: rgba(248, 212, 160, 0.96);
-}
-
-.quickdeck-text-source-grid {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-
-.quickdeck-text-source-textarea {
-  grid-column: 1 / -1;
-}
-
-.quickdeck-text-source-textarea textarea {
-  min-height: 180px;
-  resize: vertical;
-}
-
-.quickdeck-text-source-row-actions,
-.quickdeck-text-source-toolbar {
-  display: flex;
+.quickdeck-attacks-section,
+.quickdeck-skills-section {
+  display: grid;
   gap: 0.5rem;
-  justify-content: flex-end;
-  margin-top: 0.5rem;
+  margin-top: 0;
+  min-height: 0;
 }
 
-.quickdeck-text-review-table {
-  width: 100%;
-  border-collapse: collapse;
+.quickdeck-attacks-section h4,
+.quickdeck-skills-section h4,
+.quickdeck-subsection-title,
+.quickdeck-favorite-attacks-heading h5 {
+  color: #3a2413;
+  text-shadow: none;
 }
 
-.quickdeck-text-review-table th,
-.quickdeck-text-review-table td {
-  border-bottom: 1px solid rgba(221, 178, 100, 0.25);
-  padding: 0.35rem;
-  text-align: left;
+.quickdeck-attacks-section h4,
+.quickdeck-skills-section h4 {
+  font-size: 0.8rem;
 }
 
-.quickdeck-token-placement-reticle {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 71;
-  width: 74px;
-  height: 74px;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  filter: drop-shadow(0 0 10px rgba(82, 255, 160, 0.78));
+.quickdeck-subsection-title {
+  margin: 0.62rem 0 0.25rem;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.quickdeck-section-note,
+.quickdeck-debug-count {
+  color: rgba(78, 52, 28, 0.75);
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+.quickdeck-attacks-list,
+.quickdeck-skills-list {
+  gap: 0.48rem;
+  margin-top: 0.1rem;
+}
+
+.quickdeck-attack-card,
+.quickdeck-skill-row,
+.quickdeck-favorite-attacks,
+.quickdeck-favorite-attack-main {
+  border: 1px solid rgba(109, 65, 24, 0.34);
+  color: #28190d;
+  background:
+    linear-gradient(180deg, rgba(255, 248, 223, 0.52), rgba(221, 193, 129, 0.28)),
+    rgba(241, 224, 181, 0.8);
+}
+
+.quickdeck-attack-card,
+.quickdeck-skill-row {
+  border-radius: 11px;
+  padding: 0.52rem 0.6rem;
+}
+
+.quickdeck-attack-card {
+  position: relative;
+  display: grid;
+  gap: 0.44rem;
+  overflow: hidden;
 }
 
 .quickdeck-token-placement-reticle-ring,
 .quickdeck-token-placement-reticle-crosshair,
 .quickdeck-token-placement-reticle-core {
   position: absolute;
-  inset: 0;
+  pointer-events: none;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, rgba(139, 84, 28, 0.85), rgba(217, 170, 86, 0.44));
+}
+
+.quickdeck-attack-card:hover,
+.quickdeck-skill-row:hover,
+.quickdeck-favorite-attack-main:hover {
+  border-color: rgba(126, 75, 27, 0.58);
+  box-shadow: 0 0 0 1px rgba(126, 75, 27, 0.08), 0 6px 14px rgba(70, 39, 13, 0.12);
+}
+
+.quickdeck-attack-card-header,
+.quickdeck-attack-title-block {
+  min-width: 0;
+}
+
+.quickdeck-attack-title-row {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) 30px;
+  align-items: start;
+  gap: 0.42rem;
+  min-width: 0;
+}
+
+.quickdeck-attack-card h5,
+.quickdeck-skill-row h5 {
+  margin: 0;
+  color: #25170c;
+  font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1.18;
+  overflow-wrap: anywhere;
+}
+
+.quickdeck-link-button {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  color: #25170c;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+
+.quickdeck-link-button:hover,
+.quickdeck-link-button:focus-visible {
+  color: #7a4a1e;
+  outline: none;
+}
+
+.quickdeck-attack-mode {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 0.18rem;
+  padding: 0.08rem 0.4rem;
+  border: 1px solid rgba(79, 69, 54, 0.24);
   border-radius: 999px;
+  background: rgba(70, 48, 23, 0.13);
+  color: rgba(55, 36, 17, 0.86);
+  font-size: 0.64rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
-.quickdeck-token-placement-reticle-ring {
-  border: 2px solid rgba(115, 255, 176, 0.9);
-  box-shadow:
-    0 0 18px rgba(57, 255, 146, 0.78),
-    0 0 0 7px rgba(57, 255, 146, 0.12) inset,
-    0 0 0 18px rgba(57, 255, 146, 0.07) inset;
+.quickdeck-combat-icon {
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  flex: 0 0 26px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(126, 75, 27, 0.35);
+  border-radius: 8px;
+  background: linear-gradient(180deg, rgba(135, 91, 39, 0.26), rgba(94, 59, 24, 0.16));
+  color: #784717;
+  font-size: 0.72rem;
+  line-height: 1;
 }
 
-.quickdeck-token-placement-reticle-crosshair::before,
-.quickdeck-token-placement-reticle-crosshair::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(205, 255, 222, 0.92), transparent);
-  opacity: 0.95;
+.quickdeck-combat-icon-muted {
+  border-style: dashed;
+  color: rgba(70, 48, 23, 0.48);
+  background: rgba(70, 48, 23, 0.08);
 }
 
-.quickdeck-token-placement-reticle-crosshair::before {
-  top: 50%;
-  left: 7px;
-  right: 7px;
-  height: 1px;
+.quickdeck-attack-stats {
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.34rem;
 }
 
-.quickdeck-token-placement-reticle-crosshair::after {
-  top: 7px;
-  bottom: 7px;
-  left: 50%;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(205, 255, 222, 0.92), transparent);
+.quickdeck-attack-stats div {
+  display: grid;
+  gap: 0.12rem;
+  min-width: 0;
+  padding: 0.28rem 0.34rem;
+  border: 1px solid rgba(109, 65, 24, 0.18);
+  border-radius: 8px;
+  background: rgba(255, 250, 232, 0.4);
 }
 
-.quickdeck-token-placement-reticle-core {
-  inset: 28px;
-  border: 1px solid rgba(222, 255, 232, 0.95);
-  background: radial-gradient(circle, rgba(205, 255, 222, 0.72), rgba(57, 255, 146, 0.08) 58%, transparent 72%);
-  box-shadow: 0 0 12px rgba(205, 255, 222, 0.86);
+.quickdeck-attack-card dt {
+  color: rgba(62, 39, 18, 0.74);
+  font-size: 0.6rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  line-height: 1.15;
+  text-transform: uppercase;
 }
 
-
-.quickdeck-target-opponent-reticle {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 71;
-  width: 82px;
-  height: 82px;
-  pointer-events: none;
-  mix-blend-mode: screen;
-  filter: drop-shadow(0 0 12px rgba(91, 198, 255, 0.82));
-}
-
-.quickdeck-target-opponent-reticle-ring,
-.quickdeck-target-opponent-reticle-crosshair,
-.quickdeck-target-opponent-reticle-core,
-.quickdeck-target-opponent-reticle-rune {
-  position: absolute;
-  inset: 0;
-  border-radius: 999px;
-}
-
-.quickdeck-target-opponent-reticle-ring {
-  border: 2px solid rgba(118, 210, 255, 0.94);
-  box-shadow:
-    0 0 18px rgba(91, 198, 255, 0.82),
-    0 0 0 8px rgba(91, 198, 255, 0.12) inset,
-    0 0 0 22px rgba(174, 111, 255, 0.07) inset;
-}
-
-.quickdeck-target-opponent-reticle-crosshair::before,
-.quickdeck-target-opponent-reticle-crosshair::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  background: linear-gradient(90deg, transparent, rgba(230, 245, 255, 0.95), transparent);
-  opacity: 0.95;
-}
-
-.quickdeck-target-opponent-reticle-crosshair::before {
-  top: 50%;
-  left: 5px;
-  right: 5px;
-  height: 1px;
-}
-
-.quickdeck-target-opponent-reticle-crosshair::after {
-  top: 5px;
-  bottom: 5px;
-  left: 50%;
-  width: 1px;
-  background: linear-gradient(180deg, transparent, rgba(230, 245, 255, 0.95), transparent);
-}
-
-.quickdeck-target-opponent-reticle-core {
-  inset: 31px;
-  border: 1px solid rgba(245, 250, 255, 0.96);
-  background: radial-gradient(circle, rgba(230, 245, 255, 0.72), rgba(91, 198, 255, 0.1) 58%, transparent 72%);
-  box-shadow: 0 0 13px rgba(230, 245, 255, 0.9);
-}
-
-.quickdeck-target-opponent-reticle-rune {
-  inset: 12px;
-  border: 1px dashed rgba(201, 158, 255, 0.72);
-  animation: quickdeck-target-reticle-spin 7s linear infinite;
+.quickdeck-attack-card dd {
+  margin: 0;
+  min-width: 0;
+  color: #24170d;
+  font-size: 0.76rem;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 
 @keyframes quickdeck-target-reticle-spin {
@@ -1257,7 +1368,162 @@ button:not(:disabled):hover { filter: brightness(1.12); }
   }
 }
 
-.quickdeck-attack-actions .quickdeck-roll-button {
+.quickdeck-combat-anchors {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.38rem;
+}
+
+.quickdeck-combat-anchor {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  align-items: center;
+  gap: 0.42rem;
+  min-width: 0;
+  padding: 0.38rem 0.45rem;
+  border: 1px solid rgba(109, 65, 24, 0.24);
+  border-radius: 10px;
+  color: #2d1b0f;
+  background: rgba(255, 250, 232, 0.42);
+}
+
+.quickdeck-target-opponent-button,
+.quickdeck-modifier-bucket-button {
+  width: 100%;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+}
+
+.quickdeck-target-opponent-button {
+  cursor: crosshair;
+}
+
+.quickdeck-target-opponent-button:hover,
+.quickdeck-target-opponent-button:focus-visible,
+.quickdeck-modifier-bucket-button:hover,
+.quickdeck-modifier-bucket-button:focus-visible {
+  border-color: rgba(126, 75, 27, 0.58);
+  box-shadow: 0 0 0 1px rgba(126, 75, 27, 0.1), 0 6px 14px rgba(70, 39, 13, 0.12);
+  transform: translateY(-1px);
+  outline: none;
+}
+
+  .quickdeck-combat-icon-tray {
+    align-self: stretch;
+  }
+}
+
+.quickdeck-anchor-label,
+.quickdeck-anchor-value {
+  display: block;
+  min-width: 0;
+}
+
+.quickdeck-anchor-label {
+  color: rgba(62, 39, 18, 0.62);
+  font-size: 0.62rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.quickdeck-anchor-value {
+  margin-top: 0.08rem;
+  color: rgba(35, 23, 12, 0.88);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.quickdeck-modifier-bucket-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.38rem;
+}
+
+.quickdeck-modifier-bucket-total {
+  color: #2d1b0f;
+  font-size: 0.9rem;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.quickdeck-modifier-bucket-detail {
+  min-width: 0;
+  color: rgba(62, 39, 18, 0.62);
+  font-size: 0.66rem;
+  font-weight: 800;
+}
+
+.quickdeck-modifier-positive {
+  border-color: rgba(65, 143, 70, 0.5);
+  background: rgba(188, 226, 182, 0.36);
+}
+
+.quickdeck-modifier-positive .quickdeck-combat-icon,
+.quickdeck-modifier-positive .quickdeck-modifier-bucket-total {
+  color: #2f7a37;
+}
+
+.quickdeck-modifier-negative {
+  border-color: rgba(170, 67, 52, 0.55);
+  background: rgba(225, 175, 158, 0.34);
+}
+
+.quickdeck-modifier-negative .quickdeck-combat-icon,
+.quickdeck-modifier-negative .quickdeck-modifier-bucket-total {
+  color: #9b382b;
+}
+
+.quickdeck-favorite-toggle.is-selected {
+  border-color: rgba(255, 208, 105, 0.72);
+  background: linear-gradient(180deg, rgba(83, 60, 24, 0.88), rgba(35, 29, 20, 0.9));
+  color: #ffd76d;
+}
+
+.quickdeck-combat-icon-tray {
+  display: flex;
+  align-items: center;
+  gap: 0.28rem;
+  min-height: 30px;
+  padding: 0.16rem 0.2rem;
+  border: 1px solid rgba(109, 65, 24, 0.18);
+  border-radius: 10px;
+  background: rgba(255, 250, 232, 0.32);
+}
+
+.quickdeck-favorite-spell-card {
+  grid-template-columns: minmax(0, 1fr) 28px;
+}
+
+.quickdeck-roll-button {
+  width: 100%;
+  margin-top: 0.45rem;
+  padding: 0.38rem 0.52rem;
+  border: 1px solid rgba(126, 75, 27, 0.48);
+  border-radius: 8px;
+  color: #fff0c8;
+  background: linear-gradient(180deg, rgba(114, 73, 31, 0.95), rgba(51, 31, 14, 0.98));
+  cursor: pointer;
+  font-size: 0.73rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+.quickdeck-roll-button:hover,
+.quickdeck-roll-button:focus-visible {
+  border-color: rgba(235, 190, 103, 0.9);
+  color: #fff6dc;
+  box-shadow: 0 0 10px rgba(120, 70, 24, 0.22);
+  outline: none;
+}
+
+.quickdeck-attack-actions .quickdeck-roll-button,
+.quickdeck-skill-row .quickdeck-roll-button,
+.quickdeck-roll-button-secondary {
   margin-top: 0;
 }
 
@@ -1267,12 +1533,269 @@ button:not(:disabled):hover { filter: brightness(1.12); }
   align-items: center;
   justify-content: center;
   gap: 0.4rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.quickdeck-roll-button-secondary {
+  width: auto;
+  padding: 0.22rem 0.48rem;
+  font-size: 0.65rem;
+  white-space: nowrap;
+}
+
+.quickdeck-skill-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.52rem;
+}
+
+.quickdeck-quick-skill-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+  border-left: 4px solid rgba(138, 82, 25, 0.48);
+}
+
+.quickdeck-spell-row {
+  grid-template-columns: 30px minmax(0, 1fr) auto;
+}
+
+.quickdeck-skill-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.quickdeck-skill-checkbox input {
+  width: 16px;
+  height: 16px;
+  accent-color: #8c551e;
+}
+
+.quickdeck-skill-main p {
+  margin: 0.1rem 0 0;
+  color: rgba(62, 39, 18, 0.72);
+  font-size: 0.73rem;
+}
+
+.quickdeck-shell::after {
+  inset: 0.72rem;
+  border-top: 1px solid rgba(232, 185, 93, 0.14);
+  border-bottom: 1px solid rgba(232, 185, 93, 0.14);
+  background:
+    linear-gradient(90deg, rgba(235, 187, 93, 0.14), transparent 5.5rem, transparent calc(100% - 5.5rem), rgba(235, 187, 93, 0.14)),
+    linear-gradient(180deg, rgba(255, 225, 155, 0.045), transparent 30%, transparent 70%, rgba(56, 28, 11, 0.18));
+}
+
+.quickdeck-skill-row .quickdeck-roll-button {
+  width: auto;
+  padding: 0.24rem 0.56rem;
+  white-space: nowrap;
+}
+
+.quickdeck-skill-row.is-quick-skill-selected,
+.quickdeck-quick-skill-row.is-quick-skill-selected {
+  border-color: rgba(56, 104, 174, 0.68);
+  background:
+    linear-gradient(180deg, rgba(220, 233, 250, 0.52), rgba(193, 211, 235, 0.34)),
+    rgba(241, 224, 181, 0.78);
+  box-shadow: 0 0 0 1px rgba(56, 104, 174, 0.18), 0 6px 14px rgba(31, 60, 112, 0.12);
+}
+
+.quickdeck-quick-skill-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+}
+
+.quickdeck-quick-skill-actions .quickdeck-roll-button {
+  min-width: 3.7rem;
+}
+
+.quickdeck-unpin-button,
+.quickdeck-favorite-toggle,
+.quickdeck-spell-favorite-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.8rem;
+  height: 1.8rem;
+  padding: 0;
+  border: 1px solid rgba(126, 75, 27, 0.38);
+  border-radius: 999px;
+  background: rgba(255, 250, 232, 0.42);
+  color: #845018;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.quickdeck-unpin-button:hover,
+.quickdeck-unpin-button:focus-visible,
+.quickdeck-favorite-toggle:hover,
+.quickdeck-favorite-toggle:focus-visible,
+.quickdeck-spell-favorite-toggle:hover,
+.quickdeck-spell-favorite-toggle:focus-visible {
+  border-color: rgba(126, 75, 27, 0.64);
+  color: #4d2d0d;
+  box-shadow: 0 0 10px rgba(120, 70, 24, 0.14);
+  outline: none;
+}
+
+.quickdeck-favorite-toggle.is-selected,
+.quickdeck-spell-favorite-toggle.is-selected {
+  border-color: rgba(133, 84, 22, 0.72);
+  color: #fff1ce;
+  background: linear-gradient(180deg, rgba(130, 83, 29, 0.88), rgba(61, 38, 16, 0.92));
+}
+
+.quickdeck-favorite-attacks {
+  margin-top: 0.55rem;
+  padding: 0.5rem;
+  border-radius: 12px;
+}
+
+.quickdeck-favorite-attacks-heading {
+  margin-bottom: 0.36rem;
+}
+
+.quickdeck-favorite-attacks-heading h5 {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.quickdeck-favorite-attacks-heading span,
+.quickdeck-favorite-attacks-hint {
+  margin: 0;
+  color: rgba(62, 39, 18, 0.66);
+  font-size: 0.68rem;
+}
+
+.quickdeck-favorite-attacks-list,
+.quickdeck-favorite-spells-list {
+  gap: 0.34rem;
+}
+
+.quickdeck-favorite-attack-card,
+.quickdeck-favorite-spell-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 30px;
+  align-items: stretch;
+  gap: 0.34rem;
+}
+
+.quickdeck-favorite-attack-main,
+.quickdeck-favorite-spell-main {
+  min-width: 0;
+  padding: 0.34rem 0.46rem;
+  border-radius: 9px;
+  color: #28190d;
+  text-align: left;
+  cursor: pointer;
+}
+
+.quickdeck-favorite-attack-name,
+.quickdeck-favorite-attack-meta {
+  display: block;
+}
+
+.quickdeck-favorite-attack-name {
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+.quickdeck-favorite-attack-meta {
+  margin-top: 0.08rem;
+  color: rgba(62, 39, 18, 0.66);
+  font-size: 0.66rem;
+}
+
+.quickdeck-favorite-spells {
+  margin-bottom: 0.55rem;
+}
+
+.quickdeck-footer-hint {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0.32rem 0.62rem 0.38rem;
+  border-top: 1px solid rgba(110, 66, 23, 0.24);
+  color: rgba(70, 46, 22, 0.72);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  background: rgba(255, 250, 232, 0.28);
+}
+
+.quickdeck-floating-restore {
+  position: fixed;
+  top: 8px;
+  right: 96px;
+  z-index: 72;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+  padding: 0.22rem 0.55rem 0.22rem 0.28rem;
+  border: 1px solid rgba(229, 183, 94, 0.78);
+  border-radius: 999px;
+  color: #f8efdc;
+  background:
+    linear-gradient(90deg, rgba(255, 228, 158, 0.075), transparent 42%),
+    linear-gradient(145deg, rgba(50, 30, 17, 0.98), rgba(13, 11, 11, 0.98));
+  box-shadow:
+    0 4px 14px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(255, 232, 177, 0.12) inset;
+  cursor: pointer;
+}
+
+.quickdeck-floating-restore:hover {
+  border-color: rgba(247, 212, 146, 0.95);
+  box-shadow:
+    0 5px 16px rgba(0, 0, 0, 0.52),
+    0 0 0 1px rgba(255, 230, 188, 0.2) inset,
+    0 0 9px rgba(241, 184, 77, 0.22);
+}
+
+.quickdeck-floating-restore-mark {
+  width: 1.22rem;
+  height: 1.22rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: #1e170d;
+  background: linear-gradient(180deg, #f5d59b, #be913f);
+  font-size: 0.58rem;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.quickdeck-floating-restore-label {
+  font-size: 0.68rem;
+  font-weight: 800;
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }
 
-.quickdeck-attack-button i {
-  font-size: 0.78rem;
+.quickdeck-panel-content::-webkit-scrollbar,
+.quickdeck-roster-list::-webkit-scrollbar,
+.quickdeck-available-list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.quickdeck-panel-content::-webkit-scrollbar-track,
+.quickdeck-roster-list::-webkit-scrollbar-track,
+.quickdeck-available-list::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+}
+
+.quickdeck-panel-content::-webkit-scrollbar-thumb,
+.quickdeck-roster-list::-webkit-scrollbar-thumb,
+.quickdeck-available-list::-webkit-scrollbar-thumb {
+  border: 2px solid rgba(0, 0, 0, 0.16);
+  border-radius: 999px;
+  background: rgba(151, 99, 38, 0.78);
 }
 
 @media (min-width: 700px) {
@@ -1286,783 +1809,65 @@ button:not(:disabled):hover { filter: brightness(1.12); }
   }
 }
 
-@media (max-width: 520px) {
-  .quickdeck-attack-stats {
-    grid-template-columns: minmax(0, 1fr);
+@media (max-width: 1280px) {
+  .gurps-quickdeck {
+    min-width: min(1180px, calc(100vw - 32px));
+    min-height: min(720px, calc(100vh - 56px));
   }
 
-  .quickdeck-attack-title-row {
-    grid-template-columns: 24px minmax(0, 1fr);
-  }
-}
-
-.quickdeck-favorite-attacks {
-  margin-top: 0.55rem;
-  padding: 0.46rem;
-  border: 1px solid rgba(232, 185, 93, 0.26);
-  border-radius: 8px;
-  background:
-    linear-gradient(180deg, rgba(64, 47, 25, 0.22), rgba(13, 15, 22, 0.44)),
-    radial-gradient(circle at top left, rgba(255, 212, 129, 0.08), transparent 46%);
-}
-
-.quickdeck-favorite-attacks-heading {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.5rem;
-  margin-bottom: 0.35rem;
-}
-
-.quickdeck-favorite-attacks-heading h5 {
-  margin: 0;
-  color: rgba(255, 232, 174, 0.96);
-  font-size: 0.72rem;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-}
-
-.quickdeck-favorite-attacks-heading span,
-.quickdeck-favorite-attacks-hint {
-  margin: 0;
-  color: rgba(223, 210, 184, 0.76);
-  font-size: 0.68rem;
-}
-
-.quickdeck-favorite-attacks-list {
-  display: grid;
-  gap: 0.32rem;
-}
-
-.quickdeck-favorite-attack-card {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 28px;
-  align-items: stretch;
-  gap: 0.32rem;
-}
-
-.quickdeck-favorite-attack-main {
-  min-width: 0;
-  padding: 0.34rem 0.45rem;
-  border: 1px solid rgba(214, 173, 95, 0.28);
-  border-radius: 7px;
-  background: linear-gradient(180deg, rgba(33, 35, 42, 0.92), rgba(15, 17, 22, 0.86));
-  color: #f7f2e6;
-  text-align: left;
-  cursor: pointer;
-}
-
-.quickdeck-favorite-attack-main:hover,
-.quickdeck-favorite-attack-main:focus-visible {
-  border-color: rgba(255, 218, 141, 0.65);
-  box-shadow: 0 0 10px rgba(232, 185, 93, 0.15);
-  outline: none;
-}
-
-.quickdeck-favorite-attack-name,
-.quickdeck-favorite-attack-meta {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.quickdeck-favorite-attack-name {
-  color: #fff5dc;
-  font-size: 0.8rem;
-  font-weight: 800;
-}
-
-.quickdeck-favorite-attack-meta {
-  margin-top: 0.08rem;
-  color: rgba(224, 235, 245, 0.78);
-  font-size: 0.66rem;
-}
-
-.quickdeck-favorite-toggle {
-  width: 28px;
-  min-width: 28px;
-  height: 28px;
-  padding: 0;
-  border: 1px solid rgba(214, 173, 95, 0.32);
-  border-radius: 7px;
-  background: rgba(19, 20, 25, 0.72);
-  color: rgba(236, 217, 166, 0.74);
-  line-height: 1;
-  cursor: pointer;
-}
-
-.quickdeck-favorite-toggle:hover,
-.quickdeck-favorite-toggle:focus-visible {
-  border-color: rgba(255, 218, 141, 0.76);
-  color: #ffd76d;
-  box-shadow: 0 0 9px rgba(255, 207, 105, 0.18);
-  outline: none;
-}
-
-.quickdeck-favorite-toggle.is-selected {
-  border-color: rgba(255, 208, 105, 0.72);
-  background: linear-gradient(180deg, rgba(83, 60, 24, 0.88), rgba(35, 29, 20, 0.9));
-  color: #ffd76d;
-}
-
-.quickdeck-favorite-spells {
-  margin-bottom: 0.55rem;
-}
-
-.quickdeck-favorite-spell-card {
-  grid-template-columns: minmax(0, 1fr) 28px;
-}
-
-.quickdeck-favorite-spell-main {
-  padding-block: 0.3rem;
-}
-
-.quickdeck-spell-row {
-  grid-template-columns: 28px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.quickdeck-spell-row .quickdeck-skill-main {
-  min-width: 0;
-}
-
-.quickdeck-spell-favorite-toggle {
-  align-self: center;
-}
-
-@media (max-width: 720px) {
-  .quickdeck-spell-row {
-    grid-template-columns: 28px minmax(0, 1fr);
+  .quickdeck-shell {
+    grid-template-columns: minmax(270px, 0.72fr) minmax(0, 2.5fr);
   }
 
-  .quickdeck-spell-row .quickdeck-roll-button {
+  .quickdeck-content {
+    grid-template-columns: minmax(440px, 1fr) minmax(460px, 0.92fr);
+  }
+
+  .quickdeck-actor-header {
+    grid-template-columns: 56px minmax(0, 1fr);
+  }
+
+  .quickdeck-actor-header-actions {
     grid-column: 1 / -1;
+    justify-content: flex-start;
   }
-}
 
-/* v0.5.9 heavy ornament UI pass: CSS-only leather, bronze, and parchment treatment. */
-.gurps-quickdeck {
-  --quickdeck-leather-dark: #120b08;
-  --quickdeck-leather-mid: #2d1b12;
-  --quickdeck-leather-warm: #4b2d18;
-  --quickdeck-bronze-dark: #6f461d;
-  --quickdeck-bronze-mid: #a97735;
-  --quickdeck-bronze-light: #e2b76c;
-  --quickdeck-parchment-inked: #24190f;
-  --quickdeck-parchment-wash: rgba(238, 210, 151, 0.13);
-  --quickdeck-ornament-line: rgba(232, 187, 105, 0.36);
-  --quickdeck-ornament-glow: rgba(216, 151, 58, 0.2);
-}
-
-.gurps-quickdeck .window-header {
-  background:
-    linear-gradient(90deg, rgba(255, 229, 164, 0.08), transparent 15%, transparent 85%, rgba(255, 229, 164, 0.08)),
-    radial-gradient(circle at 8% 0, rgba(248, 200, 104, 0.26), transparent 34%),
-    linear-gradient(180deg, rgba(125, 82, 31, 0.84), rgba(46, 26, 13, 0.98) 58%, rgba(18, 11, 8, 0.98));
-  border-bottom: 1px solid rgba(235, 189, 103, 0.62);
-  box-shadow:
-    0 1px 0 rgba(255, 235, 184, 0.12) inset,
-    0 -1px 0 rgba(35, 18, 7, 0.86) inset,
-    0 7px 18px rgba(0, 0, 0, 0.34);
-}
-
-.gurps-quickdeck .window-content {
-  background: var(--quickdeck-leather-dark);
-}
-
-.quickdeck-shell {
-  position: relative;
-  isolation: isolate;
-  border: 1px solid rgba(231, 186, 99, 0.28);
-  background:
-    radial-gradient(circle at 100% 0, rgba(226, 174, 82, 0.22), transparent 27%),
-    radial-gradient(circle at 8% 92%, rgba(161, 92, 37, 0.2), transparent 34%),
-    repeating-linear-gradient(135deg, rgba(255, 226, 167, 0.025) 0, rgba(255, 226, 167, 0.025) 2px, transparent 2px, transparent 10px),
-    linear-gradient(145deg, rgba(18, 11, 8, 0.99), rgba(41, 25, 16, 0.98) 42%, rgba(9, 10, 14, 0.98));
-  box-shadow:
-    0 0 0 1px rgba(255, 239, 196, 0.06) inset,
-    0 0 0 4px rgba(0, 0, 0, 0.2) inset,
-    0 24px 46px rgba(0, 0, 0, 0.46);
-}
-
-.quickdeck-shell::before,
-.quickdeck-shell::after {
-  content: "";
-  position: absolute;
-  inset: 0.36rem;
-  z-index: 0;
-  pointer-events: none;
-  border-radius: 10px;
-}
-
-.quickdeck-shell::before {
-  border: 1px solid rgba(218, 164, 75, 0.22);
-  background:
-    radial-gradient(circle at 0 0, transparent 0 16px, var(--quickdeck-ornament-line) 17px, transparent 18px 25px, var(--quickdeck-ornament-line) 26px, transparent 27px 35px),
-    radial-gradient(circle at 100% 0, transparent 0 16px, var(--quickdeck-ornament-line) 17px, transparent 18px 25px, var(--quickdeck-ornament-line) 26px, transparent 27px 35px),
-    radial-gradient(circle at 0 100%, transparent 0 16px, var(--quickdeck-ornament-line) 17px, transparent 18px 25px, var(--quickdeck-ornament-line) 26px, transparent 27px 35px),
-    radial-gradient(circle at 100% 100%, transparent 0 16px, var(--quickdeck-ornament-line) 17px, transparent 18px 25px, var(--quickdeck-ornament-line) 26px, transparent 27px 35px);
-  box-shadow:
-    0 0 22px rgba(0, 0, 0, 0.34) inset,
-    0 0 0 1px rgba(255, 238, 190, 0.04) inset;
-}
-
-.quickdeck-shell::after {
-  inset: 0.72rem;
-  border-top: 1px solid rgba(232, 185, 93, 0.14);
-  border-bottom: 1px solid rgba(232, 185, 93, 0.14);
-  background:
-    linear-gradient(90deg, rgba(235, 187, 93, 0.14), transparent 5.5rem, transparent calc(100% - 5.5rem), rgba(235, 187, 93, 0.14)),
-    linear-gradient(180deg, rgba(255, 225, 155, 0.045), transparent 30%, transparent 70%, rgba(56, 28, 11, 0.18));
-}
-
-.quickdeck-shell > * {
-  position: relative;
-  z-index: 1;
-}
-
-.quickdeck-sidebar {
-  border-right: 1px solid rgba(218, 164, 75, 0.36);
-  background:
-    linear-gradient(90deg, rgba(0, 0, 0, 0.26), transparent 12%, transparent 88%, rgba(0, 0, 0, 0.16)),
-    radial-gradient(circle at 12% 8%, rgba(229, 176, 86, 0.14), transparent 32%),
-    repeating-linear-gradient(90deg, rgba(255, 228, 169, 0.025) 0, rgba(255, 228, 169, 0.025) 1px, transparent 1px, transparent 9px),
-    linear-gradient(180deg, rgba(35, 20, 13, 0.9), rgba(15, 11, 10, 0.88));
-  box-shadow:
-    -1px 0 0 rgba(255, 229, 167, 0.08) inset,
-    -12px 0 22px rgba(0, 0, 0, 0.18) inset;
-}
-
-.quickdeck-sidebar-block,
-.quickdeck-panel,
-.quickdeck-panel-scroll-root {
-  border-color: rgba(221, 172, 86, 0.36);
-}
-
-.quickdeck-sidebar-block {
-  position: relative;
-  border-radius: 10px;
-  background:
-    linear-gradient(180deg, rgba(255, 224, 151, 0.07), rgba(0, 0, 0, 0.16)),
-    radial-gradient(circle at 0 0, rgba(239, 185, 88, 0.13), transparent 42%),
-    linear-gradient(135deg, rgba(58, 35, 20, 0.72), rgba(18, 15, 16, 0.82));
-}
-
-.quickdeck-sidebar-block::after,
-.quickdeck-favorite-attacks::after,
-.quickdeck-selected-cockpit::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  inset: 0.28rem;
-  border-radius: inherit;
-  border-top: 1px solid rgba(255, 226, 168, 0.11);
-  border-bottom: 1px solid rgba(92, 49, 17, 0.28);
-}
-
-.quickdeck-drawer-tabs {
-  border-left: 1px solid rgba(223, 173, 85, 0.42);
-  background:
-    linear-gradient(90deg, rgba(255, 230, 170, 0.06), rgba(0, 0, 0, 0.18)),
-    linear-gradient(180deg, rgba(42, 26, 15, 0.98), rgba(10, 10, 13, 0.98));
-  box-shadow: 8px 0 20px rgba(0, 0, 0, 0.18) inset;
-}
-
-.quickdeck-drawer-tab {
-  position: relative;
-  overflow: hidden;
-  border-color: rgba(226, 178, 89, 0.44);
-  border-radius: 9px;
-  background:
-    linear-gradient(90deg, rgba(255, 229, 157, 0.07), transparent 34%, rgba(66, 35, 13, 0.18)),
-    linear-gradient(180deg, rgba(93, 62, 27, 0.9), rgba(36, 25, 17, 0.96));
-  box-shadow:
-    0 0 0 1px rgba(255, 239, 196, 0.04) inset,
-    0 5px 12px rgba(0, 0, 0, 0.22);
-}
-
-.quickdeck-drawer-tab::before,
-.quickdeck-drawer-tab::after {
-  content: "";
-  position: absolute;
-  pointer-events: none;
-  left: 0.23rem;
-  right: 0.23rem;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(248, 210, 132, 0.48), transparent);
-}
-
-.quickdeck-drawer-tab::before {
-  top: 0.28rem;
-}
-
-.quickdeck-drawer-tab::after {
-  bottom: 0.28rem;
-}
-
-.quickdeck-drawer-tab.is-active {
-  color: #fff6dc;
-  background:
-    radial-gradient(circle at 50% 8%, rgba(255, 226, 151, 0.2), transparent 35%),
-    linear-gradient(180deg, rgba(173, 122, 48, 0.96), rgba(82, 49, 17, 0.98));
-  box-shadow:
-    0 0 0 1px rgba(255, 229, 168, 0.22) inset,
-    0 0 15px rgba(228, 164, 61, 0.25),
-    -3px 0 0 rgba(255, 218, 139, 0.48) inset;
-}
-
-.quickdeck-panel {
-  background:
-    linear-gradient(90deg, rgba(255, 230, 170, 0.045), transparent 6%, transparent 94%, rgba(0, 0, 0, 0.18)),
-    radial-gradient(circle at 30% 0, rgba(226, 174, 82, 0.12), transparent 28%),
-    linear-gradient(180deg, rgba(28, 18, 14, 0.99), rgba(10, 10, 13, 0.98));
-  box-shadow:
-    inset 10px 0 20px rgba(0, 0, 0, 0.2),
-    inset 1px 0 0 rgba(255, 229, 167, 0.08);
-}
-
-.quickdeck-panel-scroll-root {
-  border-bottom-color: rgba(222, 172, 86, 0.34);
-  background:
-    linear-gradient(180deg, rgba(50, 30, 18, 0.99), rgba(21, 16, 16, 0.96)),
-    radial-gradient(circle at 20% 0, rgba(244, 190, 91, 0.15), transparent 52%);
-  box-shadow: 0 9px 16px rgba(0, 0, 0, 0.2);
-}
-
-.quickdeck-selected-cockpit {
-  position: relative;
-  padding: 0.42rem;
-  border: 1px solid rgba(221, 172, 86, 0.34);
-  border-radius: 12px;
-  background:
-    linear-gradient(90deg, rgba(255, 225, 156, 0.06), transparent 14%, transparent 86%, rgba(91, 49, 17, 0.18)),
-    radial-gradient(circle at 18% 0, rgba(238, 184, 89, 0.14), transparent 36%),
-    linear-gradient(180deg, rgba(34, 22, 16, 0.92), rgba(10, 11, 14, 0.78));
-  box-shadow:
-    0 0 0 1px rgba(255, 239, 196, 0.04) inset,
-    0 12px 22px rgba(0, 0, 0, 0.22);
-}
-
-.quickdeck-actor-header {
-  border-color: rgba(235, 183, 91, 0.44);
-  background:
-    linear-gradient(90deg, rgba(255, 229, 158, 0.12), transparent 18%, transparent 82%, rgba(55, 29, 11, 0.24)),
-    linear-gradient(180deg, rgba(112, 73, 28, 0.72), rgba(44, 27, 15, 0.86));
-  box-shadow:
-    0 1px 0 rgba(255, 232, 178, 0.12) inset,
-    0 8px 16px rgba(0, 0, 0, 0.22);
-}
-
-.quickdeck-actor-header h3 {
-  color: #fff3d2;
-  text-shadow: 0 1px 0 rgba(45, 20, 6, 0.92), 0 2px 8px rgba(0, 0, 0, 0.52);
-}
-
-.quickdeck-main-resources .quickdeck-resource-card {
-  border-color: rgba(224, 179, 94, 0.34);
-  background:
-    linear-gradient(180deg, rgba(238, 201, 128, 0.11), rgba(5, 6, 9, 0.28)),
-    radial-gradient(circle at top, rgba(228, 184, 98, 0.13), transparent 54%);
-  box-shadow: 0 0 0 1px rgba(255, 241, 202, 0.035) inset;
-}
-
-.quickdeck-defense-buttons {
-  border-color: rgba(219, 163, 72, 0.38);
-  background:
-    linear-gradient(90deg, rgba(255, 225, 151, 0.06), transparent 22%, transparent 78%, rgba(82, 44, 15, 0.18)),
-    rgba(6, 5, 6, 0.3);
-}
-
-.quickdeck-defense-button {
-  border-color: rgba(235, 187, 96, 0.66);
-  border-radius: 12px 12px 16px 16px;
-  background:
-    radial-gradient(circle at 50% 0, rgba(255, 225, 151, 0.2), transparent 34%),
-    linear-gradient(180deg, rgba(132, 87, 30, 0.92), rgba(53, 34, 15, 0.98));
-  clip-path: polygon(0 0, 100% 0, 100% 82%, 50% 100%, 0 82%);
-}
-
-.quickdeck-favorite-attacks {
-  position: relative;
-  border-color: rgba(226, 178, 89, 0.42);
-  border-radius: 10px;
-  background:
-    linear-gradient(90deg, rgba(255, 231, 176, 0.11), transparent 5%, transparent 95%, rgba(111, 65, 25, 0.15)),
-    repeating-linear-gradient(0deg, rgba(255, 238, 190, 0.026) 0, rgba(255, 238, 190, 0.026) 1px, transparent 1px, transparent 8px),
-    linear-gradient(180deg, rgba(83, 55, 27, 0.34), rgba(12, 13, 17, 0.48));
-  box-shadow:
-    0 0 0 1px rgba(255, 241, 202, 0.035) inset,
-    0 8px 16px rgba(0, 0, 0, 0.16);
-}
-
-.quickdeck-favorite-attacks-heading h5,
-.quickdeck-attacks-section h4,
-.quickdeck-skills-section h4 {
-  color: #ffe6aa;
-  text-shadow: 0 1px 0 rgba(48, 24, 7, 0.95), 0 2px 8px rgba(0, 0, 0, 0.45);
-}
-
-.quickdeck-favorite-attack-main,
-.quickdeck-skill-row,
-.quickdeck-attack-card {
-  background:
-    linear-gradient(90deg, rgba(255, 239, 196, 0.055), transparent 16%, transparent 84%, rgba(99, 58, 22, 0.12)),
-    repeating-linear-gradient(0deg, rgba(244, 215, 154, 0.018) 0, rgba(244, 215, 154, 0.018) 1px, transparent 1px, transparent 7px),
-    linear-gradient(180deg, rgba(65, 48, 29, 0.38), rgba(17, 18, 23, 0.7));
-}
-
-.quickdeck-favorite-attack-main {
-  border-color: rgba(220, 174, 92, 0.38);
-  box-shadow: 3px 0 0 rgba(225, 176, 88, 0.28) inset;
-}
-
-.quickdeck-favorite-toggle,
-.quickdeck-unpin-button {
-  background:
-    radial-gradient(circle at 50% 18%, rgba(255, 225, 151, 0.16), transparent 38%),
-    linear-gradient(180deg, rgba(84, 58, 27, 0.92), rgba(26, 22, 18, 0.95));
-}
-
-.quickdeck-favorite-toggle.is-selected {
-  box-shadow:
-    0 0 0 1px rgba(255, 235, 184, 0.13) inset,
-    0 0 10px rgba(255, 207, 105, 0.22);
-}
-
-.quickdeck-skill-row {
-  border-color: rgba(214, 173, 95, 0.3);
-  box-shadow: 0 1px 0 rgba(255, 237, 194, 0.04) inset;
-}
-
-.quickdeck-quick-skill-row,
-.quickdeck-spell-row {
-  border-radius: 10px;
-}
-
-.quickdeck-drawer-search,
-.quickdeck-available-header input {
-  border-color: rgba(223, 178, 94, 0.56);
-  background:
-    linear-gradient(180deg, rgba(14, 10, 8, 0.86), rgba(5, 6, 9, 0.72));
-  box-shadow:
-    0 1px 0 rgba(255, 235, 184, 0.08) inset,
-    0 0 0 1px rgba(0, 0, 0, 0.18);
-}
-
-.quickdeck-roll-button,
-.quickdeck-flow-button,
-.quickdeck-clear-button,
-.quickdeck-open-sheet-button,
-.quickdeck-drop-token-button,
-.quickdeck-minimize-button,
-.quickdeck-add-button {
-  box-shadow:
-    0 1px 0 rgba(255, 236, 187, 0.08) inset,
-    0 4px 9px rgba(0, 0, 0, 0.16);
-}
-
-.quickdeck-floating-restore {
-  border-color: rgba(237, 188, 96, 0.82);
-  border-radius: 999px 999px 999px 8px;
-  background:
-    linear-gradient(90deg, rgba(255, 228, 158, 0.09), transparent 42%),
-    linear-gradient(145deg, rgba(57, 32, 16, 0.98), rgba(14, 11, 11, 0.98));
-  box-shadow:
-    0 5px 18px rgba(0, 0, 0, 0.5),
-    0 0 0 1px rgba(255, 232, 177, 0.14) inset,
-    0 -2px 0 rgba(82, 43, 14, 0.48) inset;
-}
-
-.quickdeck-floating-restore-mark {
-  background:
-    radial-gradient(circle at 50% 18%, #ffe8ad, transparent 40%),
-    linear-gradient(180deg, #dba95b, #8b5b23);
-  box-shadow: 0 0 0 1px rgba(255, 239, 196, 0.22) inset;
-}
-
-.quickdeck-reference-shell {
-  box-shadow:
-    0 18px 36px rgba(21, 10, 4, 0.46),
-    0 0 0 1px rgba(255, 248, 212, 0.28) inset,
-    0 0 30px rgba(109, 63, 20, 0.19) inset;
-}
-
-/* v0.6.0 release-candidate cohesion polish: soften ornament noise and tighten dense drawers. */
-.gurps-quickdeck {
-  --quickdeck-ornament-line: rgba(232, 187, 105, 0.24);
-  --quickdeck-ornament-glow: rgba(216, 151, 58, 0.14);
-}
-
-.quickdeck-shell {
-  border-color: rgba(226, 181, 96, 0.24);
-  background:
-    radial-gradient(circle at 100% 0, rgba(226, 174, 82, 0.16), transparent 28%),
-    radial-gradient(circle at 8% 92%, rgba(161, 92, 37, 0.14), transparent 34%),
-    repeating-linear-gradient(135deg, rgba(255, 226, 167, 0.018) 0, rgba(255, 226, 167, 0.018) 2px, transparent 2px, transparent 11px),
-    linear-gradient(145deg, rgba(18, 11, 8, 0.99), rgba(38, 24, 16, 0.98) 42%, rgba(9, 10, 14, 0.98));
-  box-shadow:
-    0 0 0 1px rgba(255, 239, 196, 0.045) inset,
-    0 0 0 3px rgba(0, 0, 0, 0.16) inset,
-    0 18px 34px rgba(0, 0, 0, 0.38);
-}
-
-.quickdeck-shell::before {
-  opacity: 0.72;
-  box-shadow:
-    0 0 16px rgba(0, 0, 0, 0.24) inset,
-    0 0 0 1px rgba(255, 238, 190, 0.035) inset;
-}
-
-.quickdeck-shell::after,
-.quickdeck-stage::before,
-.quickdeck-stage::after {
-  opacity: 0.1;
-}
-
-.quickdeck-panel-content {
-  gap: 0.46rem;
-  padding: 0.5rem;
-}
-
-.quickdeck-panel-scroll-root {
-  padding-bottom: 0.36rem;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
-}
-
-.quickdeck-selected-cockpit {
-  gap: 0.42rem;
-  padding: 0.38rem;
-  box-shadow:
-    0 0 0 1px rgba(255, 239, 196, 0.035) inset,
-    0 8px 16px rgba(0, 0, 0, 0.18);
-}
-
-.quickdeck-actor-header {
-  grid-template-columns: 46px minmax(0, 1fr) auto;
-  gap: 0.45rem;
-  padding: 0.32rem;
-}
-
-.quickdeck-actor-header img {
-  width: 46px;
-  height: 46px;
-  box-shadow: 0 0 0 2px rgba(16, 12, 8, 0.72), 0 0 8px rgba(210, 155, 66, 0.12);
-}
-
-.quickdeck-main-resources {
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(52px, 0.36fr);
-  gap: 0.34rem;
-}
-
-.quickdeck-stats > div {
-  padding: 0.28rem;
-}
-
-.quickdeck-resource-control {
-  gap: 0.28rem 0.34rem;
-}
-
-.quickdeck-resource-control button {
-  width: 1.44rem;
-  height: 1.44rem;
-  border-radius: 6px;
-}
-
-.quickdeck-resource-value-line input {
-  width: 2.7rem;
-  height: 1.28rem;
-}
-
-.quickdeck-defense-buttons {
-  gap: 0.34rem;
-  padding: 0.24rem;
-}
-
-.quickdeck-defense-button {
-  min-height: 3.05rem;
-  border-radius: 10px;
-  clip-path: none;
-  background:
-    radial-gradient(circle at 50% 0, rgba(255, 225, 151, 0.14), transparent 36%),
-    linear-gradient(180deg, rgba(118, 78, 30, 0.9), rgba(46, 30, 15, 0.98));
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 235, 188, 0.055),
-    0 0 10px rgba(205, 135, 48, 0.08);
-}
-
-.quickdeck-defense-button:hover {
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 238, 198, 0.1),
-    0 0 12px rgba(241, 177, 82, 0.2);
-}
-
-.quickdeck-attacks-list,
-.quickdeck-skills-list {
-  gap: 0.38rem;
-  margin-top: 0.38rem;
-}
-
-.quickdeck-attack-card {
-  gap: 0.36rem;
-  padding: 0.42rem 0.46rem;
-  background:
-    linear-gradient(90deg, rgba(255, 239, 196, 0.042), transparent 16%, transparent 84%, rgba(99, 58, 22, 0.09)),
-    linear-gradient(180deg, rgba(61, 45, 28, 0.34), rgba(16, 17, 22, 0.68));
-}
-
-.quickdeck-attack-stats {
-  gap: 0.28rem;
-}
-
-.quickdeck-attack-stats div {
-  padding: 0.2rem 0.28rem;
-}
-
-.quickdeck-favorite-attacks {
-  padding: 0.42rem;
-  border-color: rgba(226, 178, 89, 0.34);
-  background:
-    linear-gradient(90deg, rgba(255, 231, 176, 0.075), transparent 7%, transparent 93%, rgba(111, 65, 25, 0.1)),
-    linear-gradient(180deg, rgba(70, 49, 27, 0.3), rgba(12, 13, 17, 0.46));
-  box-shadow:
-    0 0 0 1px rgba(255, 241, 202, 0.028) inset,
-    0 6px 12px rgba(0, 0, 0, 0.12);
-}
-
-.quickdeck-favorite-attacks-list {
-  gap: 0.28rem;
-}
-
-.quickdeck-favorite-attack-main {
-  padding: 0.3rem 0.42rem;
-  background:
-    linear-gradient(90deg, rgba(255, 239, 196, 0.04), transparent 18%, transparent 82%, rgba(99, 58, 22, 0.08)),
-    linear-gradient(180deg, rgba(49, 39, 27, 0.72), rgba(15, 17, 22, 0.86));
-  box-shadow: 2px 0 0 rgba(225, 176, 88, 0.2) inset;
-}
-
-.quickdeck-favorite-toggle,
-.quickdeck-unpin-button {
-  box-shadow: 0 1px 0 rgba(255, 236, 187, 0.06) inset;
-}
-
-.quickdeck-favorite-toggle.is-selected {
-  box-shadow:
-    0 0 0 1px rgba(255, 235, 184, 0.1) inset,
-    0 0 7px rgba(255, 207, 105, 0.16);
-}
-
-.quickdeck-skill-row {
-  gap: 0.42rem;
-  padding: 0.4rem 0.48rem;
-  background:
-    linear-gradient(90deg, rgba(255, 239, 196, 0.04), transparent 16%, transparent 84%, rgba(99, 58, 22, 0.09)),
-    linear-gradient(180deg, rgba(57, 43, 28, 0.34), rgba(17, 18, 23, 0.68));
-}
-
-.quickdeck-skill-row .quickdeck-roll-button {
-  padding-inline: 0.48rem;
-}
-
-.quickdeck-quick-skill-row {
-  padding: 0.32rem 0.36rem 0.32rem 0.5rem;
-  border-left: 3px solid rgba(226, 184, 98, 0.58);
-}
-
-.quickdeck-quick-skill-actions {
-  gap: 0.24rem;
-}
-
-.quickdeck-quick-skill-actions .quickdeck-roll-button {
-  min-width: 3.45rem;
-}
-
-.quickdeck-spell-row {
-  grid-template-columns: 28px minmax(0, 1fr) minmax(5.7rem, auto);
-}
-
-.quickdeck-drawer-search,
-.quickdeck-available-header input {
-  height: 30px;
-  color: #fbf4e5;
-  background:
-    linear-gradient(180deg, rgba(13, 10, 8, 0.9), rgba(5, 6, 9, 0.78));
-}
-
-.quickdeck-drawer-search:focus,
-.quickdeck-available-header input:focus {
-  outline: 1px solid rgba(255, 218, 141, 0.62);
-  outline-offset: 1px;
-  border-color: rgba(238, 197, 119, 0.76);
-}
-
-.quickdeck-roster-button.is-current-turn {
-  box-shadow:
-    0 0 0 1px rgba(144, 216, 255, 0.34),
-    0 0 10px rgba(80, 195, 255, 0.3),
-    0 0 18px rgba(80, 195, 255, 0.16);
-}
-
-@keyframes quickdeck-current-turn-pulse {
-  0%,
-  100% {
-    box-shadow:
-      0 0 0 1px rgba(144, 216, 255, 0.28),
-      0 0 8px rgba(80, 195, 255, 0.2),
-      0 0 14px rgba(80, 195, 255, 0.14);
+  .quickdeck-actor-header img {
+    width: 56px;
+    height: 56px;
   }
-  50% {
-    box-shadow:
-      0 0 0 1px rgba(164, 226, 255, 0.5),
-      0 0 12px rgba(80, 195, 255, 0.38),
-      0 0 20px rgba(80, 195, 255, 0.22);
+
+  .quickdeck-defense-button {
+    width: clamp(4.1rem, 5.4vw, 4.75rem);
   }
-}
-
-.quickdeck-floating-restore {
-  border-color: rgba(229, 183, 94, 0.78);
-  border-radius: 999px;
-  background:
-    linear-gradient(90deg, rgba(255, 228, 158, 0.075), transparent 42%),
-    linear-gradient(145deg, rgba(50, 30, 17, 0.98), rgba(13, 11, 11, 0.98));
-  box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.48),
-    0 0 0 1px rgba(255, 232, 177, 0.12) inset,
-    0 -1px 0 rgba(82, 43, 14, 0.42) inset;
-}
-
-.quickdeck-floating-restore:hover {
-  box-shadow:
-    0 5px 16px rgba(0, 0, 0, 0.52),
-    0 0 0 1px rgba(255, 230, 188, 0.2) inset,
-    0 0 9px rgba(241, 184, 77, 0.22);
-}
-
-.quickdeck-reference-body {
-  color: var(--quickdeck-reference-ink);
-  scrollbar-color: rgba(106, 64, 23, 0.84) rgba(91, 52, 18, 0.18);
-}
-
-.quickdeck-reference-body::-webkit-scrollbar-track {
-  background: rgba(91, 52, 18, 0.18);
-}
-
-.quickdeck-reference-body::-webkit-scrollbar-thumb {
-  border-color: rgba(255, 241, 200, 0.56);
-  background: rgba(106, 64, 23, 0.78);
-}
-
-.quickdeck-reference-body p,
-.quickdeck-reference-help,
-.quickdeck-reference-status {
-  color: #3f2a18;
 }
 
 @media (max-width: 980px) {
-  .quickdeck-main-resources {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  .gurps-quickdeck {
+    min-width: min(920px, calc(100vw - 24px));
+  }
+
+  .quickdeck-shell {
+    grid-template-columns: minmax(245px, 0.68fr) minmax(0, 2.2fr);
+    gap: 0.58rem;
+    padding: 0.62rem;
+  }
+
+  .quickdeck-content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .quickdeck-stage {
+    display: none;
+  }
+
+  .quickdeck-drawer-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quickdeck-main-resources,
+  .quickdeck-attack-stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .quickdeck-main-resources .quickdeck-move-card {
@@ -2070,327 +1875,28 @@ button:not(:disabled):hover { filter: brightness(1.12); }
   }
 }
 
-/* v0.6.1 reference UI layout assets. */
-.gurps-quickdeck {
-  --quickdeck-command-gap: 0.62rem;
-  --quickdeck-art-layout-main-shell: url("../assets/ui/source/shell/qd-main-shell-wide.webp");
-  --quickdeck-art-layout-top-command-bar: url("../assets/ui/source/shell/qd-command-title-band.webp");
-  --quickdeck-art-layout-left-roster-frame: url("../assets/ui/source/shell/qd-left-roster-frame.webp");
-  --quickdeck-art-layout-center-cockpit-frame: url("../assets/ui/source/shell/qd-center-cockpit-frame.webp");
-  --quickdeck-art-layout-right-drawer-frame: url("../assets/ui/source/shell/qd-right-drawer-frame.webp");
-  --quickdeck-art-layout-reference-sources-frame: url("../assets/ui/layout/reference-sources-frame.webp");
-  --quickdeck-art-layout-portrait-bezel-large: url("../assets/ui/source/cockpit/qd-portrait-frame.webp");
-  --quickdeck-art-layout-resource-card-frame: url("../assets/ui/source/cockpit/qd-resource-card-hp.webp");
-  --quickdeck-art-layout-defense-button-frame: url("../assets/ui/source/cockpit/qd-defense-dodge-circle.webp");
-  --quickdeck-art-layout-combat-favorites-frame: url("../assets/ui/layout/combat-favorites-frame.webp");
-  --quickdeck-art-layout-tab-button-vertical: url("../assets/ui/layout/tab-button-vertical.webp");
-  --quickdeck-art-layout-search-input-frame-wide: url("../assets/ui/layout/search-input-frame-wide.webp");
-  --quickdeck-art-layout-row-frame-attack: url("../assets/ui/layout/row-frame-attack.webp");
-  --quickdeck-art-layout-row-frame-skill: url("../assets/ui/layout/row-frame-skill.webp");
-  --quickdeck-art-layout-roll-button-3d6: url("../assets/ui/source/drawer/qd-combat-dice-3d6-icon.webp");
-  --quickdeck-art-layout-modifier-bucket-button: url("../assets/ui/source/drawer/qd-combat-mods-square.webp");
-  --quickdeck-art-layout-target-button-frame: url("../assets/ui/source/drawer/qd-combat-target-square.webp");
-  --quickdeck-art-layout-bronze-divider: url("../assets/ui/layout/bronze-divider.webp");
-  --quickdeck-art-layout-collapse-tab-left: url("../assets/ui/source/shell/qd-panel-collapse-handle-left.webp");
-  --quickdeck-art-layout-collapse-tab-right: url("../assets/ui/source/shell/qd-panel-collapse-handle-right.webp");
+@media (max-width: 720px) {
+  .quickdeck-spell-row,
+  .quickdeck-skill-row {
+    grid-template-columns: 28px minmax(0, 1fr);
+  }
+
+  .quickdeck-spell-row .quickdeck-roll-button,
+  .quickdeck-skill-row .quickdeck-roll-button {
+    grid-column: 1 / -1;
+  }
 }
 
-/* v0.6.1 source-image art wiring pass: use approved source assets without changing bindings. */
-.gurps-quickdeck {
-  --quickdeck-command-gap: 0.56rem;
-  --quickdeck-art-main-shell: url("../assets/ui/source/shell/qd-main-shell-wide.webp");
-  --quickdeck-art-top-bar: url("../assets/ui/source/shell/qd-command-title-band.webp");
-  --quickdeck-art-roster-frame: url("../assets/ui/source/shell/qd-left-roster-frame.webp");
-  --quickdeck-art-center-frame: url("../assets/ui/source/shell/qd-center-cockpit-frame.webp");
-  --quickdeck-art-right-frame: url("../assets/ui/source/shell/qd-right-drawer-frame.webp");
-  --quickdeck-art-drawer-panel: url("../assets/ui/source/drawer/qd-clean-parchment-panel.webp");
-  --quickdeck-art-tab-strip: url("../assets/ui/source/drawer/qd-tab-strip.webp");
-  --quickdeck-art-tab-active: url("../assets/ui/source/drawer/qd-tab-active.webp");
-  --quickdeck-art-tab-inactive: url("../assets/ui/source/drawer/qd-tab-inactive.webp");
-  --quickdeck-art-selected-banner: url("../assets/ui/source/cockpit/qd-selected-actor-banner.webp");
-  --quickdeck-art-roster-card: url("../assets/ui/source/source-roster-card.webp");
-  --quickdeck-art-roster-card-selected: url("../assets/ui/source/source-roster-card-selected.webp");
-  --quickdeck-art-roster-selected-glow: url("../assets/ui/source/source-roster-selected-glow.webp");
-  --quickdeck-art-small-portrait: url("../assets/ui/source/source-small-portrait-frame.webp");
-  --quickdeck-art-portrait: url("../assets/ui/source/cockpit/qd-portrait-frame.webp");
-  --quickdeck-art-resource-card: url("../assets/ui/source/cockpit/qd-resource-card-hp.webp");
-  --quickdeck-art-defense-card: url("../assets/ui/source/cockpit/qd-defense-dodge-circle.webp");
-  --quickdeck-art-stat-strip: url("../assets/ui/source/source-stat-strip.webp");
-  --quickdeck-art-attack-card: url("../assets/ui/source/drawer/qd-clean-combat-card.webp");
-  --quickdeck-art-attack-row: url("../assets/ui/source/drawer/qd-clean-combat-card.webp");
-  --quickdeck-art-skill-card: url("../assets/ui/source/drawer/qd-clean-skill-row.webp");
-  --quickdeck-art-spell-row: url("../assets/ui/source/drawer/qd-clean-spell-row.webp");
-  --quickdeck-art-favorite-card: url("../assets/ui/source/cockpit/qd-favorites-row.webp");
-  --quickdeck-art-spell-card: url("../assets/ui/source/cockpit/qd-favorites-row.webp");
-  --quickdeck-art-reference-card: url("../assets/ui/source/popout/qd-reference-related-row.webp");
-  --quickdeck-art-footer-rail: url("../assets/ui/source/shell/qd-bottom-gurps-footer.webp");
-  --quickdeck-art-small-button: url("../assets/ui/source/drawer/qd-filter-button.webp");
-  --quickdeck-art-medium-button: url("../assets/ui/source/drawer/qd-filter-button.webp");
-  --quickdeck-art-red-button: url("../assets/ui/source/source-small-button-red.webp");
-  --quickdeck-art-green-button: url("../assets/ui/source/source-small-button-green.webp");
-  --quickdeck-art-icon-button: url("../assets/ui/source/drawer/qd-filter-button.webp");
-  --quickdeck-art-roll-button: url("../assets/ui/source/drawer/qd-combat-dice-3d6-icon.webp");
-  --quickdeck-art-target-button: url("../assets/ui/source/drawer/qd-combat-target-square.webp");
-  --quickdeck-art-modifier-button: url("../assets/ui/source/drawer/qd-combat-mods-square.webp");
-  --quickdeck-art-star-button: url("../assets/ui/source/drawer/qd-combat-favorite-square.webp");
-}
+@media (max-width: 520px) {
+  .quickdeck-attack-stats,
+  .quickdeck-defense-buttons,
+  .quickdeck-combat-flow-controls {
+    grid-template-columns: minmax(0, 1fr);
+  }
 
-.quickdeck-shell {
-  grid-template-columns: clamp(218px, 18vw, 270px) minmax(0, 1fr);
-  gap: 0;
-  padding: 0;
-  border-color: rgba(239, 200, 120, 0.3);
-  background:
-    var(--quickdeck-art-main-shell) center / 100% 100% no-repeat,
-    radial-gradient(circle at 48% 18%, rgba(235, 176, 77, 0.2), transparent 32%),
-    linear-gradient(135deg, #0b0d12, #24180e 58%, #07080c);
-}
-
-.quickdeck-shell::before,
-.quickdeck-shell::after {
-  opacity: 0.16;
-}
-
-.quickdeck-sidebar {
-  grid-template-rows: minmax(240px, 1.16fr) minmax(160px, 0.84fr);
-  gap: 0.5rem;
-  padding: 0.62rem 0.52rem 0.62rem 0.62rem;
-  border-right: 0;
-  background:
-    var(--quickdeck-art-roster-frame) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(19, 13, 10, 0.86), rgba(8, 8, 11, 0.82));
-  box-shadow: -10px 0 22px rgba(0, 0, 0, 0.28) inset;
-}
-
-.quickdeck-command-desk {
-  gap: var(--quickdeck-command-gap);
-  padding: 0.58rem 0.66rem 0.62rem 0.56rem;
-}
-
-.quickdeck-top-bar {
-  min-height: 50px;
-  padding: 0.42rem 0.68rem;
-  border-color: rgba(239, 200, 120, 0.36);
-  border-radius: 12px;
-  background:
-    var(--quickdeck-art-top-bar) center / 100% 100% no-repeat,
-    linear-gradient(90deg, rgba(57, 33, 17, 0.9), rgba(12, 13, 17, 0.86));
-}
-
-.quickdeck-workbench,
-.quickdeck-main {
-  grid-template-columns: minmax(430px, 1.08fr) minmax(410px, 0.92fr);
-  gap: 0.55rem;
-}
-
-.quickdeck-center-cockpit {
-  padding: 0.52rem;
-  border-color: rgba(239, 200, 120, 0.34);
-  border-radius: 16px;
-  background:
-    var(--quickdeck-art-center-frame) center / 100% 100% no-repeat,
-    radial-gradient(circle at 48% 8%, rgba(241, 189, 91, 0.16), transparent 36%),
-    linear-gradient(180deg, rgba(34, 22, 15, 0.86), rgba(8, 9, 13, 0.82));
-}
-
-.quickdeck-right-drawer {
-  display: grid;
-  grid-template-columns: 82px minmax(0, 1fr);
-  gap: 0;
-  padding: 0.48rem 0.48rem 0.48rem 0.32rem;
-  border-color: rgba(239, 200, 120, 0.34);
-  border-radius: 16px;
-  background:
-    var(--quickdeck-art-right-frame) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(28, 18, 13, 0.9), rgba(8, 9, 12, 0.88));
-}
-
-.quickdeck-panel {
-  border-color: rgba(223, 172, 86, 0.34);
-  border-radius: 0 13px 13px 0;
-  background:
-    var(--quickdeck-art-drawer-panel) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(24, 15, 11, 0.96), rgba(7, 8, 11, 0.94));
-}
-
-.quickdeck-panel-content {
-  gap: 0.4rem;
-  padding: 0.46rem;
-}
-
-.quickdeck-drawer-tabs {
-  align-content: start;
-  gap: 0.18rem;
-  padding: 0.45rem 0.18rem 0.45rem 0.26rem;
-  border-left: 0;
-  border-radius: 13px 0 0 13px;
-  background:
-    var(--quickdeck-art-tab-strip) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(39, 24, 14, 0.95), rgba(8, 8, 11, 0.95));
-  box-shadow: -5px 0 14px rgba(0, 0, 0, 0.24) inset;
-}
-
-.quickdeck-drawer-tab,
-button.quickdeck-drawer-tab {
-  min-height: 2.18rem;
-  padding: 0.18rem 0.22rem;
-  border-radius: 8px 0 0 8px;
-  font-size: 0.68rem;
-  line-height: 1.05;
-  background:
-    var(--quickdeck-art-tab-inactive) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(80, 52, 26, 0.9), rgba(26, 18, 14, 0.94));
-}
-
-.quickdeck-drawer-tab.is-active,
-button.quickdeck-drawer-tab.is-active {
-  border-color: rgba(255, 220, 144, 0.72);
-  background:
-    var(--quickdeck-art-tab-active) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(169, 116, 45, 0.96), rgba(71, 42, 16, 0.98));
-  box-shadow: 0 0 14px rgba(239, 200, 120, 0.24), -3px 0 0 rgba(255, 218, 139, 0.44) inset;
-}
-
-.quickdeck-roster-list,
-.quickdeck-available-list {
-  gap: 0.32rem;
-}
-
-.quickdeck-roster-button {
-  grid-template-columns: 42px minmax(0, 1fr);
-  min-height: 58px;
-  padding: 0.32rem 0.4rem;
-  border-color: rgba(226, 178, 89, 0.28);
-  background:
-    var(--quickdeck-art-roster-card) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(42, 29, 19, 0.82), rgba(12, 13, 17, 0.86));
-}
-
-.quickdeck-roster-button.is-active {
-  border-color: rgba(255, 223, 151, 0.78);
-  background:
-    var(--quickdeck-art-roster-selected-glow) center / 100% 100% no-repeat,
-    var(--quickdeck-art-roster-card-selected) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(88, 57, 22, 0.92), rgba(17, 15, 15, 0.94));
-  box-shadow: 0 0 0 1px rgba(255, 240, 196, 0.13) inset, 0 0 18px rgba(255, 201, 94, 0.2);
-}
-
-.quickdeck-roster-button img,
-.quickdeck-available-actor img {
-  padding: 0.16rem;
-  border: 0;
-  border-radius: 9px;
-  background: var(--quickdeck-art-small-portrait) center / 100% 100% no-repeat;
-}
-
-.quickdeck-roster-resources {
-  gap: 0.22rem;
-  font-size: 0.62rem;
-}
-
-.quickdeck-selected-cockpit {
-  gap: 0.4rem;
-  padding: 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-}
-
-.quickdeck-selected-cockpit::after {
-  content: none;
-}
-
-.quickdeck-actor-header {
-  grid-template-columns: 76px minmax(0, 1fr) minmax(104px, auto);
-  gap: 0.55rem;
-  min-height: 102px;
-  padding: 0.7rem 0.68rem;
-  border-color: rgba(238, 195, 118, 0.42);
-  border-radius: 14px;
-  background:
-    var(--quickdeck-art-selected-banner) center / 100% 100% no-repeat,
-    linear-gradient(90deg, rgba(104, 65, 25, 0.84), rgba(31, 21, 16, 0.88));
-}
-
-.quickdeck-portrait-bezel {
-  flex-basis: 76px;
-  width: 76px;
-  height: 76px;
-  padding: 0.42rem;
-  background: var(--quickdeck-art-portrait) center / 100% 100% no-repeat;
-}
-
-.quickdeck-actor-header img,
-.quickdeck-portrait-bezel img {
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
-}
-
-.quickdeck-actor-identity h3 {
-  font-size: clamp(1.32rem, 2.1vw, 1.8rem);
-}
-
-.quickdeck-combat-flow-controls,
-.quickdeck-stats.quickdeck-main-resources {
-  background:
-    var(--quickdeck-art-stat-strip) center / 100% 100% no-repeat,
-    linear-gradient(90deg, rgba(51, 35, 22, 0.52), rgba(8, 9, 12, 0.42));
-}
-
-.quickdeck-combat-flow-controls {
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  padding: 0.34rem;
-  gap: 0.32rem;
-}
-
-.quickdeck-main-resources {
-  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1.08fr) minmax(58px, 0.42fr);
-}
-
-.quickdeck-main-resources .quickdeck-resource-card,
-.quickdeck-main-resources .quickdeck-move-card {
-  padding: 0.42rem;
-  border-color: rgba(226, 178, 89, 0.34);
-  border-radius: 12px;
-  background:
-    var(--quickdeck-art-resource-card) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(46, 31, 19, 0.74), rgba(8, 9, 12, 0.64));
-}
-
-.quickdeck-defense-buttons {
-  padding: 0.34rem;
-  background:
-    var(--quickdeck-art-stat-strip) center / 100% 100% no-repeat,
-    rgba(6, 5, 6, 0.28);
-}
-
-.quickdeck-defense-button {
-  min-height: 3.1rem;
-  clip-path: none;
-  background:
-    var(--quickdeck-art-defense-card) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(107, 70, 28, 0.9), rgba(37, 25, 14, 0.96));
-}
-
-.quickdeck-favorite-attacks,
-.quickdeck-pinned-skills-summary {
-  margin-top: 0.38rem;
-  padding: 0.38rem;
-  background:
-    var(--quickdeck-art-favorite-card) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(55, 38, 23, 0.46), rgba(8, 9, 12, 0.46));
-}
-
-.quickdeck-favorite-attacks::after {
-  content: none;
-}
-
-.quickdeck-favorite-attack-main,
-.quickdeck-pinned-skill-chip {
-  background:
-    var(--quickdeck-art-favorite-card) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(43, 32, 22, 0.78), rgba(12, 13, 17, 0.84));
+  .quickdeck-attack-title-row {
+    grid-template-columns: 26px minmax(0, 1fr);
+  }
 }
 
 .quickdeck-attack-card {
@@ -3274,14 +2780,8 @@ button.quickdeck-drawer-tab {
 .quickdeck-modifier-bucket-detail {
   color: #3a1f0e;
 }
-
-.quickdeck-combat-icon-tray {
-  min-width: 0;
-  width: 100%;
-  padding: 0.18rem;
-  border: 1px solid rgba(236, 195, 118, 0.22);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.24);
+.quickdeck-attack-actions .quickdeck-roll-button {
+  margin-top: 0;
 }
 
 .quickdeck-combat-icon-tray .quickdeck-combat-icon {
@@ -4353,4 +3853,21 @@ button.quickdeck-favorite-toggle {
   color: #fff1c8;
   background: var(--quickdeck-art-spell-roll-button) center / 100% 100% no-repeat;
   box-shadow: none;
+}
+
+/* Command Desk compatibility controls must be inert when hidden. */
+.qd-command-desk-compat-hidden,
+.quickdeck-drawer-actor-utilities.qd-command-desk-compat-hidden,
+.quickdeck-drawer-actor-utilities[hidden],
+.quickdeck-drawer-actor-utilities[aria-hidden="true"] {
+  display: none !important;
+  inline-size: 0 !important;
+  block-size: 0 !important;
+  min-inline-size: 0 !important;
+  min-block-size: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+  pointer-events: none !important;
 }

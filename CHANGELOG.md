@@ -21,6 +21,7 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased] - v0.6.0 release candidate
 
 ### Added
+- Wired the v0.7 Command Desk art skin foundation after the existing QuickDeck stylesheet while keeping runtime behavior unchanged.
 - Added per-actor/client Combat Favorites with compact pinned attack rows, full-list star toggles, and native GURPS attack passthrough preserved for favorite launches.
 - Added per-actor/client Spell Favorites with compact pinned spell rows, full-list star toggles, stable spell keys, and native GURPS spell passthrough preserved for favorite launches.
 - Added selected-character HP/FP pass-through controls, roster HP/FP chips, large Dodge/Parry/Block buttons, and compact combat helper controls for common table flow.

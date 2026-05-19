@@ -2,6 +2,9 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.7.0 (Draft)
+
+- The Command Desk art skin foundation is now wired after the existing QuickDeck stylesheet, making the v0.7 art assets available without replacing current behavior.
 ## What's New in v0.6.1 (Reference UI Foundation)
 
 - Started from the clean v0.6.0 release baseline and abandoned the failed v0.6.1 visual experiment direction.
