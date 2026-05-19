@@ -3301,8 +3301,8 @@
 
 /* v0.7.1 sizing tune: compact center and improved resize behavior. */
 .quickdeck-command-desk-shell.quickdeck-shell {
-  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 38vw, 620px) minmax(340px, 1fr);
-  min-width: 1120px;
+  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 600px) minmax(360px, 1fr);
+  min-width: 0;
 }
 
 .quickdeck-command-desk-shell .quickdeck-center-panel,
@@ -3314,5 +3314,5 @@
 }
 
 .quickdeck-command-desk-shell .quickdeck-stage {
-  max-width: none;
+  max-width: 100%;
 }
