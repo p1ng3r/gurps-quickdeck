@@ -1,6 +1,27 @@
-<section class="quickdeck-shell quickdeck-command-desk-shell">
+<section class="quickdeck-shell quickdeck-command-desk-shell {{#if isLeftPanelCollapsed}}is-left-panel-collapsed{{/if}} {{#if isRightPanelCollapsed}}is-right-panel-collapsed{{/if}}">
   <div class="quickdeck-dev-badge" aria-hidden="true">QD v0.7 OpenSheet Fix</div>
   <aside class="quickdeck-sidebar quickdeck-left-panel" aria-label="QuickDeck left panel">
+    <button
+      type="button"
+      data-action="toggle-left-panel"
+      class="quickdeck-panel-toggle quickdeck-panel-toggle-left"
+      title="{{#if isLeftPanelCollapsed}}Expand roster panel{{else}}Collapse roster panel{{/if}}"
+      aria-label="{{#if isLeftPanelCollapsed}}Expand roster panel{{else}}Collapse roster panel{{/if}}"
+    >
+      <i class="fas {{#if isLeftPanelCollapsed}}fa-angle-right{{else}}fa-angle-left{{/if}}" aria-hidden="true"></i>
+      <span>{{#if isLeftPanelCollapsed}}Expand{{else}}Collapse{{/if}}</span>
+    </button>
+    <button
+      type="button"
+      data-action="toggle-left-panel"
+      class="quickdeck-collapsed-rail quickdeck-collapsed-rail-left"
+      title="Expand roster panel"
+      aria-label="Expand roster panel"
+    >
+      <i class="fas fa-angle-right" aria-hidden="true"></i>
+      <i class="fas fa-users" aria-hidden="true"></i>
+      <span>Roster</span>
+    </button>
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
         <h3>QuickDeck Roster <span class="quickdeck-badge">{{rosterCount}}</span></h3>
@@ -273,6 +294,29 @@
   </main>
 
   <aside class="quickdeck-drawer-stack quickdeck-right-panel" aria-label="QuickDeck right panel">
+    <button
+      type="button"
+      data-action="toggle-right-panel"
+      class="quickdeck-panel-toggle quickdeck-panel-toggle-right"
+      title="{{#if isRightPanelCollapsed}}Expand drawer panel{{else}}Collapse drawer panel{{/if}}"
+      aria-label="{{#if isRightPanelCollapsed}}Expand drawer panel{{else}}Collapse drawer panel{{/if}}"
+    >
+      <span>{{#if isRightPanelCollapsed}}Expand{{else}}Collapse{{/if}}</span>
+      <i class="fas {{#if isRightPanelCollapsed}}fa-angle-left{{else}}fa-angle-right{{/if}}" aria-hidden="true"></i>
+    </button>
+    <button
+      type="button"
+      data-action="toggle-right-panel"
+      class="quickdeck-collapsed-rail quickdeck-collapsed-rail-right"
+      title="Expand drawer panel"
+      aria-label="Expand drawer panel"
+    >
+      <i class="fas fa-angle-left" aria-hidden="true"></i>
+      <i class="fas fa-fist-raised" aria-hidden="true"></i><span>Combat</span>
+      <i class="fas fa-brain" aria-hidden="true"></i><span>Skills</span>
+      <i class="fas fa-hat-wizard" aria-hidden="true"></i><span>Spells</span>
+      <i class="fas fa-cog" aria-hidden="true"></i><span>Settings</span>
+    </button>
     <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck side drawers">
       <button
         type="button"

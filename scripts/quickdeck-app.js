@@ -11,7 +11,10 @@ const SETTING_KEYS = {
   SPELL_FAVORITES: "spellFavoriteKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
-  RESTORE_PILL_POSITION: "restorePillPosition"
+  RESTORE_PILL_POSITION: "restorePillPosition",
+  LEFT_PANEL_COLLAPSED: "leftPanelCollapsed",
+  RIGHT_PANEL_COLLAPSED: "rightPanelCollapsed",
+  EXPANDED_WINDOW_WIDTH: "expandedWindowWidth"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
@@ -52,6 +55,8 @@ export class QuickDeckApp extends Application {
     this._restorePillDragCleanup = null;
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
+    this.leftPanelCollapsed = false;
+    this.rightPanelCollapsed = false;
     this._pendingAttackGuidance = null;
     this.pendingAttackContext = null;
     this._nativeWindowFocusUntil = 0;
@@ -59,6 +64,9 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusLock = null;
     this._stateLoadedFromSettings = false;
     this._derivedActorDataCache = new Map();
+    this.expandedWindowWidth = 1580;
+    this._collapseWindowSizeInitialized = false;
+    this._panelCollapseWindowSizeRaf = null;
     this.loadPersistedState();
   }
 
@@ -975,6 +983,9 @@ export class QuickDeckApp extends Application {
       null
     );
     this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
+    this.leftPanelCollapsed = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.LEFT_PANEL_COLLAPSED));
+    this.rightPanelCollapsed = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.RIGHT_PANEL_COLLAPSED));
+    this.expandedWindowWidth = Number(game.settings.get(MODULE_ID, SETTING_KEYS.EXPANDED_WINDOW_WIDTH)) || 1580;
 
     this._stateLoadedFromSettings = true;
   }
@@ -1015,6 +1026,83 @@ export class QuickDeckApp extends Application {
   persistMinimizedState() {
     if (!game?.settings) return;
     game.settings.set(MODULE_ID, SETTING_KEYS.MINIMIZED, Boolean(this.isMinimized));
+  }
+
+  persistPanelCollapseState() {
+    if (!game?.settings) return;
+    game.settings.set(MODULE_ID, SETTING_KEYS.LEFT_PANEL_COLLAPSED, Boolean(this.leftPanelCollapsed));
+    game.settings.set(MODULE_ID, SETTING_KEYS.RIGHT_PANEL_COLLAPSED, Boolean(this.rightPanelCollapsed));
+  }
+
+  getPanelCollapseLayoutWidth() {
+    if (this.leftPanelCollapsed && this.rightPanelCollapsed) return 860;
+    if (this.rightPanelCollapsed) return 1140;
+    if (this.leftPanelCollapsed) return 1300;
+    return Math.max(1500, Number(this.expandedWindowWidth) || 1580);
+  }
+
+  persistExpandedWindowWidth(width) {
+    const value = Number(width);
+    if (!Number.isFinite(value) || value < 1200) return;
+    this.expandedWindowWidth = value;
+    if (!game?.settings) return;
+    game.settings.set(MODULE_ID, SETTING_KEYS.EXPANDED_WINDOW_WIDTH, value);
+  }
+
+  syncPanelCollapseWindowClasses() {
+    const root = this.element?.[0];
+    if (!root) return;
+    root.classList.toggle("is-left-panel-collapsed", Boolean(this.leftPanelCollapsed));
+    root.classList.toggle("is-right-panel-collapsed", Boolean(this.rightPanelCollapsed));
+  }
+
+  applyPanelCollapseWindowSize({ rememberExpanded = false } = {}) {
+    const pos = this.position ?? {};
+    const root = this.element?.[0] ?? null;
+    const rectWidth = Number(root?.getBoundingClientRect?.().width);
+    const currentWidth = Number.isFinite(rectWidth) && rectWidth > 0
+      ? rectWidth
+      : (Number(pos.width) || this.options?.width || 1580);
+    if (rememberExpanded && !this.leftPanelCollapsed && !this.rightPanelCollapsed) {
+      this.persistExpandedWindowWidth(currentWidth);
+    }
+
+    const targetWidth = this.getPanelCollapseLayoutWidth();
+    if (!Number.isFinite(targetWidth)) return;
+    if (Math.abs(currentWidth - targetWidth) < 2) return;
+
+    this.setPosition({ width: targetWidth, height: pos.height });
+  }
+
+  queuePanelCollapseWindowSize(options = {}) {
+    if (this._panelCollapseWindowSizeRaf) {
+      cancelAnimationFrame(this._panelCollapseWindowSizeRaf);
+      this._panelCollapseWindowSizeRaf = null;
+    }
+    this._panelCollapseWindowSizeRaf = requestAnimationFrame(() => {
+      this._panelCollapseWindowSizeRaf = null;
+      this.applyPanelCollapseWindowSize(options);
+    });
+  }
+
+  toggleLeftPanelCollapsed() {
+    if (!this.leftPanelCollapsed && !this.rightPanelCollapsed) {
+      this.persistExpandedWindowWidth(this.position?.width);
+    }
+    this.leftPanelCollapsed = !this.leftPanelCollapsed;
+    this.persistPanelCollapseState();
+    this.render(false, { focus: false });
+    this.queuePanelCollapseWindowSize();
+  }
+
+  toggleRightPanelCollapsed() {
+    if (!this.leftPanelCollapsed && !this.rightPanelCollapsed) {
+      this.persistExpandedWindowWidth(this.position?.width);
+    }
+    this.rightPanelCollapsed = !this.rightPanelCollapsed;
+    this.persistPanelCollapseState();
+    this.render(false, { focus: false });
+    this.queuePanelCollapseWindowSize();
   }
 
   normalizeRestorePillPosition(position) {
@@ -3064,11 +3152,32 @@ export class QuickDeckApp extends Application {
     }
     this.invalidateDerivedActorData();
     this.stopNativeWindowFocusLock();
+    if (this._panelCollapseWindowSizeRaf) {
+      cancelAnimationFrame(this._panelCollapseWindowSizeRaf);
+      this._panelCollapseWindowSizeRaf = null;
+    }
     return super.close(options);
+  }
+
+
+  setPosition(position = {}) {
+    const result = super.setPosition(position);
+    const width = Number(result?.width ?? position?.width);
+    if (!this.leftPanelCollapsed && !this.rightPanelCollapsed && Number.isFinite(width) && width >= 1200) {
+      this.persistExpandedWindowWidth(width);
+    }
+    return result;
   }
 
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
+    this.syncPanelCollapseWindowClasses();
+    if (!this._collapseWindowSizeInitialized) {
+      this.queuePanelCollapseWindowSize();
+      this._collapseWindowSizeInitialized = true;
+    } else if (this.leftPanelCollapsed || this.rightPanelCollapsed) {
+      this.queuePanelCollapseWindowSize();
+    }
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
     return result;
@@ -3478,6 +3587,8 @@ export class QuickDeckApp extends Application {
       gurpsData,
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
+      isLeftPanelCollapsed: this.leftPanelCollapsed,
+      isRightPanelCollapsed: this.rightPanelCollapsed,
       activeDrawer: this.activeDrawer,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
@@ -3681,6 +3792,16 @@ export class QuickDeckApp extends Application {
       this.setFavoriteSpellSelected(actorId, spellKey, !selection.has(spellKey));
       this.render(false, { focus: false });
       this.scheduleNativeWindowFocusAfterRender();
+    });
+
+    html.find("[data-action='toggle-left-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.toggleLeftPanelCollapsed();
+    });
+
+    html.find("[data-action='toggle-right-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.toggleRightPanelCollapsed();
     });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
