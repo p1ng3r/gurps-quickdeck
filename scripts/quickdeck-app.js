@@ -66,6 +66,7 @@ export class QuickDeckApp extends Application {
     this._derivedActorDataCache = new Map();
     this.expandedWindowWidth = 1580;
     this._collapseWindowSizeInitialized = false;
+    this._panelCollapseWindowSizeRaf = null;
     this.loadPersistedState();
   }
 
@@ -1057,7 +1058,11 @@ export class QuickDeckApp extends Application {
 
   applyPanelCollapseWindowSize({ rememberExpanded = false } = {}) {
     const pos = this.position ?? {};
-    const currentWidth = Number(pos.width) || this.options?.width || 1580;
+    const root = this.element?.[0] ?? null;
+    const rectWidth = Number(root?.getBoundingClientRect?.().width);
+    const currentWidth = Number.isFinite(rectWidth) && rectWidth > 0
+      ? rectWidth
+      : (Number(pos.width) || this.options?.width || 1580);
     if (rememberExpanded && !this.leftPanelCollapsed && !this.rightPanelCollapsed) {
       this.persistExpandedWindowWidth(currentWidth);
     }
@@ -1069,15 +1074,25 @@ export class QuickDeckApp extends Application {
     this.setPosition({ width: targetWidth, height: pos.height });
   }
 
+  queuePanelCollapseWindowSize(options = {}) {
+    if (this._panelCollapseWindowSizeRaf) {
+      cancelAnimationFrame(this._panelCollapseWindowSizeRaf);
+      this._panelCollapseWindowSizeRaf = null;
+    }
+    this._panelCollapseWindowSizeRaf = requestAnimationFrame(() => {
+      this._panelCollapseWindowSizeRaf = null;
+      this.applyPanelCollapseWindowSize(options);
+    });
+  }
+
   toggleLeftPanelCollapsed() {
     if (!this.leftPanelCollapsed && !this.rightPanelCollapsed) {
       this.persistExpandedWindowWidth(this.position?.width);
     }
     this.leftPanelCollapsed = !this.leftPanelCollapsed;
     this.persistPanelCollapseState();
-    this.syncPanelCollapseWindowClasses();
-    this.applyPanelCollapseWindowSize();
     this.render(false, { focus: false });
+    this.queuePanelCollapseWindowSize();
   }
 
   toggleRightPanelCollapsed() {
@@ -1086,9 +1101,8 @@ export class QuickDeckApp extends Application {
     }
     this.rightPanelCollapsed = !this.rightPanelCollapsed;
     this.persistPanelCollapseState();
-    this.syncPanelCollapseWindowClasses();
-    this.applyPanelCollapseWindowSize();
     this.render(false, { focus: false });
+    this.queuePanelCollapseWindowSize();
   }
 
   normalizeRestorePillPosition(position) {
@@ -3138,6 +3152,10 @@ export class QuickDeckApp extends Application {
     }
     this.invalidateDerivedActorData();
     this.stopNativeWindowFocusLock();
+    if (this._panelCollapseWindowSizeRaf) {
+      cancelAnimationFrame(this._panelCollapseWindowSizeRaf);
+      this._panelCollapseWindowSizeRaf = null;
+    }
     return super.close(options);
   }
 
@@ -3155,8 +3173,10 @@ export class QuickDeckApp extends Application {
     const result = await super._render(force, options);
     this.syncPanelCollapseWindowClasses();
     if (!this._collapseWindowSizeInitialized) {
-      this.applyPanelCollapseWindowSize();
+      this.queuePanelCollapseWindowSize();
       this._collapseWindowSizeInitialized = true;
+    } else if (this.leftPanelCollapsed || this.rightPanelCollapsed) {
+      this.queuePanelCollapseWindowSize();
     }
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
