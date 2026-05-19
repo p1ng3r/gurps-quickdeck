@@ -3473,15 +3473,15 @@
 }
 
 .quickdeck-shell.is-left-panel-collapsed {
-  grid-template-columns: 48px minmax(480px, 1fr) minmax(340px, 420px);
+  grid-template-columns: 48px clamp(460px, 36vw, 600px) minmax(360px, 1fr);
 }
 
 .quickdeck-shell.is-right-panel-collapsed {
-  grid-template-columns: clamp(280px, 20vw, 340px) minmax(480px, 1fr) 56px;
+  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 600px) 56px;
 }
 
 .quickdeck-shell.is-left-panel-collapsed.is-right-panel-collapsed {
-  grid-template-columns: 48px minmax(520px, 1fr) 56px;
+  grid-template-columns: 48px clamp(500px, 42vw, 660px) 56px;
 }
 
 .quickdeck-panel-toggle,

@@ -3311,15 +3311,30 @@
 .quickdeck-command-desk-shell .quickdeck-selected-cockpit {
   width: 100%;
   min-width: 0;
-  max-width: clamp(520px, 72vw, 980px);
+  max-width: clamp(500px, 52vw, 660px);
 }
 
 .quickdeck-command-desk-shell .quickdeck-stage {
-  max-width: clamp(520px, 72vw, 980px);
+  max-width: clamp(500px, 52vw, 660px);
 }
 
 .quickdeck-command-desk-shell .quickdeck-content {
   justify-items: start;
+}
+
+.quickdeck-command-desk-shell .quickdeck-center-panel,
+.quickdeck-command-desk-shell .quickdeck-content,
+.quickdeck-command-desk-shell .quickdeck-stage,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit,
+.quickdeck-command-desk-shell .quickdeck-actor-header,
+.quickdeck-command-desk-shell .quickdeck-main-resources,
+.quickdeck-command-desk-shell .quickdeck-defense-buttons {
+  max-width: clamp(500px, 52vw, 660px);
+}
+
+.quickdeck-command-desk-shell .quickdeck-center-panel,
+.quickdeck-command-desk-shell .quickdeck-content {
+  justify-self: start;
 }
 
 .quickdeck-command-desk-shell.quickdeck-shell {
@@ -3330,15 +3345,15 @@
 }
 
 .quickdeck-command-desk-shell.quickdeck-shell.is-left-panel-collapsed {
-  grid-template-columns: 48px minmax(480px, 1fr) minmax(340px, 420px);
+  grid-template-columns: 48px clamp(460px, 36vw, 600px) minmax(360px, 1fr);
 }
 
 .quickdeck-command-desk-shell.quickdeck-shell.is-right-panel-collapsed {
-  grid-template-columns: clamp(280px, 20vw, 340px) minmax(480px, 1fr) 56px;
+  grid-template-columns: clamp(280px, 20vw, 340px) clamp(460px, 36vw, 600px) 56px;
 }
 
 .quickdeck-command-desk-shell.quickdeck-shell.is-left-panel-collapsed.is-right-panel-collapsed {
-  grid-template-columns: 48px minmax(520px, 1fr) 56px;
+  grid-template-columns: 48px clamp(500px, 42vw, 660px) 56px;
 }
 
 .quickdeck-command-desk-shell .quickdeck-left-panel,
