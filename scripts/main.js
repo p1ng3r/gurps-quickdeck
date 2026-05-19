@@ -18,7 +18,13 @@ function openQuickDeck() {
     quickDeckApp = new QuickDeckApp();
   }
 
-  quickDeckApp.restoreAndBringToFront?.();
+  if (typeof quickDeckApp.restoreAndBringToFront === "function") {
+    quickDeckApp.restoreAndBringToFront();
+  } else {
+    quickDeckApp.isMinimized = false;
+    quickDeckApp.persistMinimizedState?.();
+    quickDeckApp.render(true);
+  }
   return quickDeckApp;
 }
 
