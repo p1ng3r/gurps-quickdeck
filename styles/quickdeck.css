@@ -14,8 +14,21 @@
   --quickdeck-parchment-deep: #cfae69;
   --quickdeck-muted: rgba(239, 226, 197, 0.82);
   --quickdeck-shadow: rgba(0, 0, 0, 0.52);
-  min-width: min(1380px, calc(100vw - 48px));
+  --quickdeck-window-min-width: min(1380px, calc(100vw - 48px));
+  min-width: var(--quickdeck-window-min-width);
   min-height: min(780px, calc(100vh - 72px));
+}
+
+.gurps-quickdeck.is-right-panel-collapsed {
+  --quickdeck-window-min-width: min(1060px, calc(100vw - 48px));
+}
+
+.gurps-quickdeck.is-left-panel-collapsed {
+  --quickdeck-window-min-width: min(1220px, calc(100vw - 48px));
+}
+
+.gurps-quickdeck.is-left-panel-collapsed.is-right-panel-collapsed {
+  --quickdeck-window-min-width: min(760px, calc(100vw - 48px));
 }
 
 .gurps-quickdeck,

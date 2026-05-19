@@ -1048,6 +1048,13 @@ export class QuickDeckApp extends Application {
     game.settings.set(MODULE_ID, SETTING_KEYS.EXPANDED_WINDOW_WIDTH, value);
   }
 
+  syncPanelCollapseWindowClasses() {
+    const root = this.element?.[0];
+    if (!root) return;
+    root.classList.toggle("is-left-panel-collapsed", Boolean(this.leftPanelCollapsed));
+    root.classList.toggle("is-right-panel-collapsed", Boolean(this.rightPanelCollapsed));
+  }
+
   applyPanelCollapseWindowSize({ rememberExpanded = false } = {}) {
     const pos = this.position ?? {};
     const currentWidth = Number(pos.width) || this.options?.width || 1580;
@@ -1068,6 +1075,7 @@ export class QuickDeckApp extends Application {
     }
     this.leftPanelCollapsed = !this.leftPanelCollapsed;
     this.persistPanelCollapseState();
+    this.syncPanelCollapseWindowClasses();
     this.applyPanelCollapseWindowSize();
     this.render(false, { focus: false });
   }
@@ -1078,6 +1086,7 @@ export class QuickDeckApp extends Application {
     }
     this.rightPanelCollapsed = !this.rightPanelCollapsed;
     this.persistPanelCollapseState();
+    this.syncPanelCollapseWindowClasses();
     this.applyPanelCollapseWindowSize();
     this.render(false, { focus: false });
   }
@@ -3144,6 +3153,7 @@ export class QuickDeckApp extends Application {
 
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
+    this.syncPanelCollapseWindowClasses();
     if (!this._collapseWindowSizeInitialized) {
       this.applyPanelCollapseWindowSize();
       this._collapseWindowSizeInitialized = true;
