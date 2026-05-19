@@ -3098,3 +3098,107 @@
     0 0 16px rgba(102, 54, 12, 0.46);
   pointer-events: none;
 }
+
+/* v0.7.0 pre-dev layout polish pass: actor header actions, 720p shrink behavior, HP/FP overlap fix. */
+.quickdeck-command-desk-shell .quickdeck-actor-header {
+  grid-template-columns: clamp(76px, 9vw, 96px) minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.quickdeck-command-desk-shell .quickdeck-actor-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.34rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button,
+.quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button {
+  min-height: 34px;
+  min-width: 82px;
+  padding: 0.32rem 0.62rem;
+  font-size: 0.66rem;
+  line-height: 1.05;
+}
+
+.quickdeck-command-desk-shell .quickdeck-main-resources {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(88px, 116px);
+}
+
+.quickdeck-command-desk-shell .quickdeck-resource-control {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.4rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-resource-value-line {
+  min-width: 0;
+  gap: 0.26rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-resource-value-line input {
+  min-width: 3.25rem;
+  padding-inline: 0.34rem;
+  font-size: 0.9rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-resource-max {
+  min-width: 3.15rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.quickdeck-command-desk-shell .quickdeck-resource-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.24rem;
+  min-width: 3.55rem;
+}
+
+.quickdeck-command-desk-shell .quickdeck-resource-buttons button {
+  min-width: 1.62rem;
+  min-height: 1.52rem;
+  padding: 0;
+  font-size: 0.84rem;
+}
+
+@media (max-width: 1320px) {
+  #gurps-quickdeck-app,
+  .gurps-quickdeck-app {
+    min-width: 1040px;
+  }
+
+  .quickdeck-command-desk-shell .quickdeck-content {
+    grid-template-columns: minmax(0, 1fr) clamp(330px, 33vw, 400px);
+  }
+
+  .quickdeck-command-desk-shell .quickdeck-actor-header {
+    grid-template-columns: 86px minmax(0, 1fr) auto;
+  }
+
+  .quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button,
+  .quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button {
+    min-width: 74px;
+    min-height: 32px;
+    padding-inline: 0.52rem;
+    font-size: 0.62rem;
+  }
+}
+
+@media (max-height: 760px) {
+  #gurps-quickdeck-app,
+  .gurps-quickdeck-app {
+    min-height: 580px;
+  }
+
+  .quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-drop-token-button,
+  .quickdeck-command-desk-shell .quickdeck-selected-cockpit > .quickdeck-actor-header .quickdeck-open-sheet-button {
+    min-height: 30px;
+    font-size: 0.6rem;
+    padding: 0.28rem 0.48rem;
+  }
+
+  .quickdeck-command-desk-shell .quickdeck-main-resources {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) 96px;
+  }
+}
