@@ -11,7 +11,9 @@ const SETTING_KEYS = {
   SPELL_FAVORITES: "spellFavoriteKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
-  RESTORE_PILL_POSITION: "restorePillPosition"
+  RESTORE_PILL_POSITION: "restorePillPosition",
+  LEFT_PANEL_COLLAPSED: "leftPanelCollapsed",
+  RIGHT_PANEL_COLLAPSED: "rightPanelCollapsed"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
@@ -52,6 +54,8 @@ export class QuickDeckApp extends Application {
     this._restorePillDragCleanup = null;
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
+    this.leftPanelCollapsed = false;
+    this.rightPanelCollapsed = false;
     this._pendingAttackGuidance = null;
     this.pendingAttackContext = null;
     this._nativeWindowFocusUntil = 0;
@@ -975,6 +979,8 @@ export class QuickDeckApp extends Application {
       null
     );
     this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
+    this.leftPanelCollapsed = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.LEFT_PANEL_COLLAPSED));
+    this.rightPanelCollapsed = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.RIGHT_PANEL_COLLAPSED));
 
     this._stateLoadedFromSettings = true;
   }
@@ -1015,6 +1021,24 @@ export class QuickDeckApp extends Application {
   persistMinimizedState() {
     if (!game?.settings) return;
     game.settings.set(MODULE_ID, SETTING_KEYS.MINIMIZED, Boolean(this.isMinimized));
+  }
+
+  persistPanelCollapseState() {
+    if (!game?.settings) return;
+    game.settings.set(MODULE_ID, SETTING_KEYS.LEFT_PANEL_COLLAPSED, Boolean(this.leftPanelCollapsed));
+    game.settings.set(MODULE_ID, SETTING_KEYS.RIGHT_PANEL_COLLAPSED, Boolean(this.rightPanelCollapsed));
+  }
+
+  toggleLeftPanelCollapsed() {
+    this.leftPanelCollapsed = !this.leftPanelCollapsed;
+    this.persistPanelCollapseState();
+    this.render(false, { focus: false });
+  }
+
+  toggleRightPanelCollapsed() {
+    this.rightPanelCollapsed = !this.rightPanelCollapsed;
+    this.persistPanelCollapseState();
+    this.render(false, { focus: false });
   }
 
   normalizeRestorePillPosition(position) {
@@ -3478,6 +3502,8 @@ export class QuickDeckApp extends Application {
       gurpsData,
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
+      isLeftPanelCollapsed: this.leftPanelCollapsed,
+      isRightPanelCollapsed: this.rightPanelCollapsed,
       activeDrawer: this.activeDrawer,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
@@ -3681,6 +3707,16 @@ export class QuickDeckApp extends Application {
       this.setFavoriteSpellSelected(actorId, spellKey, !selection.has(spellKey));
       this.render(false, { focus: false });
       this.scheduleNativeWindowFocusAfterRender();
+    });
+
+    html.find("[data-action='toggle-left-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.toggleLeftPanelCollapsed();
+    });
+
+    html.find("[data-action='toggle-right-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.toggleRightPanelCollapsed();
     });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {

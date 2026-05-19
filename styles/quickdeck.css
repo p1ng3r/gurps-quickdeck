@@ -3464,3 +3464,31 @@
 .quickdeck-drawer-scroll-content {
   overflow: auto;
 }
+
+.quickdeck-shell {
+  grid-template-columns:
+    clamp(280px, 20vw, 340px)
+    clamp(460px, 36vw, 600px)
+    minmax(360px, 1fr);
+}
+
+.quickdeck-shell.is-left-panel-collapsed {
+  grid-template-columns:
+    48px
+    clamp(460px, 38vw, 620px)
+    minmax(360px, 1fr);
+}
+
+.quickdeck-shell.is-right-panel-collapsed {
+  grid-template-columns:
+    clamp(280px, 20vw, 340px)
+    minmax(520px, 1fr)
+    56px;
+}
+
+.quickdeck-shell.is-left-panel-collapsed.is-right-panel-collapsed {
+  grid-template-columns: 48px minmax(520px, 1fr) 56px;
+}
+
+.quickdeck-panel-toggle,
+.quickdeck-collapsed-rail { position: absolute; }

@@ -10,6 +10,8 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
+  LEFT_PANEL_COLLAPSED: "leftPanelCollapsed",
+  RIGHT_PANEL_COLLAPSED: "rightPanelCollapsed",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY
 };
 let quickDeckApp = null;
@@ -114,6 +116,23 @@ Hooks.once("init", () => {
   });
 
 
+  game.settings.register(MODULE_ID, SETTING_KEYS.LEFT_PANEL_COLLAPSED, {
+    name: "QuickDeck Left Panel Collapsed",
+    hint: "Whether the left roster panel is collapsed for this client.",
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.RIGHT_PANEL_COLLAPSED, {
+    name: "QuickDeck Right Panel Collapsed",
+    hint: "Whether the right drawer panel is collapsed for this client.",
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false
+  });
 
   game.settings.register(MODULE_ID, SETTING_KEYS.REFERENCE_INDEX, {
     name: "QuickDeck Local Overrides Metadata",
