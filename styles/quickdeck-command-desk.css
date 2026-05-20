@@ -3298,3 +3298,28 @@
 .qd8-shell .quickdeck-flow-button:hover {
   filter: brightness(1.12);
 }
+
+/* qd16 true clean-room three-pane shell */
+.qd16-shell {
+  --qd16-left-open: 484px;
+  --qd16-left-closed: 64px;
+  --qd16-center: 680px;
+  --qd16-right-open: 420px;
+  --qd16-right-closed: 64px;
+  --qd16-gap: 8px;
+  --qd16-shell-padding: 16px;
+  padding: var(--qd16-shell-padding);
+}
+.qd16-shell .qd16-header,.qd16-shell .qd16-footer{display:flex;justify-content:center;align-items:center;flex-direction:column;margin-bottom:8px}
+.qd16-shell .qd16-grid {display:grid;grid-template-columns: var(--qd16-left-open) var(--qd16-center) var(--qd16-right-open);gap: var(--qd16-gap);align-items:stretch;}
+.qd16-shell.is-left-collapsed .qd16-grid {grid-template-columns: var(--qd16-left-closed) var(--qd16-center) var(--qd16-right-open);}
+.qd16-shell.is-right-collapsed .qd16-grid {grid-template-columns: var(--qd16-left-open) var(--qd16-center) var(--qd16-right-closed);}
+.qd16-shell.is-left-collapsed.is-right-collapsed .qd16-grid {grid-template-columns: var(--qd16-left-closed) var(--qd16-center) var(--qd16-right-closed);}
+.qd16-shell .qd16-center{width:var(--qd16-center);min-width:var(--qd16-center);max-width:var(--qd16-center);overflow:auto}
+.qd16-shell .qd16-left,.qd16-shell .qd16-right,.qd16-shell .qd16-center{min-height:0}
+.qd16-shell .qd16-left-open{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px;height:100%}
+.qd16-shell .qd16-icon-spine,.qd16-shell .qd16-left-rail,.qd16-shell .qd16-right-rail{display:flex;flex-direction:column;gap:8px;height:100%}
+.qd16-shell .qd16-left-open-body,.qd16-shell .quickdeck-panel,.qd16-shell .quickdeck-panel-content,.qd16-shell .quickdeck-drawer-scroll-content{overflow:auto;min-height:0}
+.qd16-shell .qd16-right-open{display:flex;flex-direction:column;height:100%}
+.qd16-shell .qd16-rail-button,.qd16-shell .qd16-icon-spine-button,.qd16-shell .qd16-collapse-button,.qd16-shell .quickdeck-flow-button{background:linear-gradient(180deg,#6e4f22,#36230f);color:#f4e2b2;border:1px solid rgba(240,205,122,.6);border-radius:6px}
+.qd16-shell .quickdeck-main,.qd16-shell .quickdeck-content,.qd16-shell .quickdeck-stage {width:auto;min-width:0;max-width:none;overflow:visible;}

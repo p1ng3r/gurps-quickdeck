@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.1.6 true-clean-pane
+
+### Changed
+- Replaces the broken qd8/qd15 wrapped layout with a true clean-room three-pane QuickDeck shell.
+- Keeps the center cockpit fixed and visible while side panes collapse.
+- Preserves existing QuickDeck data actions and GURPS behavior.
+
 ## [Unreleased] - v0.8.1.4 layout-repair
 
 ### Changed
