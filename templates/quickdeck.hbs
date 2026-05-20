@@ -1,5 +1,5 @@
 <section class="quickdeck-shell quickdeck-command-desk-shell">
-  <div class="quickdeck-dev-badge" aria-hidden="true">QD v0.7 OpenSheet Fix</div>
+  <div class="quickdeck-dev-badge" aria-hidden="true">QD v0.8.1.3 — foundry-ui</div>
   <aside class="quickdeck-sidebar">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
@@ -168,21 +168,6 @@
               </div>
             </header>
 
-            <div class="quickdeck-combat-flow-controls" aria-label="Combat flow helpers">
-              <button type="button" data-action="open-chat" class="quickdeck-flow-button" title="Chat Front" aria-label="Chat Front">Chat</button>
-              <button type="button" data-action="clear-targets" class="quickdeck-flow-button" title="Clear Targets" aria-label="Clear Targets">Targets</button>
-              <button type="button" data-action="next-actor" class="quickdeck-flow-button" title="Next Actor" aria-label="Next Actor">Next</button>
-              <button
-                type="button"
-                data-action="repeat-last-attack"
-                class="quickdeck-flow-button"
-                title="Repeat Last Attack{{#if lastAttackName}}: {{lastAttackName}}{{/if}}"
-                aria-label="Repeat Last Attack"
-                {{#unless canRepeatLastAttack}}disabled{{/unless}}
-              >
-                Repeat
-              </button>
-            </div>
 
             <dl class="quickdeck-stats quickdeck-main-resources" aria-label="Selected actor resources">
               <div class="quickdeck-resource-card">

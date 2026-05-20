@@ -3208,3 +3208,67 @@
   min-height: 26px;
   font-size: 1.45rem;
 }
+
+/* qd8 foundry-ui scoped layout overrides */
+.quickdeck-command-desk-shell.qd8-shell {
+  display: flex;
+  flex-direction: column;
+  width: max-content;
+  min-width: 0;
+  grid-template-columns: none;
+}
+
+.quickdeck-command-desk-shell .qd8-header .qd8-dev-badge,
+.quickdeck-command-desk-shell .qd8-header .quickdeck-dev-badge {
+  position: static;
+  inset: auto;
+  margin: 0;
+}
+
+.quickdeck-command-desk-shell .qd8-grid {
+  --qd8-left-open: 484px;
+  --qd8-left-collapsed: 64px;
+  --qd8-center: 680px;
+  --qd8-right-open: 420px;
+  --qd8-right-collapsed: 64px;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: var(--qd8-left-open) var(--qd8-center) var(--qd8-right-open);
+  width: max-content;
+  min-width: 0;
+}
+.quickdeck-command-desk-shell .qd8-grid.is-left-collapsed { grid-template-columns: var(--qd8-left-collapsed) var(--qd8-center) var(--qd8-right-open); }
+.quickdeck-command-desk-shell .qd8-grid.is-right-collapsed { grid-template-columns: var(--qd8-left-open) var(--qd8-center) var(--qd8-right-collapsed); }
+.quickdeck-command-desk-shell .qd8-grid.is-left-collapsed.is-right-collapsed { grid-template-columns: var(--qd8-left-collapsed) var(--qd8-center) var(--qd8-right-collapsed); }
+
+.quickdeck-command-desk-shell .qd8-left-slot { width: 100%; min-width: 0; overflow: hidden; }
+.quickdeck-command-desk-shell .qd8-left { display: grid; grid-template-columns: 56px minmax(0,1fr); gap: 0; width: 100%; min-width: 0; }
+.quickdeck-command-desk-shell .qd8-icon-spine { width: 56px; }
+.quickdeck-command-desk-shell .qd8-roster-body { min-width: 0; width: 100%; }
+
+.quickdeck-command-desk-shell .qd8-center,
+.quickdeck-command-desk-shell .qd8-center-slot { width: 680px; min-width: 680px; max-width: 680px; overflow: hidden; }
+.quickdeck-command-desk-shell .qd8-center .quickdeck-content,
+.quickdeck-command-desk-shell .qd8-center .quickdeck-stage,
+.quickdeck-command-desk-shell .qd8-center .quickdeck-selected-cockpit { max-width: 100%; min-width: 0; }
+.quickdeck-command-desk-shell .qd8-center .quickdeck-content,
+.quickdeck-command-desk-shell .qd8-center .quickdeck-stage { overflow: hidden; }
+.quickdeck-command-desk-shell .qd8-center .quickdeck-selected-cockpit { overflow: auto; }
+
+.quickdeck-command-desk-shell .qd8-right-slot { width: 100%; min-width: 0; overflow: hidden; }
+.quickdeck-command-desk-shell .qd8-right { width: 100%; min-width: 0; overflow: hidden; }
+.quickdeck-command-desk-shell .qd8-right .quickdeck-panel,
+.quickdeck-command-desk-shell .qd8-right .quickdeck-panel-content,
+.quickdeck-command-desk-shell .qd8-right .quickdeck-drawer-scroll-content { min-width: 0; max-width: 100%; }
+.quickdeck-command-desk-shell .qd8-right .quickdeck-drawer-scroll-content { overflow: auto; }
+.quickdeck-command-desk-shell .qd8-right-collapsed-rail { pointer-events: auto; }
+
+.quickdeck-command-desk-shell .qd8-collapse-button,
+.quickdeck-command-desk-shell .qd8-rail-button,
+.quickdeck-command-desk-shell .qd8-icon-spine-button {
+  appearance: none;
+  border: 1px solid var(--qd-brass-border, rgba(199,154,56,.58));
+  color: var(--qd-parchment, #ead7ad);
+  background: linear-gradient(180deg, rgba(59,34,16,.86), rgba(17,10,6,.9));
+  border-radius: 6px;
+}

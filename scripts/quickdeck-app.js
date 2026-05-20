@@ -3070,8 +3070,37 @@ export class QuickDeckApp extends Application {
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
     this.syncHeaderMinimizeButton();
+    this.syncQd8ShellWidth();
     this.syncMinimizedPresentation();
     return result;
+  }
+
+  getQd8ShellWidth() {
+    const shell = this.element?.[0]?.querySelector?.(".qd8-shell");
+    if (!shell) return null;
+
+    const grid = shell.querySelector(".qd8-grid");
+    const leftCollapsed = grid?.classList?.contains("is-left-collapsed");
+    const rightCollapsed = grid?.classList?.contains("is-right-collapsed");
+
+    const leftWidth = leftCollapsed ? 64 : 484;
+    const centerWidth = 680;
+    const rightWidth = rightCollapsed ? 64 : 420;
+    const gapWidth = 8 * 2;
+    const shellPadding = 32;
+    const chromeAllowance = 48;
+
+    return leftWidth + centerWidth + rightWidth + gapWidth + shellPadding + chromeAllowance;
+  }
+
+  syncQd8ShellWidth() {
+    const targetWidth = this.getQd8ShellWidth();
+    if (!targetWidth || !Number.isFinite(targetWidth)) return;
+
+    const currentWidth = Number(this.position?.width ?? this.element?.outerWidth?.() ?? 0);
+    if (!Number.isFinite(currentWidth) || Math.abs(currentWidth - targetWidth) <= 4) return;
+
+    this.setPosition({ width: targetWidth });
   }
 
   syncHeaderMinimizeButton() {
