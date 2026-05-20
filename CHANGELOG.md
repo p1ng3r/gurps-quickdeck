@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased] - v0.8.3.4 qd31-polish
+
+### Changed
+- Polishes the qd31 drawer-cockpit layout so the Actions drawer mirrors the Roster drawer and the app width matches visible drawer state.
+- Converts center command controls into a compact icon row and reduces actor portrait size.
+- Restores action/skill/spell row detail/reference hooks and adds double-click sheet opening from actor portrait/name.
+
 All notable changes to this project will be documented in this file.
 
 ## [Unreleased] - v0.8.3.3 qd31-complete
