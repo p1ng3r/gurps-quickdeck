@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased] - v0.8.3.5 fit-tools
+
+### Changed
+- Fits the outer Foundry window to the measured qd31 cockpit/drawer shell instead of leaving oversized empty space.
+- Repairs Actions drawer visibility to mirror Roster drawer behavior.
+- Fixes Chat icon targeting, adds Target actions for Combat/Spells, and adds a modifier bucket editor control.
+
 ## [Unreleased] - v0.8.3.4 qd31-polish
 
 ### Changed

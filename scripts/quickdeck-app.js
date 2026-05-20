@@ -82,6 +82,7 @@ export class QuickDeckApp extends Application {
 
   async _render(...args) {
     const result = await super._render(...args);
+    this.applyQd31WindowClass();
     this.scheduleQd31WindowResize();
     return result;
   }
@@ -92,8 +93,20 @@ export class QuickDeckApp extends Application {
   openActionsDrawer(drawer = null) { if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer; this.isActionsDrawerOpen = true; this.scheduleQd31WindowResize(); this.render(false); }
   closeActionsDrawer() { this.isActionsDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
   toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
-  getQd31WindowWidth() { const center=520,drawerTarget=400,drawerMin=320,gap=8,closedPullTabSpace=40,chromeAllowance=48; const leftOpen=Boolean(this.isRosterDrawerOpen); const rightOpen=Boolean(this.isActionsDrawerOpen); let width=center+chromeAllowance+(leftOpen?drawerTarget+gap:closedPullTabSpace)+(rightOpen?drawerTarget+gap:closedPullTabSpace); const max=Math.max(640,(window.innerWidth||width)-24); if(width>max){ const openCount=Number(leftOpen)+Number(rightOpen); if(openCount>0){ const overflow=width-max; const reducible=(drawerTarget-drawerMin)*openCount; width-=Math.min(overflow,reducible); } } return Math.round(Math.max(640,width)); }
-  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const expected=this.getQd31WindowWidth(); const current=Number(this.position.width)||expected; const shouldCorrect=current>expected+200; if(Math.abs(current-expected)<=4&&!shouldCorrect)return; const height=Math.max(Number(this.position.height)||0, Number(this._lastPosition?.height)||0); this.setPosition({left:this.position.left,top:this.position.top,width:expected,height});}); }
+  applyQd31WindowClass() {
+    const appElement = this.element?.closest?.(".app") ?? this.element?.[0]?.closest?.(".app");
+    if (!appElement) return;
+    const hasQd31 = Boolean(this.element?.[0]?.querySelector?.(".qd31-shell"));
+    appElement.classList.toggle("qd31-window-active", hasQd31);
+  }
+  getQd31WindowWidth() { const center=520,drawerTarget=400,drawerMin=320,gap=8,closedPullTabSpace=40,chromeAllowance=32; const leftOpen=Boolean(this.isRosterDrawerOpen); const rightOpen=Boolean(this.isActionsDrawerOpen); let width=center+chromeAllowance+(leftOpen?drawerTarget+gap:closedPullTabSpace)+(rightOpen?drawerTarget+gap:closedPullTabSpace); const max=Math.max(640,(window.innerWidth||width)-24); if(width>max){ const openCount=Number(leftOpen)+Number(rightOpen); if(openCount>0){ const overflow=width-max; const reducible=(drawerTarget-drawerMin)*openCount; width-=Math.min(overflow,reducible); } } return Math.round(Math.max(640,width)); }
+  getQd31MeasuredWindowWidth() {
+    const shell = this.element?.[0]?.querySelector?.(".qd31-shell");
+    if (!shell) return this.getQd31WindowWidth();
+    const shellWidth = Math.ceil(Math.max(shell.scrollWidth || 0, shell.getBoundingClientRect?.().width || 0));
+    return Math.max(this.getQd31WindowWidth(), shellWidth + 32);
+  }
+  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const expected=this.getQd31MeasuredWindowWidth(); const current=Number(this.position.width)||expected; const shouldCorrect=current>expected+120; if(Math.abs(current-expected)<=4&&!shouldCorrect)return; const height=Math.max(Number(this.position.height)||0, Number(this._lastPosition?.height)||0); this.setPosition({left:this.position.left,top:this.position.top,width:expected,height:height||this.position.height});}); }
 
   _getHeaderButtons() {
     const buttons = super._getHeaderButtons();
@@ -2004,13 +2017,14 @@ export class QuickDeckApp extends Application {
   }
 
   scheduleChatFocus() {
-    const lock = this._nativeWindowFocusLock;
-    const previousWindowIds = lock?.previousWindowIds ?? this.getNativeWindowIds();
-    if (!lock) this.startNativeWindowFocusLock(previousWindowIds, "chat");
-    this.focusChatSidebar();
-    globalThis.setTimeout?.(() => this.focusChatSidebar(), 0);
-    globalThis.setTimeout?.(() => this.focusChatSidebar(), 100);
-    this.scheduleNativeWindowFocus(previousWindowIds);
+    try {
+      ui?.sidebar?.expand?.();
+      ui?.sidebar?.activateTab?.("chat");
+      this.focusChatSidebar();
+    } catch (error) {
+      console.warn("gurps-quickdeck | Could not activate Chat sidebar tab.", error);
+      ui.notifications?.warn("QuickDeck: Could not activate Chat sidebar.");
+    }
   }
 
   extractKnownHitLocation(attack) {
@@ -3805,6 +3819,10 @@ export class QuickDeckApp extends Application {
         this.cancelTargetOpponentMode({ render: false, restore: true });
         ui.notifications?.warn("QuickDeck: Could not start targeting mode.");
       }
+    });
+    html.find("[data-action='target-action']").on("click", (event) => {
+      event.preventDefault();
+      this.startTargetOpponentMode(-1);
     });
 
     html.find("[data-action='open-modifier-bucket']").on("click", (event) => {
