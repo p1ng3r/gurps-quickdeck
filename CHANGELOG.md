@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.1.7 pane-fit
+
+### Changed
+- Repairs qd16 pane fit, left roster visibility, center cockpit spacing, and right drawer sizing.
+
 ## [Unreleased] - v0.8.1.6 true-clean-pane
 
 ### Changed
