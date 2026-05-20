@@ -58,8 +58,8 @@ export class QuickDeckApp extends Application {
     this._lastNativeWindowIds = new Set();
     this._nativeWindowFocusLock = null;
     this._stateLoadedFromSettings = false;
-    this.isLeftPanelCollapsed = false;
-    this.isRightPanelCollapsed = false;
+    this.isRosterDrawerOpen = false;
+    this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
   }
@@ -71,12 +71,29 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 1580,
+      width: 620,
       height: 820,
+      minWidth: 520,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
   }
+
+
+  async _render(...args) {
+    const result = await super._render(...args);
+    this.scheduleQd31WindowResize();
+    return result;
+  }
+
+  openRosterDrawer() { this.isRosterDrawerOpen = true; this.scheduleQd31WindowResize(); this.render(false); }
+  closeRosterDrawer() { this.isRosterDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
+  toggleRosterDrawer() { this.isRosterDrawerOpen ? this.closeRosterDrawer() : this.openRosterDrawer(); }
+  openActionsDrawer(drawer = null) { if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer; this.isActionsDrawerOpen = true; this.scheduleQd31WindowResize(); this.render(false); }
+  closeActionsDrawer() { this.isActionsDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
+  toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
+  getQd31WindowWidth() { const center=520,drawerOpen=400,drawerMin=320,gap=8,tabs=36,chrome=48; const openCount=Number(this.isRosterDrawerOpen)+Number(this.isActionsDrawerOpen); let width=center+chrome+(this.isRosterDrawerOpen?drawerOpen+gap:tabs)+(this.isActionsDrawerOpen?drawerOpen+gap:tabs); const max=(window.innerWidth||width)-24; if (width>max&&openCount){const overflow=width-max;const reducible=(drawerOpen-drawerMin)*openCount;width-=Math.min(overflow,reducible);} return Math.max(center+chrome+tabs*2,Math.round(width)); }
+  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const expected=this.getQd31WindowWidth(); const current=Number(this.position.width)||expected; const shouldCorrect=current>expected+200; if(Math.abs(current-expected)<=4&&!shouldCorrect)return; this.setPosition({left:this.position.left,top:this.position.top,width:expected,height:this.position.height});}); }
 
   _getHeaderButtons() {
     const buttons = super._getHeaderButtons();
@@ -1034,30 +1051,16 @@ export class QuickDeckApp extends Application {
     game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
   }
 
-  getQd16ShellWidth() {
-    const leftWidth = this.isLeftPanelCollapsed ? 64 : 484;
-    const centerWidth = 680;
-    const rightWidth = this.isRightPanelCollapsed ? 64 : 420;
-    const gap = 8;
-    const shellPadding = 16;
-    const chromeAllowance = 32;
-    return leftWidth + centerWidth + rightWidth + gap * 2 + shellPadding + chromeAllowance;
+  getQd18ShellWidth() {
+    const configuredWidth = Number(this.position?.width ?? this.options?.width ?? 780);
+    return Math.max(720, configuredWidth);
   }
 
-  scheduleQd16WindowResize() {
-    if (!this.rendered) return;
-    window.requestAnimationFrame(() => {
-      const position = this.position ?? {};
-      const targetWidth = this.getQd16ShellWidth();
-      if (Math.abs((position.width ?? 0) - targetWidth) <= 4) return;
-      this.setPosition({ width: targetWidth, height: position.height, left: position.left, top: position.top });
-    });
-  }
+  scheduleQd18WindowResize() {}
 
   setLeftPanelCollapsed(collapsed) {
     this.isLeftPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   toggleLeftPanelCollapsed() { this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed); }
@@ -1065,7 +1068,6 @@ export class QuickDeckApp extends Application {
   setRightPanelCollapsed(collapsed) {
     this.isRightPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   toggleRightPanelCollapsed() { this.setRightPanelCollapsed(!this.isRightPanelCollapsed); }
@@ -1075,7 +1077,6 @@ export class QuickDeckApp extends Application {
     this.isRightPanelCollapsed = false;
     this.activeDrawer = drawer;
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -3320,14 +3321,20 @@ export class QuickDeckApp extends Application {
       .map((id) => game.actors.get(id))
       .filter((actor) => actor && actor.id);
 
-    const availableActors = allActors.map((actor) => ({
+    const availableActors = allActors
+      .map((actor) => ({
         id: actor.id,
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
         actorType: actor.type ? String(actor.type) : null,
         isInRoster: this.rosterActorIds.includes(actor.id),
         searchText: this.buildSearchText([actor.name, actor.type])
-      }));
+      }))
+      .filter((actor) => {
+        if (!actor.actorType) return true;
+        const type = actor.actorType.toLowerCase();
+        return type === "character" || type === "npc";
+      });
 
     const activeActor = this.getActiveActor();
     const shouldHydrateDerivedData = Boolean(activeActor);
@@ -3525,10 +3532,8 @@ export class QuickDeckApp extends Application {
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
-      isLeftPanelCollapsed: this.isLeftPanelCollapsed,
-      isLeftPanelOpen: !this.isLeftPanelCollapsed,
-      isRightPanelCollapsed: this.isRightPanelCollapsed,
-      isRightPanelOpen: !this.isRightPanelCollapsed,
+      isRosterDrawerOpen: this.isRosterDrawerOpen,
+      isActionsDrawerOpen: this.isActionsDrawerOpen,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
@@ -3734,41 +3739,23 @@ export class QuickDeckApp extends Application {
     });
 
 
-    html.find("[data-action='open-left-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setLeftPanelCollapsed(false);
-    });
-
-    html.find("[data-action='close-left-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setLeftPanelCollapsed(true);
-    });
-
-    html.find("[data-action='open-right-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setRightPanelCollapsed(false);
-    });
-
-    html.find("[data-action='close-right-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setRightPanelCollapsed(true);
-    });
-
-    html.find("[data-action='open-right-drawer']").on("click", (event) => {
-      event.preventDefault();
-      this.openDrawerFromCollapsedRail(event.currentTarget.dataset.drawer);
-    });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
-
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
-      this.isRightPanelCollapsed = false;
-      this.render();
-      this.scheduleQd16WindowResize();
+      this.isActionsDrawerOpen = true;
+      this.render(false);
+      this.scheduleQd31WindowResize();
     });
+
+    html.find("[data-action='open-roster-drawer'], [data-action='open-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.openRosterDrawer(); });
+    html.find("[data-action='close-roster-drawer'], [data-action='close-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.closeRosterDrawer(); });
+    html.find("[data-action='toggle-roster-drawer']").on("click", (event) => { event.preventDefault(); this.toggleRosterDrawer(); });
+    html.find("[data-action='open-actions-drawer'], [data-action='open-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
+    html.find("[data-action='close-actions-drawer'], [data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
+    html.find("[data-action='toggle-actions-drawer']").on("click", (event) => { event.preventDefault(); this.toggleActionsDrawer(event.currentTarget.dataset.drawer); });
 
     html.find("[data-action='adjust-resource']").on("click", async (event) => {
       event.preventDefault();
@@ -4008,4 +3995,5 @@ export class QuickDeckApp extends Application {
     this.applyQuickSkillsFilter(html);
     this.applySpellsFilter(html);
   }
+
 }
