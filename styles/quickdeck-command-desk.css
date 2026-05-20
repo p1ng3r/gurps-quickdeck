@@ -3377,3 +3377,7 @@
 .qd30-sidecar{height:100%;display:flex;flex-direction:column;overflow:hidden}.qd30-sidecar .qd30-roster-list,.qd30-sidecar .qd30-action-row{overflow:visible}.qd30-sidecar section,.qd30-sidecar{overflow:auto}
 .qd30-center-app button,.qd30-sidecar button{border:1px solid #c79a38;background:linear-gradient(180deg,#6e4a23,#3a230f);color:#f5e7c5;border-radius:4px}
 .qd30-defense-button{font-weight:700}
+
+/* qd31 drawer cockpit */
+.qd31-shell,.qd31-shell *{box-sizing:border-box}.qd31-shell{--qd-command-leather-texture:none;--qd-command-bronze-corner:none;--qd-command-bronze-divider:none;--qd-command-parchment-panel:none;--qd-command-drawer-tab-left:none;--qd-command-drawer-tab-right:none;--qd-command-defense-ring:none;--qd-command-hp-icon:none;--qd-command-fp-icon:none;--qd-command-move-icon:none;display:flex;gap:8px;overflow-x:auto}.qd31-center-cockpit{width:520px;min-width:520px;max-width:560px;position:relative}.qd31-left-drawer,.qd31-right-drawer{width:400px;min-width:320px;max-width:400px;max-height:800px;overflow:auto}.qd31-shell button{background:#6d4d1f;color:#f3e2b2;border:1px solid #b78a43;border-radius:6px}.qd31-left-pull-tab,.qd31-right-pull-tab{position:absolute;top:48px;width:36px}.qd31-left-pull-tab{left:-36px}.qd31-right-pull-tab{right:-36px}.qd31-defense-grid{display:flex;gap:10px}.qd31-defense-dial{border-radius:50%;width:110px;height:110px}.qd31-resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.qd31-shell .qd31-decorative-layer{pointer-events:none;}

@@ -2,8 +2,6 @@ import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
-const ROSTER_SIDECAR_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-roster-sidecar.hbs";
-const ACTIONS_SIDECAR_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-actions-sidecar.hbs";
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
@@ -60,10 +58,8 @@ export class QuickDeckApp extends Application {
     this._lastNativeWindowIds = new Set();
     this._nativeWindowFocusLock = null;
     this._stateLoadedFromSettings = false;
-    this.isLeftPanelCollapsed = false;
-    this.isRightPanelCollapsed = false;
-    this.rosterSidecar = null;
-    this.actionsSidecar = null;
+    this.isRosterDrawerOpen = false;
+    this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
   }
@@ -75,9 +71,9 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 640,
+      width: 620,
       height: 820,
-      minWidth: 560,
+      minWidth: 520,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
@@ -86,45 +82,19 @@ export class QuickDeckApp extends Application {
 
   async _render(...args) {
     const result = await super._render(...args);
-    this.positionSidecars();
-    this.renderSidecars();
+    this.scheduleQd31WindowResize();
     return result;
   }
 
-  renderSidecars() {
-    if (this.rosterSidecar?.rendered) this.rosterSidecar.render(false);
-    if (this.actionsSidecar?.rendered) this.actionsSidecar.render(false);
-  }
+  openRosterDrawer() { this.isRosterDrawerOpen = true; this.scheduleQd31WindowResize(); this.render(false); }
+  closeRosterDrawer() { this.isRosterDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
+  toggleRosterDrawer() { this.isRosterDrawerOpen ? this.closeRosterDrawer() : this.openRosterDrawer(); }
+  openActionsDrawer(drawer = null) { if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer; this.isActionsDrawerOpen = true; this.scheduleQd31WindowResize(); this.render(false); }
+  closeActionsDrawer() { this.isActionsDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
+  toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
+  getQd31WindowWidth() { const center=520,drawerOpen=400,drawerMin=320,gap=8,tabs=36,chrome=48; const openCount=Number(this.isRosterDrawerOpen)+Number(this.isActionsDrawerOpen); let width=center+chrome+(this.isRosterDrawerOpen?drawerOpen+gap:tabs)+(this.isActionsDrawerOpen?drawerOpen+gap:tabs); const max=(window.innerWidth||width)-24; if (width>max&&openCount){const overflow=width-max;const reducible=(drawerOpen-drawerMin)*openCount;width-=Math.min(overflow,reducible);} return Math.max(center+chrome+tabs*2,Math.round(width)); }
+  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const expected=this.getQd31WindowWidth(); const current=Number(this.position.width)||expected; const shouldCorrect=current>expected+200; if(Math.abs(current-expected)<=4&&!shouldCorrect)return; this.setPosition({left:this.position.left,top:this.position.top,width:expected,height:this.position.height});}); }
 
-  openRosterSidecar() {
-    if (!this.rosterSidecar) this.rosterSidecar = new QuickDeckRosterSidecarApp(this);
-    this.rosterSidecar.render(true);
-    this.positionSidecars();
-  }
-  closeRosterSidecar() { this.rosterSidecar?.close(); }
-  openActionsSidecar(drawer = null) {
-    if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer;
-    if (!this.actionsSidecar) this.actionsSidecar = new QuickDeckActionsSidecarApp(this);
-    this.actionsSidecar.render(true);
-    this.positionSidecars();
-  }
-  closeActionsSidecar() { this.actionsSidecar?.close(); }
-
-  positionSidecars() {
-    if (!this.position) return;
-    const vpW = window.innerWidth || 1920;
-    const vpH = window.innerHeight || 1080;
-    const top = Math.max(0, Math.min(this.position.top ?? 0, vpH - 100));
-    const centerH = this.position.height ?? 820;
-    if (this.rosterSidecar?.rendered) {
-      const left = Math.max(0, Math.min((this.position.left ?? 0) - 428, vpW - 420));
-      this.rosterSidecar.setPosition({ left, top, width: 420, height: centerH });
-    }
-    if (this.actionsSidecar?.rendered) {
-      const left = Math.max(0, Math.min((this.position.left ?? 0) + (this.position.width ?? 640) + 8, vpW - 420));
-      this.actionsSidecar.setPosition({ left, top, width: 420, height: centerH });
-    }
-  }
   _getHeaderButtons() {
     const buttons = super._getHeaderButtons();
     const minimizeButton = {
@@ -3556,10 +3526,8 @@ export class QuickDeckApp extends Application {
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
-      isLeftPanelCollapsed: this.isLeftPanelCollapsed,
-      isLeftPanelOpen: !this.isLeftPanelCollapsed,
-      isRightPanelCollapsed: this.isRightPanelCollapsed,
-      isRightPanelOpen: !this.isRightPanelCollapsed,
+      isRosterDrawerOpen: this.isRosterDrawerOpen,
+      isActionsDrawerOpen: this.isActionsDrawerOpen,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
@@ -3771,19 +3739,17 @@ export class QuickDeckApp extends Application {
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
-      const inActionsSidecar = Boolean(event.currentTarget?.closest("#gurps-quickdeck-actions-sidecar"));
-      if (inActionsSidecar && this.actionsSidecar?.rendered) {
-        this.actionsSidecar.render(false);
-        this.bringApplicationToFront(this.actionsSidecar);
-      } else {
-        this.render();
-      }
+      this.isActionsDrawerOpen = true;
+      this.render(false);
+      this.scheduleQd31WindowResize();
     });
 
-    html.find("[data-action='open-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.openRosterSidecar(); });
-    html.find("[data-action='close-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.closeRosterSidecar(); });
-    html.find("[data-action='open-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.openActionsSidecar(event.currentTarget.dataset.drawer); });
-    html.find("[data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsSidecar(); });
+    html.find("[data-action='open-roster-drawer'], [data-action='open-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.openRosterDrawer(); });
+    html.find("[data-action='close-roster-drawer'], [data-action='close-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.closeRosterDrawer(); });
+    html.find("[data-action='toggle-roster-drawer']").on("click", (event) => { event.preventDefault(); this.toggleRosterDrawer(); });
+    html.find("[data-action='open-actions-drawer'], [data-action='open-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
+    html.find("[data-action='close-actions-drawer'], [data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
+    html.find("[data-action='toggle-actions-drawer']").on("click", (event) => { event.preventDefault(); this.toggleActionsDrawer(event.currentTarget.dataset.drawer); });
 
     html.find("[data-action='adjust-resource']").on("click", async (event) => {
       event.preventDefault();
@@ -4031,19 +3997,5 @@ export class QuickDeckApp extends Application {
   }
 }
 
-let _maxZ = 100;
 
-class QuickDeckRosterSidecarApp extends Application {
-  constructor(parent, options={}) { super(options); this.parentApp = parent; }
-  static get defaultOptions(){ return foundry.utils.mergeObject(super.defaultOptions,{id:"gurps-quickdeck-roster-sidecar",classes:["gurps-quickdeck","qd30-sidecar"],popOut:true,resizable:true,width:420,height:820,title:"QuickDeck Roster",template:ROSTER_SIDECAR_TEMPLATE_PATH}); }
-  getData(){ return this.parentApp.getData(); }
-  activateListeners(html){ this.parentApp.activateListeners(html); html.on("mousedown focusin", () => this.parentApp.bringApplicationToFront(this)); }
-  async close(options){ this.parentApp.rosterSidecar=null; return super.close(options);}
-}
-class QuickDeckActionsSidecarApp extends Application {
-  constructor(parent, options={}) { super(options); this.parentApp = parent; }
-  static get defaultOptions(){ return foundry.utils.mergeObject(super.defaultOptions,{id:"gurps-quickdeck-actions-sidecar",classes:["gurps-quickdeck","qd30-sidecar"],popOut:true,resizable:true,width:420,height:820,title:"QuickDeck Actions",template:ACTIONS_SIDECAR_TEMPLATE_PATH}); }
-  getData(){ return this.parentApp.getData(); }
-  activateListeners(html){ this.parentApp.activateListeners(html); html.on("mousedown focusin", () => this.parentApp.bringApplicationToFront(this)); }
-  async close(options){ this.parentApp.actionsSidecar=null; return super.close(options);}
-}
+const _maxZ = 100;

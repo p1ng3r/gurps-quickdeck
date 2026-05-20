@@ -149,3 +149,11 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Replaces the failed in-window sidecar fallback with real separate Application sidecar windows for roster and actions.
 - Keeps the center cockpit as its own resizable primary window and reduces width without reducing height.
+
+## [Unreleased] - v0.8.3.2 drawer-cockpit
+
+### Changed
+- Replaces detached popup sidecars with left/right slide-out drawers attached to the center cockpit.
+- Reduces the center cockpit width to 520px without reducing height.
+- Splits roster drawer into Active Roster and Actors to Add sections using Character/NPC actor sources.
+- Prepares assets/ui/command-desk/ for future lightweight transparent .webp UI assets with pointer-events:none decorative layering.
