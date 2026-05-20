@@ -3114,7 +3114,6 @@ export class QuickDeckApp extends Application {
     const result = await super._render(force, options);
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
-    this.scheduleQd8WindowResize();
     return result;
   }
 
