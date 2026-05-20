@@ -3327,32 +3327,35 @@
 /* qd18 center-primary shell with docked sidecars */
 .qd18-shell {
   --qd18-left-open: 420px;
-  --qd18-center: 760px;
+  --qd18-center: 560px;
   --qd18-right-open: 420px;
-  --qd18-gap: 8px;
   --qd18-shell-padding: 12px;
+  --qd18-header-height: 56px;
+  --qd18-footer-height: 18px;
+  --qd18-panel-inset: 12px;
   margin: 0;
   width: 100%;
   min-width: 0;
   padding: var(--qd18-shell-padding);
   position: relative;
+  overflow: hidden;
 }
 .qd18-shell.quickdeck-shell { display:flex; flex-direction:column; }
 .qd18-header { min-height:48px; display:flex; align-items:center; gap:10px; margin:0 0 8px; padding:4px 8px; }
 .qd18-command-plaque,.qd18-command-subtitle,.qd18-dev-badge { margin:0; }
 .qd18-grid { position:relative; display:flex; justify-content:center; align-items:stretch; min-height:640px; }
-.qd18-center { width:100%; min-width:720px; max-width:none; overflow:auto; z-index:2; }
-.qd18-left,.qd18-right { position:absolute; top:0; bottom:0; width:var(--qd18-left-open); min-width:0; overflow:hidden; z-index:1; }
-.qd18-left { right:calc(100% + var(--qd18-gap)); }
-.qd18-right { left:calc(100% + var(--qd18-gap)); width:var(--qd18-right-open); }
+.qd18-center { width:var(--qd18-center); min-width:520px; max-width:620px; overflow:auto; z-index:2; }
+.qd18-left,.qd18-right { position:absolute; top:calc(var(--qd18-header-height) + var(--qd18-panel-inset)); bottom:calc(var(--qd18-footer-height) + var(--qd18-panel-inset)); width:var(--qd18-left-open); min-width:0; overflow:hidden; z-index:4; }
+.qd18-left { left:12px; }
+.qd18-right { right:12px; width:var(--qd18-right-open); }
 .qd18-left-open { display:grid; grid-template-columns:44px minmax(0,1fr); gap:8px; height:100%; width:var(--qd18-left-open); }
-.qd18-icon-spine,.qd18-left-rail,.qd18-right-rail { display:flex; flex-direction:column; gap:8px; height:100%; }
+.qd18-icon-spine { display:flex; flex-direction:column; gap:8px; height:100%; }
 .qd18-left-open-body,.qd18-right-open,.qd18-right .quickdeck-panel,.qd18-right .quickdeck-panel-content,.qd18-right .quickdeck-drawer-scroll-content { min-height:0; overflow:auto; }
 .qd18-shell.is-left-collapsed .qd18-left, .qd18-shell.is-right-collapsed .qd18-right { display:none; }
-.qd18-shell.is-left-collapsed .qd18-left-rail,
-.qd18-shell.is-right-collapsed .qd18-right-rail { display:flex; position:absolute; top:10px; z-index:3; }
-.qd18-shell.is-left-collapsed .qd18-left-rail { left:-54px; }
-.qd18-shell.is-right-collapsed .qd18-right-rail { right:-54px; }
-.qd18-rail-button,.qd18-icon-spine-button,.qd18-collapse-button,.qd18-pinned-actions button { background:linear-gradient(180deg,#7a5726,#35210f); color:#f4e2b2; border:1px solid rgba(240,205,122,.72); border-radius:6px; }
+.qd18-pull-tab,.qd18-icon-spine-button,.qd18-collapse-button,.qd18-pinned-actions button { background:linear-gradient(180deg,#7a5726,#35210f); color:#f4e2b2; border:1px solid rgba(240,205,122,.72); border-radius:6px; }
+.qd18-left-pull-tabs,.qd18-right-pull-tabs { position:absolute; top:calc(var(--qd18-header-height) + var(--qd18-panel-inset)); z-index:5; display:flex; flex-direction:column; gap:8px; }
+.qd18-left-pull-tabs { left:12px; }
+.qd18-right-pull-tabs { right:12px; }
+.qd18-pull-tab { min-width:96px; padding:0.38rem 0.5rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
 .qd18-center .quickdeck-selected-cockpit,.qd18-center .quickdeck-actor-header,.qd18-center .quickdeck-main-resources,.qd18-center .quickdeck-defense-buttons,.qd18-center .qd18-pinned-actions{max-width:100%;width:100%}
 .qd18-pinned-actions { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; margin-top:10px; }

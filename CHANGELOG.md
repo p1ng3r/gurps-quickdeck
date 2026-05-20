@@ -8,6 +8,12 @@ All notable changes to this project will be documented in this file.
 - Replaces the single-grid layout with a center-primary cockpit and optional docked roster/action sidecars.
 - Collapsing side panels no longer reserves empty grid space around the center cockpit.
 
+## [Unreleased] - v0.8.2.1 sidecar-tabs
+
+### Changed
+- Reduces the center cockpit to a compact base width and adds visible in-app pull tabs for roster and action sidecars.
+- Keeps collapsed sidecars from reserving layout space.
+
 ## [Unreleased] - v0.8.1.9 left-fit
 
 ### Changed

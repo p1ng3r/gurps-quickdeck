@@ -1,6 +1,6 @@
 <section class="quickdeck-shell quickdeck-command-desk-shell qd18-shell {{#unless isLeftPanelOpen}}is-left-collapsed{{/unless}} {{#unless isRightPanelOpen}}is-right-collapsed{{/unless}}">
   <header class="qd18-header">
-    <div class="quickdeck-dev-badge qd18-dev-badge" aria-hidden="true">QD v0.8.2.0 — sidecar</div>
+    <div class="quickdeck-dev-badge qd18-dev-badge" aria-hidden="true">QD v0.8.2.1 — sidecar-tabs</div>
     <div class="qd18-command-plaque" aria-hidden="true">GURPS QUICKDECK</div>
     <div class="qd18-command-subtitle" aria-hidden="true">COMMAND DESK</div>
   </header>
@@ -137,13 +137,6 @@
     </section>
     </div>
   </div>
-    {{else}}
-    <div class="qd18-left-rail">
-      <button type="button" data-action="open-left-panel" class="qd18-rail-button">Roster</button>
-      <button type="button" data-action="open-left-panel" class="qd18-rail-button">Actors</button>
-      <button type="button" data-action="open-reference-index" class="qd18-rail-button">OVR</button>
-      <button type="button" data-action="open-chat" class="qd18-rail-button">CHT</button>
-    </div>
     {{/if}}
   </aside>
 
@@ -861,15 +854,22 @@
           </section>
         {{/if}}
       </div>
-    {{else}}
-      <div class="qd18-right-rail">
-        <button type="button" data-action="open-right-drawer" data-drawer="combat" class="qd18-rail-button">Combat</button>
-        <button type="button" data-action="open-right-drawer" data-drawer="skills" class="qd18-rail-button">Skills</button>
-                <button type="button" data-action="open-right-drawer" data-drawer="spells" class="qd18-rail-button">Spells</button>
-        <button type="button" data-action="open-right-drawer" data-drawer="settings" class="qd18-rail-button">Settings</button>
-      </div>
     {{/if}}
   </aside>
-</div>
+  </div>
+  {{#unless isLeftPanelOpen}}
+  <div class="qd18-left-pull-tabs">
+    <button type="button" data-action="open-left-panel" class="qd18-pull-tab">Roster</button>
+  </div>
+  {{/unless}}
+
+  {{#unless isRightPanelOpen}}
+  <div class="qd18-right-pull-tabs">
+    <button type="button" data-action="open-right-drawer" data-drawer="combat" class="qd18-pull-tab">Combat</button>
+    <button type="button" data-action="open-right-drawer" data-drawer="skills" class="qd18-pull-tab">Skills</button>
+    <button type="button" data-action="open-right-drawer" data-drawer="spells" class="qd18-pull-tab">Spells</button>
+    <button type="button" data-action="open-right-drawer" data-drawer="settings" class="qd18-pull-tab">Settings</button>
+  </div>
+  {{/unless}}
 <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
 </section>
