@@ -1,6 +1,20 @@
-<section class="quickdeck-shell quickdeck-command-desk-shell">
-  <div class="quickdeck-dev-badge" aria-hidden="true">QD v0.7 OpenSheet Fix</div>
-  <aside class="quickdeck-sidebar">
+<section class="quickdeck-shell quickdeck-command-desk-shell qd8-shell {{#unless isLeftPanelOpen}}is-left-collapsed{{/unless}} {{#unless isRightPanelOpen}}is-right-collapsed{{/unless}}">
+  <header class="qd8-header">
+    <div class="quickdeck-dev-badge qd8-dev-badge" aria-hidden="true">QD v0.8.1.3 — foundry-ui</div>
+    <div class="qd8-command-plaque" aria-hidden="true">GURPS QUICKDECK COMMAND DESK</div>
+  </header>
+  <div class="qd8-grid">
+  <aside class="qd8-left-slot">
+    {{#if isLeftPanelOpen}}
+  <aside class="quickdeck-sidebar qd8-left qd8-left-open">
+    <div class="qd8-icon-spine">
+      <button type="button" class="qd8-icon-spine-button" data-action="open-reference-index" title="Local Overrides">OVR</button>
+      <button type="button" class="qd8-icon-spine-button" data-action="open-chat" title="Chat Front">CHT</button>
+    </div>
+    <div class="qd8-left-open-body">
+      <div class="qd8-left-open-toolbar">
+        <button type="button" data-action="close-left-panel" class="qd8-collapse-button" title="Collapse Left Panel">❮</button>
+      </div>
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
         <h3>QuickDeck Roster <span class="quickdeck-badge">{{rosterCount}}</span></h3>
@@ -120,15 +134,28 @@
         <p class="quickdeck-empty">No available actors found.</p>
       {{/if}}
     </section>
+    </div>
+  </aside>
+    {{else}}
+    <div class="qd8-left-rail">
+      <button type="button" data-action="open-left-panel" class="qd8-rail-button">Roster</button>
+      <button type="button" data-action="open-left-panel" class="qd8-rail-button">Actors</button>
+      <button type="button" data-action="open-reference-index" class="qd8-rail-button">OVR</button>
+      <button type="button" data-action="open-chat" class="qd8-rail-button">CHT</button>
+    </div>
+    {{/if}}
   </aside>
 
-  <main class="quickdeck-main">
+  <main class="quickdeck-main qd8-center">
     <div class="quickdeck-window-actions">
       <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Local Overrides" aria-label="Local Overrides">Overrides</button>
     </div>
-    <section class="quickdeck-content">
+    <div class="quickdeck-content">
       <div class="quickdeck-stage">
         <div class="quickdeck-command-title" aria-label="GURPS QuickDeck Command Desk">GURPS QUICKDECK COMMAND DESK</div>
+        <div class="qd8-quick-actions-strip" aria-label="Quick Actions">
+          <button type="button" disabled>All-Out Attack</button><button type="button" disabled>Defend</button><button type="button" disabled>Aim</button><button type="button" disabled>Evaluate</button><button type="button" disabled>More</button>
+        </div>
         <div class="quickdeck-stage-backdrop" aria-hidden="true"></div>
         {{#if activeActor}}
           <section class="quickdeck-selected-cockpit" aria-label="Selected actor cockpit">
@@ -266,8 +293,16 @@
           </section>
         {{/if}}
       </div>
+    </div>
 
-      <aside class="quickdeck-drawer-stack">
+  </main>
+
+  <aside class="qd8-right-slot">
+    {{#if isRightPanelOpen}}
+      <aside class="quickdeck-drawer-stack qd8-right qd8-right-open">
+        <div class="qd8-right-open-toolbar">
+          <button type="button" data-action="close-right-panel" class="qd8-collapse-button" title="Collapse Right Panel">❯</button>
+        </div>
         <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck side drawers">
           <button
             type="button"
@@ -831,7 +866,15 @@
           </section>
         {{/if}}
       </aside>
-    </section>
-    <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
-  </main>
+    {{else}}
+      <div class="qd8-right-rail">
+        <button type="button" data-action="open-right-drawer" data-drawer="combat" class="qd8-rail-button">Combat</button>
+        <button type="button" data-action="open-right-drawer" data-drawer="skills" class="qd8-rail-button">Skills</button>
+                <button type="button" data-action="open-right-drawer" data-drawer="spells" class="qd8-rail-button">Spells</button>
+        <button type="button" data-action="open-right-drawer" data-drawer="settings" class="qd8-rail-button">Settings</button>
+      </div>
+    {{/if}}
+  </aside>
+</div>
+<footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
 </section>

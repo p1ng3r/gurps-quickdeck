@@ -58,6 +58,8 @@ export class QuickDeckApp extends Application {
     this._lastNativeWindowIds = new Set();
     this._nativeWindowFocusLock = null;
     this._stateLoadedFromSettings = false;
+    this.isLeftPanelCollapsed = false;
+    this.isRightPanelCollapsed = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
   }
@@ -1030,6 +1032,47 @@ export class QuickDeckApp extends Application {
     this.restorePillPosition = normalized;
     if (!game?.settings) return;
     game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
+  }
+
+  getQd8ShellWidth() {
+    const leftWidth = this.isLeftPanelCollapsed ? 64 : 484;
+    const centerWidth = 680;
+    const rightWidth = this.isRightPanelCollapsed ? 64 : 420;
+    const panelGap = 8;
+    const shellPadding = 16;
+    return leftWidth + centerWidth + rightWidth + panelGap * 2 + shellPadding;
+  }
+
+  scheduleQd8WindowResize() {
+    if (!this.rendered) return;
+    window.requestAnimationFrame(() => {
+      const position = this.position ?? {};
+      this.setPosition({ width: this.getQd8ShellWidth(), height: position.height, left: position.left, top: position.top });
+    });
+  }
+
+  setLeftPanelCollapsed(collapsed) {
+    this.isLeftPanelCollapsed = Boolean(collapsed);
+    this.render(false);
+    this.scheduleQd8WindowResize();
+  }
+
+  toggleLeftPanelCollapsed() { this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed); }
+
+  setRightPanelCollapsed(collapsed) {
+    this.isRightPanelCollapsed = Boolean(collapsed);
+    this.render(false);
+    this.scheduleQd8WindowResize();
+  }
+
+  toggleRightPanelCollapsed() { this.setRightPanelCollapsed(!this.isRightPanelCollapsed); }
+
+  openDrawerFromCollapsedRail(drawer) {
+    if (!drawer || !VALID_DRAWERS.has(drawer)) return;
+    this.isRightPanelCollapsed = false;
+    this.activeDrawer = drawer;
+    this.render(false);
+    this.scheduleQd8WindowResize();
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -3479,6 +3522,10 @@ export class QuickDeckApp extends Application {
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
+      isLeftPanelCollapsed: this.isLeftPanelCollapsed,
+      isLeftPanelOpen: !this.isLeftPanelCollapsed,
+      isRightPanelCollapsed: this.isRightPanelCollapsed,
+      isRightPanelOpen: !this.isRightPanelCollapsed,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
@@ -3683,13 +3730,41 @@ export class QuickDeckApp extends Application {
       this.scheduleNativeWindowFocusAfterRender();
     });
 
+
+    html.find("[data-action='open-left-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.setLeftPanelCollapsed(false);
+    });
+
+    html.find("[data-action='close-left-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.setLeftPanelCollapsed(true);
+    });
+
+    html.find("[data-action='open-right-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.setRightPanelCollapsed(false);
+    });
+
+    html.find("[data-action='close-right-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.setRightPanelCollapsed(true);
+    });
+
+    html.find("[data-action='open-right-drawer']").on("click", (event) => {
+      event.preventDefault();
+      this.openDrawerFromCollapsedRail(event.currentTarget.dataset.drawer);
+    });
+
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
 
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
+      this.isRightPanelCollapsed = false;
       this.render();
+      this.scheduleQd8WindowResize();
     });
 
     html.find("[data-action='adjust-resource']").on("click", async (event) => {
