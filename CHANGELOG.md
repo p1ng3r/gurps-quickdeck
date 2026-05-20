@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.2.0 sidecar
+
+### Changed
+- Replaces the single-grid layout with a center-primary cockpit and optional docked roster/action sidecars.
+- Collapsing side panels no longer reserves empty grid space around the center cockpit.
+
+## [Unreleased] - v0.8.1.9 left-fit
+
+### Changed
+- Repairs qd18 layout positioning so the roster starts near the left edge, the icon spine is attached to the left pane, and the center/right panes remain visible.
+
+## [Unreleased] - v0.8.1.8 functional-pane
+
+### Changed
+- Rebuilds the three-pane layout around functional roles: roster left, selected actor center, complete action browser right.
+- Keeps the center actor cockpit as the primary visible pane with five pinned action slots.
+
 ## [Unreleased] - v0.8.1.6 true-clean-pane
 
 ### Changed

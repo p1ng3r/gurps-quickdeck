@@ -3323,3 +3323,36 @@
 .qd16-shell .qd16-right-open{display:flex;flex-direction:column;height:100%}
 .qd16-shell .qd16-rail-button,.qd16-shell .qd16-icon-spine-button,.qd16-shell .qd16-collapse-button,.qd16-shell .quickdeck-flow-button{background:linear-gradient(180deg,#6e4f22,#36230f);color:#f4e2b2;border:1px solid rgba(240,205,122,.6);border-radius:6px}
 .qd16-shell .quickdeck-main,.qd16-shell .quickdeck-content,.qd16-shell .quickdeck-stage {width:auto;min-width:0;max-width:none;overflow:visible;}
+
+/* qd18 center-primary shell with docked sidecars */
+.qd18-shell {
+  --qd18-left-open: 420px;
+  --qd18-center: 760px;
+  --qd18-right-open: 420px;
+  --qd18-gap: 8px;
+  --qd18-shell-padding: 12px;
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  padding: var(--qd18-shell-padding);
+  position: relative;
+}
+.qd18-shell.quickdeck-shell { display:flex; flex-direction:column; }
+.qd18-header { min-height:48px; display:flex; align-items:center; gap:10px; margin:0 0 8px; padding:4px 8px; }
+.qd18-command-plaque,.qd18-command-subtitle,.qd18-dev-badge { margin:0; }
+.qd18-grid { position:relative; display:flex; justify-content:center; align-items:stretch; min-height:640px; }
+.qd18-center { width:100%; min-width:720px; max-width:none; overflow:auto; z-index:2; }
+.qd18-left,.qd18-right { position:absolute; top:0; bottom:0; width:var(--qd18-left-open); min-width:0; overflow:hidden; z-index:1; }
+.qd18-left { right:calc(100% + var(--qd18-gap)); }
+.qd18-right { left:calc(100% + var(--qd18-gap)); width:var(--qd18-right-open); }
+.qd18-left-open { display:grid; grid-template-columns:44px minmax(0,1fr); gap:8px; height:100%; width:var(--qd18-left-open); }
+.qd18-icon-spine,.qd18-left-rail,.qd18-right-rail { display:flex; flex-direction:column; gap:8px; height:100%; }
+.qd18-left-open-body,.qd18-right-open,.qd18-right .quickdeck-panel,.qd18-right .quickdeck-panel-content,.qd18-right .quickdeck-drawer-scroll-content { min-height:0; overflow:auto; }
+.qd18-shell.is-left-collapsed .qd18-left, .qd18-shell.is-right-collapsed .qd18-right { display:none; }
+.qd18-shell.is-left-collapsed .qd18-left-rail,
+.qd18-shell.is-right-collapsed .qd18-right-rail { display:flex; position:absolute; top:10px; z-index:3; }
+.qd18-shell.is-left-collapsed .qd18-left-rail { left:-54px; }
+.qd18-shell.is-right-collapsed .qd18-right-rail { right:-54px; }
+.qd18-rail-button,.qd18-icon-spine-button,.qd18-collapse-button,.qd18-pinned-actions button { background:linear-gradient(180deg,#7a5726,#35210f); color:#f4e2b2; border:1px solid rgba(240,205,122,.72); border-radius:6px; }
+.qd18-center .quickdeck-selected-cockpit,.qd18-center .quickdeck-actor-header,.qd18-center .quickdeck-main-resources,.qd18-center .quickdeck-defense-buttons,.qd18-center .qd18-pinned-actions{max-width:100%;width:100%}
+.qd18-pinned-actions { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; margin-top:10px; }
