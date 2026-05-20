@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.1.3 foundry-three-panel-ui
+
+### Added
+- Adds production three-panel command desk shell.
+- Adds left and right collapse rails.
+- Keeps center cockpit fixed width.
+- Preserves existing QuickDeck behavior.
+
 ## [Unreleased] - v0.6.0 release candidate
 
 ### Added
