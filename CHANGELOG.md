@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.1.4 layout-repair
+
+### Changed
+- Repaired the qd8 three-column shell layout so left/center/right panels align to fixed canvas targets with matching window width and panel collapse widths.
+- Scoped qd8 overrides for legacy `quickdeck-shell`, `quickdeck-content`, and `quickdeck-stage` sizing to prevent center cockpit clipping and detached panel spacing.
+- Attached the left icon spine to the roster panel, restyled qd8 rail/action buttons to remove plain browser defaults, and removed the temporary Quick Actions strip.
+- Corrected right drawer presentation so the open drawer reads as a real right panel with stable scroll behavior.
+
 ## [Unreleased] - v0.8.1.3 foundry-three-panel-ui
 
 ### Added
