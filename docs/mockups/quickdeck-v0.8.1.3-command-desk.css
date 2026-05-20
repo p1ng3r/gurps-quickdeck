@@ -1,0 +1,128 @@
+:root {
+  --qd-left-open: 484px;
+  --qd-left-closed: 64px;
+  --qd-center: 680px;
+  --qd-right-open: 420px;
+  --qd-right-closed: 64px;
+  --qd-gap: 8px;
+  --qd-shell-padding: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: Georgia, "Times New Roman", serif;
+  color: #f0e2c4;
+  background: radial-gradient(circle at top, #3a2b1d, #16110d 60%);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+}
+
+.qd-shell {
+  --left-width: var(--qd-left-open);
+  --right-width: var(--qd-right-open);
+  width: calc(var(--left-width) + var(--qd-center) + var(--right-width) + (2 * var(--qd-gap)) + (2 * var(--qd-shell-padding)));
+  background: linear-gradient(180deg, #2d2118, #1d1510);
+  border: 2px solid #8b6a3f;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5), inset 0 0 0 1px #b4874b33;
+  padding: var(--qd-shell-padding);
+  transition: width 220ms ease;
+}
+
+.qd-shell[data-left-collapsed="true"] { --left-width: var(--qd-left-closed); }
+.qd-shell[data-right-collapsed="true"] { --right-width: var(--qd-right-closed); }
+
+.qd-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.qd-topbar h1 { margin: 0; font-size: 1.6rem; letter-spacing: 0.04em; }
+.qd-badge { background: #4d3822; border: 1px solid #b58952; border-radius: 999px; padding: 4px 12px; }
+
+.qd-plaque {
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: linear-gradient(180deg, #9c7642, #6d4e2a);
+  border: 1px solid #d8b179;
+  border-radius: 8px;
+  color: #23160a;
+}
+
+.qd-body {
+  display: grid;
+  grid-template-columns: var(--left-width) var(--qd-center) var(--right-width);
+  gap: var(--qd-gap);
+  align-items: stretch;
+}
+
+.qd-left-panel, .qd-right-panel, .qd-center-panel {
+  background: linear-gradient(180deg, #2a2018, #221a14);
+  border: 1px solid #8b6a3f;
+  border-radius: 10px;
+  min-height: 560px;
+}
+
+.qd-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 10px;
+  border-bottom: 1px solid #624729;
+}
+
+.qd-panel-header button, .qd-actions button, .qd-tabs button, .qd-roster button, .qd-left-rail, .qd-right-rail button {
+  background: #3a2b1b;
+  color: #f2e8d4;
+  border: 1px solid #9f7747;
+  border-radius: 6px;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.qd-roster { list-style: none; margin: 0; padding: 10px; display: grid; gap: 8px; }
+.qd-roster button { width: 100%; text-align: left; }
+.qd-roster button.is-selected { outline: 2px solid #d9b071; }
+
+.qd-center-panel { padding: 12px; text-align: center; }
+.qd-portrait { width: 140px; height: 140px; margin: 0 auto 10px; border-radius: 10px; border: 1px dashed #c7a06d; display: grid; place-items: center; background: #241b14; }
+.qd-stats-cards, .qd-dials { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.qd-stats-cards article, .qd-dials article { background: #33261b; border: 1px solid #8b6a3f; border-radius: 8px; padding: 8px; }
+.qd-actions { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+
+.qd-right-panel { padding-bottom: 10px; }
+.qd-tabs { padding: 8px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.qd-tabs .is-active { background: #6d4d2a; }
+.qd-tab-content { padding: 10px; }
+.qd-tab-content ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+
+.qd-left-rail, .qd-right-rail { display: none; }
+
+.qd-shell[data-left-collapsed="true"] .qd-left-panel { display: none; }
+.qd-shell[data-left-collapsed="true"] .qd-left-rail {
+  display: block;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  min-height: 560px;
+}
+
+.qd-shell[data-right-collapsed="true"] .qd-right-panel { display: none; }
+.qd-shell[data-right-collapsed="true"] .qd-right-rail {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 560px;
+}
+.qd-shell[data-right-collapsed="true"] .qd-right-rail button {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  min-height: 92px;
+}
