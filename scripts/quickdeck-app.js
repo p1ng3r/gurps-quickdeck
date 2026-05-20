@@ -97,9 +97,15 @@ export class QuickDeckApp extends Application {
   openActionsDrawer(drawer = null) { if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer; this.isActionsDrawerOpen = true; this.render(false); }
   closeActionsDrawer() { this.isActionsDrawerOpen = false; this.render(false); }
   toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
+
+  getApplicationHostElement() {
+    const root = this.element?.[0] ?? this.element;
+    return root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app") ?? null;
+  }
+
   applyQd31WindowClass() {
     const root = this.element?.[0] ?? this.element;
-    const appElement = root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app");
+    const appElement = this.getApplicationHostElement();
     if (!appElement?.classList) return;
     const hasQd31 = Boolean(root?.querySelector?.(".qd31-shell"));
     appElement.classList.toggle("qd31-window-active", hasQd31);
@@ -183,7 +189,7 @@ export class QuickDeckApp extends Application {
 
   clearQd31InlineSizing() {
     const root = this.element?.[0] ?? this.element;
-    const appElement = root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app");
+    const appElement = this.getApplicationHostElement();
     const content = appElement?.querySelector?.(".window-content");
     const shell = root?.querySelector?.(".qd31-shell");
     appElement?.classList?.remove("qd31-window-active");
@@ -3464,13 +3470,15 @@ export class QuickDeckApp extends Application {
   }
 
   hideApplicationShellForOverlay() {
-    const host = this.element?.closest?.(".app") || this.element?.[0]?.closest?.(".app") || this.element?.parent?.closest?.(".app");
-    host?.classList?.add("qd40-host-hidden");
+    const host = this.getApplicationHostElement();
+    if (!host?.classList) return;
+    host.classList.add("qd40-host-hidden");
   }
 
   showApplicationShellIfNeeded() {
-    const host = this.element?.closest?.(".app") || this.element?.[0]?.closest?.(".app") || this.element?.parent?.closest?.(".app");
-    host?.classList?.remove("qd40-host-hidden");
+    const host = this.getApplicationHostElement();
+    if (!host?.classList) return;
+    host.classList.remove("qd40-host-hidden");
   }
 
   getData() {
