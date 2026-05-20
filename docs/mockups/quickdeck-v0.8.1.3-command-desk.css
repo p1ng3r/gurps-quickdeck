@@ -126,3 +126,7 @@ body {
   transform: rotate(180deg);
   min-height: 92px;
 }
+
+
+.qd-subhead { margin: 10px 10px 0; font-size: 0.95rem; color: #d6bc96; }
+.qd-roster .is-selected-row { outline: 1px solid #d9b071; border-radius: 4px; padding: 4px 6px; list-style-position: inside; }

@@ -21,7 +21,10 @@
           <h2>Roster</h2>
           <button id="collapse-left" type="button" aria-label="Collapse left panel">◀</button>
         </div>
+        <h3 class="qd-subhead">Roster</h3>
         <ul class="qd-roster" id="roster-list"></ul>
+        <h3 class="qd-subhead">Available Actors</h3>
+        <ul class="qd-roster" id="available-list"></ul>
       </aside>
 
       <button class="qd-left-rail" id="reopen-left" type="button" aria-label="Reopen left panel">Roster</button>
@@ -90,6 +93,7 @@
 
     const shell = document.querySelector(".qd-shell");
     const rosterList = document.getElementById("roster-list");
+    const availableList = document.getElementById("available-list");
     const selectedActorName = document.getElementById("selected-actor-name");
     const drawerTabs = document.getElementById("drawer-tabs");
     const drawerContent = document.getElementById("drawer-content");
@@ -107,12 +111,23 @@
         btn.textContent = name;
         if (index === selectedActorIndex) btn.classList.add("is-selected");
         btn.addEventListener("click", () => {
-          selectedActorIndex = (selectedActorIndex + 1) % actorNames.length;
+          selectedActorIndex = index;
           selectedActorName.textContent = actorNames[selectedActorIndex];
           renderRoster();
+          renderAvailableActors();
         });
         li.appendChild(btn);
         rosterList.appendChild(li);
+      });
+    }
+
+    function renderAvailableActors() {
+      availableList.innerHTML = "";
+      actorNames.forEach((name, index) => {
+        const li = document.createElement("li");
+        li.textContent = name;
+        if (index === selectedActorIndex) li.classList.add("is-selected-row");
+        availableList.appendChild(li);
       });
     }
 
@@ -172,6 +187,7 @@
     });
 
     renderRoster();
+    renderAvailableActors();
     renderTabs();
     renderContent();
     renderRightRail();
