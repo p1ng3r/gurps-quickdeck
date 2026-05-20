@@ -1,0 +1,53 @@
+<section class="qd30-sidecar qd30-actions-sidecar">
+  <header class="qd30-sidecar-header">
+    <h3>QuickDeck Actions</h3>
+    <button type="button" data-action="close-actions-sidecar">Close</button>
+  </header>
+
+  <nav class="qd30-actions-tabs">
+    <button type="button" data-action="toggle-drawer" data-drawer="combat">Combat</button>
+    <button type="button" data-action="toggle-drawer" data-drawer="skills">Skills</button>
+    <button type="button" data-action="toggle-drawer" data-drawer="spells">Spells</button>
+    <button type="button" data-action="toggle-drawer" data-drawer="settings">Settings</button>
+  </nav>
+
+  {{#if isCombatDrawerOpen}}
+  <section class="qd30-search"><input type="search" value="{{combatSearch}}" data-action="combat-search" placeholder="Search combat" /></section>
+  {{#each indexedAttacks as |attack|}}
+  <article class="qd30-action-row" data-search-row="combat" data-search-text="{{attack.searchText}}">
+    <span>{{attack.name}}</span>
+    <button type="button" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}">Fav</button>
+    <button type="button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}">Attack</button>
+    <button type="button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}">Dmg</button>
+  </article>
+  {{/each}}
+  {{/if}}
+
+  {{#if isSkillsDrawerOpen}}
+  <section class="qd30-search"><input type="search" value="{{skillsSearch}}" data-action="skills-search" placeholder="Search skills" /></section>
+  {{#each indexedSkills as |skill|}}
+  <article class="qd30-action-row" data-search-row="skills" data-search-text="{{skill.searchText}}">
+    <span>{{skill.name}}</span>
+    <button type="button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}">Roll</button>
+    <button type="button" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}">Pin</button>
+    <button type="button" data-action="unpin-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}">Unpin</button>
+  </article>
+  {{/each}}
+  {{/if}}
+
+  {{#if isSpellsDrawerOpen}}
+  <section class="qd30-search"><input type="search" value="{{spellsSearch}}" data-action="spells-search" placeholder="Search spells" /></section>
+  {{#each indexedSpells as |spell|}}
+  <article class="qd30-action-row" data-search-row="spells" data-search-text="{{spell.searchText}}">
+    <span>{{spell.name}}</span>
+    <button type="button" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}">Fav</button>
+    <button type="button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}">Roll</button>
+  </article>
+  {{/each}}
+  {{/if}}
+
+  <article class="qd30-action-row">
+    <button type="button" data-action="open-reference" data-ref-type="book" data-ref-name="Basic" data-ref-page="1" data-ref-source="manual">Reference</button>
+    <button type="button" data-action="open-reference-index">Index</button>
+  </article>
+</section>

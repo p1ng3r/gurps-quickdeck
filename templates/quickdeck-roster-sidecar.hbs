@@ -1,0 +1,29 @@
+<section class="qd30-sidecar qd30-roster-sidecar">
+  <header class="qd30-sidecar-header">
+    <h3>QuickDeck Roster</h3>
+    <button type="button" data-action="close-roster-sidecar">Close</button>
+  </header>
+
+  <section data-drop-zone="roster" class="qd30-roster-list">
+    <div class="qd30-toolbar"><button type="button" data-action="clear-roster">Clear Roster</button></div>
+    {{#each rosterActors as |actor|}}
+    <article class="qd30-actor-row">
+      <button type="button" data-action="open-actor" data-actor-id="{{actor.id}}"><img src="{{actor.img}}" alt="{{actor.name}}" />{{actor.name}}</button>
+      <button type="button" data-action="remove-actor" data-actor-id="{{actor.id}}">Remove</button>
+    </article>
+    {{/each}}
+  </section>
+
+  <section class="qd30-search">
+    <input type="search" value="{{availableSearch}}" data-action="available-search" placeholder="Search actors" />
+  </section>
+
+  <section class="qd30-roster-list">
+    {{#each availableActors as |actor|}}
+    <article class="qd30-actor-row" data-search-row="available" data-search-text="{{actor.searchText}}">
+      <span>{{actor.name}}</span>
+      <button type="button" data-action="add-actor" data-actor-id="{{actor.id}}">Add</button>
+    </article>
+    {{/each}}
+  </section>
+</section>
