@@ -1,20 +1,20 @@
-<section class="quickdeck-shell quickdeck-command-desk-shell qd16-shell {{#unless isLeftPanelOpen}}is-left-collapsed{{/unless}} {{#unless isRightPanelOpen}}is-right-collapsed{{/unless}}">
-  <header class="qd16-header">
-    <div class="quickdeck-dev-badge qd16-dev-badge" aria-hidden="true">QD v0.8.1.6 — true-clean-pane</div>
-    <div class="qd16-command-plaque" aria-hidden="true">GURPS QuickDeck</div>
-    <div class="qd16-command-subtitle" aria-hidden="true">COMMAND DESK</div>
+<section class="quickdeck-shell quickdeck-command-desk-shell qd18-shell {{#unless isLeftPanelOpen}}is-left-collapsed{{/unless}} {{#unless isRightPanelOpen}}is-right-collapsed{{/unless}}">
+  <header class="qd18-header">
+    <div class="quickdeck-dev-badge qd18-dev-badge" aria-hidden="true">QD v0.8.1.9 — left-fit</div>
+    <div class="qd18-command-plaque" aria-hidden="true">GURPS QUICKDECK</div>
+    <div class="qd18-command-subtitle" aria-hidden="true">COMMAND DESK</div>
   </header>
-  <div class="qd16-grid">
-  <aside class="qd16-left">
+  <div class="qd18-grid">
+  <aside class="qd18-left">
     {{#if isLeftPanelOpen}}
-  <div class="quickdeck-sidebar qd16-left-open">
-    <div class="qd16-icon-spine">
-      <button type="button" class="qd16-icon-spine-button" data-action="open-reference-index" title="Local Overrides">OVR</button>
-      <button type="button" class="qd16-icon-spine-button" data-action="open-chat" title="Chat Front">CHT</button>
+  <div class="quickdeck-sidebar qd18-left-open">
+    <div class="qd18-icon-spine">
+      <button type="button" class="qd18-icon-spine-button" data-action="open-reference-index" title="Local Overrides">OVR</button>
+      <button type="button" class="qd18-icon-spine-button" data-action="open-chat" title="Chat Front">CHT</button>
     </div>
-    <div class="qd16-left-open-body">
-      <div class="qd16-left-open-toolbar">
-        <button type="button" data-action="close-left-panel" class="qd16-collapse-button" title="Collapse Left Panel">❮</button>
+    <div class="qd18-left-open-body">
+      <div class="qd18-left-open-toolbar">
+        <button type="button" data-action="close-left-panel" class="qd18-collapse-button" title="Collapse Left Panel">❮</button>
       </div>
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
@@ -138,16 +138,16 @@
     </div>
   </div>
     {{else}}
-    <div class="qd16-left-rail">
-      <button type="button" data-action="open-left-panel" class="qd16-rail-button">Roster</button>
-      <button type="button" data-action="open-left-panel" class="qd16-rail-button">Actors</button>
-      <button type="button" data-action="open-reference-index" class="qd16-rail-button">OVR</button>
-      <button type="button" data-action="open-chat" class="qd16-rail-button">CHT</button>
+    <div class="qd18-left-rail">
+      <button type="button" data-action="open-left-panel" class="qd18-rail-button">Roster</button>
+      <button type="button" data-action="open-left-panel" class="qd18-rail-button">Actors</button>
+      <button type="button" data-action="open-reference-index" class="qd18-rail-button">OVR</button>
+      <button type="button" data-action="open-chat" class="qd18-rail-button">CHT</button>
     </div>
     {{/if}}
   </aside>
 
-  <main class="qd16-center">
+  <main class="qd18-center">
         {{#if activeActor}}
           <section class="quickdeck-selected-cockpit" aria-label="Selected actor cockpit">
             <header class="quickdeck-actor-header">
@@ -275,6 +275,14 @@
                 <strong>{{gurpsData.display.block}}</strong>
               </button>
             </div>
+
+            <div class="qd18-pinned-actions" aria-label="Pinned actions">
+              <button type="button" disabled>Attack</button>
+              <button type="button" disabled>Skill</button>
+              <button type="button" disabled>Spell</button>
+              <button type="button" disabled>Defend</button>
+              <button type="button" disabled>More</button>
+            </div>
           </section>
 
         {{else}}
@@ -284,11 +292,11 @@
         {{/if}}
   </main>
 
-  <aside class="qd16-right">
+  <aside class="qd18-right">
     {{#if isRightPanelOpen}}
-      <div class="quickdeck-drawer-stack qd16-right-open">
-        <div class="qd16-right-open-toolbar">
-          <button type="button" data-action="close-right-panel" class="qd16-collapse-button" title="Collapse Right Panel">❯</button>
+      <div class="quickdeck-drawer-stack qd18-right-open">
+        <div class="qd18-right-open-toolbar">
+          <button type="button" data-action="close-right-panel" class="qd18-collapse-button" title="Collapse Right Panel">❯</button>
         </div>
         <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck side drawers">
           <button
@@ -854,11 +862,11 @@
         {{/if}}
       </div>
     {{else}}
-      <div class="qd16-right-rail">
-        <button type="button" data-action="open-right-drawer" data-drawer="combat" class="qd16-rail-button">Combat</button>
-        <button type="button" data-action="open-right-drawer" data-drawer="skills" class="qd16-rail-button">Skills</button>
-                <button type="button" data-action="open-right-drawer" data-drawer="spells" class="qd16-rail-button">Spells</button>
-        <button type="button" data-action="open-right-drawer" data-drawer="settings" class="qd16-rail-button">Settings</button>
+      <div class="qd18-right-rail">
+        <button type="button" data-action="open-right-drawer" data-drawer="combat" class="qd18-rail-button">Combat</button>
+        <button type="button" data-action="open-right-drawer" data-drawer="skills" class="qd18-rail-button">Skills</button>
+                <button type="button" data-action="open-right-drawer" data-drawer="spells" class="qd18-rail-button">Spells</button>
+        <button type="button" data-action="open-right-drawer" data-drawer="settings" class="qd18-rail-button">Settings</button>
       </div>
     {{/if}}
   </aside>
