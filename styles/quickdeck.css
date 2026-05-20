@@ -3426,3 +3426,34 @@
 .qd31-defense-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.qd31-defense-dial{aspect-ratio:1/1;border-radius:999px}
 .qd31-pinned-grid{grid-template-columns:repeat(4,1fr)}
 .quickdeck-actor-header{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}.quickdeck-actor-identity h3{margin:0}.quickdeck-actor-identity p{margin:2px 0 0}
+
+.qd40-overlay {
+  position: fixed;
+  z-index: 105;
+  left: 16px;
+  top: 72px;
+  width: fit-content;
+  max-width: calc(100vw - 24px);
+  height: 820px;
+  pointer-events: auto;
+}
+
+.qd40-overlay.is-minimized {
+  display: none;
+}
+
+.qd40-shell {
+  width: var(--qd31-shell-width, fit-content);
+  height: 100%;
+  display: flex;
+}
+
+.app.gurps-quickdeck.qd40-host-hidden {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}

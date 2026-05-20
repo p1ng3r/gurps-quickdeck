@@ -2,6 +2,7 @@ import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
+const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
@@ -61,6 +62,9 @@ export class QuickDeckApp extends Application {
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
+    this._overlayRoot = null;
+    this._overlayDragCleanup = null;
+    this._overlayPosition = null;
     this.loadPersistedState();
   }
 
@@ -87,11 +91,11 @@ export class QuickDeckApp extends Application {
     return result;
   }
 
-  openRosterDrawer() { this.isRosterDrawerOpen = true; this.scheduleQd31WindowResize(); this.render(false); }
-  closeRosterDrawer() { this.isRosterDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
+  openRosterDrawer() { this.isRosterDrawerOpen = true; this.render(false); }
+  closeRosterDrawer() { this.isRosterDrawerOpen = false; this.render(false); }
   toggleRosterDrawer() { this.isRosterDrawerOpen ? this.closeRosterDrawer() : this.openRosterDrawer(); }
-  openActionsDrawer(drawer = null) { if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer; this.isActionsDrawerOpen = true; this.scheduleQd31WindowResize(); this.render(false); }
-  closeActionsDrawer() { this.isActionsDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
+  openActionsDrawer(drawer = null) { if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer; this.isActionsDrawerOpen = true; this.render(false); }
+  closeActionsDrawer() { this.isActionsDrawerOpen = false; this.render(false); }
   toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
   applyQd31WindowClass() {
     const root = this.element?.[0] ?? this.element;
@@ -3204,6 +3208,8 @@ export class QuickDeckApp extends Application {
   async close(options) {
     this.cancelTokenDrop({ render: false });
     this.cancelTargetOpponentMode({ render: false, restore: false });
+    this.unmountOverlay();
+    this.showApplicationShellIfNeeded();
     this.removeFloatingRestoreIcon();
     if (this._actorSelectTimeout) {
       clearTimeout(this._actorSelectTimeout);
@@ -3216,6 +3222,8 @@ export class QuickDeckApp extends Application {
 
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
+    this.hideApplicationShellForOverlay();
+    await this.renderOverlay();
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
     return result;
@@ -3234,12 +3242,12 @@ export class QuickDeckApp extends Application {
     if (!this.rendered) return;
     if (this.isMinimized) {
       this.ensureFloatingRestoreIcon();
-      this.element?.hide();
+      this._overlayRoot?.classList?.add("is-minimized");
       return;
     }
 
     this.removeFloatingRestoreIcon();
-    this.element?.show();
+    this._overlayRoot?.classList?.remove("is-minimized");
     if (this._nativeWindowFocusLock && Date.now() <= this._nativeWindowFocusLock.until) {
       this.bringNativeWindowsToFront(this._nativeWindowFocusLock.previousWindowIds);
       return;
@@ -3406,6 +3414,63 @@ export class QuickDeckApp extends Application {
     icon.removeEventListener("click", this.onFloatingRestoreClick);
     icon.remove();
     this._floatingRestoreIcon = null;
+  }
+
+
+  getOverlayData() {
+    const data = this.getData();
+    data.overlayShellClass = "qd40-shell";
+    return data;
+  }
+
+  async renderOverlay() {
+    this.mountOverlay();
+    if (!this._overlayRoot) return;
+    const html = await renderTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
+    this._overlayRoot.innerHTML = html;
+    this.setOverlayPosition();
+    this.activateOverlayListeners(this._overlayRoot);
+  }
+
+  mountOverlay() {
+    if (this._overlayRoot && document.body.contains(this._overlayRoot)) return this._overlayRoot;
+    const root = document.createElement("div");
+    root.id = "gurps-quickdeck-overlay";
+    root.className = "qd40-overlay";
+    document.body.appendChild(root);
+    this._overlayRoot = root;
+    return root;
+  }
+
+  unmountOverlay() {
+    if (typeof this._overlayDragCleanup === "function") this._overlayDragCleanup();
+    this._overlayDragCleanup = null;
+    this._overlayRoot?.remove();
+    this._overlayRoot = null;
+  }
+
+  setOverlayPosition() {
+    if (!this._overlayRoot) return;
+    const fallbackLeft = Math.max(12, Math.round((window.innerWidth || 1440) * 0.16));
+    const fallbackTop = Math.max(12, Math.round(((window.innerHeight || 900) - 820) * 0.5));
+    const left = this._overlayPosition?.left ?? this.position?.left ?? fallbackLeft;
+    const top = this._overlayPosition?.top ?? this.position?.top ?? fallbackTop;
+    this._overlayRoot.style.left = `${Math.max(12, left)}px`;
+    this._overlayRoot.style.top = `${Math.max(12, top)}px`;
+  }
+
+  activateOverlayListeners(root) {
+    this.activateListeners($(root));
+  }
+
+  hideApplicationShellForOverlay() {
+    const host = this.element?.closest?.(".app") || this.element?.[0]?.closest?.(".app") || this.element?.parent?.closest?.(".app");
+    host?.classList?.add("qd40-host-hidden");
+  }
+
+  showApplicationShellIfNeeded() {
+    const host = this.element?.closest?.(".app") || this.element?.[0]?.closest?.(".app") || this.element?.parent?.closest?.(".app");
+    host?.classList?.remove("qd40-host-hidden");
   }
 
   getData() {

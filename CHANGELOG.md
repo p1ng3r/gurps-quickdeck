@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.4.0 chromeless
+
+### Changed
+- Replaces the visible normal Foundry Application popout with a chromeless qd40 QuickDeck overlay to eliminate the oversized black window.
+- Keeps qd31/qd40 drawer-cockpit behavior while avoiding Foundry window-content sizing constraints.
+
 # Changelog
 
 ## [Unreleased] - v0.8.3.6 force-fit
