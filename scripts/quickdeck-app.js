@@ -71,8 +71,9 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 1580,
+      width: 640,
       height: 820,
+      minWidth: 560,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
@@ -1034,30 +1035,16 @@ export class QuickDeckApp extends Application {
     game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
   }
 
-  getQd16ShellWidth() {
-    const leftWidth = this.isLeftPanelCollapsed ? 64 : 484;
-    const centerWidth = 680;
-    const rightWidth = this.isRightPanelCollapsed ? 64 : 420;
-    const gap = 8;
-    const shellPadding = 16;
-    const chromeAllowance = 32;
-    return leftWidth + centerWidth + rightWidth + gap * 2 + shellPadding + chromeAllowance;
+  getQd18ShellWidth() {
+    const configuredWidth = Number(this.position?.width ?? this.options?.width ?? 780);
+    return Math.max(720, configuredWidth);
   }
 
-  scheduleQd16WindowResize() {
-    if (!this.rendered) return;
-    window.requestAnimationFrame(() => {
-      const position = this.position ?? {};
-      const targetWidth = this.getQd16ShellWidth();
-      if (Math.abs((position.width ?? 0) - targetWidth) <= 4) return;
-      this.setPosition({ width: targetWidth, height: position.height, left: position.left, top: position.top });
-    });
-  }
+  scheduleQd18WindowResize() {}
 
   setLeftPanelCollapsed(collapsed) {
     this.isLeftPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   toggleLeftPanelCollapsed() { this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed); }
@@ -1065,7 +1052,6 @@ export class QuickDeckApp extends Application {
   setRightPanelCollapsed(collapsed) {
     this.isRightPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   toggleRightPanelCollapsed() { this.setRightPanelCollapsed(!this.isRightPanelCollapsed); }
@@ -1075,7 +1061,6 @@ export class QuickDeckApp extends Application {
     this.isRightPanelCollapsed = false;
     this.activeDrawer = drawer;
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -3767,7 +3752,7 @@ export class QuickDeckApp extends Application {
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.isRightPanelCollapsed = false;
       this.render();
-      this.scheduleQd16WindowResize();
+      this.scheduleQd18WindowResize();
     });
 
     html.find("[data-action='adjust-resource']").on("click", async (event) => {
