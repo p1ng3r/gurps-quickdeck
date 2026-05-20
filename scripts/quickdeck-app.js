@@ -3449,8 +3449,7 @@ export class QuickDeckApp extends Application {
   }
 
   unmountOverlay() {
-    if (typeof this._overlayDragCleanup === "function") this._overlayDragCleanup();
-    this._overlayDragCleanup = null;
+    this.stopOverlayDrag();
     this._overlayRoot?.remove();
     this._overlayRoot = null;
   }
@@ -3461,12 +3460,76 @@ export class QuickDeckApp extends Application {
     const fallbackTop = Math.max(12, Math.round(((window.innerHeight || 900) - 820) * 0.5));
     const left = this._overlayPosition?.left ?? this.position?.left ?? fallbackLeft;
     const top = this._overlayPosition?.top ?? this.position?.top ?? fallbackTop;
-    this._overlayRoot.style.left = `${Math.max(12, left)}px`;
-    this._overlayRoot.style.top = `${Math.max(12, top)}px`;
+    const clamped = this.getClampedOverlayPosition(left, top);
+    this._overlayPosition = clamped;
+    this._overlayRoot.style.left = `${clamped.left}px`;
+    this._overlayRoot.style.top = `${clamped.top}px`;
+  }
+
+  startOverlayDrag(event) {
+    if (!this._overlayRoot) return;
+    const target = event.target;
+    if (target?.closest?.("button, input, select, textarea, a")) return;
+
+    event.preventDefault();
+    const startLeft = Number.parseFloat(this._overlayRoot.style.left) || this._overlayRoot.offsetLeft || 0;
+    const startTop = Number.parseFloat(this._overlayRoot.style.top) || this._overlayRoot.offsetTop || 0;
+    const startClientX = Number(event.clientX);
+    const startClientY = Number(event.clientY);
+
+    this.stopOverlayDrag();
+    this._overlayRoot.classList.add("qd40-dragging");
+
+    const onPointerMove = (moveEvent) => {
+      const deltaX = Number(moveEvent.clientX) - startClientX;
+      const deltaY = Number(moveEvent.clientY) - startClientY;
+      const clamped = this.getClampedOverlayPosition(startLeft + deltaX, startTop + deltaY);
+      this._overlayPosition = clamped;
+      this._overlayRoot.style.left = `${clamped.left}px`;
+      this._overlayRoot.style.top = `${clamped.top}px`;
+    };
+
+    const onPointerUp = () => this.stopOverlayDrag();
+    const onBlur = () => this.stopOverlayDrag();
+
+    const abortController = typeof AbortController === "function" ? new AbortController() : null;
+    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+    window.addEventListener("pointermove", onPointerMove, listenerOptions);
+    window.addEventListener("pointerup", onPointerUp, listenerOptions);
+    window.addEventListener("blur", onBlur, listenerOptions);
+
+    this._overlayDragCleanup = () => {
+      this._overlayRoot?.classList?.remove("qd40-dragging");
+      if (abortController) { abortController.abort(); return; }
+      window.removeEventListener("pointermove", onPointerMove);
+      window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("blur", onBlur);
+    };
+  }
+
+  stopOverlayDrag() {
+    if (typeof this._overlayDragCleanup === "function") this._overlayDragCleanup();
+    this._overlayDragCleanup = null;
+  }
+
+  getClampedOverlayPosition(left, top) {
+    const overlay = this._overlayRoot;
+    const rect = overlay?.getBoundingClientRect?.();
+    const width = rect?.width ?? overlay?.offsetWidth ?? 0;
+    const height = rect?.height ?? overlay?.offsetHeight ?? 0;
+    const minLeft = 0;
+    const minTop = 0;
+    const maxLeft = Math.max(minLeft, (window.innerWidth || width) - width);
+    const maxTop = Math.max(minTop, (window.innerHeight || height) - height);
+    return {
+      left: Math.min(Math.max(minLeft, Number(left) || 0), maxLeft),
+      top: Math.min(Math.max(minTop, Number(top) || 0), maxTop)
+    };
   }
 
   activateOverlayListeners(root) {
     this.activateListeners($(root));
+    root.querySelector("[data-action=\"drag-overlay\"]")?.addEventListener("pointerdown", (event) => this.startOverlayDrag(event));
   }
 
   hideApplicationShellForOverlay() {
@@ -3929,6 +3992,8 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='open-actions-drawer'], [data-action='open-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
     html.find("[data-action='close-actions-drawer'], [data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
     html.find("[data-action='toggle-actions-drawer']").on("click", (event) => { event.preventDefault(); this.toggleActionsDrawer(event.currentTarget.dataset.drawer); });
+    html.find("[data-action='minimize-overlay']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.toggleMinimizedState(); });
+    html.find("[data-action='close-overlay']").on("click", async (event) => { event.preventDefault(); event.stopPropagation(); await this.close(); });
 
     html.find("[data-action='adjust-resource']").on("click", async (event) => {
       event.preventDefault();

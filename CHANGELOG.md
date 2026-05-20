@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.4.1 overlay-controls
+
+### Changed
+- Adds a chromeless QuickDeck header bar with drag, minimize, and close controls.
+- Keeps left/right drawer tabs visible in both open and closed states so drawers can be reopened or collapsed without losing the handles.
+
 ## [Unreleased] - v0.8.4.0 chromeless
 
 ### Changed
