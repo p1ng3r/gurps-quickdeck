@@ -25,6 +25,8 @@ export class QuickDeckApp extends Application {
     this.rosterActorIds = [];
     this.activeActorId = null;
     this.activeDrawer = null;
+    this.isLeftPanelCollapsed = false;
+    this.isRightPanelCollapsed = false;
     this.availableSearch = "";
     this.combatSearch = "";
     this.skillsSearch = "";
@@ -1030,6 +1032,32 @@ export class QuickDeckApp extends Application {
     this.restorePillPosition = normalized;
     if (!game?.settings) return;
     game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
+  }
+
+
+  setLeftPanelCollapsed(isCollapsed, { render = true } = {}) {
+    this.isLeftPanelCollapsed = Boolean(isCollapsed);
+    if (render) this.render(false, { focus: false });
+  }
+
+  toggleLeftPanelCollapsed({ render = true } = {}) {
+    this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed, { render });
+  }
+
+  setRightPanelCollapsed(isCollapsed, { render = true } = {}) {
+    this.isRightPanelCollapsed = Boolean(isCollapsed);
+    if (render) this.render(false, { focus: false });
+  }
+
+  toggleRightPanelCollapsed({ render = true } = {}) {
+    this.setRightPanelCollapsed(!this.isRightPanelCollapsed, { render });
+  }
+
+  openDrawerFromCollapsedRail(drawer, { render = true } = {}) {
+    if (!drawer || !VALID_DRAWERS.has(drawer)) return;
+    this.activeDrawer = drawer;
+    this.isRightPanelCollapsed = false;
+    if (render) this.render(false, { focus: false });
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -3484,6 +3512,10 @@ export class QuickDeckApp extends Application {
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
       isSpellsDrawerOpen: this.activeDrawer === "spells",
       isSettingsDrawerOpen: this.activeDrawer === "settings",
+      isLeftPanelCollapsed: this.isLeftPanelCollapsed,
+      isLeftPanelOpen: !this.isLeftPanelCollapsed,
+      isRightPanelCollapsed: this.isRightPanelCollapsed,
+      isRightPanelOpen: !this.isRightPanelCollapsed,
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
@@ -3683,12 +3715,49 @@ export class QuickDeckApp extends Application {
       this.scheduleNativeWindowFocusAfterRender();
     });
 
+    html.find("[data-action='toggle-left-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.toggleLeftPanelCollapsed();
+    });
+
+    html.find("[data-action='open-left-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.setLeftPanelCollapsed(false);
+    });
+
+    html.find("[data-action='close-left-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.setLeftPanelCollapsed(true);
+    });
+
+    html.find("[data-action='toggle-right-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.toggleRightPanelCollapsed();
+    });
+
+    html.find("[data-action='open-right-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.setRightPanelCollapsed(false);
+    });
+
+    html.find("[data-action='close-right-panel']").on("click", (event) => {
+      event.preventDefault();
+      this.setRightPanelCollapsed(true);
+    });
+
+    html.find("[data-action='open-right-drawer']").on("click", (event) => {
+      event.preventDefault();
+      const drawer = event.currentTarget.dataset.drawer;
+      this.openDrawerFromCollapsedRail(drawer);
+    });
+
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
 
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
+      this.isRightPanelCollapsed = false;
       this.render();
     });
 

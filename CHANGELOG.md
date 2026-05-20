@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.1.1 collapse-shell
+
+### Changed
+- Added a minimal production shell collapse pass with left panel collapse rail, right drawer collapse rail, and fixed-width center cockpit column.
+- Updated visible QuickDeck dev badge text to `QD v0.8.1.1 — collapse-shell`.
+
 ## [Unreleased] - v0.6.0 release candidate
 
 ### Added

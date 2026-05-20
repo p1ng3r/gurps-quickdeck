@@ -1,6 +1,11 @@
-<section class="quickdeck-shell quickdeck-command-desk-shell">
-  <div class="quickdeck-dev-badge" aria-hidden="true">QD v0.7 OpenSheet Fix</div>
-  <aside class="quickdeck-sidebar">
+<section class="quickdeck-shell quickdeck-command-desk-shell {{#if isLeftPanelCollapsed}}is-left-panel-collapsed{{/if}} {{#if isRightPanelCollapsed}}is-right-panel-collapsed{{/if}}">
+  <div class="quickdeck-dev-badge" aria-hidden="true">QD v0.8.1.1 — collapse-shell</div>
+
+  <div class="quickdeck-three-panel-grid">
+  <aside class="quickdeck-left-command-area">
+    {{#if isLeftPanelOpen}}
+    <button type="button" class="quickdeck-panel-toggle quickdeck-left-close" data-action="close-left-panel" aria-label="Collapse left panel">‹</button>
+    <aside class="quickdeck-sidebar">
     <section class="quickdeck-sidebar-block quickdeck-sidebar-roster {{#if isDragOverRoster}}is-drop-active{{/if}}" data-drop-zone="roster">
       <div class="quickdeck-block-title-row">
         <h3>QuickDeck Roster <span class="quickdeck-badge">{{rosterCount}}</span></h3>
@@ -120,9 +125,21 @@
         <p class="quickdeck-empty">No available actors found.</p>
       {{/if}}
     </section>
+    </aside>
+    {{else}}
+    <div class="quickdeck-left-collapsed-rail">
+      <button type="button" data-action="open-left-panel" class="quickdeck-rail-open" aria-label="Open left panel">›</button>
+      <button type="button" class="quickdeck-rail-tab" data-action="open-left-panel">Roster</button>
+      <button type="button" class="quickdeck-rail-tab" data-action="open-left-panel">Actors</button>
+      <div class="quickdeck-rail-icons" aria-hidden="true">
+        <span>★</span><span>⚑</span><span>☰</span>
+      </div>
+    </div>
+    {{/if}}
   </aside>
 
-  <main class="quickdeck-main">
+  <main class="quickdeck-center-command-area">
+    <section class="quickdeck-main">
     <div class="quickdeck-window-actions">
       <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Local Overrides" aria-label="Local Overrides">Overrides</button>
     </div>
@@ -266,7 +283,12 @@
           </section>
         {{/if}}
       </div>
+    </section>
+  </main>
 
+  <aside class="quickdeck-right-command-area">
+    {{#if isRightPanelOpen}}
+    <button type="button" class="quickdeck-panel-toggle quickdeck-right-close" data-action="close-right-panel" aria-label="Collapse right panel">›</button>
       <aside class="quickdeck-drawer-stack">
         <nav class="quickdeck-drawer-tabs" aria-label="QuickDeck side drawers">
           <button
@@ -831,7 +853,14 @@
           </section>
         {{/if}}
       </aside>
-    </section>
-    <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
-  </main>
+    {{else}}
+      <div class="quickdeck-right-collapsed-rail" aria-label="Collapsed drawer rail">
+        <button type="button" class="quickdeck-rail-tab" data-action="open-right-drawer" data-drawer="combat">Combat</button>
+        <button type="button" class="quickdeck-rail-tab" data-action="open-right-drawer" data-drawer="skills">Skills</button>
+        <button type="button" class="quickdeck-rail-tab" data-action="open-right-drawer" data-drawer="spells">Spells</button>
+        <button type="button" class="quickdeck-rail-tab" data-action="open-right-drawer" data-drawer="settings">Settings</button>
+      </div>
+    {{/if}}
+  </aside>
+  </div>
 </section>
