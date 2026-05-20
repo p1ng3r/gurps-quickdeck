@@ -1,3 +1,10 @@
+## [Unreleased] - v0.8.4.2 open-fix
+
+### Fixed
+- Forces QuickDeck launcher and debug open calls to restore the chromeless overlay from minimized/stale states.
+- Consolidates qd40 render flow so the overlay opens reliably without depending on Foundry popout sizing.
+- Tightens qd40 drawer/cockpit spacing to reduce left/right buffer while keeping drawer tabs visible.
+
 ## [Unreleased] - v0.8.4.1 overlay-controls
 
 ### Changed

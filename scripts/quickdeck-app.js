@@ -84,13 +84,6 @@ export class QuickDeckApp extends Application {
   }
 
 
-  async _render(...args) {
-    const result = await super._render(...args);
-    this.applyQd31WindowClass();
-    this.scheduleQd31WindowResize();
-    return result;
-  }
-
   openRosterDrawer() { this.isRosterDrawerOpen = true; this.render(false); }
   closeRosterDrawer() { this.isRosterDrawerOpen = false; this.render(false); }
   toggleRosterDrawer() { this.isRosterDrawerOpen ? this.closeRosterDrawer() : this.openRosterDrawer(); }
@@ -114,9 +107,9 @@ export class QuickDeckApp extends Application {
     const centerWidth = 520;
     const drawerDefaultWidth = 400;
     const drawerMinWidth = 320;
-    const closedTabWidth = 40;
-    const gap = 8;
-    const shellPadding = 16;
+    const closedTabWidth = 32;
+    const gap = 4;
+    const shellPadding = 8;
     const chromeAllowance = 24;
     const leftOpen = Boolean(this.isRosterDrawerOpen);
     const rightOpen = Boolean(this.isActionsDrawerOpen);
@@ -3983,7 +3976,6 @@ export class QuickDeckApp extends Application {
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.isActionsDrawerOpen = true;
       this.render(false);
-      this.scheduleQd31WindowResize();
     });
 
     html.find("[data-action='open-roster-drawer'], [data-action='open-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.openRosterDrawer(); });
