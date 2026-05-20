@@ -2,6 +2,8 @@ import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
+const ROSTER_SIDECAR_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-roster-sidecar.hbs";
+const ACTIONS_SIDECAR_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-actions-sidecar.hbs";
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
@@ -60,6 +62,8 @@ export class QuickDeckApp extends Application {
     this._stateLoadedFromSettings = false;
     this.isLeftPanelCollapsed = false;
     this.isRightPanelCollapsed = false;
+    this.rosterSidecar = null;
+    this.actionsSidecar = null;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
   }
@@ -71,13 +75,56 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 1580,
+      width: 640,
       height: 820,
+      minWidth: 560,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
   }
 
+
+  async _render(...args) {
+    const result = await super._render(...args);
+    this.positionSidecars();
+    this.renderSidecars();
+    return result;
+  }
+
+  renderSidecars() {
+    if (this.rosterSidecar?.rendered) this.rosterSidecar.render(false);
+    if (this.actionsSidecar?.rendered) this.actionsSidecar.render(false);
+  }
+
+  openRosterSidecar() {
+    if (!this.rosterSidecar) this.rosterSidecar = new QuickDeckRosterSidecarApp(this);
+    this.rosterSidecar.render(true);
+    this.positionSidecars();
+  }
+  closeRosterSidecar() { this.rosterSidecar?.close(); }
+  openActionsSidecar(drawer = null) {
+    if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer;
+    if (!this.actionsSidecar) this.actionsSidecar = new QuickDeckActionsSidecarApp(this);
+    this.actionsSidecar.render(true);
+    this.positionSidecars();
+  }
+  closeActionsSidecar() { this.actionsSidecar?.close(); }
+
+  positionSidecars() {
+    if (!this.position) return;
+    const vpW = window.innerWidth || 1920;
+    const vpH = window.innerHeight || 1080;
+    const top = Math.max(0, Math.min(this.position.top ?? 0, vpH - 100));
+    const centerH = this.position.height ?? 820;
+    if (this.rosterSidecar?.rendered) {
+      const left = Math.max(0, Math.min((this.position.left ?? 0) - 428, vpW - 420));
+      this.rosterSidecar.setPosition({ left, top, width: 420, height: centerH });
+    }
+    if (this.actionsSidecar?.rendered) {
+      const left = Math.max(0, Math.min((this.position.left ?? 0) + (this.position.width ?? 640) + 8, vpW - 420));
+      this.actionsSidecar.setPosition({ left, top, width: 420, height: centerH });
+    }
+  }
   _getHeaderButtons() {
     const buttons = super._getHeaderButtons();
     const minimizeButton = {
@@ -1034,30 +1081,16 @@ export class QuickDeckApp extends Application {
     game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
   }
 
-  getQd16ShellWidth() {
-    const leftWidth = this.isLeftPanelCollapsed ? 64 : 484;
-    const centerWidth = 680;
-    const rightWidth = this.isRightPanelCollapsed ? 64 : 420;
-    const gap = 8;
-    const shellPadding = 16;
-    const chromeAllowance = 32;
-    return leftWidth + centerWidth + rightWidth + gap * 2 + shellPadding + chromeAllowance;
+  getQd18ShellWidth() {
+    const configuredWidth = Number(this.position?.width ?? this.options?.width ?? 780);
+    return Math.max(720, configuredWidth);
   }
 
-  scheduleQd16WindowResize() {
-    if (!this.rendered) return;
-    window.requestAnimationFrame(() => {
-      const position = this.position ?? {};
-      const targetWidth = this.getQd16ShellWidth();
-      if (Math.abs((position.width ?? 0) - targetWidth) <= 4) return;
-      this.setPosition({ width: targetWidth, height: position.height, left: position.left, top: position.top });
-    });
-  }
+  scheduleQd18WindowResize() {}
 
   setLeftPanelCollapsed(collapsed) {
     this.isLeftPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   toggleLeftPanelCollapsed() { this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed); }
@@ -1065,7 +1098,6 @@ export class QuickDeckApp extends Application {
   setRightPanelCollapsed(collapsed) {
     this.isRightPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   toggleRightPanelCollapsed() { this.setRightPanelCollapsed(!this.isRightPanelCollapsed); }
@@ -1075,7 +1107,6 @@ export class QuickDeckApp extends Application {
     this.isRightPanelCollapsed = false;
     this.activeDrawer = drawer;
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -3734,41 +3765,19 @@ export class QuickDeckApp extends Application {
     });
 
 
-    html.find("[data-action='open-left-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setLeftPanelCollapsed(false);
-    });
-
-    html.find("[data-action='close-left-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setLeftPanelCollapsed(true);
-    });
-
-    html.find("[data-action='open-right-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setRightPanelCollapsed(false);
-    });
-
-    html.find("[data-action='close-right-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setRightPanelCollapsed(true);
-    });
-
-    html.find("[data-action='open-right-drawer']").on("click", (event) => {
-      event.preventDefault();
-      this.openDrawerFromCollapsedRail(event.currentTarget.dataset.drawer);
-    });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
-
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
-      this.isRightPanelCollapsed = false;
       this.render();
-      this.scheduleQd16WindowResize();
     });
+
+    html.find("[data-action='open-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.openRosterSidecar(); });
+    html.find("[data-action='close-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.closeRosterSidecar(); });
+    html.find("[data-action='open-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.openActionsSidecar(event.currentTarget.dataset.drawer); });
+    html.find("[data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsSidecar(); });
 
     html.find("[data-action='adjust-resource']").on("click", async (event) => {
       event.preventDefault();
@@ -4008,4 +4017,20 @@ export class QuickDeckApp extends Application {
     this.applyQuickSkillsFilter(html);
     this.applySpellsFilter(html);
   }
+}
+
+
+class QuickDeckRosterSidecarApp extends Application {
+  constructor(parent, options={}) { super(options); this.parentApp = parent; }
+  static get defaultOptions(){ return foundry.utils.mergeObject(super.defaultOptions,{id:"gurps-quickdeck-roster-sidecar",classes:["gurps-quickdeck","qd22-roster-sidecar"],popOut:true,resizable:true,width:420,height:820,title:"QuickDeck Roster",template:ROSTER_SIDECAR_TEMPLATE_PATH}); }
+  getData(){ return this.parentApp.getData(); }
+  activateListeners(html){ this.parentApp.activateListeners(html); }
+  async close(options){ this.parentApp.rosterSidecar=null; return super.close(options);}
+}
+class QuickDeckActionsSidecarApp extends Application {
+  constructor(parent, options={}) { super(options); this.parentApp = parent; }
+  static get defaultOptions(){ return foundry.utils.mergeObject(super.defaultOptions,{id:"gurps-quickdeck-actions-sidecar",classes:["gurps-quickdeck","qd22-actions-sidecar"],popOut:true,resizable:true,width:420,height:820,title:"QuickDeck Actions",template:ACTIONS_SIDECAR_TEMPLATE_PATH}); }
+  getData(){ return this.parentApp.getData(); }
+  activateListeners(html){ this.parentApp.activateListeners(html); }
+  async close(options){ this.parentApp.actionsSidecar=null; return super.close(options);}
 }
