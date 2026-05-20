@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.3.0 blank-slate
+
+### Changed
+- Rebuilds the center cockpit, roster sidecar, and actions sidecar with qd30 blank-slate templates and styling.
+- Removes old shell/layout classes from the active UI while preserving QuickDeck behavior hooks.
+- Resets oversized persisted center window width without reducing height.
+
 ## [Unreleased] - v0.8.2.0 sidecar
 
 ### Changed

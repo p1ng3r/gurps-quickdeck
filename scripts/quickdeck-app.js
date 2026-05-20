@@ -64,6 +64,7 @@ export class QuickDeckApp extends Application {
     this.isRightPanelCollapsed = false;
     this.rosterSidecar = null;
     this.actionsSidecar = null;
+    this._hasAppliedWidthCorrection = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
   }
@@ -86,6 +87,10 @@ export class QuickDeckApp extends Application {
 
   async _render(...args) {
     const result = await super._render(...args);
+    if (!this._hasAppliedWidthCorrection && Number(this.position?.width) > 900) {
+      this._hasAppliedWidthCorrection = true;
+      this.setPosition({ width: 640, height: this.position?.height ?? 820, top: this.position?.top, left: this.position?.left });
+    }
     this.positionSidecars();
     this.renderSidecars();
     return result;
@@ -4021,16 +4026,57 @@ export class QuickDeckApp extends Application {
 
 
 class QuickDeckRosterSidecarApp extends Application {
-  constructor(parent, options={}) { super(options); this.parentApp = parent; }
-  static get defaultOptions(){ return foundry.utils.mergeObject(super.defaultOptions,{id:"gurps-quickdeck-roster-sidecar",classes:["gurps-quickdeck","qd22-roster-sidecar"],popOut:true,resizable:true,width:420,height:820,title:"QuickDeck Roster",template:ROSTER_SIDECAR_TEMPLATE_PATH}); }
-  getData(){ return this.parentApp.getData(); }
-  activateListeners(html){ this.parentApp.activateListeners(html); }
-  async close(options){ this.parentApp.rosterSidecar=null; return super.close(options);}
+  constructor(parent, options = {}) {
+    super(options);
+    this.parentApp = parent;
+  }
+
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      id: "gurps-quickdeck-roster-sidecar",
+      classes: ["gurps-quickdeck", "qd30-roster-sidecar"],
+      popOut: true,
+      resizable: true,
+      width: 420,
+      height: 820,
+      title: "QuickDeck Roster",
+      template: ROSTER_SIDECAR_TEMPLATE_PATH
+    });
+  }
+
+  getData() { return this.parentApp?.getData?.() ?? {}; }
+  activateListeners(html) { this.parentApp?.activateListeners?.(html); }
+  async close(options) {
+    if (this.parentApp) this.parentApp.rosterSidecar = null;
+    this.parentApp = null;
+    return super.close(options);
+  }
 }
+
 class QuickDeckActionsSidecarApp extends Application {
-  constructor(parent, options={}) { super(options); this.parentApp = parent; }
-  static get defaultOptions(){ return foundry.utils.mergeObject(super.defaultOptions,{id:"gurps-quickdeck-actions-sidecar",classes:["gurps-quickdeck","qd22-actions-sidecar"],popOut:true,resizable:true,width:420,height:820,title:"QuickDeck Actions",template:ACTIONS_SIDECAR_TEMPLATE_PATH}); }
-  getData(){ return this.parentApp.getData(); }
-  activateListeners(html){ this.parentApp.activateListeners(html); }
-  async close(options){ this.parentApp.actionsSidecar=null; return super.close(options);}
+  constructor(parent, options = {}) {
+    super(options);
+    this.parentApp = parent;
+  }
+
+  static get defaultOptions() {
+    return foundry.utils.mergeObject(super.defaultOptions, {
+      id: "gurps-quickdeck-actions-sidecar",
+      classes: ["gurps-quickdeck", "qd30-actions-sidecar"],
+      popOut: true,
+      resizable: true,
+      width: 420,
+      height: 820,
+      title: "QuickDeck Actions",
+      template: ACTIONS_SIDECAR_TEMPLATE_PATH
+    });
+  }
+
+  getData() { return this.parentApp?.getData?.() ?? {}; }
+  activateListeners(html) { this.parentApp?.activateListeners?.(html); }
+  async close(options) {
+    if (this.parentApp) this.parentApp.actionsSidecar = null;
+    this.parentApp = null;
+    return super.close(options);
+  }
 }
