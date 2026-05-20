@@ -136,3 +136,9 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Drag/drop freeze caused by accidental actor.sheet access.
+
+## [Unreleased] - v0.8.2.2 real-sidecars
+
+### Changed
+- Replaces the failed in-window sidecar fallback with real separate Application sidecar windows for roster and actions.
+- Keeps the center cockpit as its own resizable primary window and reduces width without reducing height.
