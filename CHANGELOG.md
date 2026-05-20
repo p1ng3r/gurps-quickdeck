@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.1.8 functional-pane
+
+### Changed
+- Rebuilds the three-pane layout around functional roles: roster left, selected actor center, complete action browser right.
+- Keeps the center actor cockpit as the primary visible pane with five pinned action slots.
+
 ## [Unreleased] - v0.8.1.6 true-clean-pane
 
 ### Changed
