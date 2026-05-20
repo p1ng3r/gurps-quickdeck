@@ -71,8 +71,9 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 1580,
+      width: 780,
       height: 820,
+      minWidth: 720,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
@@ -1035,29 +1036,15 @@ export class QuickDeckApp extends Application {
   }
 
   getQd18ShellWidth() {
-    const leftWidth = this.isLeftPanelCollapsed ? 64 : 420;
-    const centerWidth = 720;
-    const rightWidth = this.isRightPanelCollapsed ? 64 : 420;
-    const gap = 8;
-    const shellPadding = 12;
-    const chromeAllowance = 32;
-    return leftWidth + centerWidth + rightWidth + gap * 2 + shellPadding * 2 + chromeAllowance;
+    const configuredWidth = Number(this.position?.width ?? this.options?.width ?? 780);
+    return Math.max(720, configuredWidth);
   }
 
-  scheduleQd18WindowResize() {
-    if (!this.rendered) return;
-    window.requestAnimationFrame(() => {
-      const position = this.position ?? {};
-      const targetWidth = this.getQd18ShellWidth();
-      if (Math.abs((position.width ?? 0) - targetWidth) <= 4) return;
-      this.setPosition({ width: targetWidth, height: position.height, left: position.left, top: position.top });
-    });
-  }
+  scheduleQd18WindowResize() {}
 
   setLeftPanelCollapsed(collapsed) {
     this.isLeftPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd18WindowResize();
   }
 
   toggleLeftPanelCollapsed() { this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed); }
@@ -1065,7 +1052,6 @@ export class QuickDeckApp extends Application {
   setRightPanelCollapsed(collapsed) {
     this.isRightPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd18WindowResize();
   }
 
   toggleRightPanelCollapsed() { this.setRightPanelCollapsed(!this.isRightPanelCollapsed); }
@@ -1075,7 +1061,6 @@ export class QuickDeckApp extends Application {
     this.isRightPanelCollapsed = false;
     this.activeDrawer = drawer;
     this.render(false);
-    this.scheduleQd18WindowResize();
   }
 
   applyDefaultDrawerIfNeeded() {

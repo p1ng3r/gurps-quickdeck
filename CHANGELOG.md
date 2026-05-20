@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.2.0 sidecar
+
+### Changed
+- Replaces the single-grid layout with a center-primary cockpit and optional docked roster/action sidecars.
+- Collapsing side panels no longer reserves empty grid space around the center cockpit.
+
 ## [Unreleased] - v0.8.1.9 left-fit
 
 ### Changed
