@@ -1040,8 +1040,9 @@ export class QuickDeckApp extends Application {
     const rightWidth = this.isRightPanelCollapsed ? 64 : 420;
     const gap = 8;
     const shellPadding = 16;
+    const totalShellPadding = shellPadding * 2;
     const chromeAllowance = 32;
-    return leftWidth + centerWidth + rightWidth + gap * 2 + shellPadding + chromeAllowance;
+    return leftWidth + centerWidth + rightWidth + gap * 2 + totalShellPadding + chromeAllowance;
   }
 
   scheduleQd16WindowResize() {

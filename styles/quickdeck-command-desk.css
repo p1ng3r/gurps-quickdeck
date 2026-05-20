@@ -3310,16 +3310,141 @@
   --qd16-shell-padding: 16px;
   padding: var(--qd16-shell-padding);
 }
-.qd16-shell .qd16-header,.qd16-shell .qd16-footer{display:flex;justify-content:center;align-items:center;flex-direction:column;margin-bottom:8px}
-.qd16-shell .qd16-grid {display:grid;grid-template-columns: var(--qd16-left-open) var(--qd16-center) var(--qd16-right-open);gap: var(--qd16-gap);align-items:stretch;}
-.qd16-shell.is-left-collapsed .qd16-grid {grid-template-columns: var(--qd16-left-closed) var(--qd16-center) var(--qd16-right-open);}
-.qd16-shell.is-right-collapsed .qd16-grid {grid-template-columns: var(--qd16-left-open) var(--qd16-center) var(--qd16-right-closed);}
-.qd16-shell.is-left-collapsed.is-right-collapsed .qd16-grid {grid-template-columns: var(--qd16-left-closed) var(--qd16-center) var(--qd16-right-closed);}
-.qd16-shell .qd16-center{width:var(--qd16-center);min-width:var(--qd16-center);max-width:var(--qd16-center);overflow:auto}
-.qd16-shell .qd16-left,.qd16-shell .qd16-right,.qd16-shell .qd16-center{min-height:0}
-.qd16-shell .qd16-left-open{display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px;height:100%}
-.qd16-shell .qd16-icon-spine,.qd16-shell .qd16-left-rail,.qd16-shell .qd16-right-rail{display:flex;flex-direction:column;gap:8px;height:100%}
-.qd16-shell .qd16-left-open-body,.qd16-shell .quickdeck-panel,.qd16-shell .quickdeck-panel-content,.qd16-shell .quickdeck-drawer-scroll-content{overflow:auto;min-height:0}
-.qd16-shell .qd16-right-open{display:flex;flex-direction:column;height:100%}
-.qd16-shell .qd16-rail-button,.qd16-shell .qd16-icon-spine-button,.qd16-shell .qd16-collapse-button,.qd16-shell .quickdeck-flow-button{background:linear-gradient(180deg,#6e4f22,#36230f);color:#f4e2b2;border:1px solid rgba(240,205,122,.6);border-radius:6px}
-.qd16-shell .quickdeck-main,.qd16-shell .quickdeck-content,.qd16-shell .quickdeck-stage {width:auto;min-width:0;max-width:none;overflow:visible;}
+
+.qd16-shell .qd16-header,
+.qd16-shell .qd16-footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-bottom: 8px;
+}
+
+.qd16-shell .qd16-grid {
+  display: grid;
+  grid-template-columns: var(--qd16-left-open) var(--qd16-center) var(--qd16-right-open);
+  gap: var(--qd16-gap);
+  align-items: stretch;
+}
+
+.qd16-shell.is-left-collapsed .qd16-grid {
+  grid-template-columns: var(--qd16-left-closed) var(--qd16-center) var(--qd16-right-open);
+}
+
+.qd16-shell.is-right-collapsed .qd16-grid {
+  grid-template-columns: var(--qd16-left-open) var(--qd16-center) var(--qd16-right-closed);
+}
+
+.qd16-shell.is-left-collapsed.is-right-collapsed .qd16-grid {
+  grid-template-columns: var(--qd16-left-closed) var(--qd16-center) var(--qd16-right-closed);
+}
+
+.qd16-shell .qd16-left,
+.qd16-shell .qd16-center,
+.qd16-shell .qd16-right {
+  min-height: 0;
+}
+
+.qd16-shell .qd16-left,
+.qd16-shell .qd16-right {
+  width: 100%;
+  overflow: hidden;
+}
+
+.qd16-shell .qd16-center {
+  width: var(--qd16-center);
+  min-width: var(--qd16-center);
+  max-width: var(--qd16-center);
+  overflow: hidden;
+}
+
+.qd16-shell .qd16-left-open {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 8px;
+  height: 100%;
+  min-height: 0;
+}
+
+.qd16-shell .qd16-left-open-body {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.qd16-shell .qd16-icon-spine,
+.qd16-shell .qd16-left-rail,
+.qd16-shell .qd16-right-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  height: 100%;
+}
+
+.qd16-shell .qd16-icon-spine {
+  align-items: stretch;
+  padding-right: 4px;
+  border-right: 1px solid rgba(199, 154, 56, 0.45);
+}
+
+.qd16-shell .qd16-center .quickdeck-selected-cockpit {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+
+.qd16-shell .qd16-center .quickdeck-main-resources,
+.qd16-shell .qd16-center .quickdeck-defense-buttons {
+  margin-bottom: 0.5rem;
+}
+
+.qd16-shell .qd16-right-open {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+.qd16-shell .quickdeck-panel,
+.qd16-shell .quickdeck-panel-content {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.qd16-shell .quickdeck-drawer-scroll-content {
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.qd16-shell .quickdeck-drawer-tabs {
+  width: 100%;
+}
+
+.qd16-shell .quickdeck-drawer-tab {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.qd16-shell .qd16-rail-button,
+.qd16-shell .qd16-icon-spine-button,
+.qd16-shell .qd16-collapse-button,
+.qd16-shell .quickdeck-flow-button {
+  background: linear-gradient(180deg, #6e4f22, #36230f);
+  color: #f4e2b2;
+  border: 1px solid rgba(240, 205, 122, 0.6);
+  border-radius: 6px;
+}
+
+.qd16-shell .quickdeck-main,
+.qd16-shell .quickdeck-content,
+.qd16-shell .quickdeck-stage {
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  overflow: visible;
+}
