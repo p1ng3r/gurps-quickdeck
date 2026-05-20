@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.1.9 left-fit
+
+### Changed
+- Repairs qd18 layout positioning so the roster starts near the left edge, the icon spine is attached to the left pane, and the center/right panes remain visible.
+
 ## [Unreleased] - v0.8.1.8 functional-pane
 
 ### Changed

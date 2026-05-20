@@ -3333,34 +3333,84 @@
   --qd18-right-closed: 64px;
   --qd18-gap: 8px;
   --qd18-shell-padding: 12px;
+  margin: 0;
+  width: max-content;
+  min-width: 0;
   padding: var(--qd18-shell-padding);
 }
 
-.qd18-header,
-.qd18-footer {
+.qd18-shell.quickdeck-shell {
   display: flex;
-  justify-content: center;
-  align-items: center;
   flex-direction: column;
-  margin-bottom: 8px;
+}
+
+.qd18-shell .quickdeck-dev-badge {
+  position: static;
+  max-width: none;
+}
+
+.qd18-header {
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 8px;
+  padding: 4px 8px;
+}
+
+.qd18-command-plaque,
+.qd18-command-subtitle,
+.qd18-dev-badge {
+  margin: 0;
+}
+
+.qd18-footer {
+  min-height: 0;
+  margin-top: 8px;
 }
 
 .qd18-grid {
   display: grid;
+  margin-left: 0;
   grid-template-columns: var(--qd18-left-open) var(--qd18-center) var(--qd18-right-open);
   gap: var(--qd18-gap);
   align-items: stretch;
+  justify-content: start;
 }
 
 .qd18-shell.is-left-collapsed .qd18-grid { grid-template-columns: var(--qd18-left-closed) var(--qd18-center) var(--qd18-right-open); }
 .qd18-shell.is-right-collapsed .qd18-grid { grid-template-columns: var(--qd18-left-open) var(--qd18-center) var(--qd18-right-closed); }
 .qd18-shell.is-left-collapsed.is-right-collapsed .qd18-grid { grid-template-columns: var(--qd18-left-closed) var(--qd18-center) var(--qd18-right-closed); }
 
-.qd18-left, .qd18-center, .qd18-right { min-height: 0; }
+.qd18-left, .qd18-center, .qd18-right { min-height: 0; min-width: 0; overflow: hidden; }
 .qd18-center { width: var(--qd18-center); min-width: var(--qd18-center); max-width: var(--qd18-center); overflow: auto; }
-.qd18-left-open { display: grid; grid-template-columns: minmax(0, 48px) minmax(0, 1fr); gap: 8px; height: 100%; }
+.qd18-left-open { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 8px; height: 100%; width: var(--qd18-left-open); }
+.qd18-icon-spine { width: 44px; max-width: 44px; }
 .qd18-icon-spine, .qd18-left-rail, .qd18-right-rail { display: flex; flex-direction: column; gap: 8px; height: 100%; }
 .qd18-left-open-body, .qd18-right-open, .qd18-right .quickdeck-panel, .qd18-right .quickdeck-panel-content, .qd18-right .quickdeck-drawer-scroll-content { min-height: 0; overflow: auto; }
+
+.qd18-center .quickdeck-selected-cockpit,
+.qd18-center .quickdeck-actor-header,
+.qd18-center .quickdeck-main-resources,
+.qd18-center .quickdeck-defense-buttons,
+.qd18-center .qd18-pinned-actions {
+  max-width: 100%;
+  width: 100%;
+}
+
+.qd18-center .quickdeck-actor-header {
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+}
+
+.qd18-center .quickdeck-actor-header-actions,
+.qd18-center .quickdeck-combat-flow-controls,
+.qd18-center .quickdeck-main-resources,
+.qd18-center .quickdeck-defense-buttons,
+.qd18-center .qd18-pinned-actions {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
 .qd18-rail-button, .qd18-icon-spine-button, .qd18-collapse-button, .qd18-pinned-actions button {
   background: linear-gradient(180deg, #7a5726, #35210f);
   color: #f4e2b2;
