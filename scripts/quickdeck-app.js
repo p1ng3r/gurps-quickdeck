@@ -1034,27 +1034,30 @@ export class QuickDeckApp extends Application {
     game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
   }
 
-  getQd8ShellWidth() {
+  getQd16ShellWidth() {
     const leftWidth = this.isLeftPanelCollapsed ? 64 : 484;
     const centerWidth = 680;
     const rightWidth = this.isRightPanelCollapsed ? 64 : 420;
-    const panelGap = 8;
+    const gap = 8;
     const shellPadding = 16;
-    return leftWidth + centerWidth + rightWidth + panelGap * 2 + shellPadding;
+    const chromeAllowance = 32;
+    return leftWidth + centerWidth + rightWidth + gap * 2 + shellPadding + chromeAllowance;
   }
 
-  scheduleQd8WindowResize() {
+  scheduleQd16WindowResize() {
     if (!this.rendered) return;
     window.requestAnimationFrame(() => {
       const position = this.position ?? {};
-      this.setPosition({ width: this.getQd8ShellWidth(), height: position.height, left: position.left, top: position.top });
+      const targetWidth = this.getQd16ShellWidth();
+      if (Math.abs((position.width ?? 0) - targetWidth) <= 4) return;
+      this.setPosition({ width: targetWidth, height: position.height, left: position.left, top: position.top });
     });
   }
 
   setLeftPanelCollapsed(collapsed) {
     this.isLeftPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd8WindowResize();
+    this.scheduleQd16WindowResize();
   }
 
   toggleLeftPanelCollapsed() { this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed); }
@@ -1062,7 +1065,7 @@ export class QuickDeckApp extends Application {
   setRightPanelCollapsed(collapsed) {
     this.isRightPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd8WindowResize();
+    this.scheduleQd16WindowResize();
   }
 
   toggleRightPanelCollapsed() { this.setRightPanelCollapsed(!this.isRightPanelCollapsed); }
@@ -1072,7 +1075,7 @@ export class QuickDeckApp extends Application {
     this.isRightPanelCollapsed = false;
     this.activeDrawer = drawer;
     this.render(false);
-    this.scheduleQd8WindowResize();
+    this.scheduleQd16WindowResize();
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -3764,7 +3767,7 @@ export class QuickDeckApp extends Application {
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.isRightPanelCollapsed = false;
       this.render();
-      this.scheduleQd8WindowResize();
+      this.scheduleQd16WindowResize();
     });
 
     html.find("[data-action='adjust-resource']").on("click", async (event) => {
