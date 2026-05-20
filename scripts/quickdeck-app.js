@@ -100,14 +100,99 @@ export class QuickDeckApp extends Application {
     const hasQd31 = Boolean(root?.querySelector?.(".qd31-shell"));
     appElement.classList.toggle("qd31-window-active", hasQd31);
   }
-  getQd31WindowWidth() { const center=520,drawerTarget=400,drawerMin=320,gap=8,closedPullTabSpace=40,chromeAllowance=32; const leftOpen=Boolean(this.isRosterDrawerOpen); const rightOpen=Boolean(this.isActionsDrawerOpen); let width=center+chromeAllowance+(leftOpen?drawerTarget+gap:closedPullTabSpace)+(rightOpen?drawerTarget+gap:closedPullTabSpace); const max=Math.max(640,(window.innerWidth||width)-24); if(width>max){ const openCount=Number(leftOpen)+Number(rightOpen); if(openCount>0){ const overflow=width-max; const reducible=(drawerTarget-drawerMin)*openCount; width-=Math.min(overflow,reducible); } } return Math.round(Math.max(640,width)); }
-  getQd31MeasuredWindowWidth() {
-    const shell = this.element?.[0]?.querySelector?.(".qd31-shell");
-    if (!shell) return this.getQd31WindowWidth();
-    const shellWidth = Math.ceil(Math.max(shell.scrollWidth || 0, shell.getBoundingClientRect?.().width || 0));
-    return Math.max(this.getQd31WindowWidth(), shellWidth + 32);
+  getQd31LayoutMetrics() {
+    const centerWidth = 520;
+    const drawerDefaultWidth = 400;
+    const drawerMinWidth = 320;
+    const closedTabWidth = 40;
+    const gap = 8;
+    const shellPadding = 16;
+    const chromeAllowance = 24;
+    const leftOpen = Boolean(this.isRosterDrawerOpen);
+    const rightOpen = Boolean(this.isActionsDrawerOpen);
+
+    let leftDrawerWidth = leftOpen ? drawerDefaultWidth : 0;
+    let rightDrawerWidth = rightOpen ? drawerDefaultWidth : 0;
+
+    const baseShellWidth = shellPadding + centerWidth + (leftOpen ? gap : 0) + (rightOpen ? gap : 0) + (leftOpen ? leftDrawerWidth : closedTabWidth) + (rightOpen ? rightDrawerWidth : closedTabWidth);
+    const maxWindowWidth = Math.max(640, (window.innerWidth || (baseShellWidth + chromeAllowance)) - 24);
+    let targetWindowWidth = baseShellWidth + chromeAllowance;
+
+    if (targetWindowWidth > maxWindowWidth) {
+      const overflow = targetWindowWidth - maxWindowWidth;
+      const totalReducible = (leftOpen ? (drawerDefaultWidth - drawerMinWidth) : 0) + (rightOpen ? (drawerDefaultWidth - drawerMinWidth) : 0);
+      const reduction = Math.min(overflow, totalReducible);
+      if (reduction > 0) {
+        if (leftOpen && rightOpen) {
+          const leftShare = Math.ceil(reduction / 2);
+          const rightShare = Math.floor(reduction / 2);
+          leftDrawerWidth = Math.max(drawerMinWidth, leftDrawerWidth - leftShare);
+          rightDrawerWidth = Math.max(drawerMinWidth, rightDrawerWidth - rightShare);
+        } else if (leftOpen) {
+          leftDrawerWidth = Math.max(drawerMinWidth, leftDrawerWidth - reduction);
+        } else if (rightOpen) {
+          rightDrawerWidth = Math.max(drawerMinWidth, rightDrawerWidth - reduction);
+        }
+      }
+    }
+
+    const shellWidth = shellPadding + centerWidth + (leftOpen ? gap + leftDrawerWidth : closedTabWidth) + (rightOpen ? gap + rightDrawerWidth : closedTabWidth);
+    targetWindowWidth = shellWidth + chromeAllowance;
+
+    return { centerWidth, leftDrawerWidth, rightDrawerWidth, closedTabWidth, gap, shellPadding, chromeAllowance, targetWindowWidth, shellWidth };
   }
-  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const expected=this.getQd31MeasuredWindowWidth(); const current=Number(this.position.width)||expected; const shouldCorrect=current>expected+120; if(Math.abs(current-expected)<=4&&!shouldCorrect)return; const height=Math.max(Number(this.position.height)||0, Number(this._lastPosition?.height)||0); this.setPosition({left:this.position.left,top:this.position.top,width:expected,height:height||this.position.height});}); }
+  getQd31TargetWindowWidth() {
+    return this.getQd31LayoutMetrics().targetWindowWidth;
+  }
+  applyQd31LayoutSizing(metrics) {
+    const root = this.element?.[0] ?? this.element;
+    if (!root) return;
+    const appElement = root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app");
+    const content = appElement?.querySelector?.(".window-content");
+    const shell = root.querySelector?.(".qd31-shell");
+    if (appElement?.classList?.contains("qd31-window-active")) {
+      appElement.style.width = `${metrics.targetWindowWidth}px`;
+      appElement.style.minWidth = `${metrics.targetWindowWidth}px`;
+      appElement.style.maxWidth = `${metrics.targetWindowWidth}px`;
+      if (content) {
+        content.style.width = `${metrics.shellWidth}px`;
+        content.style.minWidth = `${metrics.shellWidth}px`;
+        content.style.maxWidth = `${metrics.shellWidth}px`;
+      }
+      if (shell) {
+        shell.style.setProperty("--qd31-center-width", `${metrics.centerWidth}px`);
+        shell.style.setProperty("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
+        shell.style.setProperty("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
+        shell.style.setProperty("--qd31-shell-width", `${metrics.shellWidth}px`);
+        shell.style.width = `${metrics.shellWidth}px`;
+        shell.style.minWidth = `${metrics.shellWidth}px`;
+        shell.style.maxWidth = `${metrics.shellWidth}px`;
+      }
+    }
+  }
+  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const metrics=this.getQd31LayoutMetrics(); const height=Math.max(Number(this.position.height)||0, Number(this._lastPosition?.height)||0); this.setPosition({left:this.position.left,top:this.position.top,width:metrics.targetWindowWidth,height:height||this.position.height}); this.applyQd31LayoutSizing(metrics); }); }
+
+  close(options) {
+    this.clearQd31InlineSizing();
+    return super.close(options);
+  }
+
+  clearQd31InlineSizing() {
+    const root = this.element?.[0] ?? this.element;
+    const appElement = root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app");
+    const content = appElement?.querySelector?.(".window-content");
+    const shell = root?.querySelector?.(".qd31-shell");
+    appElement?.classList?.remove("qd31-window-active");
+    if (appElement?.style) appElement.style.width = appElement.style.minWidth = appElement.style.maxWidth = "";
+    if (content?.style) content.style.width = content.style.minWidth = content.style.maxWidth = "";
+    if (shell?.style) {
+      shell.style.width = ""; shell.style.minWidth = ""; shell.style.maxWidth = "";
+      shell.style.removeProperty("--qd31-center-width");
+      shell.style.removeProperty("--qd31-left-drawer-width");
+      shell.style.removeProperty("--qd31-right-drawer-width");
+      shell.style.removeProperty("--qd31-shell-width");
+    }
+  }
 
   _getHeaderButtons() {
     const buttons = super._getHeaderButtons();

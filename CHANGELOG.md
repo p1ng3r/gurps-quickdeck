@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased] - v0.8.3.6 force-fit
+
+### Changed
+- Replaces shell measurement-based sizing with deterministic qd31 state-based window fitting.
+- Converts drawer pull tabs into real layout slots so closed drawers no longer rely on absolute overflow.
+- Forces qd31 app/window-content/shell width to the calculated visible UI width to eliminate giant empty space.
+
 ## [Unreleased] - v0.8.3.5 fit-tools
 
 ### Changed

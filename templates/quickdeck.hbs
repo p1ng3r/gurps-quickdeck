@@ -1,4 +1,9 @@
 <section class="qd31-shell {{#if isRosterDrawerOpen}}qd31-left-open{{/if}} {{#if isActionsDrawerOpen}}qd31-right-open{{/if}}" data-active-drawer="{{activeDrawer}}">
+  {{#unless isRosterDrawerOpen}}
+  <div class="qd31-left-tab-slot">
+    <button class="qd31-left-pull-tab" type="button" data-action="toggle-roster-drawer">Roster</button>
+  </div>
+  {{/unless}}
   <aside class="qd31-left-drawer" {{#unless isRosterDrawerOpen}}hidden{{/unless}}>
     <header class="qd31-drawer-header">
       <h3>Active Roster</h3>
@@ -36,8 +41,7 @@
   </aside>
 
   <section class="qd31-center-cockpit">
-    <button class="qd31-left-pull-tab" type="button" data-action="toggle-roster-drawer">Roster</button>
-    <header class="qd31-header"><div class="quickdeck-dev-badge">QD v0.8.3.5 — fit-tools</div><h2>QuickDeck Cockpit</h2></header>
+    <header class="qd31-header"><div class="quickdeck-dev-badge">QD v0.8.3.6 — force-fit</div><h2>QuickDeck Cockpit</h2></header>
     {{#if activeActor}}
     <section class="qd31-actor-card">
       <header class="quickdeck-actor-header"><img class="qd31-actor-portrait qd31-actor-sheet-link" src="{{activeActor.img}}" alt="{{activeActor.name}}" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}" /><div class="quickdeck-actor-identity"><h3 class="qd31-actor-name-link qd31-actor-sheet-link" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}">{{activeActor.name}}</h3><p>{{activeActor.actorType}}</p></div></header>
@@ -89,7 +93,6 @@
       </div>
     </section>
     {{/if}}
-    <button class="qd31-right-pull-tab" type="button" data-action="toggle-actions-drawer" data-drawer="combat">Actions</button>
   </section>
 
   <aside class="qd31-right-drawer" {{#unless isActionsDrawerOpen}}hidden{{/unless}}>
@@ -127,4 +130,10 @@
       <div class="qd31-action-row"><span>QuickDeck settings and tools.</span><button type="button" class="qd31-square-button" data-action="open-reference-index">Refs</button></div>
     </section>
   </aside>
+
+  {{#unless isActionsDrawerOpen}}
+  <div class="qd31-right-tab-slot">
+    <button class="qd31-right-pull-tab" type="button" data-action="toggle-actions-drawer" data-drawer="combat">Actions</button>
+  </div>
+  {{/unless}}
 </section>
