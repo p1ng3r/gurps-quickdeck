@@ -94,9 +94,10 @@ export class QuickDeckApp extends Application {
   closeActionsDrawer() { this.isActionsDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
   toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
   applyQd31WindowClass() {
-    const appElement = this.element?.closest?.(".app") ?? this.element?.[0]?.closest?.(".app");
-    if (!appElement) return;
-    const hasQd31 = Boolean(this.element?.[0]?.querySelector?.(".qd31-shell"));
+    const root = this.element?.[0] ?? this.element;
+    const appElement = root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app");
+    if (!appElement?.classList) return;
+    const hasQd31 = Boolean(root?.querySelector?.(".qd31-shell"));
     appElement.classList.toggle("qd31-window-active", hasQd31);
   }
   getQd31WindowWidth() { const center=520,drawerTarget=400,drawerMin=320,gap=8,closedPullTabSpace=40,chromeAllowance=32; const leftOpen=Boolean(this.isRosterDrawerOpen); const rightOpen=Boolean(this.isActionsDrawerOpen); let width=center+chromeAllowance+(leftOpen?drawerTarget+gap:closedPullTabSpace)+(rightOpen?drawerTarget+gap:closedPullTabSpace); const max=Math.max(640,(window.innerWidth||width)-24); if(width>max){ const openCount=Number(leftOpen)+Number(rightOpen); if(openCount>0){ const overflow=width-max; const reducible=(drawerTarget-drawerMin)*openCount; width-=Math.min(overflow,reducible); } } return Math.round(Math.max(640,width)); }
