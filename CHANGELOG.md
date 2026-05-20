@@ -2,6 +2,36 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.3.1 canvas-fit
+
+### Changed
+- Polishes the qd30 blank-slate center cockpit and sidecars toward the approved canvas mock.
+- Adds compact HP/FP icon, bar, and small square control styling.
+- Restores action sidecar search bars and fixes sidecar focus so drawer tabs do not fall behind the center window.
+
+## [Unreleased] - v0.8.2.0 sidecar
+
+### Changed
+- Replaces the single-grid layout with a center-primary cockpit and optional docked roster/action sidecars.
+- Collapsing side panels no longer reserves empty grid space around the center cockpit.
+
+## [Unreleased] - v0.8.2.1 sidecar-tabs
+
+### Changed
+- Reduces the center cockpit to a compact base width and adds visible in-app pull tabs for roster and action sidecars.
+- Keeps collapsed sidecars from reserving layout space.
+
+## [Unreleased] - v0.8.1.9 left-fit
+
+### Changed
+- Repairs qd18 layout positioning so the roster starts near the left edge, the icon spine is attached to the left pane, and the center/right panes remain visible.
+
+## [Unreleased] - v0.8.1.8 functional-pane
+
+### Changed
+- Rebuilds the three-pane layout around functional roles: roster left, selected actor center, complete action browser right.
+- Keeps the center actor cockpit as the primary visible pane with five pinned action slots.
+
 ## [Unreleased] - v0.8.1.6 true-clean-pane
 
 ### Changed
@@ -113,3 +143,9 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Drag/drop freeze caused by accidental actor.sheet access.
+
+## [Unreleased] - v0.8.2.2 real-sidecars
+
+### Changed
+- Replaces the failed in-window sidecar fallback with real separate Application sidecar windows for roster and actions.
+- Keeps the center cockpit as its own resizable primary window and reduces width without reducing height.
