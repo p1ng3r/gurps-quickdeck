@@ -3359,3 +3359,21 @@
 .qd18-pull-tab { min-width:96px; padding:0.38rem 0.5rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
 .qd18-center .quickdeck-selected-cockpit,.qd18-center .quickdeck-actor-header,.qd18-center .quickdeck-main-resources,.qd18-center .quickdeck-defense-buttons,.qd18-center .qd18-pinned-actions{max-width:100%;width:100%}
 .qd18-pinned-actions { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; margin-top:10px; }
+
+/* qd30 canvas-fit */
+.qd30-center-app{padding:.6rem;background:linear-gradient(180deg,#1f120a,#0d0805);color:#f3e2b8;height:100%;overflow:auto}
+.qd30-center-header,.qd30-sidecar-header{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.4rem .6rem;border:1px solid rgba(199,154,56,.6);background:linear-gradient(180deg,#3b2715,#1a110a)}
+.qd30-toolbar,.qd30-command-grid,.qd30-defense-grid,.qd30-pinned-grid,.qd30-actions-tabs{display:grid;gap:.35rem}.qd30-toolbar{grid-template-columns:repeat(2,1fr)}.qd30-command-grid{grid-template-columns:repeat(4,1fr)}.qd30-defense-grid{grid-template-columns:repeat(3,1fr)}.qd30-pinned-grid{grid-template-columns:repeat(5,1fr)}.qd30-actions-tabs{grid-template-columns:repeat(4,1fr);margin:.4rem 0}
+.qd30-actor-card,.qd30-sidecar{border:1px solid rgba(199,154,56,.5);background:linear-gradient(180deg,rgba(74,48,28,.5),rgba(15,9,6,.9));padding:.55rem;border-radius:8px}
+.qd30-resource-grid{display:grid;grid-template-columns:1fr 1fr .8fr;gap:.45rem;margin:.5rem 0}
+.qd30-resource-card{display:grid;grid-template-columns:auto 1fr;gap:.35rem;align-items:center;padding:.35rem;border:1px solid rgba(199,154,56,.5);background:#1b120b}
+.qd30-resource-icon{width:1.4rem;height:1.4rem;display:grid;place-items:center;background:#3d2412;border:1px solid #b98c49;border-radius:4px}
+.qd30-resource-bar{grid-column:1/-1;height:8px;background:#0f0905;border:1px solid #7e5d2e}.qd30-resource-bar span{display:block;height:100%;background:linear-gradient(90deg,#7a1f17,#cc7c32)}
+.qd30-resource-controls{grid-column:1/-1;display:flex;align-items:center;gap:.25rem}.qd30-resource-controls input{width:56px;height:24px}
+.qd30-square-button{width:24px;height:24px;padding:0}
+.qd30-roster-list{display:flex;flex-direction:column;gap:.4rem;max-height:38vh;overflow:auto}
+.qd30-actor-row,.qd30-action-row{display:flex;justify-content:space-between;gap:.4rem;align-items:center;padding:.35rem;border:1px solid rgba(199,154,56,.4);background:#2a1a0f}
+.qd30-search{width:100%;margin:.45rem 0;height:28px}
+.qd30-sidecar{height:100%;display:flex;flex-direction:column;overflow:hidden}.qd30-sidecar .qd30-roster-list,.qd30-sidecar .qd30-action-row{overflow:visible}.qd30-sidecar section,.qd30-sidecar{overflow:auto}
+.qd30-center-app button,.qd30-sidecar button{border:1px solid #c79a38;background:linear-gradient(180deg,#6e4a23,#3a230f);color:#f5e7c5;border-radius:4px}
+.qd30-defense-button{font-weight:700}

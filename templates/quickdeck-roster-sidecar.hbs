@@ -1,19 +1,12 @@
-<section class="qd22-roster-sidecar">
-<h3>QuickDeck Roster <button type="button" data-action="close-roster-sidecar">Close</button></h3>
-<section data-drop-zone="roster">
-<button type="button" data-action="clear-roster">Clear</button>
-{{#each rosterActors as |actor|}}
-<div>
-  <button type="button" data-action="open-actor" data-actor-id="{{actor.id}}"><img src="{{actor.img}}"/>{{actor.name}}</button>
-  <button type="button" data-action="remove-actor" data-actor-id="{{actor.id}}">Remove</button>
-</div>
-{{/each}}
-</section>
-<input type="search" value="{{availableSearch}}" data-action="available-search" />
-{{#each availableActors as |actor|}}
-<div data-search-row="available" data-search-text="{{actor.searchText}}">
-  <span>{{actor.name}}</span>
-  <button type="button" data-action="add-actor" data-actor-id="{{actor.id}}">Add</button>
-</div>
-{{/each}}
+<section class="qd30-sidecar">
+  <header class="qd30-sidecar-header"><h3>QuickDeck Roster</h3><button class="qd30-square-button" type="button" data-action="clear-roster" title="Clear roster">🗑</button><button class="qd30-square-button" type="button" data-action="close-roster-sidecar">✕</button></header>
+  <section class="qd30-roster-list" data-drop-zone="roster">
+    {{#each rosterActors as |actor|}}
+    <article class="qd30-actor-row"><button type="button" data-action="open-actor" data-actor-id="{{actor.id}}"><img src="{{actor.img}}"/><span>{{actor.name}}</span><small>{{actor.actorType}}</small><div class="qd30-resource-bar"><span style="width: {{actor.hpPct}}%;"></span></div><div class="qd30-resource-bar qd30-fp"><span style="width: {{actor.fpPct}}%;"></span></div></button><button class="qd30-square-button" type="button" data-action="remove-actor" data-actor-id="{{actor.id}}">−</button></article>
+    {{/each}}
+  </section>
+  <section>
+    <input class="qd30-search" type="search" value="{{availableSearch}}" data-action="available-search" placeholder="Search available actors" />
+    <div class="qd30-roster-list">{{#each availableActors as |actor|}}<div class="qd30-actor-row" data-search-row="available" data-search-text="{{actor.searchText}}"><span>{{actor.name}}</span><button type="button" data-action="add-actor" data-actor-id="{{actor.id}}">Add</button></div>{{/each}}</div>
+  </section>
 </section>

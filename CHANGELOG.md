@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.3.1 canvas-fit
+
+### Changed
+- Polishes the qd30 blank-slate center cockpit and sidecars toward the approved canvas mock.
+- Adds compact HP/FP icon, bar, and small square control styling.
+- Restores action sidecar search bars and fixes sidecar focus so drawer tabs do not fall behind the center window.
+
 ## [Unreleased] - v0.8.2.0 sidecar
 
 ### Changed
