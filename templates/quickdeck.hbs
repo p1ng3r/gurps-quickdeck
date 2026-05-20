@@ -1,10 +1,10 @@
-<section class="quickdeck-shell quickdeck-command-desk-shell qd8-shell {{#unless isLeftPanelOpen}}is-left-collapsed{{/unless}} {{#unless isRightPanelOpen}}is-right-collapsed{{/unless}}">
-  <header class="qd8-header">
-    <div class="quickdeck-dev-badge qd8-dev-badge" aria-hidden="true">QD v0.8.1.3 — foundry-ui</div>
-    <div class="qd8-command-plaque" aria-hidden="true">GURPS QUICKDECK COMMAND DESK</div>
+<section class="qd15-shell quickdeck-command-desk-shell {{#unless isLeftPanelOpen}}is-left-collapsed{{/unless}} {{#unless isRightPanelOpen}}is-right-collapsed{{/unless}}">
+  <header class="qd15-header">
+    <div class="quickdeck-dev-badge qd8-dev-badge" aria-hidden="true">QD v0.8.1.5 — clean-room</div>
+    <div class="qd8-command-plaque" aria-hidden="true">COMMAND DESK</div>
   </header>
-  <div class="qd8-grid">
-  <aside class="qd8-left-slot">
+  <div class="qd15-grid">
+  <aside class="qd15-left">
     {{#if isLeftPanelOpen}}
   <aside class="quickdeck-sidebar qd8-left qd8-left-open">
     <div class="qd8-icon-spine">
@@ -137,23 +137,22 @@
     </div>
   </aside>
     {{else}}
-    <div class="qd8-left-rail">
-      <button type="button" data-action="open-left-panel" class="qd8-rail-button">Roster</button>
-      <button type="button" data-action="open-left-panel" class="qd8-rail-button">Actors</button>
-      <button type="button" data-action="open-reference-index" class="qd8-rail-button">OVR</button>
-      <button type="button" data-action="open-chat" class="qd8-rail-button">CHT</button>
+    <div class="qd15-left-rail">
+      <button type="button" data-action="open-left-panel" class="qd15-rail-button">Roster</button>
+      <button type="button" data-action="open-left-panel" class="qd15-rail-button">Actors</button>
+      <button type="button" data-action="open-reference-index" class="qd15-rail-button">OVR</button>
+      <button type="button" data-action="open-chat" class="qd15-rail-button">CHT</button>
     </div>
     {{/if}}
   </aside>
 
-  <main class="quickdeck-main qd8-center">
+  <main class="qd15-center quickdeck-main">
     <div class="quickdeck-window-actions">
       <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Local Overrides" aria-label="Local Overrides">Overrides</button>
     </div>
     <div class="quickdeck-content">
       <div class="quickdeck-stage">
-        <div class="quickdeck-command-title" aria-label="GURPS QuickDeck Command Desk">GURPS QUICKDECK COMMAND DESK</div>
-        <div class="qd8-quick-actions-strip" aria-label="Quick Actions">
+                <div class="qd8-quick-actions-strip" aria-label="Quick Actions">
           <button type="button" disabled>All-Out Attack</button><button type="button" disabled>Defend</button><button type="button" disabled>Aim</button><button type="button" disabled>Evaluate</button><button type="button" disabled>More</button>
         </div>
         <div class="quickdeck-stage-backdrop" aria-hidden="true"></div>
@@ -297,7 +296,7 @@
 
   </main>
 
-  <aside class="qd8-right-slot">
+  <aside class="qd15-right">
     {{#if isRightPanelOpen}}
       <aside class="quickdeck-drawer-stack qd8-right qd8-right-open">
         <div class="qd8-right-open-toolbar">
@@ -867,11 +866,11 @@
         {{/if}}
       </aside>
     {{else}}
-      <div class="qd8-right-rail">
-        <button type="button" data-action="open-right-drawer" data-drawer="combat" class="qd8-rail-button">Combat</button>
-        <button type="button" data-action="open-right-drawer" data-drawer="skills" class="qd8-rail-button">Skills</button>
-                <button type="button" data-action="open-right-drawer" data-drawer="spells" class="qd8-rail-button">Spells</button>
-        <button type="button" data-action="open-right-drawer" data-drawer="settings" class="qd8-rail-button">Settings</button>
+      <div class="qd15-right-rail">
+        <button type="button" data-action="open-right-drawer" data-drawer="combat" class="qd15-rail-button">Combat</button>
+        <button type="button" data-action="open-right-drawer" data-drawer="skills" class="qd15-rail-button">Skills</button>
+                <button type="button" data-action="open-right-drawer" data-drawer="spells" class="qd15-rail-button">Spells</button>
+        <button type="button" data-action="open-right-drawer" data-drawer="settings" class="qd15-rail-button">Settings</button>
       </div>
     {{/if}}
   </aside>

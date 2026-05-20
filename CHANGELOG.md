@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.1.5 clean-room
+
+### Changed
+- Replaces the wrapped qd8 layout with a clean-room three-pane QuickDeck shell.
+- Preserves existing behavior while rebuilding the UI structure around a true left / center / right pane model.
+
 ## [Unreleased] - v0.8.1.3 foundry-three-panel-ui
 
 ### Added
