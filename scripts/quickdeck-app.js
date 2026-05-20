@@ -58,8 +58,8 @@ export class QuickDeckApp extends Application {
     this._lastNativeWindowIds = new Set();
     this._nativeWindowFocusLock = null;
     this._stateLoadedFromSettings = false;
-    this.isLeftPanelCollapsed = false;
-    this.isRightPanelCollapsed = false;
+    this.isRosterDrawerOpen = false;
+    this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
     this.loadPersistedState();
   }
@@ -71,11 +71,127 @@ export class QuickDeckApp extends Application {
       popOut: true,
       minimizable: true,
       resizable: true,
-      width: 1580,
+      width: 620,
       height: 820,
+      minWidth: 520,
       title: "GURPS QuickDeck",
       template: TEMPLATE_PATH
     });
+  }
+
+
+  async _render(...args) {
+    const result = await super._render(...args);
+    this.applyQd31WindowClass();
+    this.scheduleQd31WindowResize();
+    return result;
+  }
+
+  openRosterDrawer() { this.isRosterDrawerOpen = true; this.scheduleQd31WindowResize(); this.render(false); }
+  closeRosterDrawer() { this.isRosterDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
+  toggleRosterDrawer() { this.isRosterDrawerOpen ? this.closeRosterDrawer() : this.openRosterDrawer(); }
+  openActionsDrawer(drawer = null) { if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer; this.isActionsDrawerOpen = true; this.scheduleQd31WindowResize(); this.render(false); }
+  closeActionsDrawer() { this.isActionsDrawerOpen = false; this.scheduleQd31WindowResize(); this.render(false); }
+  toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
+  applyQd31WindowClass() {
+    const root = this.element?.[0] ?? this.element;
+    const appElement = root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app");
+    if (!appElement?.classList) return;
+    const hasQd31 = Boolean(root?.querySelector?.(".qd31-shell"));
+    appElement.classList.toggle("qd31-window-active", hasQd31);
+  }
+  getQd31LayoutMetrics() {
+    const centerWidth = 520;
+    const drawerDefaultWidth = 400;
+    const drawerMinWidth = 320;
+    const closedTabWidth = 40;
+    const gap = 8;
+    const shellPadding = 16;
+    const chromeAllowance = 24;
+    const leftOpen = Boolean(this.isRosterDrawerOpen);
+    const rightOpen = Boolean(this.isActionsDrawerOpen);
+
+    let leftDrawerWidth = leftOpen ? drawerDefaultWidth : 0;
+    let rightDrawerWidth = rightOpen ? drawerDefaultWidth : 0;
+
+    const baseShellWidth = shellPadding + centerWidth + (leftOpen ? gap : 0) + (rightOpen ? gap : 0) + (leftOpen ? leftDrawerWidth : closedTabWidth) + (rightOpen ? rightDrawerWidth : closedTabWidth);
+    const maxWindowWidth = Math.max(640, (window.innerWidth || (baseShellWidth + chromeAllowance)) - 24);
+    let targetWindowWidth = baseShellWidth + chromeAllowance;
+
+    if (targetWindowWidth > maxWindowWidth) {
+      const overflow = targetWindowWidth - maxWindowWidth;
+      const totalReducible = (leftOpen ? (drawerDefaultWidth - drawerMinWidth) : 0) + (rightOpen ? (drawerDefaultWidth - drawerMinWidth) : 0);
+      const reduction = Math.min(overflow, totalReducible);
+      if (reduction > 0) {
+        if (leftOpen && rightOpen) {
+          const leftShare = Math.ceil(reduction / 2);
+          const rightShare = Math.floor(reduction / 2);
+          leftDrawerWidth = Math.max(drawerMinWidth, leftDrawerWidth - leftShare);
+          rightDrawerWidth = Math.max(drawerMinWidth, rightDrawerWidth - rightShare);
+        } else if (leftOpen) {
+          leftDrawerWidth = Math.max(drawerMinWidth, leftDrawerWidth - reduction);
+        } else if (rightOpen) {
+          rightDrawerWidth = Math.max(drawerMinWidth, rightDrawerWidth - reduction);
+        }
+      }
+    }
+
+    const shellWidth = shellPadding + centerWidth + (leftOpen ? gap + leftDrawerWidth : closedTabWidth) + (rightOpen ? gap + rightDrawerWidth : closedTabWidth);
+    targetWindowWidth = shellWidth + chromeAllowance;
+
+    return { centerWidth, leftDrawerWidth, rightDrawerWidth, closedTabWidth, gap, shellPadding, chromeAllowance, targetWindowWidth, shellWidth };
+  }
+  getQd31TargetWindowWidth() {
+    return this.getQd31LayoutMetrics().targetWindowWidth;
+  }
+  applyQd31LayoutSizing(metrics) {
+    const root = this.element?.[0] ?? this.element;
+    if (!root) return;
+    const appElement = root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app");
+    const content = appElement?.querySelector?.(".window-content");
+    const shell = root.querySelector?.(".qd31-shell");
+    if (appElement?.classList?.contains("qd31-window-active")) {
+      appElement.style.width = `${metrics.targetWindowWidth}px`;
+      appElement.style.minWidth = `${metrics.targetWindowWidth}px`;
+      appElement.style.maxWidth = `${metrics.targetWindowWidth}px`;
+      if (content) {
+        content.style.width = `${metrics.shellWidth}px`;
+        content.style.minWidth = `${metrics.shellWidth}px`;
+        content.style.maxWidth = `${metrics.shellWidth}px`;
+      }
+      if (shell) {
+        shell.style.setProperty("--qd31-center-width", `${metrics.centerWidth}px`);
+        shell.style.setProperty("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
+        shell.style.setProperty("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
+        shell.style.setProperty("--qd31-shell-width", `${metrics.shellWidth}px`);
+        shell.style.width = `${metrics.shellWidth}px`;
+        shell.style.minWidth = `${metrics.shellWidth}px`;
+        shell.style.maxWidth = `${metrics.shellWidth}px`;
+      }
+    }
+  }
+  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const metrics=this.getQd31LayoutMetrics(); const height=Math.max(Number(this.position.height)||0, Number(this._lastPosition?.height)||0); this.setPosition({left:this.position.left,top:this.position.top,width:metrics.targetWindowWidth,height:height||this.position.height}); this.applyQd31LayoutSizing(metrics); }); }
+
+  close(options) {
+    this.clearQd31InlineSizing();
+    return super.close(options);
+  }
+
+  clearQd31InlineSizing() {
+    const root = this.element?.[0] ?? this.element;
+    const appElement = root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app");
+    const content = appElement?.querySelector?.(".window-content");
+    const shell = root?.querySelector?.(".qd31-shell");
+    appElement?.classList?.remove("qd31-window-active");
+    if (appElement?.style) appElement.style.width = appElement.style.minWidth = appElement.style.maxWidth = "";
+    if (content?.style) content.style.width = content.style.minWidth = content.style.maxWidth = "";
+    if (shell?.style) {
+      shell.style.width = ""; shell.style.minWidth = ""; shell.style.maxWidth = "";
+      shell.style.removeProperty("--qd31-center-width");
+      shell.style.removeProperty("--qd31-left-drawer-width");
+      shell.style.removeProperty("--qd31-right-drawer-width");
+      shell.style.removeProperty("--qd31-shell-width");
+    }
   }
 
   _getHeaderButtons() {
@@ -1034,30 +1150,16 @@ export class QuickDeckApp extends Application {
     game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
   }
 
-  getQd16ShellWidth() {
-    const leftWidth = this.isLeftPanelCollapsed ? 64 : 484;
-    const centerWidth = 680;
-    const rightWidth = this.isRightPanelCollapsed ? 64 : 420;
-    const gap = 8;
-    const shellPadding = 16;
-    const chromeAllowance = 32;
-    return leftWidth + centerWidth + rightWidth + gap * 2 + shellPadding + chromeAllowance;
+  getQd18ShellWidth() {
+    const configuredWidth = Number(this.position?.width ?? this.options?.width ?? 780);
+    return Math.max(720, configuredWidth);
   }
 
-  scheduleQd16WindowResize() {
-    if (!this.rendered) return;
-    window.requestAnimationFrame(() => {
-      const position = this.position ?? {};
-      const targetWidth = this.getQd16ShellWidth();
-      if (Math.abs((position.width ?? 0) - targetWidth) <= 4) return;
-      this.setPosition({ width: targetWidth, height: position.height, left: position.left, top: position.top });
-    });
-  }
+  scheduleQd18WindowResize() {}
 
   setLeftPanelCollapsed(collapsed) {
     this.isLeftPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   toggleLeftPanelCollapsed() { this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed); }
@@ -1065,7 +1167,6 @@ export class QuickDeckApp extends Application {
   setRightPanelCollapsed(collapsed) {
     this.isRightPanelCollapsed = Boolean(collapsed);
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   toggleRightPanelCollapsed() { this.setRightPanelCollapsed(!this.isRightPanelCollapsed); }
@@ -1075,7 +1176,6 @@ export class QuickDeckApp extends Application {
     this.isRightPanelCollapsed = false;
     this.activeDrawer = drawer;
     this.render(false);
-    this.scheduleQd16WindowResize();
   }
 
   applyDefaultDrawerIfNeeded() {
@@ -2003,13 +2103,14 @@ export class QuickDeckApp extends Application {
   }
 
   scheduleChatFocus() {
-    const lock = this._nativeWindowFocusLock;
-    const previousWindowIds = lock?.previousWindowIds ?? this.getNativeWindowIds();
-    if (!lock) this.startNativeWindowFocusLock(previousWindowIds, "chat");
-    this.focusChatSidebar();
-    globalThis.setTimeout?.(() => this.focusChatSidebar(), 0);
-    globalThis.setTimeout?.(() => this.focusChatSidebar(), 100);
-    this.scheduleNativeWindowFocus(previousWindowIds);
+    try {
+      ui?.sidebar?.expand?.();
+      ui?.sidebar?.activateTab?.("chat");
+      this.focusChatSidebar();
+    } catch (error) {
+      console.warn("gurps-quickdeck | Could not activate Chat sidebar tab.", error);
+      ui.notifications?.warn("QuickDeck: Could not activate Chat sidebar.");
+    }
   }
 
   extractKnownHitLocation(attack) {
@@ -3320,14 +3421,20 @@ export class QuickDeckApp extends Application {
       .map((id) => game.actors.get(id))
       .filter((actor) => actor && actor.id);
 
-    const availableActors = allActors.map((actor) => ({
+    const availableActors = allActors
+      .map((actor) => ({
         id: actor.id,
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
         actorType: actor.type ? String(actor.type) : null,
         isInRoster: this.rosterActorIds.includes(actor.id),
         searchText: this.buildSearchText([actor.name, actor.type])
-      }));
+      }))
+      .filter((actor) => {
+        if (!actor.actorType) return true;
+        const type = actor.actorType.toLowerCase();
+        return type === "character" || type === "npc";
+      });
 
     const activeActor = this.getActiveActor();
     const shouldHydrateDerivedData = Boolean(activeActor);
@@ -3525,10 +3632,8 @@ export class QuickDeckApp extends Application {
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
-      isLeftPanelCollapsed: this.isLeftPanelCollapsed,
-      isLeftPanelOpen: !this.isLeftPanelCollapsed,
-      isRightPanelCollapsed: this.isRightPanelCollapsed,
-      isRightPanelOpen: !this.isRightPanelCollapsed,
+      isRosterDrawerOpen: this.isRosterDrawerOpen,
+      isActionsDrawerOpen: this.isActionsDrawerOpen,
       isCombatDrawerOpen: this.activeDrawer === "combat",
       isSkillsDrawerOpen: this.activeDrawer === "skills",
       isQuickSkillsDrawerOpen: this.activeDrawer === "quick-skills",
@@ -3562,7 +3667,7 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='add-actor']").on("click", (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
       this.ensureActorTab(actorId);
@@ -3579,14 +3684,14 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='open-sheet']").on("click", (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       if (!actorId || !game.actors.has(actorId)) return;
       this.openActorSheet(actorId);
     });
 
     html.find("[data-action='drop-token']").on("click", async (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
       try {
@@ -3610,7 +3715,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='remove-actor']").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       if (!actorId) return;
 
       this.cancelTokenDrop({ render: false });
@@ -3622,7 +3727,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='open-actor']").on("click", (event) => {
       event.preventDefault();
       if (event.detail > 1) return;
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
       if (this._actorSelectTimeout) clearTimeout(this._actorSelectTimeout);
@@ -3637,13 +3742,13 @@ export class QuickDeckApp extends Application {
       }, 225);
     });
 
-    html.find("[data-action='open-actor']").on("dblclick", (event) => {
+    html.find("[data-action='open-actor'], [data-action='open-active-actor-sheet']").on("dblclick", (event) => {
       event.preventDefault();
       if (this._actorSelectTimeout) {
         clearTimeout(this._actorSelectTimeout);
         this._actorSelectTimeout = null;
       }
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
       if (this.activeActorId && this.activeActorId !== actorId) {
@@ -3687,7 +3792,7 @@ export class QuickDeckApp extends Application {
     });
 
     html.find("[data-action='toggle-quick-skill']").on("change", (event) => {
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const skillKey = event.currentTarget.dataset.skillKey;
       if (!actorId || !skillKey) return;
 
@@ -3698,7 +3803,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='unpin-quick-skill']").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const skillKey = event.currentTarget.dataset.skillKey;
       if (!actorId || !skillKey) return;
 
@@ -3710,7 +3815,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='toggle-favorite-attack']").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const attackKey = event.currentTarget.dataset.attackKey;
       if (!actorId || !attackKey) return;
 
@@ -3723,7 +3828,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='toggle-favorite-spell']").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const spellKey = event.currentTarget.dataset.spellKey;
       if (!actorId || !spellKey) return;
 
@@ -3734,52 +3839,34 @@ export class QuickDeckApp extends Application {
     });
 
 
-    html.find("[data-action='open-left-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setLeftPanelCollapsed(false);
-    });
-
-    html.find("[data-action='close-left-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setLeftPanelCollapsed(true);
-    });
-
-    html.find("[data-action='open-right-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setRightPanelCollapsed(false);
-    });
-
-    html.find("[data-action='close-right-panel']").on("click", (event) => {
-      event.preventDefault();
-      this.setRightPanelCollapsed(true);
-    });
-
-    html.find("[data-action='open-right-drawer']").on("click", (event) => {
-      event.preventDefault();
-      this.openDrawerFromCollapsedRail(event.currentTarget.dataset.drawer);
-    });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();
       const drawer = event.currentTarget.dataset.drawer;
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
-
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
-      this.isRightPanelCollapsed = false;
-      this.render();
-      this.scheduleQd16WindowResize();
+      this.isActionsDrawerOpen = true;
+      this.render(false);
+      this.scheduleQd31WindowResize();
     });
+
+    html.find("[data-action='open-roster-drawer'], [data-action='open-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.openRosterDrawer(); });
+    html.find("[data-action='close-roster-drawer'], [data-action='close-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.closeRosterDrawer(); });
+    html.find("[data-action='toggle-roster-drawer']").on("click", (event) => { event.preventDefault(); this.toggleRosterDrawer(); });
+    html.find("[data-action='open-actions-drawer'], [data-action='open-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
+    html.find("[data-action='close-actions-drawer'], [data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
+    html.find("[data-action='toggle-actions-drawer']").on("click", (event) => { event.preventDefault(); this.toggleActionsDrawer(event.currentTarget.dataset.drawer); });
 
     html.find("[data-action='adjust-resource']").on("click", async (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const resource = event.currentTarget.dataset.resource;
       const delta = event.currentTarget.dataset.delta;
       await this.adjustActorResource(actorId, resource, delta);
     });
 
     html.find("[data-action='set-resource']").on("change", async (event) => {
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const resource = event.currentTarget.dataset.resource;
       await this.setActorResourceValue(actorId, resource, event.currentTarget.value);
     });
@@ -3792,7 +3879,7 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='roll-defense']").on("click", async (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const defense = event.currentTarget.dataset.defense;
       const value = event.currentTarget.dataset.value;
       if (!actorId || !defense) return;
@@ -3818,6 +3905,10 @@ export class QuickDeckApp extends Application {
         this.cancelTargetOpponentMode({ render: false, restore: true });
         ui.notifications?.warn("QuickDeck: Could not start targeting mode.");
       }
+    });
+    html.find("[data-action='target-action']").on("click", (event) => {
+      event.preventDefault();
+      this.startTargetOpponentMode(-1);
     });
 
     html.find("[data-action='open-modifier-bucket']").on("click", (event) => {
@@ -3847,7 +3938,7 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='roll-attack']").on("click", async (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const attackIndex = Number(event.currentTarget.dataset.attackIndex);
       if (!actorId || Number.isNaN(attackIndex)) {
         console.warn("gurps-quickdeck | Missing actorId or attackIndex for attack click.", { actorId, attackIndex });
@@ -3884,7 +3975,7 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const attackIndex = Number(event.currentTarget.dataset.attackIndex);
       if (!actorId || Number.isNaN(attackIndex)) return;
       await this.triggerDamageRoll(actorId, attackIndex);
@@ -3892,7 +3983,7 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='roll-skill']").on("click", async (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const skillIndex = Number(event.currentTarget.dataset.skillIndex);
       if (!actorId || Number.isNaN(skillIndex)) return;
 
@@ -3925,7 +4016,7 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='roll-spell']").on("click", async (event) => {
       event.preventDefault();
-      const actorId = event.currentTarget.dataset.actorId;
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const spellIndex = Number(event.currentTarget.dataset.spellIndex);
       if (!actorId || Number.isNaN(spellIndex)) return;
 
@@ -4008,4 +4099,5 @@ export class QuickDeckApp extends Application {
     this.applyQuickSkillsFilter(html);
     this.applySpellsFilter(html);
   }
+
 }
