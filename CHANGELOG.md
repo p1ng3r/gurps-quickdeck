@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.3.3 qd31-complete
+
+### Changed
+- Completes the qd31 drawer-cockpit template by replacing placeholders with real HP/FP/Move controls, pinned slots, roster cards, and action drawer rows.
+- Keeps drawer architecture while preserving QuickDeck action hooks.
+
 ## [Unreleased] - v0.8.3.1 canvas-fit
 
 ### Changed

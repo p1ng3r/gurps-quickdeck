@@ -3321,14 +3321,20 @@ export class QuickDeckApp extends Application {
       .map((id) => game.actors.get(id))
       .filter((actor) => actor && actor.id);
 
-    const availableActors = allActors.map((actor) => ({
+    const availableActors = allActors
+      .map((actor) => ({
         id: actor.id,
         name: actor.name,
         img: actor.img || "icons/svg/mystery-man.svg",
         actorType: actor.type ? String(actor.type) : null,
         isInRoster: this.rosterActorIds.includes(actor.id),
         searchText: this.buildSearchText([actor.name, actor.type])
-      }));
+      }))
+      .filter((actor) => {
+        if (!actor.actorType) return true;
+        const type = actor.actorType.toLowerCase();
+        return type === "character" || type === "npc";
+      });
 
     const activeActor = this.getActiveActor();
     const shouldHydrateDerivedData = Boolean(activeActor);
@@ -3990,12 +3996,4 @@ export class QuickDeckApp extends Application {
     this.applySpellsFilter(html);
   }
 
-  bringApplicationToFront(app) {
-    if (!app) return;
-    if (typeof app.bringToTop === "function") app.bringToTop();
-    if (app.element?.length) app.element.css("z-index", String(++_maxZ));
-  }
 }
-
-
-const _maxZ = 100;
