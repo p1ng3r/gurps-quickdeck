@@ -3208,3 +3208,23 @@
   min-height: 26px;
   font-size: 1.45rem;
 }
+
+/* v0.8.1.2 clean three-panel shell */
+.qd8-shell { --qd8-left-open: 420px; --qd8-left-closed: 64px; --qd8-center: 640px; --qd8-right-open: 360px; --qd8-right-closed: 64px; --qd8-gap: 8px; display:flex; flex-direction:column; gap:8px; padding:8px; min-width:0; }
+.qd8-shell * { box-sizing: border-box; }
+.qd8-header { display:flex; justify-content:space-between; align-items:center; gap:8px; }
+.qd8-dev-badge { font-size:12px; font-weight:700; }
+.qd8-grid { display:grid; grid-template-columns: var(--qd8-left-open) var(--qd8-center) var(--qd8-right-open); gap:var(--qd8-gap); justify-content:center; align-items:stretch; width:100%; min-width:0; }
+.qd8-shell.is-left-collapsed .qd8-grid { grid-template-columns: var(--qd8-left-closed) var(--qd8-center) var(--qd8-right-open); }
+.qd8-shell.is-right-collapsed .qd8-grid { grid-template-columns: var(--qd8-left-open) var(--qd8-center) var(--qd8-right-closed); }
+.qd8-shell.is-left-collapsed.is-right-collapsed .qd8-grid { grid-template-columns: var(--qd8-left-closed) var(--qd8-center) var(--qd8-right-closed); }
+.qd8-shell .qd8-center, .qd8-shell .qd8-left, .qd8-shell .qd8-right { min-width:0; overflow:hidden; }
+.qd8-left-open { display:grid; grid-template-columns:40px 1fr; gap:8px; height:100%; }
+.qd8-left-panels, .qd8-drawer-body { display:flex; flex-direction:column; gap:8px; overflow:auto; min-height:0; }
+.qd8-panel { border:1px solid rgba(240,205,122,.35); border-radius:8px; padding:8px; background:rgba(8,6,4,.7); }
+.qd8-panel-header { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.qd8-left-rail, .qd8-right-rail { display:flex; flex-direction:column; gap:8px; align-items:stretch; }
+.qd8-center { width:var(--qd8-center); }
+.qd8-cockpit { height:100%; overflow:auto; }
+.qd8-drawer-tabs { display:flex; flex-wrap:wrap; gap:6px; }
+.qd8-quick-actions-strip { display:flex; gap:6px; align-items:center; margin-top:8px; }

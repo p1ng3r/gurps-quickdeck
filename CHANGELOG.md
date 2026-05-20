@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased] - v0.8.1.2 clean-three-panel-shell
+
+### Changed
+- Replaced the broken wrapped v0.7 shell attempt with a clean qd8 three-panel DOM.
+- Preserved existing QuickDeck data-action behavior.
+- Kept center cockpit fixed width.
+
 ## [Unreleased] - v0.6.0 release candidate
 
 ### Added
