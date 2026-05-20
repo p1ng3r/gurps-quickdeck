@@ -1037,7 +1037,7 @@ export class QuickDeckApp extends Application {
 
   setLeftPanelCollapsed(isCollapsed, { render = true } = {}) {
     this.isLeftPanelCollapsed = Boolean(isCollapsed);
-    if (render) this.render();
+    if (render) this.render(false, { focus: false });
   }
 
   toggleLeftPanelCollapsed({ render = true } = {}) {
@@ -1046,7 +1046,7 @@ export class QuickDeckApp extends Application {
 
   setRightPanelCollapsed(isCollapsed, { render = true } = {}) {
     this.isRightPanelCollapsed = Boolean(isCollapsed);
-    if (render) this.render();
+    if (render) this.render(false, { focus: false });
   }
 
   toggleRightPanelCollapsed({ render = true } = {}) {
@@ -1057,7 +1057,7 @@ export class QuickDeckApp extends Application {
     if (!drawer || !VALID_DRAWERS.has(drawer)) return;
     this.activeDrawer = drawer;
     this.isRightPanelCollapsed = false;
-    if (render) this.render();
+    if (render) this.render(false, { focus: false });
   }
 
   applyDefaultDrawerIfNeeded() {

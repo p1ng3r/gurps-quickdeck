@@ -137,7 +137,7 @@
   </aside>
 
   <main class="quickdeck-center-command-area">
-    <main class="quickdeck-main">
+    <section class="quickdeck-main">
     <div class="quickdeck-window-actions">
       <button type="button" data-action="open-reference-index" class="quickdeck-open-pdf-sources-button" title="Local Overrides" aria-label="Local Overrides">Overrides</button>
     </div>
@@ -281,8 +281,7 @@
           </section>
         {{/if}}
       </div>
-
-    </main>
+    </section>
   </main>
 
   <aside class="quickdeck-right-command-area">
@@ -852,7 +851,13 @@
           </section>
         {{/if}}
       </aside>
-    </section>
-    <footer class="quickdeck-footer-hint">Click selects · Double-click opens sheet · Drag actors here.</footer>
-  </main>
+    {{else}}
+      <div class="quickdeck-right-collapsed-rail" aria-label="Collapsed drawer rail">
+        <button type="button" class="quickdeck-rail-tab" data-action="open-right-drawer" data-drawer="combat">Combat</button>
+        <button type="button" class="quickdeck-rail-tab" data-action="open-right-drawer" data-drawer="skills">Skills</button>
+        <button type="button" class="quickdeck-rail-tab" data-action="open-right-drawer" data-drawer="spells">Spells</button>
+        <button type="button" class="quickdeck-rail-tab" data-action="open-right-drawer" data-drawer="settings">Settings</button>
+      </div>
+    {{/if}}
+  </aside>
 </section>
