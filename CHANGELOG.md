@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.4.9 badge-frame
+
+### Changed
+- Moves QuickDeck title/version into a small overlay badge so header text no longer controls layout width.
+- Restores a compact painted qd40 frame around the shrink-wrapped body without reintroducing dead side space.
+
 ## [Unreleased] - v0.8.4.7 true-edge-tabs
 
 ### Changed
