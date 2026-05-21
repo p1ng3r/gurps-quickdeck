@@ -12,7 +12,8 @@ const SETTING_KEYS = {
   SPELL_FAVORITES: "spellFavoriteKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
-  RESTORE_PILL_POSITION: "restorePillPosition"
+  RESTORE_PILL_POSITION: "restorePillPosition",
+  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
@@ -70,6 +71,12 @@ export class QuickDeckApp extends Application {
       combat: true,
       skills: true,
       spells: true
+    };
+    this.pdfMapDraft = {
+      key: "",
+      name: "",
+      path: "",
+      offset: 0
     };
     this.loadPersistedState();
   }
@@ -1138,6 +1145,93 @@ export class QuickDeckApp extends Application {
     this.restorePillPosition = normalized;
     if (!game?.settings) return;
     game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
+  }
+
+  loadPdfPageRefMappings() {
+    if (!game?.settings) return {};
+    const mappings = game.settings.get(MODULE_ID, SETTING_KEYS.PDF_PAGE_REF_MAPPINGS);
+    return mappings && typeof mappings === "object" ? mappings : {};
+  }
+
+  async savePdfPageRefMappings(mappings) {
+    if (!game?.settings) return;
+    const normalized = mappings && typeof mappings === "object" ? mappings : {};
+    await game.settings.set(MODULE_ID, SETTING_KEYS.PDF_PAGE_REF_MAPPINGS, normalized);
+  }
+
+  getPdfPageRefMappings() {
+    return this.loadPdfPageRefMappings();
+  }
+
+  getPdfPageRefMappingRows() {
+    const mappings = this.getPdfPageRefMappings();
+    return Object.entries(mappings)
+      .map(([key, mapping]) => ({
+        key,
+        name: String(mapping?.name ?? this.getDefaultPdfMapName(key) ?? key),
+        path: String(mapping?.path ?? ""),
+        offset: Number(mapping?.offset) || 0
+      }))
+      .sort((a, b) => a.key.localeCompare(b.key));
+  }
+
+  clearPdfMapDraft() {
+    this.pdfMapDraft = { key: "", name: "", path: "", offset: 0 };
+  }
+
+  normalizePdfMapKey(key) {
+    return String(key ?? "").trim().toUpperCase();
+  }
+
+  getDefaultPdfMapName(key) {
+    const defaults = {
+      B: "Basic Set: Characters / Combined Basic Set",
+      BX: "Basic Set: Campaigns",
+      M: "Magic",
+      MA: "Martial Arts",
+      P: "Powers",
+      HT: "High-Tech",
+      LT: "Low-Tech",
+      UT: "Ultra-Tech",
+      "DF1:": "Dungeon Fantasy 1: Adventurers",
+      "DF2:": "Dungeon Fantasy 2: Dungeons",
+      DFS: "Dungeon Fantasy RPG: Spells"
+    };
+    return defaults[this.normalizePdfMapKey(key)] ?? "";
+  }
+
+  parsePageReferences(refText) {
+    return String(refText ?? "")
+      .split(/[;,]/)
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .map((raw) => {
+        const match = raw.match(/^(.*?)(\d+)$/);
+        if (!match) return null;
+        return { raw, key: this.normalizePdfMapKey(match[1]), page: Number(match[2]) };
+      })
+      .filter((entry) => entry && entry.key && Number.isFinite(entry.page));
+  }
+
+  resolvePageRef(rawRef) {
+    const first = this.parsePageReferences(rawRef)[0];
+    if (!first) return null;
+    const mapping = this.getPdfPageRefMappings()[first.key];
+    if (!mapping) return null;
+    const offset = Number(mapping.offset) || 0;
+    const finalPage = Math.max(1, Number(first.page) + offset);
+    return { raw: first.raw, key: first.key, page: first.page, finalPage, mapping };
+  }
+
+  openMappedPdfReference(key, page = 1) {
+    const normalizedKey = this.normalizePdfMapKey(key);
+    const mapping = this.getPdfPageRefMappings()[normalizedKey];
+    if (!mapping) {
+      ui.notifications?.warn(`QuickDeck: No PDF mapping found for key "${normalizedKey}".`);
+      return;
+    }
+    const finalPage = Math.max(1, Number(page) + Number(mapping.offset || 0));
+    window.open(`${mapping.path}#page=${finalPage}`, "_blank");
   }
 
   getQd18ShellWidth() {
@@ -3866,7 +3960,9 @@ export class QuickDeckApp extends Application {
       indexedQuickSkills: quickSkills,
       indexedSpells,
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
-      isInfoPopoverOpen: this.isInfoPopoverOpen
+      isInfoPopoverOpen: this.isInfoPopoverOpen,
+      pdfMapDraft: this.pdfMapDraft,
+      pdfPageRefMappings: this.getPdfPageRefMappingRows()
     };
   }
 
@@ -4278,6 +4374,81 @@ export class QuickDeckApp extends Application {
       const pageHint = element.dataset.refPage ?? "";
       const source = element.dataset.refSource ?? "";
       this.openReferenceEntry({ type, name, pageHint, source });
+    });
+
+    html.find("[data-action='pdf-map-key']").on("input", (event) => {
+      const nextKey = this.normalizePdfMapKey(event.currentTarget.value);
+      this.pdfMapDraft.key = nextKey;
+      if (!String(this.pdfMapDraft.name || "").trim()) {
+        const defaultName = this.getDefaultPdfMapName(nextKey);
+        if (defaultName) this.pdfMapDraft.name = defaultName;
+      }
+      this.render(false);
+    });
+    html.find("[data-action='pdf-map-name']").on("input", (event) => {
+      this.pdfMapDraft.name = String(event.currentTarget.value ?? "");
+    });
+    html.find("[data-action='pdf-map-path']").on("input", (event) => {
+      this.pdfMapDraft.path = String(event.currentTarget.value ?? "");
+    });
+    html.find("[data-action='pdf-map-offset']").on("input", (event) => {
+      const parsed = Number(event.currentTarget.value);
+      this.pdfMapDraft.offset = Number.isFinite(parsed) ? parsed : 0;
+    });
+    html.find("[data-action='choose-pdf-source']").on("click", (event) => {
+      event.preventDefault();
+      new FilePicker({
+        type: "any",
+        current: this.pdfMapDraft.path || "",
+        callback: (path) => {
+          this.pdfMapDraft.path = path;
+          if (!String(path).toLowerCase().endsWith(".pdf")) ui.notifications?.warn("QuickDeck: Selected file does not end in .pdf.");
+          this.render(false);
+        }
+      }).render(true);
+    });
+    html.find("[data-action='save-pdf-source']").on("click", async (event) => {
+      event.preventDefault();
+      const key = this.normalizePdfMapKey(this.pdfMapDraft.key);
+      const path = String(this.pdfMapDraft.path || "").trim();
+      if (!key) return ui.notifications?.warn("QuickDeck: PDF source key is required.");
+      if (!path) return ui.notifications?.warn("QuickDeck: PDF path is required.");
+      if (!path.toLowerCase().endsWith(".pdf")) return ui.notifications?.warn("QuickDeck: PDF path must end in .pdf.");
+      const mappings = this.getPdfPageRefMappings();
+      mappings[key] = {
+        name: String(this.pdfMapDraft.name || this.getDefaultPdfMapName(key) || key),
+        path,
+        offset: Number(this.pdfMapDraft.offset) || 0
+      };
+      await this.savePdfPageRefMappings(mappings);
+      this.clearPdfMapDraft();
+      this.render(false);
+    });
+    html.find("[data-action='clear-pdf-source-draft']").on("click", (event) => {
+      event.preventDefault();
+      this.clearPdfMapDraft();
+      this.render(false);
+    });
+    html.find("[data-action='edit-pdf-source']").on("click", (event) => {
+      event.preventDefault();
+      const key = this.normalizePdfMapKey(event.currentTarget.dataset.key);
+      const mapping = this.getPdfPageRefMappings()[key];
+      if (!mapping) return;
+      this.pdfMapDraft = { key, name: String(mapping.name ?? ""), path: String(mapping.path ?? ""), offset: Number(mapping.offset) || 0 };
+      this.render(false);
+    });
+    html.find("[data-action='remove-pdf-source']").on("click", async (event) => {
+      event.preventDefault();
+      const key = this.normalizePdfMapKey(event.currentTarget.dataset.key);
+      const mappings = this.getPdfPageRefMappings();
+      if (!mappings[key]) return;
+      delete mappings[key];
+      await this.savePdfPageRefMappings(mappings);
+      this.render(false);
+    });
+    html.find("[data-action='test-pdf-source']").on("click", (event) => {
+      event.preventDefault();
+      this.openMappedPdfReference(event.currentTarget.dataset.key, 1);
     });
 
     const dropTarget = html.find("[data-drop-zone='roster']")[0];
