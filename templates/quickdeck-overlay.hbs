@@ -22,7 +22,7 @@
   {{#if isInfoPopoverOpen}}
   <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck version information">
     <div class="qd40-info-title">GURPS QuickDeck</div>
-    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.5.6 — cards-damage</strong></div>
+    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.6.0 — pdf-picker</strong></div>
     <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
     <div class="qd40-info-row"><span>Mode</span><strong>qd40 chromeless command desk</strong></div>
     <div class="qd40-info-row"><span>Branch</span><strong>v0.8.5.1 info popover pass</strong></div>
@@ -282,7 +282,47 @@
       {{/each}}
     </section>
     <section class="qd31-drawer-body" {{#unless isSettingsDrawerOpen}}hidden{{/unless}}>
-      <div class="qd31-action-row"><span>QuickDeck settings and tools.</span><button type="button" class="qd31-square-button" data-action="open-reference-index">Refs</button></div>
+      <section class="qd31-settings-panel">
+        <header class="qd31-settings-header">
+          <h3>PDF Source Manager</h3>
+          <small>User PDFs primary · built-in summaries fallback</small>
+        </header>
+        <div class="qd31-pdf-map-form">
+          <label>Key<input type="text" data-action="pdf-map-key" value="{{pdfMapDraft.key}}" placeholder="B"></label>
+          <label>Name<input type="text" data-action="pdf-map-name" value="{{pdfMapDraft.name}}" placeholder="Basic Set"></label>
+          <label>PDF Path
+            <div class="qd31-pdf-path-row">
+              <input type="text" data-action="pdf-map-path" value="{{pdfMapDraft.path}}" placeholder="Choose PDF..." readonly>
+              <button type="button" class="qd31-square-button" data-action="choose-pdf-source" title="Choose PDF">📁</button>
+            </div>
+          </label>
+          <label>Offset<input type="number" data-action="pdf-map-offset" value="{{pdfMapDraft.offset}}"></label>
+          <div class="qd31-pdf-map-actions">
+            <button type="button" class="qd31-square-button" data-action="save-pdf-source" title="Save PDF mapping">💾</button>
+            <button type="button" class="qd31-square-button" data-action="clear-pdf-source-draft" title="Clear form">✕</button>
+          </div>
+        </div>
+        <div class="qd31-pdf-map-list">
+          {{#each pdfPageRefMappings as |mapping|}}
+            <article class="qd31-pdf-map-row">
+              <div>
+                <strong>{{mapping.key}}</strong><span>{{mapping.name}}</span><small>{{mapping.path}}</small><small>Offset {{mapping.offset}}</small>
+              </div>
+              <div class="qd31-action-controls">
+                <button type="button" class="qd31-square-button" data-action="edit-pdf-source" data-key="{{mapping.key}}" title="Edit">✎</button>
+                <button type="button" class="qd31-square-button" data-action="test-pdf-source" data-key="{{mapping.key}}" title="Test Open">▶</button>
+                <button type="button" class="qd31-square-button" data-action="remove-pdf-source" data-key="{{mapping.key}}" title="Remove">🗑</button>
+              </div>
+            </article>
+          {{else}}
+            <div class="qd31-center-fav-empty">No PDFs mapped yet. Add B, MA, M, etc.</div>
+          {{/each}}
+        </div>
+        <div class="qd31-action-row">
+          <span>Built-in QuickDeck summaries are still used when no mapped PDF exists.</span>
+          <button type="button" class="qd31-square-button" data-action="open-reference-index">Refs</button>
+        </div>
+      </section>
     </section>
   </aside>
     <button class="qd31-edge-tab qd31-right-edge-tab" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="Collapse actions">Collapse »</button>

@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.6.0 pdf-picker
+
+### Added
+- Adds a Settings-tab PDF Source Manager for user-selected GURPS page-reference PDFs.
+- Stores client-side key/path/offset mappings for GCS-style references while keeping built-in summaries as fallback.
+
 ## [Unreleased] - v0.8.5.6 cards-damage
 
 ### Fixed

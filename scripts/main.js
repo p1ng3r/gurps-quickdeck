@@ -10,7 +10,8 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
-  REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY
+  REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
+  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 let quickDeckApp = null;
 function openQuickDeck() {
@@ -133,6 +134,13 @@ Hooks.once("init", () => {
     config: false,
     type: String,
     default: "[]"
+  });
+  game.settings.register(MODULE_ID, SETTING_KEYS.PDF_PAGE_REF_MAPPINGS, {
+    name: "PDF Page Reference Mappings",
+    scope: "client",
+    config: false,
+    type: Object,
+    default: {}
   });
 
 });
