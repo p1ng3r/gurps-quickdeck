@@ -1,3 +1,16 @@
+## [Unreleased] - v0.8.6.2 pdf-offset
+
+### Fixed
+- Normalizes mapped PDF URLs and makes page-offset calculations visible when opening mapped PDFs.
+
+## [Unreleased] - v0.8.6.1 pdf-ref-open
+
+### Added
+- Opens mapped user PDFs from attack, skill, and spell reference buttons using GCS-style page-reference keys.
+
+### Changed
+- Keeps built-in QuickDeck reference summaries as fallback when no mapped user PDF exists.
+
 ## [Unreleased] - v0.8.6.0 pdf-picker
 
 ### Added
