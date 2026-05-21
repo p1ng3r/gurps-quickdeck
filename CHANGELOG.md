@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.5.1 info-popover
+
+### Changed
+- Replaces the always-visible QD version badge text with a compact ? info button.
+- Adds an in-frame version/info popover for build label, module version, and UI mode.
+
 ## [Unreleased] - v0.8.5.0 in-frame-chrome
 
 ### Changed

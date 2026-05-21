@@ -65,6 +65,7 @@ export class QuickDeckApp extends Application {
     this._overlayRoot = null;
     this._overlayDragCleanup = null;
     this._overlayPosition = null;
+    this.isInfoPopoverOpen = false;
     this.loadPersistedState();
   }
 
@@ -3768,7 +3769,9 @@ export class QuickDeckApp extends Application {
       indexedAttacks,
       indexedSkills,
       indexedQuickSkills: quickSkills,
-      indexedSpells
+      indexedSpells,
+      moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
+      isInfoPopoverOpen: this.isInfoPopoverOpen
     };
   }
 
@@ -3973,6 +3976,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='open-actions-drawer'], [data-action='open-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
     html.find("[data-action='close-actions-drawer'], [data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
     html.find("[data-action='toggle-actions-drawer']").on("click", (event) => { event.preventDefault(); this.toggleActionsDrawer(event.currentTarget.dataset.drawer); });
+    html.find("[data-action='toggle-info-popover']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.isInfoPopoverOpen = !this.isInfoPopoverOpen; this.render(false); });
     html.find("[data-action='minimize-overlay']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.toggleMinimizedState(); });
     html.find("[data-action='close-overlay']").on("click", async (event) => { event.preventDefault(); event.stopPropagation(); await this.close(); });
 
