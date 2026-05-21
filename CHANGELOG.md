@@ -1,6 +1,174 @@
+## [Unreleased] - v0.8.5.6 cards-damage
+
+### Fixed
+- Reapplies the damage-not-attack fix on top of the action-card UI baseline so center favorite cards, collapsible sections, and favorite highlighting remain intact.
+
+## [Unreleased] - v0.8.5.4 action-cards
+
+### Changed
+- Upgrades center cockpit favorites into collapsible Combat, Skills, and Spells action-card sections with full compact controls.
+- Highlights favorited rows/cards and shows variant/detail information so similarly named attacks remain distinguishable.
+- Routes QuickDeck damage buttons through native GURPS damage handling or rollable actor damage formulas instead of only prompting for native chat damage controls.
+
+## [Unreleased] - v0.8.5.3 pinned-favorites
+
+### Changed
+- Replaces center pinned placeholders with real selected Combat, Skills, and Spells favorite sections.
+- Reduces Dodge/Parry/Block defense dials by about 25% while preserving roll-defense behavior.
+
+## [Unreleased] - v0.8.5.2 center-vitals
+
+### Changed
+- Replaces center HP/FP/Move resource cards with compact roster-style editable HP/FP lines in the selected actor header.
+- Moves Move into a right-justified two-row tile beside selected actor vitals.
+
+## [Unreleased] - v0.8.5.1 info-popover
+
+### Changed
+- Replaces the always-visible QD version badge text with a compact ? info button.
+- Adds an in-frame version/info popover for build label, module version, and UI mode.
+
+## [Unreleased] - v0.8.5.0 in-frame-chrome
+
+### Changed
+- Moves QuickDeck badge and window controls into an in-frame chrome row so they remain visible near screen edges.
+- Keeps the qd40 body shrink-wrapped and tabs outside body edges without reintroducing dead side space.
+
+## [Unreleased] - v0.8.4.9 badge-frame
+
+### Changed
+- Moves QuickDeck title/version into a small overlay badge so header text no longer controls layout width.
+- Restores a compact painted qd40 frame around the shrink-wrapped body without reintroducing dead side space.
+
+## [Unreleased] - v0.8.4.7 true-edge-tabs
+
+### Changed
+- Forces the qd40 frame and shell to shrink-wrap only visible panels, with tabs protruding outside panel edges instead of occupying internal frame space.
+- Anchors closed drawer tabs directly to the center cockpit edge and open drawer tabs directly to drawer edges.
+
+## [Unreleased] - v0.8.4.6 panel-tabs
+
+### Changed
+- Anchors closed drawer tabs to the center cockpit edges and open drawer tabs to drawer edges so tabs no longer float at the outer shell edge.
+- Removes remaining empty shell space between the center cockpit and the Actions tab.
+
+## [Unreleased] - v0.8.4.5 hard-compact
+
+### Changed
+- Removes open-state tab rail gutters by moving collapse controls inside open drawers.
+- Adds dedicated qd40 compact selectors for the selected actor header, portrait, and resource cards so center cockpit compacting visibly applies.
+- Preserves compact action-row cleanup from v0.8.4.4.
+
+## [Unreleased] - v0.8.4.3 compact-pills
+
+### Changed
+- Slims the qd40 center cockpit and tightens defense/resource spacing.
+- Converts center utility controls to compact square icon buttons and removes Sheet/Modifier Bucket from the center row.
+- Moves Target and Modifier Bucket tools onto attack and spell action rows.
+- Simplifies skill row controls with compact pin/info buttons instead of text Pin/Unpin/Ref buttons.
+
+## [Unreleased] - v0.8.4.2 open-fix
+
+### Fixed
+- Forces QuickDeck launcher and debug open calls to restore the chromeless overlay from minimized/stale states.
+- Consolidates qd40 render flow so the overlay opens reliably without depending on Foundry popout sizing.
+- Tightens qd40 drawer/cockpit spacing to reduce left/right buffer while keeping drawer tabs visible.
+
+## [Unreleased] - v0.8.4.1 overlay-controls
+
+### Changed
+- Adds a chromeless QuickDeck header bar with drag, minimize, and close controls.
+- Keeps left/right drawer tabs visible in both open and closed states so drawers can be reopened or collapsed without losing the handles.
+
+## [Unreleased] - v0.8.4.0 chromeless
+
+### Changed
+- Replaces the visible normal Foundry Application popout with a chromeless qd40 QuickDeck overlay to eliminate the oversized black window.
+- Keeps qd31/qd40 drawer-cockpit behavior while avoiding Foundry window-content sizing constraints.
+
 # Changelog
 
+## [Unreleased] - v0.8.3.6 force-fit
+
+### Changed
+- Replaces shell measurement-based sizing with deterministic qd31 state-based window fitting.
+- Converts drawer pull tabs into real layout slots so closed drawers no longer rely on absolute overflow.
+- Forces qd31 app/window-content/shell width to the calculated visible UI width to eliminate giant empty space.
+
+## [Unreleased] - v0.8.3.5 fit-tools
+
+### Changed
+- Fits the outer Foundry window to the measured qd31 cockpit/drawer shell instead of leaving oversized empty space.
+- Repairs Actions drawer visibility to mirror Roster drawer behavior.
+- Fixes Chat icon targeting, adds Target actions for Combat/Spells, and adds a modifier bucket editor control.
+
+## [Unreleased] - v0.8.3.4 qd31-polish
+
+### Changed
+- Polishes the qd31 drawer-cockpit layout so the Actions drawer mirrors the Roster drawer and the app width matches visible drawer state.
+- Converts center command controls into a compact icon row and reduces actor portrait size.
+- Restores action/skill/spell row detail/reference hooks and adds double-click sheet opening from actor portrait/name.
+
 All notable changes to this project will be documented in this file.
+
+## [Unreleased] - v0.8.3.3 qd31-complete
+
+### Changed
+- Completes the qd31 drawer-cockpit template by replacing placeholders with real HP/FP/Move controls, pinned slots, roster cards, and action drawer rows.
+- Keeps drawer architecture while preserving QuickDeck action hooks.
+
+## [Unreleased] - v0.8.3.1 canvas-fit
+
+### Changed
+- Polishes the qd30 blank-slate center cockpit and sidecars toward the approved canvas mock.
+- Adds compact HP/FP icon, bar, and small square control styling.
+- Restores action sidecar search bars and fixes sidecar focus so drawer tabs do not fall behind the center window.
+
+## [Unreleased] - v0.8.2.0 sidecar
+
+### Changed
+- Replaces the single-grid layout with a center-primary cockpit and optional docked roster/action sidecars.
+- Collapsing side panels no longer reserves empty grid space around the center cockpit.
+
+## [Unreleased] - v0.8.2.1 sidecar-tabs
+
+### Changed
+- Reduces the center cockpit to a compact base width and adds visible in-app pull tabs for roster and action sidecars.
+- Keeps collapsed sidecars from reserving layout space.
+
+## [Unreleased] - v0.8.1.9 left-fit
+
+### Changed
+- Repairs qd18 layout positioning so the roster starts near the left edge, the icon spine is attached to the left pane, and the center/right panes remain visible.
+
+## [Unreleased] - v0.8.1.8 functional-pane
+
+### Changed
+- Rebuilds the three-pane layout around functional roles: roster left, selected actor center, complete action browser right.
+- Keeps the center actor cockpit as the primary visible pane with five pinned action slots.
+
+## [Unreleased] - v0.8.1.6 true-clean-pane
+
+### Changed
+- Replaces the broken qd8/qd15 wrapped layout with a true clean-room three-pane QuickDeck shell.
+- Keeps the center cockpit fixed and visible while side panes collapse.
+- Preserves existing QuickDeck data actions and GURPS behavior.
+
+## [Unreleased] - v0.8.1.4 layout-repair
+
+### Changed
+- Repaired the qd8 three-column shell layout so left/center/right panels align to fixed canvas targets with matching window width and panel collapse widths.
+- Scoped qd8 overrides for legacy `quickdeck-shell`, `quickdeck-content`, and `quickdeck-stage` sizing to prevent center cockpit clipping and detached panel spacing.
+- Attached the left icon spine to the roster panel, restyled qd8 rail/action buttons to remove plain browser defaults, and removed the temporary Quick Actions strip.
+- Corrected right drawer presentation so the open drawer reads as a real right panel with stable scroll behavior.
+
+## [Unreleased] - v0.8.1.3 foundry-three-panel-ui
+
+### Added
+- Adds production three-panel command desk shell.
+- Adds left and right collapse rails.
+- Keeps center cockpit fixed width.
+- Preserves existing QuickDeck behavior.
 
 ## [Unreleased] - v0.6.0 release candidate
 
@@ -90,3 +258,17 @@ All notable changes to this project will be documented in this file.
 
 ### Fixed
 - Drag/drop freeze caused by accidental actor.sheet access.
+
+## [Unreleased] - v0.8.2.2 real-sidecars
+
+### Changed
+- Replaces the failed in-window sidecar fallback with real separate Application sidecar windows for roster and actions.
+- Keeps the center cockpit as its own resizable primary window and reduces width without reducing height.
+
+## [Unreleased] - v0.8.3.2 drawer-cockpit
+
+### Changed
+- Replaces detached popup sidecars with left/right slide-out drawers attached to the center cockpit.
+- Reduces the center cockpit width to 520px without reducing height.
+- Splits roster drawer into Active Roster and Actors to Add sections using Character/NPC actor sources.
+- Prepares assets/ui/command-desk/ for future lightweight transparent .webp UI assets with pointer-events:none decorative layering.
