@@ -3529,3 +3529,50 @@
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-move-card { justify-items: center !important; }
+
+/* qd40 v0.8.4.6 outside-tabs overrides */
+.qd40-overlay,
+.qd40-overlay .qd40-frame,
+.qd40-overlay .qd40-shell,
+.qd40-overlay .qd31-shell {
+  overflow: visible !important;
+}
+
+.qd40-overlay .qd31-shell {
+  position: relative !important;
+  display: flex !important;
+  gap: 0 !important;
+  padding: 4px !important;
+}
+
+.qd40-overlay .qd31-left-drawer,
+.qd40-overlay .qd31-right-drawer {
+  position: relative !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.qd40-overlay .qd31-edge-tab {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 132px !important;
+  z-index: 20 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid #a87835 !important;
+  background: linear-gradient(180deg,#7a5325,#4a2d16) !important;
+  color: #f7e3b5 !important;
+  writing-mode: vertical-rl !important;
+  text-orientation: mixed !important;
+  font-weight: 700 !important;
+  letter-spacing: .04em !important;
+}
+
+.qd40-overlay .qd31-left-edge-tab.qd31-closed-edge-tab { left: -32px !important; }
+.qd40-overlay .qd31-right-edge-tab.qd31-closed-edge-tab { right: -32px !important; }
+.qd40-overlay .qd31-left-drawer .qd31-left-edge-tab { left: -32px !important; }
+.qd40-overlay .qd31-right-drawer .qd31-right-edge-tab { right: -32px !important; }
+
+.qd40-overlay .qd31-drawer-body { overflow-y: auto !important; }

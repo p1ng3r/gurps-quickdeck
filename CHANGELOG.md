@@ -1,8 +1,8 @@
-## [Unreleased] - v0.8.4.6 zero-gap-tabs
+## [Unreleased] - v0.8.4.6 outside-tabs
 
 ### Changed
-- Keeps vertical drawer tabs visible while removing the open-state tab rail/gutter.
-- Converts open drawer tabs into overlay handles attached flush to the drawer edge so they no longer consume layout space.
+- Removes drawer tab slot columns entirely and converts drawer tabs into absolute outside-edge handles.
+- Lets tabs protrude outside the qd40 shell so they no longer create left/right rail gutters or unused side space.
 
 ## [Unreleased] - v0.8.4.5 hard-compact
 

@@ -107,7 +107,7 @@ export class QuickDeckApp extends Application {
     const centerWidth = 460;
     const drawerDefaultWidth = 400;
     const drawerMinWidth = 320;
-    const closedTabWidth = 32;
+    const closedTabWidth = 0;
     const gap = 4;
     const shellPadding = 8;
     const chromeAllowance = 24;
@@ -117,7 +117,7 @@ export class QuickDeckApp extends Application {
     let leftDrawerWidth = leftOpen ? drawerDefaultWidth : 0;
     let rightDrawerWidth = rightOpen ? drawerDefaultWidth : 0;
 
-    const baseShellWidth = shellPadding + centerWidth + (leftOpen ? gap : 0) + (rightOpen ? gap : 0) + (leftOpen ? leftDrawerWidth : closedTabWidth) + (rightOpen ? rightDrawerWidth : closedTabWidth);
+    const baseShellWidth = shellPadding + centerWidth + (leftOpen ? gap : 0) + (rightOpen ? gap : 0) + (leftOpen ? leftDrawerWidth : 0) + (rightOpen ? rightDrawerWidth : 0);
     const maxWindowWidth = Math.max(640, (window.innerWidth || (baseShellWidth + chromeAllowance)) - 24);
     let targetWindowWidth = baseShellWidth + chromeAllowance;
 
@@ -139,7 +139,7 @@ export class QuickDeckApp extends Application {
       }
     }
 
-    const shellWidth = shellPadding + centerWidth + (leftOpen ? gap + leftDrawerWidth : closedTabWidth) + (rightOpen ? gap + rightDrawerWidth : closedTabWidth);
+    const shellWidth = shellPadding + centerWidth + (leftOpen ? gap + leftDrawerWidth : 0) + (rightOpen ? gap + rightDrawerWidth : 0);
     targetWindowWidth = shellWidth + chromeAllowance;
 
     return { centerWidth, leftDrawerWidth, rightDrawerWidth, closedTabWidth, gap, shellPadding, chromeAllowance, targetWindowWidth, shellWidth };
