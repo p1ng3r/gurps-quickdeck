@@ -3410,27 +3410,27 @@
 .qd31-drawer-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px}
 .qd31-drawer-body{display:grid;gap:4px}
 
-/* qd40 v0.8.4.5 hard-compact overrides (loaded last to win against qd31 base rules) */
+/* qd40 v0.8.4.6 zero-gap-tabs overrides (loaded last to win against qd31 base rules) */
 .qd31-left-drawer,
 .qd31-right-drawer {
   position: relative;
 }
 
-.qd31-left-drawer { padding-left: 28px; }
-.qd31-right-drawer { padding-right: 28px; }
+.qd31-left-drawer { padding-left: 34px; }
+.qd31-right-drawer { padding-right: 34px; }
 
-.qd31-drawer-collapse-tab {
-  position: absolute;
+.qd31-open-drawer-tab {
+  position: absolute !important;
   top: 50%;
   transform: translateY(-50%);
-  width: 22px;
-  height: 88px;
-  z-index: 4;
-  padding: 0;
+  width: 32px;
+  height: 132px;
+  z-index: 5;
+  margin: 0 !important;
 }
 
-.qd31-left-collapse-tab { left: 0; border-radius: 0 8px 8px 0; }
-.qd31-right-collapse-tab { right: 0; border-radius: 8px 0 0 8px; }
+.qd31-left-open-tab { left: 0; }
+.qd31-right-open-tab { right: 0; }
 
 .qd40-overlay .qd31-center-cockpit .qd31-selected-actor-header {
   display: grid !important;

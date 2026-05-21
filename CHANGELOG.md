@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.4.6 zero-gap-tabs
+
+### Changed
+- Keeps vertical drawer tabs visible while removing the open-state tab rail/gutter.
+- Converts open drawer tabs into overlay handles attached flush to the drawer edge so they no longer consume layout space.
+
 ## [Unreleased] - v0.8.4.5 hard-compact
 
 ### Changed

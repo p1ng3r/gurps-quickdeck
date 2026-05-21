@@ -2,7 +2,7 @@
   <header class="qd40-header" data-action="drag-overlay">
     <div class="qd40-title-group">
       <div class="qd40-title">GURPS QuickDeck</div>
-      <div class="quickdeck-dev-badge">QD v0.8.4.5 — hard-compact</div>
+      <div class="quickdeck-dev-badge">QD v0.8.4.6 — zero-gap-tabs</div>
     </div>
     <div class="qd40-window-controls">
       <button class="qd40-window-button" type="button" data-action="minimize-overlay" title="Minimize">−</button>
@@ -17,7 +17,7 @@
   </div>
   {{/unless}}
   <aside class="qd31-left-drawer" {{#unless isRosterDrawerOpen}}hidden{{/unless}}>
-    <button class="qd31-drawer-collapse-tab qd31-left-collapse-tab" type="button" data-action="toggle-roster-drawer" title="Collapse roster">«</button>
+    <button class="qd31-left-pull-tab qd31-open-drawer-tab qd31-left-open-tab" type="button" data-action="toggle-roster-drawer" title="Collapse roster">« Collapse</button>
     <header class="qd31-drawer-header">
       <h3>Active Roster</h3>
       <button type="button" class="qd31-square-button qd31-trash-button" data-action="clear-roster" title="Clear roster">🗑</button>
@@ -107,7 +107,7 @@
   </section>
 
   <aside class="qd31-right-drawer" {{#unless isActionsDrawerOpen}}hidden{{/unless}}>
-    <button class="qd31-drawer-collapse-tab qd31-right-collapse-tab" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="Collapse actions">»</button>
+    <button class="qd31-right-pull-tab qd31-open-drawer-tab qd31-right-open-tab" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="Collapse actions">Collapse »</button>
     <nav class="qd31-drawer-tabs"><button data-action="toggle-drawer" data-drawer="combat">Combat</button><button data-action="toggle-drawer" data-drawer="skills">Skills</button><button data-action="toggle-drawer" data-drawer="spells">Spells</button><button data-action="toggle-drawer" data-drawer="settings">Settings</button></nav>
     <section class="qd31-drawer-body" {{#unless isCombatDrawerOpen}}hidden{{/unless}}><input type="search" data-action="combat-search" value="{{combatSearch}}" placeholder="Search attacks" />
       {{#each indexedAttacks as |attack|}}
