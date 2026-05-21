@@ -2316,7 +2316,61 @@ export class QuickDeckApp extends Application {
     return trimmed.length ? trimmed : null;
   }
 
-  async triggerDamageRoll(actorId, attackIndex) {
+  parseGurpsDamageString(rawDamage) {
+    if (rawDamage === null || rawDamage === undefined) return null;
+    const text = String(rawDamage).trim();
+    if (!text.length) return null;
+    const normalized = text.replace(/^\[|\]$/g, "").trim();
+    const match = normalized.match(/^(?<formula>sw(?:ing)?|thr(?:ust)?|(?:\d+)?d(?:\d+)?(?:[+\-]\d+)?)(?:\s*(?:[x×*]\s*\d+(?:\.\d+)?)?)?(?:\s*(?<type>[a-zA-Z_][a-zA-Z0-9_+\-]*))?/i);
+    if (!match?.groups?.formula) return null;
+    const formula = match.groups.formula.trim();
+    const damageType = (match.groups.type ?? "").trim().toLowerCase() || null;
+    const isDerived = /^(sw|swing|thr|thrust)$/i.test(formula);
+    return { formula, damageType, isDerived, original: text };
+  }
+
+  buildDamageOtfFromDamageText(damageText) {
+    const parsed = this.parseGurpsDamageString(damageText);
+    if (!parsed) return null;
+    const suffix = parsed.damageType ? ` ${parsed.damageType}` : "";
+    return `[${parsed.formula}${suffix}]`;
+  }
+
+  async rollParsedDamageFormula(actor, attack, parsed) {
+    if (!actor || !parsed?.formula) return false;
+    const attackName = attack?.name ?? "Attack";
+    if (parsed.isDerived) {
+      const derivedOtf = this.buildDamageOtfFromDamageText(parsed.original ?? parsed.formula);
+      const gurps = globalThis.GURPS ?? game.GURPS;
+      if (derivedOtf && typeof gurps?.executeOTF === "function") {
+        try {
+          await gurps.executeOTF(derivedOtf, false, actor);
+          return true;
+        } catch (error) {
+          console.warn("gurps-quickdeck | Derived damage OTF failed.", { derivedOtf, error });
+          ui.notifications?.warn(`QuickDeck: Could not route derived damage for ${attackName}.`);
+          return false;
+        }
+      }
+      ui.notifications?.warn(`QuickDeck: Could not route derived damage for ${attackName}.`);
+      return false;
+    }
+
+    try {
+      const roll = await new Roll(parsed.formula).evaluate();
+      const damageLabel = parsed.damageType ? ` ${parsed.damageType}` : "";
+      await roll.toMessage({
+        speaker: ChatMessage.getSpeaker({ actor }),
+        flavor: `QuickDeck Damage (${attackName}${damageLabel})`
+      });
+      return true;
+    } catch (error) {
+      console.warn("gurps-quickdeck | Damage formula fallback roll failed.", { parsed, error });
+      return false;
+    }
+  }
+
+  async triggerDamageRoll(actorId, attackIndex, event = null) {
     if (!actorId || !Number.isFinite(attackIndex)) return;
     const actor = game.actors.get(actorId);
     if (!actor) return;
@@ -2324,31 +2378,10 @@ export class QuickDeckApp extends Application {
     const attack = this.getDerivedActorData(actor).attacks[attackIndex];
     if (!attack) return;
 
+    if (event) event.preventDefault?.();
     const dataset = this.getSheetAttackDataset(attack);
-    this.rememberPendingAttackContext(actor, attack, attackIndex, dataset);
+    this.rememberPendingAttackContext(actor, attack, attackIndex, dataset ?? {});
     this.scheduleChatFocus();
-
-    const nativeDamageDataset = { ...(dataset ?? {}), damage: "true", isDamage: "true", rollType: "damage" };
-    const nativeHandled = await this.triggerNativeSheetRoll(actor, nativeDamageDataset, {
-      label: "damage"
-    });
-    if (nativeHandled) return;
-
-    const gurps = globalThis.GURPS ?? game.GURPS;
-    const damageOtfs = [
-      this.getFirstDefinedValue(attack, ["damageOtF", "damageOTF", "otfDamage", "damageOtf"]),
-      this.getFirstDefinedValue(attack?.raw, ["damageOtF", "damageOTF", "otfDamage", "damageOtf"])
-    ].filter((entry) => typeof entry === "string" && entry.trim().length > 0);
-    for (const otf of damageOtfs) {
-      try {
-        if (typeof gurps?.executeOTF === "function") {
-          await gurps.executeOTF(otf, false, actor);
-          return;
-        }
-      } catch (error) {
-        console.warn("gurps-quickdeck | Failed to execute damage OTF.", { otf, error });
-      }
-    }
 
     const formula = this.getAttackDamageFormula(attack);
     if (!formula) {
@@ -2356,17 +2389,21 @@ export class QuickDeckApp extends Application {
       return;
     }
 
-    try {
-      const roll = await new Roll(formula).evaluate();
-      await roll.toMessage({
-        speaker: ChatMessage.getSpeaker({ actor }),
-        flavor: `QuickDeck Damage (${attack?.name ?? "Attack"})`
-      });
-      return;
-    } catch (error) {
-      console.warn("gurps-quickdeck | Damage formula roll failed.", { formula, error });
-      ui.notifications?.warn(`QuickDeck: Could not find a rollable damage formula for ${attack?.name ?? "this attack"}.`);
+    const parsed = this.parseGurpsDamageString(formula);
+    if (parsed && await this.rollParsedDamageFormula(actor, attack, parsed)) return;
+
+    const damageOtf = this.buildDamageOtfFromDamageText(formula);
+    const gurps = globalThis.GURPS ?? game.GURPS;
+    if (damageOtf && typeof gurps?.executeOTF === "function") {
+      try {
+        await gurps.executeOTF(damageOtf, false, actor);
+        return;
+      } catch (error) {
+        console.warn("gurps-quickdeck | Damage OTF execution failed.", { damageOtf, error });
+      }
     }
+
+    ui.notifications?.warn(`QuickDeck: Could not find a rollable damage formula for ${attack?.name ?? "this attack"}.`);
   }
 
   async waitForTargetSelection({ timeoutMs = 30000 } = {}) {

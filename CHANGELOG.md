@@ -1,3 +1,8 @@
+## [Unreleased] - v0.8.5.6 cards-damage
+
+### Fixed
+- Reapplies the damage-not-attack fix on top of the action-card UI baseline so center favorite cards, collapsible sections, and favorite highlighting remain intact.
+
 ## [Unreleased] - v0.8.5.4 action-cards
 
 ### Changed
