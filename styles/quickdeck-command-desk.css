@@ -3323,3 +3323,256 @@
 .qd16-shell .qd16-right-open{display:flex;flex-direction:column;height:100%}
 .qd16-shell .qd16-rail-button,.qd16-shell .qd16-icon-spine-button,.qd16-shell .qd16-collapse-button,.qd16-shell .quickdeck-flow-button{background:linear-gradient(180deg,#6e4f22,#36230f);color:#f4e2b2;border:1px solid rgba(240,205,122,.6);border-radius:6px}
 .qd16-shell .quickdeck-main,.qd16-shell .quickdeck-content,.qd16-shell .quickdeck-stage {width:auto;min-width:0;max-width:none;overflow:visible;}
+
+/* qd18 center-primary shell with docked sidecars */
+.qd18-shell {
+  --qd18-left-open: 420px;
+  --qd18-center: 560px;
+  --qd18-right-open: 420px;
+  --qd18-shell-padding: 12px;
+  --qd18-header-height: 56px;
+  --qd18-footer-height: 18px;
+  --qd18-panel-inset: 12px;
+  margin: 0;
+  width: 100%;
+  min-width: 0;
+  padding: var(--qd18-shell-padding);
+  position: relative;
+  overflow: hidden;
+}
+.qd18-shell.quickdeck-shell { display:flex; flex-direction:column; }
+.qd18-header { min-height:48px; display:flex; align-items:center; gap:10px; margin:0 0 8px; padding:4px 8px; }
+.qd18-command-plaque,.qd18-command-subtitle,.qd18-dev-badge { margin:0; }
+.qd18-grid { position:relative; display:flex; justify-content:center; align-items:stretch; min-height:640px; }
+.qd18-center { width:var(--qd18-center); min-width:520px; max-width:620px; overflow:auto; z-index:2; }
+.qd18-left,.qd18-right { position:absolute; top:calc(var(--qd18-header-height) + var(--qd18-panel-inset)); bottom:calc(var(--qd18-footer-height) + var(--qd18-panel-inset)); width:var(--qd18-left-open); min-width:0; overflow:hidden; z-index:4; }
+.qd18-left { left:12px; }
+.qd18-right { right:12px; width:var(--qd18-right-open); }
+.qd18-left-open { display:grid; grid-template-columns:44px minmax(0,1fr); gap:8px; height:100%; width:var(--qd18-left-open); }
+.qd18-icon-spine { display:flex; flex-direction:column; gap:8px; height:100%; }
+.qd18-left-open-body,.qd18-right-open,.qd18-right .quickdeck-panel,.qd18-right .quickdeck-panel-content,.qd18-right .quickdeck-drawer-scroll-content { min-height:0; overflow:auto; }
+.qd18-shell.is-left-collapsed .qd18-left, .qd18-shell.is-right-collapsed .qd18-right { display:none; }
+.qd18-pull-tab,.qd18-icon-spine-button,.qd18-collapse-button,.qd18-pinned-actions button { background:linear-gradient(180deg,#7a5726,#35210f); color:#f4e2b2; border:1px solid rgba(240,205,122,.72); border-radius:6px; }
+.qd18-left-pull-tabs,.qd18-right-pull-tabs { position:absolute; top:calc(var(--qd18-header-height) + var(--qd18-panel-inset)); z-index:5; display:flex; flex-direction:column; gap:8px; }
+.qd18-left-pull-tabs { left:12px; }
+.qd18-right-pull-tabs { right:12px; }
+.qd18-pull-tab { min-width:96px; padding:0.38rem 0.5rem; font-weight:700; text-transform:uppercase; letter-spacing:.05em; }
+.qd18-center .quickdeck-selected-cockpit,.qd18-center .quickdeck-actor-header,.qd18-center .quickdeck-main-resources,.qd18-center .quickdeck-defense-buttons,.qd18-center .qd18-pinned-actions{max-width:100%;width:100%}
+.qd18-pinned-actions { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:6px; margin-top:10px; }
+
+/* qd30 canvas-fit */
+.qd30-center-app{padding:.6rem;background:linear-gradient(180deg,#1f120a,#0d0805);color:#f3e2b8;height:100%;overflow:auto}
+.qd30-center-header,.qd30-sidecar-header{display:flex;justify-content:space-between;align-items:center;gap:.5rem;padding:.4rem .6rem;border:1px solid rgba(199,154,56,.6);background:linear-gradient(180deg,#3b2715,#1a110a)}
+.qd30-toolbar,.qd30-command-grid,.qd30-defense-grid,.qd30-pinned-grid,.qd30-actions-tabs{display:grid;gap:.35rem}.qd30-toolbar{grid-template-columns:repeat(2,1fr)}.qd30-command-grid{grid-template-columns:repeat(4,1fr)}.qd30-defense-grid{grid-template-columns:repeat(3,1fr)}.qd30-pinned-grid{grid-template-columns:repeat(5,1fr)}.qd30-actions-tabs{grid-template-columns:repeat(4,1fr);margin:.4rem 0}
+.qd30-actor-card,.qd30-sidecar{border:1px solid rgba(199,154,56,.5);background:linear-gradient(180deg,rgba(74,48,28,.5),rgba(15,9,6,.9));padding:.55rem;border-radius:8px}
+.qd30-resource-grid{display:grid;grid-template-columns:1fr 1fr .8fr;gap:.45rem;margin:.5rem 0}
+.qd30-resource-card{display:grid;grid-template-columns:auto 1fr;gap:.35rem;align-items:center;padding:.35rem;border:1px solid rgba(199,154,56,.5);background:#1b120b}
+.qd30-resource-icon{width:1.4rem;height:1.4rem;display:grid;place-items:center;background:#3d2412;border:1px solid #b98c49;border-radius:4px}
+.qd30-resource-bar{grid-column:1/-1;height:8px;background:#0f0905;border:1px solid #7e5d2e}.qd30-resource-bar span{display:block;height:100%;background:linear-gradient(90deg,#7a1f17,#cc7c32)}
+.qd30-resource-controls{grid-column:1/-1;display:flex;align-items:center;gap:.25rem}.qd30-resource-controls input{width:56px;height:24px}
+.qd30-square-button{width:24px;height:24px;padding:0}
+.qd30-roster-list{display:flex;flex-direction:column;gap:.4rem;max-height:38vh;overflow:auto}
+.qd30-actor-row,.qd30-action-row{display:flex;justify-content:space-between;gap:.4rem;align-items:center;padding:.35rem;border:1px solid rgba(199,154,56,.4);background:#2a1a0f}
+.qd30-search{width:100%;margin:.45rem 0;height:28px}
+.qd30-sidecar{height:100%;display:flex;flex-direction:column;overflow:hidden}.qd30-sidecar .qd30-roster-list,.qd30-sidecar .qd30-action-row{overflow:visible}.qd30-sidecar section,.qd30-sidecar{overflow:auto}
+.qd30-center-app button,.qd30-sidecar button{border:1px solid #c79a38;background:linear-gradient(180deg,#6e4a23,#3a230f);color:#f5e7c5;border-radius:4px}
+.qd30-defense-button{font-weight:700}
+
+/* qd31 drawer cockpit */
+.qd31-shell,.qd31-shell *{box-sizing:border-box}.qd31-shell{--qd-command-leather-texture:none;--qd-command-bronze-corner:none;--qd-command-bronze-divider:none;--qd-command-parchment-panel:none;--qd-command-drawer-tab-left:none;--qd-command-drawer-tab-right:none;--qd-command-defense-ring:none;--qd-command-hp-icon:none;--qd-command-fp-icon:none;--qd-command-move-icon:none;display:flex;gap:8px;overflow-x:auto}.qd31-center-cockpit{width:520px;min-width:520px;max-width:560px;position:relative}.qd31-left-drawer,.qd31-right-drawer{width:400px;min-width:320px;max-width:400px;max-height:800px;overflow:auto}.qd31-shell button{background:#6d4d1f;color:#f3e2b2;border:1px solid #b78a43;border-radius:6px}.qd31-left-pull-tab,.qd31-right-pull-tab{position:absolute;top:48px;width:36px}.qd31-left-pull-tab{left:-36px}.qd31-right-pull-tab{right:-36px}.qd31-defense-grid{display:flex;gap:10px}.qd31-defense-dial{border-radius:50%;width:110px;height:110px}.qd31-resource-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.qd31-shell .qd31-decorative-layer{pointer-events:none;}
+
+/* qd31 drawer-cockpit completion v0.8.3.3 */
+.qd31-resource-grid{display:grid;grid-template-columns:1fr 1fr auto;gap:6px;align-items:stretch}
+.qd31-resource-card{padding:6px;border:1px solid rgba(183,138,67,.55);border-radius:8px;background:rgba(15,9,4,.75);display:grid;gap:4px;min-width:0}
+.qd31-resource-icon{font-size:.9rem;line-height:1}
+.qd31-resource-value{font-size:.78rem;font-weight:700;white-space:nowrap}
+.qd31-resource-controls{display:flex;gap:4px;align-items:center}
+.qd31-resource-input{width:52px;height:24px;text-align:center;background:#1a1208;color:#f3e2b2;border:1px solid #b78a43;border-radius:4px}
+.qd31-resource-bar{height:6px;background:#25160b;border-radius:999px;overflow:hidden}
+.qd31-resource-bar span{display:block;height:100%;background:linear-gradient(90deg,#8f2f28,#ca6e4a)}
+.qd31-move-card{min-width:96px;grid-template-columns:auto 1fr;align-items:center;gap:8px;padding:6px 8px}
+.qd31-square-button{width:26px;height:26px;padding:0;display:inline-flex;align-items:center;justify-content:center}
+.qd31-defense-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.qd31-defense-dial{width:92px;height:92px;max-width:100%;margin:0 auto;border-radius:50% !important;display:grid;place-items:center;text-align:center;font-size:.75rem}
+.qd31-defense-dial span{display:block;font-size:1rem;font-weight:800}
+.qd31-pinned-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
+.qd31-pinned-grid .qd31-square-button{width:100%;height:28px}
+.qd31-roster-card{display:grid;grid-template-columns:40px 1fr 26px;gap:8px;align-items:start;padding:6px;border:1px solid rgba(183,138,67,.45);border-radius:8px}
+.qd31-roster-card img{width:40px;height:40px;object-fit:cover;border-radius:6px}
+.qd31-mini-bars{display:grid;gap:4px;margin-top:4px}
+.qd31-mini-row{display:grid;gap:2px}
+.qd31-mini-row span{font-size:.68rem}
+.qd31-mini-fill{height:4px;background:#27170b;border-radius:999px;overflow:hidden}
+.qd31-mini-fill span{display:block;height:100%;background:#b78a43}
+.qd31-action-row{display:flex;justify-content:space-between;gap:6px;align-items:center;padding:6px;border-bottom:1px solid rgba(183,138,67,.28)}
+.qd31-action-row > div:last-child{display:flex;gap:4px;align-items:center}
+.qd31-drawer-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px}
+.qd31-drawer-body{display:grid;gap:4px}
+
+/* qd40 v0.8.4.6 zero-gap-tabs overrides (loaded last to win against qd31 base rules) */
+.qd31-left-drawer,
+.qd31-right-drawer {
+  position: relative;
+}
+
+.qd31-left-drawer { padding-left: 34px; }
+.qd31-right-drawer { padding-right: 34px; }
+
+.qd31-open-drawer-tab {
+  position: absolute !important;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 132px;
+  z-index: 5;
+  margin: 0 !important;
+}
+
+.qd31-left-open-tab { left: 0; }
+.qd31-right-open-tab { right: 0; }
+
+.qd40-overlay .qd31-center-cockpit .qd31-selected-actor-header {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr) !important;
+  gap: 6px !important;
+  align-items: center !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-selected-actor-portrait {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  object-fit: cover !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .quickdeck-actor-identity {
+  min-height: 0 !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .quickdeck-actor-identity h3,
+.qd40-overlay .qd31-center-cockpit .qd31-actor-name-link {
+  margin: 0 !important;
+  font-size: 0.76rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .quickdeck-actor-identity p {
+  margin: 1px 0 0 !important;
+  font-size: 0.62rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-actor-card { gap: 3px !important; }
+
+.qd40-overlay .qd31-center-cockpit .qd31-compact-resource-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 3px !important;
+  margin: 0 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-compact-resource-card {
+  padding: 3px !important;
+  min-height: 0 !important;
+  gap: 2px !important;
+  display: grid !important;
+  align-content: start !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-icon {
+  font-size: 0.78rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-value {
+  font-size: 0.68rem !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-controls {
+  display: flex !important;
+  gap: 2px !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-controls .qd31-square-button {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  padding: 0 !important;
+  font-size: 0.72rem !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-input {
+  width: 28px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  padding: 0 2px !important;
+  font-size: 0.68rem !important;
+  text-align: center !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-bar {
+  height: 3px !important;
+  margin-top: 1px !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-move-card { justify-items: center !important; }
+
+/* qd40 v0.8.4.6 outside-tabs overrides */
+.qd40-overlay,
+.qd40-overlay .qd40-frame,
+.qd40-overlay .qd40-shell,
+.qd40-overlay .qd31-shell {
+  overflow: visible !important;
+}
+
+.qd40-overlay .qd31-shell {
+  position: relative !important;
+  display: flex !important;
+  gap: 0 !important;
+  padding: 4px !important;
+}
+
+.qd40-overlay .qd31-left-drawer,
+.qd40-overlay .qd31-right-drawer {
+  position: relative !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.qd40-overlay .qd31-edge-tab {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 132px !important;
+  z-index: 20 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: 1px solid #a87835 !important;
+  background: linear-gradient(180deg,#7a5325,#4a2d16) !important;
+  color: #f7e3b5 !important;
+  writing-mode: vertical-rl !important;
+  text-orientation: mixed !important;
+  font-weight: 700 !important;
+  letter-spacing: .04em !important;
+}
+
+.qd40-overlay .qd31-left-edge-tab.qd31-closed-edge-tab { left: -32px !important; }
+.qd40-overlay .qd31-right-edge-tab.qd31-closed-edge-tab { right: -32px !important; }
+.qd40-overlay .qd31-left-drawer .qd31-left-edge-tab { left: -32px !important; }
+.qd40-overlay .qd31-right-drawer .qd31-right-edge-tab { right: -32px !important; }
+
+.qd40-overlay .qd31-drawer-body { overflow-y: auto !important; }
