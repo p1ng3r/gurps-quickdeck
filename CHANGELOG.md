@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.5.3 pinned-favorites
+
+### Changed
+- Replaces center pinned placeholders with real selected Combat, Skills, and Spells favorite sections.
+- Reduces Dodge/Parry/Block defense dials by about 25% while preserving roll-defense behavior.
+
 ## [Unreleased] - v0.8.5.2 center-vitals
 
 ### Changed

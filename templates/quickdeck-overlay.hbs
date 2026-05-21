@@ -22,7 +22,7 @@
   {{#if isInfoPopoverOpen}}
   <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck version information">
     <div class="qd40-info-title">GURPS QuickDeck</div>
-    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.5.2 — center-vitals</strong></div>
+    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.5.3 — pinned-favorites</strong></div>
     <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
     <div class="qd40-info-row"><span>Mode</span><strong>qd40 chromeless command desk</strong></div>
     <div class="qd40-info-row"><span>Branch</span><strong>v0.8.5.1 info popover pass</strong></div>
@@ -152,12 +152,62 @@
 
       <div class="qd31-defense-grid"><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="dodge" data-value="{{gurpsData.display.dodge}}">Dodge <span>{{gurpsData.display.dodge}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="parry" data-value="{{gurpsData.display.parry}}">Parry <span>{{gurpsData.display.parry}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="block" data-value="{{gurpsData.display.block}}">Block <span>{{gurpsData.display.block}}</span></button></div>
 
-      <div class="qd31-pinned-grid">
-        <button type="button" class="qd31-square-button">Attack</button>
-        <button type="button" class="qd31-square-button">Skill</button>
-        <button type="button" class="qd31-square-button">Spell</button>
-        <button type="button" class="qd31-square-button">More</button>
-      </div>
+      <section class="qd31-center-favorites">
+        <div class="qd31-center-fav-section qd31-center-fav-combat">
+          <header class="qd31-center-fav-header">
+            <span>Combat</span>
+            <small>{{favoriteAttackCount}}</small>
+          </header>
+          <div class="qd31-center-fav-list">
+            {{#if favoriteAttacks.length}}
+              {{#each favoriteAttacks as |attack|}}
+                <button type="button" class="qd31-center-fav-pill" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Roll attack">
+                  <span class="qd31-center-fav-name">{{attack.name}}</span>
+                  {{#if attack.type}}<small>{{attack.type}}</small>{{/if}}
+                </button>
+              {{/each}}
+            {{else}}
+              <div class="qd31-center-fav-empty">Pin attacks from Combat</div>
+            {{/if}}
+          </div>
+        </div>
+        <div class="qd31-center-fav-section qd31-center-fav-skills">
+          <header class="qd31-center-fav-header">
+            <span>Skills</span>
+            <small>{{quickSkillsCount}}</small>
+          </header>
+          <div class="qd31-center-fav-list">
+            {{#if indexedQuickSkills.length}}
+              {{#each indexedQuickSkills as |skill|}}
+                <button type="button" class="qd31-center-fav-pill" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll skill">
+                  <span class="qd31-center-fav-name">{{skill.name}}</span>
+                  {{#if skill.relativeLevelDisplay}}<small>{{skill.relativeLevelDisplay}}</small>{{/if}}
+                </button>
+              {{/each}}
+            {{else}}
+              <div class="qd31-center-fav-empty">Pin skills from Skills</div>
+            {{/if}}
+          </div>
+        </div>
+        <div class="qd31-center-fav-section qd31-center-fav-spells">
+          <header class="qd31-center-fav-header">
+            <span>Spells</span>
+            <small>{{favoriteSpellCount}}</small>
+          </header>
+          <div class="qd31-center-fav-list">
+            {{#if favoriteSpells.length}}
+              {{#each favoriteSpells as |spell|}}
+                <button type="button" class="qd31-center-fav-pill" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll spell">
+                  <span class="qd31-center-fav-name">{{spell.name}}</span>
+                  {{#if spell.class}}<small>{{spell.class}}</small>{{/if}}
+                </button>
+              {{/each}}
+            {{else}}
+              <div class="qd31-center-fav-empty">Pin spells from Spells</div>
+            {{/if}}
+          </div>
+        </div>
+      </section>
     </section>
     {{/if}}
   </section>
