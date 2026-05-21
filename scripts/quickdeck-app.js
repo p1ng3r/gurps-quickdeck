@@ -104,7 +104,7 @@ export class QuickDeckApp extends Application {
     appElement.classList.toggle("qd31-window-active", hasQd31);
   }
   getQd31LayoutMetrics() {
-    const centerWidth = 520;
+    const centerWidth = 460;
     const drawerDefaultWidth = 400;
     const drawerMinWidth = 320;
     const closedTabWidth = 32;
@@ -3920,13 +3920,21 @@ export class QuickDeckApp extends Application {
       this.applySpellsFilter(html);
     });
 
-    html.find("[data-action='toggle-quick-skill']").on("change", (event) => {
-      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
-      const skillKey = event.currentTarget.dataset.skillKey;
+    html.find("[data-action='toggle-quick-skill']").on("change click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const element = event.currentTarget;
+      const actorId = element.dataset.actorId || this.activeActorId;
+      const skillKey = element.dataset.skillKey;
       if (!actorId || !skillKey) return;
 
-      this.setQuickSkillSelected(actorId, skillKey, Boolean(event.currentTarget.checked));
-      this.render();
+      let shouldSelect = true;
+      if (element.type === "checkbox") shouldSelect = Boolean(element.checked);
+      else shouldSelect = !this.getQuickSkillSelection(actorId).has(skillKey);
+
+      this.setQuickSkillSelected(actorId, skillKey, shouldSelect);
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
     });
 
     html.find("[data-action='unpin-quick-skill']").on("click", (event) => {

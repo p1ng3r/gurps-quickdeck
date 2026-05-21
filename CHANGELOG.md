@@ -1,3 +1,11 @@
+## [Unreleased] - v0.8.4.3 compact-pills
+
+### Changed
+- Slims the qd40 center cockpit and tightens defense/resource spacing.
+- Converts center utility controls to compact square icon buttons and removes Sheet/Modifier Bucket from the center row.
+- Moves Target and Modifier Bucket tools onto attack and spell action rows.
+- Simplifies skill row controls with compact pin/info buttons instead of text Pin/Unpin/Ref buttons.
+
 ## [Unreleased] - v0.8.4.2 open-fix
 
 ### Fixed

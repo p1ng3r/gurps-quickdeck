@@ -2,7 +2,7 @@
   <header class="qd40-header" data-action="drag-overlay">
     <div class="qd40-title-group">
       <div class="qd40-title">GURPS QuickDeck</div>
-      <div class="quickdeck-dev-badge">QD v0.8.4.2 — open-fix</div>
+      <div class="quickdeck-dev-badge">QD v0.8.4.3 — compact-pills</div>
     </div>
     <div class="qd40-window-controls">
       <button class="qd40-window-button" type="button" data-action="minimize-overlay" title="Minimize">−</button>
@@ -57,12 +57,10 @@
       <header class="quickdeck-actor-header"><img class="qd31-actor-portrait qd31-actor-sheet-link" src="{{activeActor.img}}" alt="{{activeActor.name}}" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}" /><div class="quickdeck-actor-identity"><h3 class="qd31-actor-name-link qd31-actor-sheet-link" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}">{{activeActor.name}}</h3><p>{{activeActor.actorType}}</p></div></header>
       <div class="qd31-command-icon-row">
         <button type="button" class="qd31-icon-button" data-action="drop-token" data-actor-id="{{activeActor.id}}" title="Drop Token">♟</button>
-        <button type="button" class="qd31-icon-button" data-action="open-sheet" data-actor-id="{{activeActor.id}}" title="Open Sheet">📄</button>
         <button type="button" class="qd31-icon-button" data-action="open-chat" title="Chat">💬</button>
         <button type="button" class="qd31-icon-button" data-action="clear-targets" title="Clear Targets">🎯</button>
         <button type="button" class="qd31-icon-button" data-action="next-actor" title="Next Actor">⏭</button>
         <button type="button" class="qd31-icon-button" data-action="repeat-last-attack" title="Repeat Last Attack" {{#unless canRepeatLastAttack}}disabled{{/unless}}>↻</button>
-        <button type="button" class="qd31-icon-button" data-action="open-modifier-bucket" data-actor-id="{{activeActor.id}}" title="Modifier Bucket">🧮</button>
         <button type="button" class="qd31-icon-button" data-action="open-actions-drawer" data-drawer="combat" title="Open Actions">⚔</button>
       </div>
 
@@ -109,30 +107,33 @@
     <nav class="qd31-drawer-tabs"><button data-action="toggle-drawer" data-drawer="combat">Combat</button><button data-action="toggle-drawer" data-drawer="skills">Skills</button><button data-action="toggle-drawer" data-drawer="spells">Spells</button><button data-action="toggle-drawer" data-drawer="settings">Settings</button></nav>
     <section class="qd31-drawer-body" {{#unless isCombatDrawerOpen}}hidden{{/unless}}><div class="qd31-action-row"><span>Target</span><button type="button" class="qd31-square-button" data-action="target-action">🎯</button></div><input type="search" data-action="combat-search" value="{{combatSearch}}" placeholder="Search attacks" />
       {{#each indexedAttacks as |attack|}}
-      <div class="qd31-action-row" data-search-row data-search-text="{{attack.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" {{#unless attack.reference}}disabled{{/unless}} title="Open attack reference"><strong>{{attack.name}}</strong></button>{{#if attack.type}}<small>{{attack.type}}</small>{{/if}}</div><div>
-        <button type="button" class="qd31-square-button" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}">★</button>
-        <button type="button" class="qd31-square-button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}">Atk</button>
-        <button type="button" class="qd31-square-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}">Dmg</button>
-        {{#if attack.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}">Ref</button>{{/if}}
+      <div class="qd31-action-row" data-search-row data-search-text="{{attack.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" {{#unless attack.reference}}disabled{{/unless}} title="Open attack reference"><strong>{{attack.name}}</strong></button>{{#if attack.type}}<small>{{attack.type}}</small>{{/if}}</div><div class="qd31-action-controls">
+        <button type="button" class="qd31-square-button" data-action="target-opponent" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Target Opponent">🎯</button>
+        <button type="button" class="qd31-square-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
+        <button type="button" class="qd31-square-button" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="Favorite">★</button>
+        <button type="button" class="qd31-square-button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll">⚔</button>
+        <button type="button" class="qd31-square-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">💥</button>
+        {{#if attack.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" title="Reference">ℹ</button>{{/if}}
       </div></div>
       {{/each}}
     </section>
     <section class="qd31-drawer-body" {{#unless isSkillsDrawerOpen}}hidden{{/unless}}><input type="search" data-action="skills-search" value="{{skillsSearch}}" placeholder="Search skills" />
       {{#each indexedSkills as |skill|}}
-      <div class="qd31-action-row" data-search-row data-search-text="{{skill.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" {{#unless skill.referenceDisplay}}disabled{{/unless}} title="Open skill reference"><strong>{{skill.name}}</strong></button>{{#if skill.relativeLevelDisplay}}<small>{{skill.relativeLevelDisplay}}</small>{{/if}}</div><div>
-        <button type="button" class="qd31-square-button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}">Roll</button>
-        <button type="button" class="qd31-square-button" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}">Pin</button>
-        <button type="button" class="qd31-square-button" data-action="unpin-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}">Unpin</button>
-        {{#if skill.referenceDisplay}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}">Ref</button>{{/if}}
+      <div class="qd31-action-row" data-search-row data-search-text="{{skill.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" {{#unless skill.referenceDisplay}}disabled{{/unless}} title="Open skill reference"><strong>{{skill.name}}</strong></button>{{#if skill.relativeLevelDisplay}}<small>{{skill.relativeLevelDisplay}}</small>{{/if}}</div><div class="qd31-action-controls">
+        <button type="button" class="qd31-square-button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill">🎲</button>
+        <button type="button" class="qd31-square-button" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="Toggle Quick Skill">📌</button>
+        {{#if skill.referenceDisplay}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>{{/if}}
       </div></div>
       {{/each}}
     </section>
     <section class="qd31-drawer-body" {{#unless isSpellsDrawerOpen}}hidden{{/unless}}><div class="qd31-action-row"><span>Target</span><button type="button" class="qd31-square-button" data-action="target-action">🎯</button></div><input type="search" data-action="spells-search" value="{{spellsSearch}}" placeholder="Search spells" />
       {{#each indexedSpells as |spell|}}
-      <div class="qd31-action-row" data-search-row data-search-text="{{spell.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" {{#unless spell.reference}}disabled{{/unless}} title="Open spell reference"><strong>{{spell.name}}</strong></button>{{#if spell.class}}<small>{{spell.class}}</small>{{/if}}</div><div>
-        <button type="button" class="qd31-square-button" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}">★</button>
-        <button type="button" class="qd31-square-button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}">Roll</button>
-        {{#if spell.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}">Ref</button>{{/if}}
+      <div class="qd31-action-row" data-search-row data-search-text="{{spell.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" {{#unless spell.reference}}disabled{{/unless}} title="Open spell reference"><strong>{{spell.name}}</strong></button>{{#if spell.class}}<small>{{spell.class}}</small>{{/if}}</div><div class="qd31-action-controls">
+        <button type="button" class="qd31-square-button" data-action="target-action" title="Target">🎯</button>
+        <button type="button" class="qd31-square-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
+        <button type="button" class="qd31-square-button" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="Favorite">★</button>
+        <button type="button" class="qd31-square-button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell">✨</button>
+        {{#if spell.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>{{/if}}
       </div></div>
       {{/each}}
     </section>
