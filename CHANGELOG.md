@@ -1,8 +1,8 @@
-## [Unreleased] - v0.8.4.6 outside-tabs
+## [Unreleased] - v0.8.4.6 panel-tabs
 
 ### Changed
-- Removes drawer tab slot columns entirely and converts drawer tabs into absolute outside-edge handles.
-- Lets tabs protrude outside the qd40 shell so they no longer create left/right rail gutters or unused side space.
+- Anchors closed drawer tabs to the center cockpit edges and open drawer tabs to drawer edges so tabs no longer float at the outer shell edge.
+- Removes remaining empty shell space between the center cockpit and the Actions tab.
 
 ## [Unreleased] - v0.8.4.5 hard-compact
 

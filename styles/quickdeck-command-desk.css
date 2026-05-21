@@ -3530,7 +3530,7 @@
 
 .qd40-overlay .qd31-center-cockpit .qd31-move-card { justify-items: center !important; }
 
-/* qd40 v0.8.4.6 outside-tabs overrides */
+/* qd40 v0.8.4.6 panel-tabs overrides */
 .qd40-overlay,
 .qd40-overlay .qd40-frame,
 .qd40-overlay .qd40-shell,
@@ -3539,17 +3539,61 @@
 }
 
 .qd40-overlay .qd31-shell {
-  position: relative !important;
   display: flex !important;
-  gap: 0 !important;
+  gap: 4px !important;
   padding: 4px !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.qd40-overlay .qd40-frame {
+  display: inline-flex !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.qd40-overlay .qd40-shell,
+.qd40-overlay .qd31-shell {
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+}
+
+.qd40-overlay .qd31-panel-wrap {
+  position: relative !important;
+  flex: 0 0 auto !important;
+  min-width: 0 !important;
+  overflow: visible !important;
+}
+
+.qd40-overlay .qd31-center-wrap {
+  width: var(--qd31-center-width) !important;
+  flex: 0 0 var(--qd31-center-width) !important;
+}
+
+.qd40-overlay .qd31-left-panel-wrap {
+  width: var(--qd31-left-drawer-width) !important;
+  flex: 0 0 var(--qd31-left-drawer-width) !important;
+}
+
+.qd40-overlay .qd31-right-panel-wrap {
+  width: var(--qd31-right-drawer-width) !important;
+  flex: 0 0 var(--qd31-right-drawer-width) !important;
 }
 
 .qd40-overlay .qd31-left-drawer,
 .qd40-overlay .qd31-right-drawer {
-  position: relative !important;
+  width: 100% !important;
+  max-width: 100% !important;
   padding-left: 0 !important;
   padding-right: 0 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit {
+  width: 100% !important;
+  max-width: 100% !important;
 }
 
 .qd40-overlay .qd31-edge-tab {
@@ -3572,7 +3616,7 @@
 
 .qd40-overlay .qd31-left-edge-tab.qd31-closed-edge-tab { left: -32px !important; }
 .qd40-overlay .qd31-right-edge-tab.qd31-closed-edge-tab { right: -32px !important; }
-.qd40-overlay .qd31-left-drawer .qd31-left-edge-tab { left: -32px !important; }
-.qd40-overlay .qd31-right-drawer .qd31-right-edge-tab { right: -32px !important; }
+.qd40-overlay .qd31-left-panel-wrap .qd31-left-edge-tab { left: -32px !important; }
+.qd40-overlay .qd31-right-panel-wrap .qd31-right-edge-tab { right: -32px !important; }
 
 .qd40-overlay .qd31-drawer-body { overflow-y: auto !important; }

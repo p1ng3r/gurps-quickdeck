@@ -166,10 +166,10 @@ export class QuickDeckApp extends Application {
         shell.style.setProperty("--qd31-center-width", `${metrics.centerWidth}px`);
         shell.style.setProperty("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
         shell.style.setProperty("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
-        shell.style.setProperty("--qd31-shell-width", `${metrics.shellWidth}px`);
-        shell.style.width = `${metrics.shellWidth}px`;
-        shell.style.minWidth = `${metrics.shellWidth}px`;
-        shell.style.maxWidth = `${metrics.shellWidth}px`;
+        shell.style.removeProperty("--qd31-shell-width");
+        shell.style.width = "";
+        shell.style.minWidth = "";
+        shell.style.maxWidth = "";
       }
     }
   }
