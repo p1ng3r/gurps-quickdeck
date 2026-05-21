@@ -3702,3 +3702,106 @@
 .qd31-right-edge-tab {
   right: -32px !important;
 }
+
+/* QD v0.8.4.8 — mirror-tabs: separate body paint from frame chrome */
+.qd40-frame {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+.qd40-header {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.qd40-title-group,
+.qd40-title,
+.qd40-header .quickdeck-dev-badge {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.qd40-body {
+  position: relative !important;
+  display: inline-block !important;
+  width: auto !important;
+  inline-size: max-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+  background: #120d08 !important;
+  border: 1px solid rgba(199,154,56,.55) !important;
+}
+
+.qd40-body > .qd40-shell,
+.qd40-body > .qd31-shell,
+.qd40-shell.qd31-shell {
+  display: flex !important;
+  width: auto !important;
+  inline-size: max-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  gap: 4px !important;
+  padding: 4px !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+
+.qd31-center-wrap {
+  position: relative !important;
+  flex: 0 0 var(--qd31-center-width, 460px) !important;
+  width: var(--qd31-center-width, 460px) !important;
+  min-width: var(--qd31-center-width, 460px) !important;
+  max-width: var(--qd31-center-width, 460px) !important;
+  overflow: visible !important;
+}
+
+.qd31-center-cockpit {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.qd31-left-panel-wrap {
+  position: relative !important;
+  flex: 0 0 var(--qd31-left-drawer-width, 400px) !important;
+  width: var(--qd31-left-drawer-width, 400px) !important;
+  max-width: var(--qd31-left-drawer-width, 400px) !important;
+  overflow: visible !important;
+}
+
+.qd31-right-panel-wrap {
+  position: relative !important;
+  flex: 0 0 var(--qd31-right-drawer-width, 400px) !important;
+  width: var(--qd31-right-drawer-width, 400px) !important;
+  max-width: var(--qd31-right-drawer-width, 400px) !important;
+  overflow: visible !important;
+}
+
+.qd31-edge-tab {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 132px !important;
+  z-index: 100 !important;
+}
+
+.qd31-left-edge-tab {
+  left: -32px !important;
+}
+
+.qd31-right-edge-tab {
+  right: -32px !important;
+}

@@ -150,26 +150,13 @@ export class QuickDeckApp extends Application {
   applyQd31LayoutSizing(metrics) {
     const root = this.element?.[0] ?? this.element;
     if (!root) return;
-    const appElement = root?.closest?.(".app") ?? root?.parentElement?.closest?.(".app");
-    const content = appElement?.querySelector?.(".window-content");
     const shell = root.querySelector?.(".qd31-shell");
-    if (appElement?.classList?.contains("qd31-window-active")) {
-      appElement.style.width = `${metrics.targetWindowWidth}px`;
-      appElement.style.minWidth = `${metrics.targetWindowWidth}px`;
-      appElement.style.maxWidth = `${metrics.targetWindowWidth}px`;
-      if (content) {
-        content.style.width = `${metrics.shellWidth}px`;
-        content.style.minWidth = `${metrics.shellWidth}px`;
-        content.style.maxWidth = `${metrics.shellWidth}px`;
-      }
-      if (shell) {
-        shell.style.setProperty("--qd31-center-width", `${metrics.centerWidth}px`);
-        shell.style.setProperty("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
-        shell.style.setProperty("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
-      }
-    }
+    if (!shell) return;
+    shell.style.setProperty("--qd31-center-width", `${metrics.centerWidth}px`);
+    shell.style.setProperty("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
+    shell.style.setProperty("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
   }
-  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const metrics=this.getQd31LayoutMetrics(); const height=Math.max(Number(this.position.height)||0, Number(this._lastPosition?.height)||0); this.setPosition({left:this.position.left,top:this.position.top,width:metrics.targetWindowWidth,height:height||this.position.height}); this.applyQd31LayoutSizing(metrics); }); }
+  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const metrics=this.getQd31LayoutMetrics(); const height=Math.max(Number(this.position.height)||0, Number(this._lastPosition?.height)||0); this.setPosition({left:this.position.left,top:this.position.top,height:height||this.position.height}); this.applyQd31LayoutSizing(metrics); }); }
 
   close(options) {
     this.clearQd31InlineSizing();
@@ -179,11 +166,9 @@ export class QuickDeckApp extends Application {
   clearQd31InlineSizing() {
     const root = this.element?.[0] ?? this.element;
     const appElement = this.getApplicationHostElement();
-    const content = appElement?.querySelector?.(".window-content");
     const shell = root?.querySelector?.(".qd31-shell");
     appElement?.classList?.remove("qd31-window-active");
     if (appElement?.style) appElement.style.width = appElement.style.minWidth = appElement.style.maxWidth = "";
-    if (content?.style) content.style.width = content.style.minWidth = content.style.maxWidth = "";
     if (shell?.style) {
       shell.style.width = ""; shell.style.minWidth = ""; shell.style.maxWidth = "";
       shell.style.removeProperty("--qd31-center-width");
