@@ -1,3 +1,10 @@
+## [Unreleased] - v0.8.4.5 hard-compact
+
+### Changed
+- Removes open-state tab rail gutters by moving collapse controls inside open drawers.
+- Adds dedicated qd40 compact selectors for the selected actor header, portrait, and resource cards so center cockpit compacting visibly applies.
+- Preserves compact action-row cleanup from v0.8.4.4.
+
 ## [Unreleased] - v0.8.4.3 compact-pills
 
 ### Changed

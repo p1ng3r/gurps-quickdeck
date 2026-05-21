@@ -3409,3 +3409,123 @@
 .qd31-action-row > div:last-child{display:flex;gap:4px;align-items:center}
 .qd31-drawer-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px}
 .qd31-drawer-body{display:grid;gap:4px}
+
+/* qd40 v0.8.4.5 hard-compact overrides (loaded last to win against qd31 base rules) */
+.qd31-left-drawer,
+.qd31-right-drawer {
+  position: relative;
+}
+
+.qd31-left-drawer { padding-left: 28px; }
+.qd31-right-drawer { padding-right: 28px; }
+
+.qd31-drawer-collapse-tab {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 88px;
+  z-index: 4;
+  padding: 0;
+}
+
+.qd31-left-collapse-tab { left: 0; border-radius: 0 8px 8px 0; }
+.qd31-right-collapse-tab { right: 0; border-radius: 8px 0 0 8px; }
+
+.qd40-overlay .qd31-center-cockpit .qd31-selected-actor-header {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr) !important;
+  gap: 6px !important;
+  align-items: center !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-selected-actor-portrait {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  object-fit: cover !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .quickdeck-actor-identity {
+  min-height: 0 !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .quickdeck-actor-identity h3,
+.qd40-overlay .qd31-center-cockpit .qd31-actor-name-link {
+  margin: 0 !important;
+  font-size: 0.76rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .quickdeck-actor-identity p {
+  margin: 1px 0 0 !important;
+  font-size: 0.62rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-actor-card { gap: 3px !important; }
+
+.qd40-overlay .qd31-center-cockpit .qd31-compact-resource-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 3px !important;
+  margin: 0 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-compact-resource-card {
+  padding: 3px !important;
+  min-height: 0 !important;
+  gap: 2px !important;
+  display: grid !important;
+  align-content: start !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-icon {
+  font-size: 0.78rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-value {
+  font-size: 0.68rem !important;
+  line-height: 1.05 !important;
+  white-space: nowrap !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-controls {
+  display: flex !important;
+  gap: 2px !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-controls .qd31-square-button {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px !important;
+  min-height: 20px !important;
+  padding: 0 !important;
+  font-size: 0.72rem !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-input {
+  width: 28px !important;
+  height: 20px !important;
+  min-height: 20px !important;
+  padding: 0 2px !important;
+  font-size: 0.68rem !important;
+  text-align: center !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-resource-bar {
+  height: 3px !important;
+  margin-top: 1px !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-move-card { justify-items: center !important; }
