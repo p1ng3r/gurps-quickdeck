@@ -1,3 +1,11 @@
+## [Unreleased] - v0.8.4.4 flush-compact
+
+### Changed
+- Flushes drawer tabs against their drawers by replacing global shell gaps with explicit panel spacing.
+- Further compacts selected actor portrait and HP/FP/Move resource cards.
+- Removes extra generic Target rows above Combat/Spell search bars while keeping per-row target controls.
+- Replaces attack/spell favorite star icons with pin icons and removes extra Skills info control buttons.
+
 ## [Unreleased] - v0.8.4.3 compact-pills
 
 ### Changed
