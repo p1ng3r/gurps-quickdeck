@@ -1170,7 +1170,8 @@ export class QuickDeckApp extends Application {
         key,
         name: String(mapping?.name ?? this.getDefaultPdfMapName(key) ?? key),
         path: String(mapping?.path ?? ""),
-        offset: Number(mapping?.offset) || 0
+        offset: Number(mapping?.offset) || 0,
+        testPage: this.getMappedPdfFinalPage(mapping, 1)
       }))
       .sort((a, b) => a.key.localeCompare(b.key));
   }
@@ -1218,20 +1219,53 @@ export class QuickDeckApp extends Application {
     if (!first) return null;
     const mapping = this.getPdfPageRefMappings()[first.key];
     if (!mapping) return null;
-    const offset = Number(mapping.offset) || 0;
-    const finalPage = Math.max(1, Number(first.page) + offset);
+    const finalPage = this.getMappedPdfFinalPage(mapping, first.page);
     return { raw: first.raw, key: first.key, page: first.page, finalPage, mapping };
   }
 
-  openMappedPdfReference(key, page = 1) {
+  getMappedPdfFinalPage(mapping, page = 1) {
+    const basePage = Number(page);
+    const offset = Number(mapping?.offset ?? 0);
+    return Math.max(1, (Number.isFinite(basePage) ? basePage : 1) + (Number.isFinite(offset) ? offset : 0));
+  }
+
+  buildPdfPageUrl(path, finalPage) {
+    const cleanPath = String(path || "").trim();
+    if (!cleanPath) return null;
+    const basePath = cleanPath.split("#")[0];
+    const route = basePath.startsWith("http://")
+      || basePath.startsWith("https://")
+      || basePath.startsWith("/")
+      || basePath.startsWith("data:")
+      ? basePath
+      : foundry?.utils?.getRoute
+        ? foundry.utils.getRoute(basePath)
+        : basePath;
+    return `${route}#page=${finalPage}`;
+  }
+
+  openMappedPdfReference(key, page = 1, { notify = false, refLabel = null } = {}) {
     const normalizedKey = this.normalizePdfMapKey(key);
     const mapping = this.getPdfPageRefMappings()[normalizedKey];
     if (!mapping) {
       ui.notifications?.warn(`QuickDeck: No PDF mapping found for key "${normalizedKey}".`);
       return;
     }
-    const finalPage = Math.max(1, Number(page) + Number(mapping.offset || 0));
-    window.open(`${mapping.path}#page=${finalPage}`, "_blank");
+    const basePage = Number(page);
+    const safeBasePage = Number.isFinite(basePage) ? basePage : 1;
+    const offset = Number(mapping?.offset ?? 0);
+    const safeOffset = Number.isFinite(offset) ? offset : 0;
+    const finalPage = this.getMappedPdfFinalPage(mapping, safeBasePage);
+    const url = this.buildPdfPageUrl(mapping.path, finalPage);
+    if (!url) {
+      ui.notifications?.warn(`QuickDeck: Invalid PDF path for key "${normalizedKey}".`);
+      return;
+    }
+    if (notify) {
+      if (refLabel) ui.notifications?.info(`QuickDeck PDF: ${refLabel} → PDF page ${finalPage}.`);
+      else ui.notifications?.info(`QuickDeck PDF: ${normalizedKey} page ${safeBasePage} + offset ${safeOffset} = PDF page ${finalPage}.`);
+    }
+    window.open(url, "_blank");
   }
 
   tryOpenMappedPdfReference(pageHint) {
@@ -1242,7 +1276,7 @@ export class QuickDeckApp extends Application {
     for (const ref of refs) {
       const resolved = this.resolvePageRef(ref.raw);
       if (resolved?.mapping?.path) {
-        this.openMappedPdfReference(resolved.key, resolved.page);
+        this.openMappedPdfReference(resolved.key, resolved.page, { notify: true, refLabel: resolved.raw });
         return { opened: true, missingKey: null, hadParseableRefs: true };
       }
       if (!firstMissingKey && ref?.key) firstMissingKey = ref.key;
@@ -4425,7 +4459,7 @@ export class QuickDeckApp extends Application {
       this.pdfMapDraft.path = String(event.currentTarget.value ?? "");
     });
     html.find("[data-action='pdf-map-offset']").on("input", (event) => {
-      const parsed = Number(event.currentTarget.value);
+      const parsed = Number.parseInt(event.currentTarget.value, 10);
       this.pdfMapDraft.offset = Number.isFinite(parsed) ? parsed : 0;
     });
     html.find("[data-action='choose-pdf-source']").on("click", (event) => {
@@ -4451,7 +4485,7 @@ export class QuickDeckApp extends Application {
       mappings[key] = {
         name: String(this.pdfMapDraft.name || this.getDefaultPdfMapName(key) || key),
         path,
-        offset: Number(this.pdfMapDraft.offset) || 0
+        offset: Number.isFinite(Number.parseInt(this.pdfMapDraft.offset, 10)) ? Number.parseInt(this.pdfMapDraft.offset, 10) : 0
       };
       await this.savePdfPageRefMappings(mappings);
       this.clearPdfMapDraft();
@@ -4481,7 +4515,7 @@ export class QuickDeckApp extends Application {
     });
     html.find("[data-action='test-pdf-source']").on("click", (event) => {
       event.preventDefault();
-      this.openMappedPdfReference(event.currentTarget.dataset.key, 1);
+      this.openMappedPdfReference(event.currentTarget.dataset.key, 1, { notify: true });
     });
 
     const dropTarget = html.find("[data-drop-zone='roster']")[0];

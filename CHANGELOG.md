@@ -1,3 +1,8 @@
+## [Unreleased] - v0.8.6.2 pdf-offset
+
+### Fixed
+- Normalizes mapped PDF URLs and makes page-offset calculations visible when opening mapped PDFs.
+
 ## [Unreleased] - v0.8.6.1 pdf-ref-open
 
 ### Added
