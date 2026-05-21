@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.4.7 true-edge-tabs
+
+### Changed
+- Forces the qd40 frame and shell to shrink-wrap only visible panels, with tabs protruding outside panel edges instead of occupying internal frame space.
+- Anchors closed drawer tabs directly to the center cockpit edge and open drawer tabs directly to drawer edges.
+
 ## [Unreleased] - v0.8.4.6 panel-tabs
 
 ### Changed

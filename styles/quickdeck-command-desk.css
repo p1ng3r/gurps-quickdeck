@@ -3620,3 +3620,85 @@
 .qd40-overlay .qd31-right-panel-wrap .qd31-right-edge-tab { right: -32px !important; }
 
 .qd40-overlay .qd31-drawer-body { overflow-y: auto !important; }
+
+/* qd40 v0.8.4.7 true-edge-tabs final override */
+.qd40-overlay {
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+.qd40-frame {
+  display: inline-flex !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  inline-size: max-content !important;
+  overflow: visible !important;
+}
+
+.qd40-shell,
+.qd31-shell {
+  display: flex !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  inline-size: max-content !important;
+  gap: 4px !important;
+  padding: 4px !important;
+  overflow: visible !important;
+}
+
+.qd31-center-wrap {
+  position: relative !important;
+  flex: 0 0 var(--qd31-center-width, 460px) !important;
+  width: var(--qd31-center-width, 460px) !important;
+  min-width: var(--qd31-center-width, 460px) !important;
+  max-width: var(--qd31-center-width, 460px) !important;
+  overflow: visible !important;
+}
+
+.qd31-center-cockpit {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+.qd31-left-panel-wrap,
+.qd31-right-panel-wrap {
+  position: relative !important;
+  flex: 0 0 var(--qd31-left-drawer-width, 400px) !important;
+  width: var(--qd31-left-drawer-width, 400px) !important;
+  min-width: 0 !important;
+  max-width: var(--qd31-left-drawer-width, 400px) !important;
+  overflow: visible !important;
+}
+
+.qd31-right-panel-wrap {
+  flex-basis: var(--qd31-right-drawer-width, 400px) !important;
+  width: var(--qd31-right-drawer-width, 400px) !important;
+  max-width: var(--qd31-right-drawer-width, 400px) !important;
+}
+
+.qd31-panel-wrap {
+  position: relative !important;
+  overflow: visible !important;
+}
+
+.qd31-edge-tab {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 132px !important;
+  z-index: 100 !important;
+}
+
+.qd31-left-edge-tab {
+  left: -32px !important;
+}
+
+.qd31-right-edge-tab {
+  right: -32px !important;
+}
