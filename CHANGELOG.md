@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.5.5 damage-not-attack
+
+### Fixed
+- Fixes QuickDeck Damage buttons so they no longer reuse attack datasets and accidentally roll attacks.
+- Routes damage through damage OTF strings like [1d+2 cut], [thr-1 cut], or safe explicit dice fallback.
+
 ## [Unreleased] - v0.8.5.3 pinned-favorites
 
 ### Changed
