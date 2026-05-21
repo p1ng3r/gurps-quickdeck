@@ -66,6 +66,11 @@ export class QuickDeckApp extends Application {
     this._overlayDragCleanup = null;
     this._overlayPosition = null;
     this.isInfoPopoverOpen = false;
+    this.centerFavoriteSections = {
+      combat: true,
+      skills: true,
+      spells: true
+    };
     this.loadPersistedState();
   }
 
@@ -2304,6 +2309,13 @@ export class QuickDeckApp extends Application {
     return null;
   }
 
+  getAttackDamageFormula(attack) {
+    const raw = this.getAttackDamageString(attack);
+    if (!raw) return null;
+    const trimmed = String(raw).trim();
+    return trimmed.length ? trimmed : null;
+  }
+
   async triggerDamageRoll(actorId, attackIndex) {
     if (!actorId || !Number.isFinite(attackIndex)) return;
     const actor = game.actors.get(actorId);
@@ -2312,9 +2324,49 @@ export class QuickDeckApp extends Application {
     const attack = this.getDerivedActorData(actor).attacks[attackIndex];
     if (!attack) return;
 
-    this.rememberPendingAttackContext(actor, attack, attackIndex, this.getSheetAttackDataset(attack));
+    const dataset = this.getSheetAttackDataset(attack);
+    this.rememberPendingAttackContext(actor, attack, attackIndex, dataset);
     this.scheduleChatFocus();
-    ui.notifications?.info("QuickDeck: Use the native GURPS chat damage controls for this attack.");
+
+    const nativeDamageDataset = { ...(dataset ?? {}), damage: "true", isDamage: "true", rollType: "damage" };
+    const nativeHandled = await this.triggerNativeSheetRoll(actor, nativeDamageDataset, {
+      label: "damage"
+    });
+    if (nativeHandled) return;
+
+    const gurps = globalThis.GURPS ?? game.GURPS;
+    const damageOtfs = [
+      this.getFirstDefinedValue(attack, ["damageOtF", "damageOTF", "otfDamage", "damageOtf"]),
+      this.getFirstDefinedValue(attack?.raw, ["damageOtF", "damageOTF", "otfDamage", "damageOtf"])
+    ].filter((entry) => typeof entry === "string" && entry.trim().length > 0);
+    for (const otf of damageOtfs) {
+      try {
+        if (typeof gurps?.executeOTF === "function") {
+          await gurps.executeOTF(otf, false, actor);
+          return;
+        }
+      } catch (error) {
+        console.warn("gurps-quickdeck | Failed to execute damage OTF.", { otf, error });
+      }
+    }
+
+    const formula = this.getAttackDamageFormula(attack);
+    if (!formula) {
+      ui.notifications?.warn(`QuickDeck: Could not find a rollable damage formula for ${attack?.name ?? "this attack"}.`);
+      return;
+    }
+
+    try {
+      const roll = await new Roll(formula).evaluate();
+      await roll.toMessage({
+        speaker: ChatMessage.getSpeaker({ actor }),
+        flavor: `QuickDeck Damage (${attack?.name ?? "Attack"})`
+      });
+      return;
+    } catch (error) {
+      console.warn("gurps-quickdeck | Damage formula roll failed.", { formula, error });
+      ui.notifications?.warn(`QuickDeck: Could not find a rollable damage formula for ${attack?.name ?? "this attack"}.`);
+    }
   }
 
   async waitForTargetSelection({ timeoutMs = 30000 } = {}) {
@@ -3639,6 +3691,11 @@ export class QuickDeckApp extends Application {
       };
     });
     const favoriteSpells = indexedSpells.filter((spell) => spell.isFavoriteSpell);
+    const centerFavoriteSections = {
+      combat: this.centerFavoriteSections?.combat ?? true,
+      skills: this.centerFavoriteSections?.skills ?? true,
+      spells: this.centerFavoriteSections?.spells ?? true
+    };
     const filteredSpells = this.filterEntriesBySearchText(indexedSpells, spellsSearch);
     if (DEBUG) {
       const meleeCount = attacks.filter((attack) => attack.type === "Melee").length;
@@ -3765,6 +3822,7 @@ export class QuickDeckApp extends Application {
       visibleSpellsCount: filteredSpells.length,
       favoriteSpells,
       favoriteSpellCount: favoriteSpells.length,
+      centerFavoriteSections,
       isDragOverRoster: this.isDragOverRoster,
       indexedAttacks,
       indexedSkills,
@@ -3957,6 +4015,21 @@ export class QuickDeckApp extends Application {
       this.setFavoriteSpellSelected(actorId, spellKey, !selection.has(spellKey));
       this.render(false, { focus: false });
       this.scheduleNativeWindowFocusAfterRender();
+    });
+
+    html.find("[data-action='toggle-center-favorite-section']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const section = String(event.currentTarget.dataset.section || "").toLowerCase();
+      if (!["combat", "skills", "spells"].includes(section)) return;
+      const current = this.centerFavoriteSections?.[section];
+      this.centerFavoriteSections = {
+        combat: this.centerFavoriteSections?.combat ?? true,
+        skills: this.centerFavoriteSections?.skills ?? true,
+        spells: this.centerFavoriteSections?.spells ?? true,
+        [section]: !(current ?? true)
+      };
+      this.render(false, { focus: false });
     });
 
 

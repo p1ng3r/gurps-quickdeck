@@ -1,3 +1,10 @@
+## [Unreleased] - v0.8.5.4 action-cards
+
+### Changed
+- Upgrades center cockpit favorites into collapsible Combat, Skills, and Spells action-card sections with full compact controls.
+- Highlights favorited rows/cards and shows variant/detail information so similarly named attacks remain distinguishable.
+- Routes QuickDeck damage buttons through native GURPS damage handling or rollable actor damage formulas instead of only prompting for native chat damage controls.
+
 ## [Unreleased] - v0.8.5.3 pinned-favorites
 
 ### Changed

@@ -4348,3 +4348,16 @@
   font-style: italic !important;
   padding: 2px 0 !important;
 }
+
+/* QD v0.8.5.4 action-cards */
+.qd31-action-row.is-favorite { border-color: rgba(240,182,76,.75); background: rgba(42,30,14,.96); }
+.qd31-square-button.is-active,
+.qd31-center-fav-pin.is-active { border-color: rgba(240,182,76,.85); background: rgba(159,109,36,.95); color: #130d07; }
+.qd31-center-fav-toggle { width: 100%; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.qd31-center-fav-card { border: 1px solid rgba(183,138,67,.35); background: rgba(36,24,12,.92); border-radius: 8px; padding: 6px; display: grid; gap: 6px; }
+.qd31-center-fav-card.is-favorite { border-color: rgba(240,182,76,.75); box-shadow: 0 0 0 1px rgba(210,156,58,.35), inset 0 0 10px rgba(75,54,23,.35); }
+.qd31-center-fav-main { display: grid; gap: 2px; }
+.qd31-center-fav-detail { font-size: 11px; color: rgba(240,228,198,.88); line-height: 1.2; }
+.qd31-center-fav-variant { font-size: 10px; color: rgba(243,198,119,.95); line-height: 1.2; }
+.qd31-center-fav-controls { display: flex; flex-wrap: wrap; gap: 4px; }
+.qd31-center-fav-controls .qd31-square-button { width: 24px; height: 24px; padding: 0; font-size: 12px; }
