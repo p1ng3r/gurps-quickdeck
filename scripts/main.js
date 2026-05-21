@@ -18,7 +18,17 @@ function openQuickDeck() {
     quickDeckApp = new QuickDeckApp();
   }
 
+  quickDeckApp.isMinimized = false;
+  quickDeckApp.persistMinimizedState?.();
+  quickDeckApp.removeFloatingRestoreIcon?.();
+
+  const existingOverlay = document.getElementById("gurps-quickdeck-overlay");
+  if (existingOverlay && existingOverlay !== quickDeckApp._overlayRoot) existingOverlay.remove();
+
   quickDeckApp.render(true);
+  void quickDeckApp.renderOverlay?.();
+  quickDeckApp.syncMinimizedPresentation?.();
+
   return quickDeckApp;
 }
 
@@ -32,6 +42,7 @@ Hooks.once("ready", () => {
   console.log(`${MODULE_ID} | Ready`);
   game.gurpsQuickDeckDebug = {
     open: () => openQuickDeck(),
+    forceOpen: () => openQuickDeck(),
     dumpActiveActorData: () => {
       if (!quickDeckApp) {
         console.warn(`${MODULE_ID} | QuickDeck is not open; open it first to dump active actor data.`);
