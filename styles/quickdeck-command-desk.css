@@ -4248,3 +4248,103 @@
   font-weight: 900 !important;
   color: #f0e2b7 !important;
 }
+
+
+.qd40-overlay .qd31-center-cockpit .qd31-defense-grid {
+  gap: 4px !important;
+  margin: 4px 0 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-defense-dial {
+  width: 54px !important;
+  height: 54px !important;
+  min-width: 54px !important;
+  min-height: 54px !important;
+  padding: 4px !important;
+  font-size: 0.56rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-defense-dial span {
+  font-size: 0.95rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-favorites {
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  gap: 4px !important;
+  margin-top: 4px !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-section {
+  border: 1px solid rgba(199,154,56,.32) !important;
+  border-radius: 8px !important;
+  background: rgba(12,10,7,.78) !important;
+  padding: 4px !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  margin-bottom: 3px !important;
+  font-size: 0.62rem !important;
+  font-weight: 900 !important;
+  text-transform: uppercase !important;
+  letter-spacing: .12em !important;
+  color: #d9bd78 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-header small {
+  font-size: 0.58rem !important;
+  opacity: .8 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-list {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 3px !important;
+  min-height: 20px !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  max-width: 100% !important;
+  min-height: 22px !important;
+  padding: 2px 6px !important;
+  border: 1px solid rgba(199,154,56,.38) !important;
+  border-radius: 999px !important;
+  background: rgba(24,18,10,.95) !important;
+  color: #f0e2b7 !important;
+  font-size: 0.66rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-pill:hover {
+  border-color: rgba(240,182,76,.75) !important;
+  background: rgba(42,30,14,.98) !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-name {
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-pill small {
+  color: #c7a45d !important;
+  font-size: 0.56rem !important;
+  white-space: nowrap !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-empty {
+  font-size: 0.62rem !important;
+  color: #8f7b4e !important;
+  font-style: italic !important;
+  padding: 2px 0 !important;
+}
