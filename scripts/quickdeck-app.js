@@ -1234,6 +1234,34 @@ export class QuickDeckApp extends Application {
     window.open(`${mapping.path}#page=${finalPage}`, "_blank");
   }
 
+  tryOpenMappedPdfReference(pageHint) {
+    const refs = this.parsePageReferences(pageHint);
+    if (!refs.length) return { opened: false, missingKey: null, hadParseableRefs: false };
+
+    let firstMissingKey = null;
+    for (const ref of refs) {
+      const resolved = this.resolvePageRef(ref.raw);
+      if (resolved?.mapping?.path) {
+        this.openMappedPdfReference(resolved.key, resolved.page);
+        return { opened: true, missingKey: null, hadParseableRefs: true };
+      }
+      if (!firstMissingKey && ref?.key) firstMissingKey = ref.key;
+    }
+
+    return { opened: false, missingKey: firstMissingKey, hadParseableRefs: true };
+  }
+
+  prefillPdfMapDraftForKey(key) {
+    const normalized = this.normalizePdfMapKey(key);
+    this.pdfMapDraft = {
+      key: normalized,
+      name: this.getDefaultPdfMapName(normalized) || normalized,
+      path: "",
+      offset: 0
+    };
+    this.openActionsDrawer("settings");
+  }
+
   getQd18ShellWidth() {
     const configuredWidth = Number(this.position?.width ?? this.options?.width ?? 780);
     return Math.max(720, configuredWidth);
@@ -4373,6 +4401,11 @@ export class QuickDeckApp extends Application {
       const name = String(element.dataset.refName ?? "Reference");
       const pageHint = element.dataset.refPage ?? "";
       const source = element.dataset.refSource ?? "";
+      const pdfResult = this.tryOpenMappedPdfReference(pageHint);
+      if (pdfResult.opened) return;
+      if (pdfResult.hadParseableRefs && pdfResult.missingKey) {
+        ui.notifications?.info(`QuickDeck: No PDF mapped for ${pdfResult.missingKey}. Using built-in reference fallback.`);
+      }
       this.openReferenceEntry({ type, name, pageHint, source });
     });
 
