@@ -3,6 +3,7 @@
 ### Changed
 - Forces the qd40 frame and shell to shrink-wrap only visible panels, with tabs protruding outside panel edges instead of occupying internal frame space.
 - Anchors closed drawer tabs directly to the center cockpit edge and open drawer tabs directly to drawer edges.
+- Constrains qd40 header text/badge so frame body width follows shell panel width instead of header content width.
 
 ## [Unreleased] - v0.8.4.6 panel-tabs
 

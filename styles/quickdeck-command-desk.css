@@ -3702,3 +3702,46 @@
 .qd31-right-edge-tab {
   right: -32px !important;
 }
+
+/* qd40 v0.8.4.7 body-tabs final override */
+.qd40-frame {
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+  width: auto !important;
+  inline-size: fit-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
+
+.qd40-header {
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+}
+
+.qd40-title-group {
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+.qd40-title,
+.qd40-header .quickdeck-dev-badge {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.qd40-shell,
+.qd31-shell {
+  flex: 0 0 auto !important;
+  width: auto !important;
+  inline-size: max-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+}
