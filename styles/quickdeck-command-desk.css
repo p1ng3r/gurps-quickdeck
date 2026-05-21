@@ -3924,3 +3924,115 @@
 .qd31-right-edge-tab {
   right: -32px !important;
 }
+
+
+/* v0.8.5.0 in-frame chrome: keep badge/controls visible inside painted frame */
+.qd40-frame {
+  position: relative !important;
+  display: inline-flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+  background: rgba(12, 8, 5, 0.96) !important;
+  border: 1px solid rgba(199,154,56,.65) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 18px 48px rgba(0,0,0,.65), inset 0 0 0 1px rgba(218,163,64,.14) !important;
+  padding: 6px !important;
+}
+
+.qd40-chrome-row {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 8px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 30px !important;
+  margin-bottom: 6px !important;
+  cursor: grab !important;
+  user-select: none !important;
+}
+
+.qd40-chrome-row:active {
+  cursor: grabbing !important;
+}
+
+.qd40-corner-badge {
+  position: static !important;
+  z-index: auto !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  max-width: calc(100% - 72px) !important;
+  padding: 3px 8px !important;
+  border: 1px solid rgba(199,154,56,.55) !important;
+  border-radius: 8px !important;
+  background: rgba(45, 28, 12, 0.96) !important;
+  color: #f0e2b7 !important;
+  box-shadow: 0 8px 20px rgba(0,0,0,.35) !important;
+  pointer-events: none !important;
+}
+
+.qd40-corner-title {
+  font-weight: 900 !important;
+  letter-spacing: .04em !important;
+  white-space: nowrap !important;
+}
+
+.qd40-corner-badge .quickdeck-dev-badge {
+  font-size: 0.72rem !important;
+  white-space: nowrap !important;
+  opacity: .9 !important;
+}
+
+.qd40-window-controls {
+  position: static !important;
+  z-index: auto !important;
+  display: flex !important;
+  flex: 0 0 auto !important;
+  gap: 4px !important;
+}
+
+.qd40-window-button {
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+}
+
+.qd40-drag-surface {
+  display: none !important;
+}
+
+.qd40-body {
+  position: relative !important;
+  display: inline-block !important;
+  width: auto !important;
+  inline-size: max-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow: visible !important;
+  background: rgba(18, 13, 8, 0.96) !important;
+  border: 1px solid rgba(199,154,56,.55) !important;
+  border-radius: 8px !important;
+}
+
+.qd40-body > .qd40-shell,
+.qd40-body > .qd31-shell,
+.qd40-shell.qd31-shell {
+  display: flex !important;
+  width: auto !important;
+  inline-size: max-content !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  gap: 4px !important;
+  padding: 4px !important;
+  overflow: visible !important;
+  background: transparent !important;
+}
+

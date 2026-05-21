@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.5.0 in-frame-chrome
+
+### Changed
+- Moves QuickDeck badge and window controls into an in-frame chrome row so they remain visible near screen edges.
+- Keeps the qd40 body shrink-wrapped and tabs outside body edges without reintroducing dead side space.
+
 ## [Unreleased] - v0.8.4.9 badge-frame
 
 ### Changed
