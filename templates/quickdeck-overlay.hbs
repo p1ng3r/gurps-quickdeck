@@ -22,7 +22,7 @@
   {{#if isInfoPopoverOpen}}
   <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck version information">
     <div class="qd40-info-title">GURPS QuickDeck</div>
-    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.6.2 — pdf-offset</strong></div>
+    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.6.3 — key-name-map</strong></div>
     <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
     <div class="qd40-info-row"><span>Mode</span><strong>qd40 chromeless command desk</strong></div>
     <div class="qd40-info-row"><span>Branch</span><strong>v0.8.5.1 info popover pass</strong></div>
@@ -290,6 +290,7 @@
         <div class="qd31-pdf-map-form">
           <label>Key<input type="text" data-action="pdf-map-key" value="{{pdfMapDraft.key}}" placeholder="B"></label>
           <label>Name<input type="text" data-action="pdf-map-name" value="{{pdfMapDraft.name}}" placeholder="Basic Set"></label>
+          <small>Known keys auto-fill names. Examples: B, BX, DFA, DFX, DFS, MA, M, DF1:, PU2:.</small>
           <label>PDF Path
             <div class="qd31-pdf-path-row">
               <input type="text" data-action="pdf-map-path" value="{{pdfMapDraft.path}}" placeholder="Choose PDF..." readonly>
