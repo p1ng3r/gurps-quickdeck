@@ -4105,3 +4105,146 @@
   text-align: right !important;
   color: #f0e2b7 !important;
 }
+
+.qd40-overlay .qd31-center-cockpit .qd31-selected-actor-header {
+  display: grid !important;
+  grid-template-columns: 40px minmax(0, 1fr) 58px !important;
+  align-items: stretch !important;
+  gap: 6px !important;
+  padding: 4px !important;
+  margin: 0 !important;
+  min-height: 0 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-selected-actor-portrait {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  max-width: 40px !important;
+  min-height: 40px !important;
+  max-height: 40px !important;
+  object-fit: cover !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-selected-actor-identity {
+  min-width: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  gap: 1px !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-actor-name-link {
+  margin: 0 !important;
+  font-size: 0.78rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-selected-actor-identity p {
+  margin: 1px 0 0 !important;
+  font-size: 0.62rem !important;
+  line-height: 1 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-vitals {
+  margin-top: 3px !important;
+  display: grid !important;
+  grid-template-rows: auto auto !important;
+  gap: 3px !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-vital-line {
+  display: grid !important;
+  grid-template-rows: auto 4px !important;
+  gap: 1px !important;
+  min-height: 0 !important;
+  font-size: 0.62rem !important;
+  line-height: 1 !important;
+  color: #d9bd78 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-vital-main {
+  display: flex !important;
+  align-items: center !important;
+  gap: 3px !important;
+  min-width: 0 !important;
+  white-space: nowrap !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-vital-label {
+  font-weight: 800 !important;
+  color: #d9bd78 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-vital-input {
+  width: 30px !important;
+  height: 16px !important;
+  min-height: 16px !important;
+  padding: 0 2px !important;
+  border: 1px solid rgba(199,154,56,.45) !important;
+  border-radius: 4px !important;
+  background: rgba(8,6,4,.9) !important;
+  color: #f0e2b7 !important;
+  font-size: 0.62rem !important;
+  line-height: 1 !important;
+  text-align: center !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-vital-max {
+  color: #f0e2b7 !important;
+  font-weight: 700 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-vital-bar {
+  width: 100% !important;
+  height: 4px !important;
+  border-radius: 999px !important;
+  background: rgba(43, 26, 13, 0.95) !important;
+  overflow: hidden !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-vital-bar span {
+  display: block !important;
+  height: 100% !important;
+  border-radius: inherit !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-hp-line .qd31-center-vital-bar span {
+  background: #a23824 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fp-line .qd31-center-vital-bar span {
+  background: #237d90 !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-move-tile {
+  justify-self: end !important;
+  width: 58px !important;
+  min-width: 58px !important;
+  height: 100% !important;
+  min-height: 42px !important;
+  padding: 4px !important;
+  display: grid !important;
+  grid-template-rows: auto 1fr !important;
+  align-items: center !important;
+  justify-items: center !important;
+  border: 1px solid rgba(199,154,56,.5) !important;
+  border-radius: 8px !important;
+  background: rgba(18,14,11,.95) !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-move-title {
+  font-size: 0.62rem !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  color: #d9bd78 !important;
+  white-space: nowrap !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-move-value {
+  font-size: 1.05rem !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  color: #f0e2b7 !important;
+}

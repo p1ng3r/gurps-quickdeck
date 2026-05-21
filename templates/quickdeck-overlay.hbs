@@ -22,7 +22,7 @@
   {{#if isInfoPopoverOpen}}
   <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck version information">
     <div class="qd40-info-title">GURPS QuickDeck</div>
-    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.5.1 — info-popover</strong></div>
+    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.5.2 — center-vitals</strong></div>
     <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
     <div class="qd40-info-row"><span>Mode</span><strong>qd40 chromeless command desk</strong></div>
     <div class="qd40-info-row"><span>Branch</span><strong>v0.8.5.1 info popover pass</strong></div>
@@ -81,7 +81,65 @@
     <header class="qd31-header"><h2>QuickDeck Cockpit</h2></header>
     {{#if activeActor}}
     <section class="qd31-actor-card">
-      <header class="quickdeck-actor-header qd31-selected-actor-header"><img class="qd31-actor-portrait qd31-selected-actor-portrait qd31-actor-sheet-link" src="{{activeActor.img}}" alt="{{activeActor.name}}" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}" /><div class="quickdeck-actor-identity"><h3 class="qd31-actor-name-link qd31-actor-sheet-link" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}">{{activeActor.name}}</h3><p>{{activeActor.actorType}}</p></div></header>
+      <header class="quickdeck-actor-header qd31-selected-actor-header">
+        <img
+          class="qd31-actor-portrait qd31-selected-actor-portrait qd31-actor-sheet-link"
+          src="{{activeActor.img}}"
+          alt="{{activeActor.name}}"
+          data-action="open-active-actor-sheet"
+          data-actor-id="{{activeActor.id}}"
+        />
+
+        <div class="quickdeck-actor-identity qd31-selected-actor-identity">
+          <h3
+            class="qd31-actor-name-link qd31-actor-sheet-link"
+            data-action="open-active-actor-sheet"
+            data-actor-id="{{activeActor.id}}"
+          >{{activeActor.name}}</h3>
+          <p>{{activeActor.actorType}}</p>
+          <div class="qd31-center-vitals">
+            <div class="qd31-center-vital-line qd31-center-hp-line">
+              <div class="qd31-center-vital-main">
+                <span class="qd31-center-vital-label">❤️ HP</span>
+                <input
+                  type="number"
+                  class="qd31-center-vital-input"
+                  data-action="set-resource"
+                  data-actor-id="{{activeActor.id}}"
+                  data-resource="hp"
+                  value="{{gurpsData.display.hp}}"
+                />
+                <span class="qd31-center-vital-max">/ {{gurpsData.display.hpMax}}</span>
+              </div>
+              <div class="qd31-center-vital-bar">
+                <span style="width: {{gurpsData.hpPercent}}%;"></span>
+              </div>
+            </div>
+            <div class="qd31-center-vital-line qd31-center-fp-line">
+              <div class="qd31-center-vital-main">
+                <span class="qd31-center-vital-label">⚡ FP</span>
+                <input
+                  type="number"
+                  class="qd31-center-vital-input"
+                  data-action="set-resource"
+                  data-actor-id="{{activeActor.id}}"
+                  data-resource="fp"
+                  value="{{gurpsData.display.fp}}"
+                />
+                <span class="qd31-center-vital-max">/ {{gurpsData.display.fpMax}}</span>
+              </div>
+              <div class="qd31-center-vital-bar">
+                <span style="width: {{gurpsData.fpPercent}}%;"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <article class="qd31-center-move-tile">
+          <div class="qd31-center-move-title">👟 Move</div>
+          <div class="qd31-center-move-value">{{gurpsData.display.move}}</div>
+        </article>
+      </header>
       <div class="qd31-command-icon-row">
         <button type="button" class="qd31-icon-button" data-action="drop-token" data-actor-id="{{activeActor.id}}" title="Drop Token">♟</button>
         <button type="button" class="qd31-icon-button" data-action="open-chat" title="Chat">💬</button>
@@ -91,32 +149,6 @@
         <button type="button" class="qd31-icon-button" data-action="open-actions-drawer" data-drawer="combat" title="Open Actions">⚔</button>
       </div>
 
-      <div class="qd31-resource-grid qd31-compact-resource-grid">
-        <article class="qd31-resource-card qd31-compact-resource-card">
-          <div class="qd31-resource-icon" aria-hidden="true">❤️</div>
-          <div class="qd31-resource-value">HP {{gurpsData.display.hp}} / {{gurpsData.display.hpMax}}</div>
-          <div class="qd31-resource-controls">
-            <button type="button" class="qd31-square-button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="hp" data-delta="-1">−</button>
-            <input type="number" class="qd31-resource-input" data-action="set-resource" data-actor-id="{{activeActor.id}}" data-resource="hp" value="{{gurpsData.display.hp}}" />
-            <button type="button" class="qd31-square-button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="hp" data-delta="1">+</button>
-          </div>
-          <div class="qd31-resource-bar"><span style="width: {{gurpsData.hpPercent}}%;"></span></div>
-        </article>
-        <article class="qd31-resource-card qd31-compact-resource-card">
-          <div class="qd31-resource-icon" aria-hidden="true">⚡</div>
-          <div class="qd31-resource-value">FP {{gurpsData.display.fp}} / {{gurpsData.display.fpMax}}</div>
-          <div class="qd31-resource-controls">
-            <button type="button" class="qd31-square-button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="fp" data-delta="-1">−</button>
-            <input type="number" class="qd31-resource-input" data-action="set-resource" data-actor-id="{{activeActor.id}}" data-resource="fp" value="{{gurpsData.display.fp}}" />
-            <button type="button" class="qd31-square-button" data-action="adjust-resource" data-actor-id="{{activeActor.id}}" data-resource="fp" data-delta="1">+</button>
-          </div>
-          <div class="qd31-resource-bar"><span style="width: {{gurpsData.fpPercent}}%;"></span></div>
-        </article>
-        <article class="qd31-resource-card qd31-compact-resource-card qd31-move-card">
-          <div class="qd31-resource-icon" aria-hidden="true">👟</div>
-          <div class="qd31-resource-value">Move {{gurpsData.display.move}}</div>
-        </article>
-      </div>
 
       <div class="qd31-defense-grid"><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="dodge" data-value="{{gurpsData.display.dodge}}">Dodge <span>{{gurpsData.display.dodge}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="parry" data-value="{{gurpsData.display.parry}}">Parry <span>{{gurpsData.display.parry}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="block" data-value="{{gurpsData.display.block}}">Block <span>{{gurpsData.display.block}}</span></button></div>
 

@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.5.2 center-vitals
+
+### Changed
+- Replaces center HP/FP/Move resource cards with compact roster-style editable HP/FP lines in the selected actor header.
+- Moves Move into a right-justified two-row tile beside selected actor vitals.
+
 ## [Unreleased] - v0.8.5.1 info-popover
 
 ### Changed
