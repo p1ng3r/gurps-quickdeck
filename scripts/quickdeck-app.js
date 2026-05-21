@@ -1214,6 +1214,35 @@ export class QuickDeckApp extends Application {
       .filter((entry) => entry && entry.key && Number.isFinite(entry.page));
   }
 
+  debugPdfReferenceResolution(pageHint, context = {}) {
+    const refs = this.parsePageReferences(pageHint);
+    const mappings = this.getPdfPageRefMappings();
+    const rows = refs.map((ref) => {
+      const mapping = mappings[ref.key];
+      const offset = Number(mapping?.offset ?? 0);
+      const safeOffset = Number.isFinite(offset) ? offset : 0;
+      const finalPage = mapping ? this.getMappedPdfFinalPage(mapping, ref.page) : null;
+      const url = mapping ? this.buildPdfPageUrl(mapping.path, finalPage) : null;
+      return {
+        raw: ref.raw,
+        key: ref.key,
+        page: ref.page,
+        mapped: Boolean(mapping),
+        mappingName: mapping?.name ?? null,
+        mappingPath: mapping?.path ?? null,
+        offset: safeOffset,
+        finalPage,
+        url
+      };
+    });
+
+    console.groupCollapsed(`QuickDeck PDF Ref Debug: ${context.name ?? pageHint ?? "reference"}`);
+    console.log({ pageHint, context, refs: rows, mappings });
+    console.groupEnd();
+
+    return rows;
+  }
+
   resolvePageRef(rawRef) {
     const first = this.parsePageReferences(rawRef)[0];
     if (!first) return null;
@@ -1244,17 +1273,18 @@ export class QuickDeckApp extends Application {
     return `${route}#page=${finalPage}`;
   }
 
-  openMappedPdfReference(key, page = 1, { notify = false, refLabel = null } = {}) {
+  openMappedPdfReference(key, page = 1, { notify = false, refLabel = null, basePage = null, offset = null } = {}) {
     const normalizedKey = this.normalizePdfMapKey(key);
     const mapping = this.getPdfPageRefMappings()[normalizedKey];
     if (!mapping) {
       ui.notifications?.warn(`QuickDeck: No PDF mapping found for key "${normalizedKey}".`);
       return;
     }
-    const basePage = Number(page);
-    const safeBasePage = Number.isFinite(basePage) ? basePage : 1;
-    const offset = Number(mapping?.offset ?? 0);
-    const safeOffset = Number.isFinite(offset) ? offset : 0;
+    const providedBasePage = basePage;
+    const resolvedBasePage = Number.isFinite(Number(providedBasePage)) ? Number(providedBasePage) : Number(page);
+    const safeBasePage = Number.isFinite(resolvedBasePage) ? resolvedBasePage : 1;
+    const resolvedOffset = Number.isFinite(Number(offset)) ? Number(offset) : Number(mapping?.offset ?? 0);
+    const safeOffset = Number.isFinite(resolvedOffset) ? resolvedOffset : 0;
     const finalPage = this.getMappedPdfFinalPage(mapping, safeBasePage);
     const url = this.buildPdfPageUrl(mapping.path, finalPage);
     if (!url) {
@@ -1262,8 +1292,8 @@ export class QuickDeckApp extends Application {
       return;
     }
     if (notify) {
-      if (refLabel) ui.notifications?.info(`QuickDeck PDF: ${refLabel} → PDF page ${finalPage}.`);
-      else ui.notifications?.info(`QuickDeck PDF: ${normalizedKey} page ${safeBasePage} + offset ${safeOffset} = PDF page ${finalPage}.`);
+      const label = String(refLabel || normalizedKey);
+      ui.notifications?.info(`QuickDeck PDF: ${label} page ${safeBasePage} + offset ${safeOffset} = PDF page ${finalPage}.`);
     }
     window.open(url, "_blank");
   }
@@ -1276,7 +1306,13 @@ export class QuickDeckApp extends Application {
     for (const ref of refs) {
       const resolved = this.resolvePageRef(ref.raw);
       if (resolved?.mapping?.path) {
-        this.openMappedPdfReference(resolved.key, resolved.page, { notify: true, refLabel: resolved.raw });
+        const resolvedOffset = Number(resolved.mapping?.offset ?? 0);
+        this.openMappedPdfReference(resolved.key, resolved.page, {
+          notify: true,
+          refLabel: resolved.key,
+          basePage: resolved.page,
+          offset: Number.isFinite(resolvedOffset) ? resolvedOffset : 0
+        });
         return { opened: true, missingKey: null, hadParseableRefs: true };
       }
       if (!firstMissingKey && ref?.key) firstMissingKey = ref.key;
@@ -4435,6 +4471,7 @@ export class QuickDeckApp extends Application {
       const name = String(element.dataset.refName ?? "Reference");
       const pageHint = element.dataset.refPage ?? "";
       const source = element.dataset.refSource ?? "";
+      this.debugPdfReferenceResolution(pageHint, { type, name, source });
       const pdfResult = this.tryOpenMappedPdfReference(pageHint);
       if (pdfResult.opened) return;
       if (pdfResult.hadParseableRefs && pdfResult.missingKey) {

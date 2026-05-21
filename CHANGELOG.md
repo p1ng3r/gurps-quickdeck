@@ -1,3 +1,8 @@
+## [Unreleased] - v0.8.6.3 pdf-ref-debug
+
+### Added
+- Adds detailed console diagnostics for mapped PDF reference resolution, including parsed key, base page, offset, final page, and opened URL.
+
 ## [Unreleased] - v0.8.6.2 pdf-offset
 
 ### Fixed
