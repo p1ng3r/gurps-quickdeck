@@ -14,6 +14,7 @@ function normalizeText(value) {
 function getTypeLabel(type) {
   if (type === "skill") return "Skill";
   if (type === "spell") return "Spell";
+  if (type === "technique") return "Technique";
   return "Rule";
 }
 

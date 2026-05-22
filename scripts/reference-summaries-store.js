@@ -5,11 +5,12 @@ const REFERENCE_SUMMARIES_PATHS = [
   `modules/${MODULE_ID}/data/reference-summaries.json`,
   `modules/${MODULE_ID}/data/basic-set-skills.reference-summaries.json`,
   `modules/${MODULE_ID}/data/dungeon-fantasy-adventurers-skills.reference-summaries.json`,
+  `modules/${MODULE_ID}/data/dungeon-fantasy-spells.reference-summaries.json`,
   `modules/${MODULE_ID}/data/martial-arts-techniques.reference-summaries.json`,
   `modules/${MODULE_ID}/data/martial-arts-combat.reference-summaries.json`,
   `modules/${MODULE_ID}/data/magic.reference-summaries.json`
 ];
-const ALLOWED_TYPES = new Set(["skill", "spell", "rule"]);
+const ALLOWED_TYPES = new Set(["skill", "spell", "rule", "technique"]);
 
 let cachedSummaries = null;
 let loadAttempted = false;
