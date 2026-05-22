@@ -2,6 +2,7 @@ import { getReferenceIndex } from "./reference-index-store.js";
 import { loadBundledReferenceSummaries, findBundledReferenceSummary } from "./reference-summaries-store.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { buildReferenceLookupNames } from "./reference-lookup-name.js";
+import { buildPageReference, buildPdfPageUrl, getMappedPdfFinalPage, normalizePdfBookKeyAlias } from "./pdf-page-ref-utils.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/reference.hbs";
 
@@ -13,6 +14,7 @@ function normalizeText(value) {
 function getTypeLabel(type) {
   if (type === "skill") return "Skill";
   if (type === "spell") return "Spell";
+  if (type === "technique") return "Technique";
   return "Rule";
 }
 
@@ -92,7 +94,54 @@ export class QuickDeckReferenceApp extends Application {
     const sourceName =
       manualEntry?.bookKey || this.referenceData.source || bundledSummaryEntry?.sourceName || bundledSummaryEntry?.bookKey || null;
     const displayedPage =
-      manualEntry?.displayedPage || this.referenceData.pageHint || bundledSummaryEntry?.displayedPage || null;
+      manualEntry?.displayedPage || bundledSummaryEntry?.displayedPage || this.referenceData.pageHint || null;
+
+    // Keep bundled/manual fallback matching as the primary popup content source.
+    // PDF matching is a secondary optional action only.
+    const referenceCandidates = [
+      {
+        bookKey: normalizePdfBookKeyAlias(manualEntry?.bookKey || ""),
+        displayedPage: manualEntry?.displayedPage || ""
+      },
+      {
+        bookKey: normalizePdfBookKeyAlias(bundledSummaryEntry?.bookKey || ""),
+        displayedPage: bundledSummaryEntry?.displayedPage || ""
+      },
+      {
+        bookKey: normalizePdfBookKeyAlias(this.referenceData.source || bundledSummaryEntry?.sourceName || ""),
+        displayedPage: this.referenceData.pageHint || displayedPage || ""
+      },
+      {
+        pageHint: this.referenceData.pageHint
+      }
+    ];
+    const pageReference =
+      referenceCandidates
+        .map((candidate) => buildPageReference(candidate))
+        .find((candidate) => Boolean(candidate?.key && Number.isFinite(candidate?.page))) || null;
+    const mappings = game?.settings?.get?.("gurps-quickdeck", "pdfPageRefMappings");
+    const pdfMapping = pageReference?.key ? mappings?.[pageReference.key] ?? null : null;
+    const hasMappedPdf = Boolean(pdfMapping?.path);
+
+    console.debug("QuickDeck Reference Match:", {
+      clickedName: this.referenceData.name,
+      clickedType: this.referenceData.type,
+      clickedPageHint: this.referenceData.pageHint || null,
+      hasManualMatch: Boolean(manualEntry),
+      hasBundledMatch: Boolean(bundledSummaryEntry),
+      bundledEntry: bundledSummaryEntry
+        ? {
+            name: bundledSummaryEntry?.name || null,
+            bookKey: bundledSummaryEntry?.bookKey || null,
+            displayedPage: bundledSummaryEntry?.displayedPage || null
+          }
+        : null,
+      hasSummary: Boolean(bundledSummaryEntry?.summary),
+      hasDescription: Boolean(bundledSummaryEntry?.description),
+      pdfKey: pageReference?.key || null,
+      pdfPage: Number.isFinite(pageReference?.page) ? pageReference.page : null,
+      hasMappedPdf
+    });
 
     const manualEntryPrefill = {
       name: this.referenceData.name,
@@ -173,8 +222,31 @@ export class QuickDeckReferenceApp extends Application {
       hasBundledBaseMatch: bundledBaseMatched,
       bundledMatchedBaseName: bundledSummaryMatch?.matchedBaseName || null,
       hasSummaryData: Boolean(bundledSummaryEntry?.summary || bundledSummaryEntry?.description || bundledSummaryEntry?.notes),
-      emptyStateText: "No bundled summary matched this entry yet."
+      emptyStateText: "No bundled summary matched this entry yet.",
+      hasMappedPdf,
+      pdfMissingKeyMessage: pageReference?.key ? `No PDF mapped for ${pageReference.key}.` : null,
+      pdfOpenLabel: pageReference?.raw || null,
+      pdfOpenKey: pageReference?.key || null,
+      pdfOpenPage: Number.isFinite(pageReference?.page) ? pageReference.page : null
     };
+  }
+
+  bringReferenceToFront() {
+    if (!this.rendered) return;
+    this.bringToTop?.();
+    this.bringToFront?.();
+
+    const element = this.element?.[0];
+    element?.focus?.();
+  }
+
+  async _render(force, options = {}) {
+    await super._render(force, options);
+    this.bringReferenceToFront();
+
+    requestAnimationFrame(() => this.bringReferenceToFront());
+    setTimeout(() => this.bringReferenceToFront(), 75);
+    setTimeout(() => this.bringReferenceToFront(), 200);
   }
 
   activateListeners(html) {
@@ -199,5 +271,35 @@ export class QuickDeckReferenceApp extends Application {
           : "QuickDeck: Added a prefilled Local Override row.";
       ui.notifications?.info(notificationText);
     });
+
+    html.find("[data-action='open-mapped-pdf-page']").on("click", (event) => {
+      event.preventDefault();
+      const key = String(event.currentTarget?.dataset?.pdfKey ?? "").trim().toUpperCase();
+      const page = Number.parseInt(String(event.currentTarget?.dataset?.pdfPage ?? ""), 10);
+      if (!key || !Number.isFinite(page)) return;
+      const mappings = game?.settings?.get?.("gurps-quickdeck", "pdfPageRefMappings");
+      const mapping = mappings?.[key];
+      if (!mapping?.path) {
+        ui.notifications?.info(`QuickDeck: No PDF mapped for ${key}.`);
+        return;
+      }
+      const finalPage = getMappedPdfFinalPage(mapping, page);
+      const url = buildPdfPageUrl(mapping.path, finalPage);
+      if (!url) {
+        ui.notifications?.warn(`QuickDeck: Invalid PDF path for key "${key}".`);
+        return;
+      }
+      window.open(url, "_blank");
+    });
+
+    this.bringReferenceToFront();
+
+    requestAnimationFrame(() => {
+      this.bringReferenceToFront();
+    });
+
+    setTimeout(() => {
+      this.bringReferenceToFront();
+    }, 75);
   }
 }

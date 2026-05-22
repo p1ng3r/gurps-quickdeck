@@ -1,0 +1,36 @@
+[
+  {
+    "name": "Shatter",
+    "type": "spell",
+    "bookKey": "DFS",
+    "sourceName": "Dungeon Fantasy RPG: Spells",
+    "displayedPage": "50",
+    "spellClass": "Regular",
+    "college": "Making and Breaking Spells",
+    "duration": "Instant",
+    "cost": "Varies",
+    "timeToCast": "1 sec",
+    "prerequisites": "",
+    "item": "",
+    "summary": "Shatter damages or destroys a brittle object.",
+    "description": "Bundled DFS fallback for Shatter so QuickDeck can show popup text for DFS50 actor references.",
+    "notes": "When actor reference is DFS50, this entry should be preferred over generic Magic if both exist."
+  },
+  {
+    "name": "Weaken",
+    "type": "spell",
+    "bookKey": "DFS",
+    "sourceName": "Dungeon Fantasy RPG: Spells",
+    "displayedPage": "50",
+    "spellClass": "Regular",
+    "college": "Making and Breaking Spells",
+    "duration": "1 min",
+    "cost": "Varies",
+    "timeToCast": "1 sec",
+    "prerequisites": "",
+    "item": "",
+    "summary": "Weaken temporarily reduces the subject's structural or physical strength.",
+    "description": "Bundled DFS fallback for Weaken so QuickDeck can show popup text for DFS50 actor references.",
+    "notes": "When actor reference is DFS50, this entry should be preferred over generic Magic if both exist."
+  }
+]

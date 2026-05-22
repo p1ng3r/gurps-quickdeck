@@ -1,7 +1,7 @@
 const MODULE_ID = "gurps-quickdeck";
 export const REFERENCE_INDEX_SETTING_KEY = "referenceIndexJson";
 
-const ALLOWED_TYPES = new Set(["skill", "spell", "rule"]);
+const ALLOWED_TYPES = new Set(["skill", "spell", "rule", "technique"]);
 
 function warnAndRecover(message, error) {
   console.warn(`${MODULE_ID} | ${message}`, error);

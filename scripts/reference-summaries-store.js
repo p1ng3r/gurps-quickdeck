@@ -1,14 +1,17 @@
 import { buildReferenceLookupNames } from "./reference-lookup-name.js";
+import { normalizePdfBookKeyAlias, parsePageReferences } from "./pdf-page-ref-utils.js";
 
 const MODULE_ID = "gurps-quickdeck";
 const REFERENCE_SUMMARIES_PATHS = [
   `modules/${MODULE_ID}/data/reference-summaries.json`,
   `modules/${MODULE_ID}/data/basic-set-skills.reference-summaries.json`,
+  `modules/${MODULE_ID}/data/dungeon-fantasy-adventurers-skills.reference-summaries.json`,
+  `modules/${MODULE_ID}/data/dungeon-fantasy-spells.reference-summaries.json`,
   `modules/${MODULE_ID}/data/martial-arts-techniques.reference-summaries.json`,
   `modules/${MODULE_ID}/data/martial-arts-combat.reference-summaries.json`,
   `modules/${MODULE_ID}/data/magic.reference-summaries.json`
 ];
-const ALLOWED_TYPES = new Set(["skill", "spell", "rule"]);
+const ALLOWED_TYPES = new Set(["skill", "spell", "rule", "technique"]);
 
 let cachedSummaries = null;
 let loadAttempted = false;
@@ -143,12 +146,119 @@ function buildSummaryLookup(summaries = []) {
 
     for (const nameAlias of lookupNames.aliases) {
       const nameTypeKey = `${nameAlias}|${type}`;
-      if (!byNameType.has(nameTypeKey)) byNameType.set(nameTypeKey, entry);
-      if (!byName.has(nameAlias)) byName.set(nameAlias, entry);
+      const nameTypeEntries = byNameType.get(nameTypeKey) ?? [];
+      nameTypeEntries.push(entry);
+      byNameType.set(nameTypeKey, nameTypeEntries);
+
+      const nameEntries = byName.get(nameAlias) ?? [];
+      nameEntries.push(entry);
+      byName.set(nameAlias, nameEntries);
     }
   }
 
   return { byNameType, byName };
+}
+
+function resolveBookKeyAlias(value) {
+  const raw = asString(value);
+  if (!raw) return "";
+
+  const normalizedAlias = normalizePdfBookKeyAlias(raw);
+  const normalized = asLookupText(normalizedAlias || raw);
+  if (!normalized) return "";
+
+  if (normalized === "basic set: characters" || normalized === "gurps basic set: characters") return "b";
+  if (normalized === "dungeon fantasy rpg: adventurers") return "dfa";
+  if (normalized === "dungeon fantasy rpg: spells") return "dfs";
+  if (normalized === "magic") return "m";
+  if (normalized === "martial arts" || normalized === "martial arts styles" || normalized === "martial arts combat") return "ma";
+
+  return normalized;
+}
+
+function parsePreferredBookKeys(referenceData = {}) {
+  const preferred = [];
+  const push = (value) => {
+    const normalized = resolveBookKeyAlias(value);
+    if (!normalized) return;
+    if (!preferred.includes(normalized)) preferred.push(normalized);
+  };
+
+  const source = asString(referenceData?.source);
+  const pageHint = asString(referenceData?.pageHint);
+
+  push(source);
+
+  const parsedRefs = parsePageReferences(pageHint);
+  for (const ref of parsedRefs) {
+    if (ref?.key) push(ref.key);
+  }
+
+  if (!parsedRefs.length) {
+    if (/^b\b|basic\s*set/i.test(pageHint)) push("b");
+    if (/^dfa\b|dungeon\s*fantasy\s*rpg\s*:\s*adventurers/i.test(pageHint)) push("dfa");
+    if (/^dfs\b|dungeon\s*fantasy\s*rpg\s*:\s*spells/i.test(pageHint)) push("dfs");
+    if (/^ma\b|martial\s*arts/i.test(pageHint)) push("ma");
+    if (/^m\b|^magic\b/i.test(pageHint)) push("m");
+  }
+
+  return preferred;
+}
+
+function pickBestEntry(candidates = [], referenceData = {}) {
+  if (!Array.isArray(candidates) || !candidates.length) return null;
+
+  const preferredBookKeys = parsePreferredBookKeys(referenceData);
+  const preferredSet = new Set(preferredBookKeys);
+  const normalizedType = asType(referenceData?.type);
+
+  let best = null;
+  let bestScore = -Infinity;
+
+  for (const entry of candidates) {
+    let score = 0;
+    const entryBookKey = resolveBookKeyAlias(entry?.bookKey || entry?.sourceName || "");
+
+    if (preferredSet.size && preferredSet.has(entryBookKey)) {
+      score += 1000;
+      score += Math.max(0, 20 - preferredBookKeys.indexOf(entryBookKey));
+    }
+
+    if (!preferredSet.size) {
+      if (normalizedType === "skill") {
+        if (entryBookKey === "b") score += 120;
+        else if (entryBookKey === "dfa") score += 90;
+        else if (entryBookKey === "ma") score += 60;
+      }
+    }
+
+    if (entryBookKey === "b") score += 2;
+    if (entryBookKey === "dfs") score += 2;
+    if (entryBookKey === "ma") score += 1;
+    if (entryBookKey === "dfa") score += 1;
+
+    if (!best || score > bestScore) {
+      best = entry;
+      bestScore = score;
+    }
+  }
+
+  return best;
+}
+
+
+function collectDiagnostics(entries = []) {
+  const byType = {};
+  const byBookKey = {};
+
+  for (const entry of entries) {
+    const typeKey = asType(entry?.type);
+    const bookKey = asString(entry?.bookKey) || "unknown";
+    byType[typeKey] = (byType[typeKey] ?? 0) + 1;
+    byBookKey[bookKey] = (byBookKey[bookKey] ?? 0) + 1;
+  }
+
+  return { byType, byBookKey };
 }
 
 export async function loadBundledReferenceSummaries() {
@@ -158,8 +268,22 @@ export async function loadBundledReferenceSummaries() {
 
   loadingPromise = Promise.all(REFERENCE_SUMMARIES_PATHS.map((path) => loadSummaryFile(path)))
     .then((loadedArrays) => {
+      const files = REFERENCE_SUMMARIES_PATHS.map((path, index) => ({
+        path,
+        count: loadedArrays[index]?.length ?? 0
+      }));
+
       cachedSummaries = dedupeSummaries(loadedArrays.flat());
       cachedSummaryLookup = buildSummaryLookup(cachedSummaries);
+
+      const diagnostics = collectDiagnostics(cachedSummaries);
+      console.debug("QuickDeck bundled references loaded", {
+        total: cachedSummaries.length,
+        byType: diagnostics.byType,
+        byBookKey: diagnostics.byBookKey,
+        files
+      });
+
       return cachedSummaries;
     })
     .catch((error) => {
@@ -188,16 +312,16 @@ export function findBundledReferenceSummary(referenceData = {}, summaries = []) 
       ? cachedSummaryLookup
       : buildSummaryLookup(normalizedSummaries);
 
-  const exactNameType = lookup.byNameType.get(`${normalizedName}|${normalizedType}`) ?? null;
+  const exactNameType = pickBestEntry(lookup.byNameType.get(`${normalizedName}|${normalizedType}`) ?? [], referenceData);
   if (exactNameType) return { entry: exactNameType, mode: "exact-name-type" };
 
-  const exactNameOnly = lookup.byName.get(normalizedName) ?? null;
+  const exactNameOnly = pickBestEntry(lookup.byName.get(normalizedName) ?? [], referenceData);
   if (exactNameOnly) return { entry: exactNameOnly, mode: "exact-name" };
 
-  const baseNameType = lookup.byNameType.get(`${normalizedBaseName}|${normalizedType}`) ?? null;
+  const baseNameType = pickBestEntry(lookup.byNameType.get(`${normalizedBaseName}|${normalizedType}`) ?? [], referenceData);
   if (baseNameType) return { entry: baseNameType, mode: "base-name-type", matchedBaseName: baseNameType.name };
 
-  const baseNameOnly = lookup.byName.get(normalizedBaseName) ?? null;
+  const baseNameOnly = pickBestEntry(lookup.byName.get(normalizedBaseName) ?? [], referenceData);
   if (baseNameOnly) return { entry: baseNameOnly, mode: "base-name", matchedBaseName: baseNameOnly.name };
 
   return null;

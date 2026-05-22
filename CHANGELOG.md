@@ -1,3 +1,13 @@
+## [Unreleased] - v0.8.6.8 ref-data-load
+
+### Fixed
+- Restores bundled reference summaries as the primary popup content while keeping mapped PDFs as an optional secondary Open PDF Page action.
+
+## [Unreleased] - v0.8.6.5 ref-pdf-button
+
+### Added
+- Adds an Open PDF Page button to reference popups when a fallback/manual entry can resolve to a mapped PDF and displayed page.
+
 ## [Unreleased] - v0.8.6.4 pdf-input-focus
 
 ### Fixed

@@ -30,6 +30,15 @@ export function buildReferenceLookupNames(name) {
   const aliases = [normalizedName];
   if (base && base !== normalizedName) aliases.push(base);
 
+  const orSplit = normalizedName.split(/\s+or\s+/i).map((part) => part.trim()).filter(Boolean);
+  if (orSplit.length > 1) {
+    for (const part of orSplit) {
+      if (!aliases.includes(part)) aliases.push(part);
+      const partBase = asLookupText(getReferenceBaseName(part));
+      if (partBase && !aliases.includes(partBase)) aliases.push(partBase);
+    }
+  }
+
   return {
     exact: normalizedName,
     base,

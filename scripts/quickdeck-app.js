@@ -1,6 +1,7 @@
 import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { PAGE_REF_KEY_NAMES, getPageRefKeyNameFromMap } from "./page-ref-key-names.js";
+import { normalizePdfMapKey, parsePageReferences, getMappedPdfFinalPage, buildPdfPageUrl } from "./pdf-page-ref-utils.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
@@ -64,6 +65,7 @@ export class QuickDeckApp extends Application {
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
+    this.referenceApp = null;
     this._overlayRoot = null;
     this._overlayDragCleanup = null;
     this._overlayPosition = null;
@@ -403,6 +405,7 @@ export class QuickDeckApp extends Application {
     const hasRealSkillField = this.objectHasAnyPath(value, [
       "difficulty",
       "defaults",
+      "default",
       "points",
       "calc.points",
       "calc.level",
@@ -708,7 +711,24 @@ export class QuickDeckApp extends Application {
           sourceKey: entry.key,
           sourceCollection: source.collection
         });
-        if (normalized) skills.push(normalized);
+        if (normalized) {
+          const sourcePath = String(entry.path ?? source.path ?? "");
+          const sourcePathSegments = sourcePath ? sourcePath.split(".").filter(Boolean) : [];
+          const baseSegments = String(source.path ?? "").split(".").filter(Boolean).length;
+          const depth = Math.max(0, sourcePathSegments.length - baseSegments);
+
+          if (DEBUG) console.debug("QuickDeck Skill Indexed", {
+            name: normalized.name,
+            specialization: this.getFirstDefinedValue(normalized.raw, ["specialization", "specialty", "speciality"]) ?? null,
+            reference: normalized.reference ?? null,
+            difficulty: this.getFirstDefinedValue(normalized.raw, ["difficulty", "diff", "calc.diff"]) ?? null,
+            level: normalized.level ?? null,
+            sourcePath,
+            depth
+          });
+
+          skills.push(normalized);
+        }
       }
     }
 
@@ -1182,7 +1202,7 @@ export class QuickDeckApp extends Application {
   }
 
   normalizePdfMapKey(key) {
-    return String(key ?? "").trim().toUpperCase();
+    return normalizePdfMapKey(key);
   }
 
   getPageRefKeyNameMap() {
@@ -1223,16 +1243,7 @@ export class QuickDeckApp extends Application {
   }
 
   parsePageReferences(refText) {
-    return String(refText ?? "")
-      .split(/[;,]/)
-      .map((entry) => entry.trim())
-      .filter(Boolean)
-      .map((raw) => {
-        const match = raw.match(/^(.*?)(\d+)$/);
-        if (!match) return null;
-        return { raw, key: this.normalizePdfMapKey(match[1]), page: Number(match[2]) };
-      })
-      .filter((entry) => entry && entry.key && Number.isFinite(entry.page));
+    return parsePageReferences(refText);
   }
 
   resolvePageRef(rawRef) {
@@ -1245,24 +1256,11 @@ export class QuickDeckApp extends Application {
   }
 
   getMappedPdfFinalPage(mapping, page = 1) {
-    const basePage = Number(page);
-    const offset = Number(mapping?.offset ?? 0);
-    return Math.max(1, (Number.isFinite(basePage) ? basePage : 1) + (Number.isFinite(offset) ? offset : 0));
+    return getMappedPdfFinalPage(mapping, page);
   }
 
   buildPdfPageUrl(path, finalPage) {
-    const cleanPath = String(path || "").trim();
-    if (!cleanPath) return null;
-    const basePath = cleanPath.split("#")[0];
-    const route = basePath.startsWith("http://")
-      || basePath.startsWith("https://")
-      || basePath.startsWith("/")
-      || basePath.startsWith("data:")
-      ? basePath
-      : foundry?.utils?.getRoute
-        ? foundry.utils.getRoute(basePath)
-        : basePath;
-    return `${route}#page=${finalPage}`;
+    return buildPdfPageUrl(path, finalPage);
   }
 
   openMappedPdfReference(key, page = 1, { notify = false, refLabel = null } = {}) {
@@ -2685,10 +2683,45 @@ export class QuickDeckApp extends Application {
     this.render(false);
   }
 
+  bringReferenceAppToFrontSoon() {
+    const app = this.referenceApp;
+    if (!app || !app.rendered) return;
+
+    const bring = () => app.bringReferenceToFront?.() || app.bringToTop?.();
+
+    requestAnimationFrame(bring);
+    setTimeout(bring, 75);
+    setTimeout(bring, 200);
+  }
+
   openReferenceEntry(referenceData = {}) {
     try {
+      const existing = this.referenceApp;
+      if (existing && typeof existing.close === "function") {
+        existing.close({ force: true });
+      }
+
       const app = new QuickDeckReferenceApp(referenceData);
-      app.render(true);
+      this.referenceApp = app;
+
+      const baseLeft = Number(this.position?.left ?? this._position?.left ?? 0);
+      const baseTop = Number(this.position?.top ?? this._position?.top ?? 0);
+      const width = 460;
+      const height = 520;
+      const left = Math.max(20, Math.min(window.innerWidth - width, baseLeft + 40));
+      const top = Math.max(20, Math.min(window.innerHeight - height, baseTop + 40));
+
+      app.render(true, { focus: true, left, top, width, height });
+
+      setTimeout(() => {
+        app.bringToTop?.();
+        app.bringToFront?.();
+        app.element?.[0]?.focus?.();
+      }, 0);
+
+      app.once?.("close", () => {
+        if (this.referenceApp === app) this.referenceApp = null;
+      });
     } catch (error) {
       console.warn("gurps-quickdeck | Failed to open QuickDeck reference window.", error);
       ui.notifications?.warn("QuickDeck: Could not open reference window.");
@@ -3473,6 +3506,7 @@ export class QuickDeckApp extends Application {
     await this.renderOverlay();
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
+    this.bringReferenceAppToFrontSoon();
     return result;
   }
 
@@ -4456,13 +4490,6 @@ export class QuickDeckApp extends Application {
       const name = String(element.dataset.refName ?? "Reference");
       const pageHint = element.dataset.refPage ?? "";
       const source = element.dataset.refSource ?? "";
-      const pdfResult = this.tryOpenMappedPdfReference(pageHint);
-      if (pdfResult.opened) return;
-      if (pdfResult.hadParseableRefs && pdfResult.missingKey) {
-        const friendlyName = this.getPageRefKeyName(pdfResult.missingKey);
-        const friendlySuffix = friendlyName ? ` — ${friendlyName}` : "";
-        ui.notifications?.info(`QuickDeck: No PDF mapped for ${pdfResult.missingKey}${friendlySuffix}. Using built-in reference fallback.`);
-      }
       this.openReferenceEntry({ type, name, pageHint, source });
     });
 
@@ -4550,7 +4577,10 @@ export class QuickDeckApp extends Application {
     });
 
     const dropTarget = html.find("[data-drop-zone='roster']")[0];
-    if (!dropTarget) return;
+    if (!dropTarget) {
+      this.bringReferenceAppToFrontSoon();
+      return;
+    }
 
     dropTarget.addEventListener("dragenter", (event) => {
       event.preventDefault();
@@ -4600,6 +4630,7 @@ export class QuickDeckApp extends Application {
     this.applySkillsFilter(html);
     this.applyQuickSkillsFilter(html);
     this.applySpellsFilter(html);
+    this.bringReferenceAppToFrontSoon();
   }
 
 }

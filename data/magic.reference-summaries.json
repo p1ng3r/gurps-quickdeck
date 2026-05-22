@@ -2,7 +2,7 @@
   {
     "name": "Purify Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -23,7 +23,7 @@
   {
     "name": "Seek Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -44,7 +44,7 @@
   {
     "name": "Create Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -65,7 +65,7 @@
   {
     "name": "No-Smell",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -86,7 +86,7 @@
   {
     "name": "Stench",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -107,7 +107,7 @@
   {
     "name": "Destroy Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -128,7 +128,7 @@
   {
     "name": "Odor",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -149,7 +149,7 @@
   {
     "name": "Shape Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -170,7 +170,7 @@
   {
     "name": "Air Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -191,7 +191,7 @@
   {
     "name": "Air Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -212,7 +212,7 @@
   {
     "name": "Body of Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "23",
     "attribute": "",
@@ -233,7 +233,7 @@
   {
     "name": "Devitalize Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "24",
     "attribute": "",
@@ -254,7 +254,7 @@
   {
     "name": "Walk on Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "24",
     "attribute": "",
@@ -275,7 +275,7 @@
   {
     "name": "Wall of Wind",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "24",
     "attribute": "",
@@ -296,7 +296,7 @@
   {
     "name": "Windstorm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "24",
     "attribute": "",
@@ -317,7 +317,7 @@
   {
     "name": "Earth to Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "24",
     "attribute": "",
@@ -338,7 +338,7 @@
   {
     "name": "Clouds",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "24",
     "attribute": "",
@@ -359,7 +359,7 @@
   {
     "name": "Predict Weather",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "24",
     "attribute": "",
@@ -380,7 +380,7 @@
   {
     "name": "Wind",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "24",
     "attribute": "",
@@ -401,7 +401,7 @@
   {
     "name": "Rain",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -422,7 +422,7 @@
   {
     "name": "Snow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -443,7 +443,7 @@
   {
     "name": "Concussion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -464,7 +464,7 @@
   {
     "name": "Breathe Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -485,7 +485,7 @@
   {
     "name": "Breathe Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -506,7 +506,7 @@
   {
     "name": "Essential Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -527,7 +527,7 @@
   {
     "name": "Resist Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -548,7 +548,7 @@
   {
     "name": "Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -569,7 +569,7 @@
   {
     "name": "Air Vortex",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -590,7 +590,7 @@
   {
     "name": "Explosive Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -611,7 +611,7 @@
   {
     "name": "Lightning Whip",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -632,7 +632,7 @@
   {
     "name": "Shocking Touch",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -653,7 +653,7 @@
   {
     "name": "Spark Cloud",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -674,7 +674,7 @@
   {
     "name": "Spark Storm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -695,7 +695,7 @@
   {
     "name": "Atmosphere Dome",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -716,7 +716,7 @@
   {
     "name": "Wall of Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -737,7 +737,7 @@
   {
     "name": "Warm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "25",
     "attribute": "",
@@ -758,7 +758,7 @@
   {
     "name": "Cool",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -779,7 +779,7 @@
   {
     "name": "Ball of Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -800,7 +800,7 @@
   {
     "name": "Lightning Stare",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -821,7 +821,7 @@
   {
     "name": "Body of Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -842,7 +842,7 @@
   {
     "name": "Lightning Weapon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -863,7 +863,7 @@
   {
     "name": "Sandstorm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -884,7 +884,7 @@
   {
     "name": "Storm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -905,7 +905,7 @@
   {
     "name": "Lightning Missiles",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -926,7 +926,7 @@
   {
     "name": "Lightning Armor",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -947,7 +947,7 @@
   {
     "name": "Body of Wind",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -968,7 +968,7 @@
   {
     "name": "Summon (Air) Elemental",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -989,7 +989,7 @@
   {
     "name": "Elemental",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "26",
     "attribute": "",
@@ -1010,7 +1010,7 @@
   {
     "name": "Create (Air) Elemental",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "27",
     "attribute": "",
@@ -1031,7 +1031,7 @@
   {
     "name": "Control (Air) Elemental",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "27",
     "attribute": "",
@@ -1052,7 +1052,7 @@
   {
     "name": "Beast-Soother",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "28",
     "attribute": "",
@@ -1073,7 +1073,7 @@
   {
     "name": "Beast-Rouser",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "29",
     "attribute": "",
@@ -1094,7 +1094,7 @@
   {
     "name": "(Animal) Control",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "29",
     "attribute": "",
@@ -1115,7 +1115,7 @@
   {
     "name": "Hybrid Control (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "29",
     "attribute": "",
@@ -1136,7 +1136,7 @@
   {
     "name": "Beast Summoning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "29",
     "attribute": "",
@@ -1157,7 +1157,7 @@
   {
     "name": "Master",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "29",
     "attribute": "",
@@ -1178,7 +1178,7 @@
   {
     "name": "Beast Link",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "29",
     "attribute": "",
@@ -1199,7 +1199,7 @@
   {
     "name": "Beast Speech",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "30",
     "attribute": "",
@@ -1220,7 +1220,7 @@
   {
     "name": "Repel (Animal)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "30",
     "attribute": "",
@@ -1241,7 +1241,7 @@
   {
     "name": "Rider",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "30",
     "attribute": "",
@@ -1262,7 +1262,7 @@
   {
     "name": "Rider Within",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "30",
     "attribute": "",
@@ -1283,7 +1283,7 @@
   {
     "name": "Spider Silk",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "31",
     "attribute": "",
@@ -1304,7 +1304,7 @@
   {
     "name": "Binding attack with the Sticky and",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "31",
     "attribute": "",
@@ -1325,7 +1325,7 @@
   {
     "name": "Beast Possession",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "31",
     "attribute": "",
@@ -1346,7 +1346,7 @@
   {
     "name": "Permanent Beast Possession (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "31",
     "attribute": "",
@@ -1367,7 +1367,7 @@
   {
     "name": "Possession (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "31",
     "attribute": "",
@@ -1388,7 +1388,7 @@
   {
     "name": "Protect Animal",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "31",
     "attribute": "",
@@ -1409,7 +1409,7 @@
   {
     "name": "Shapeshifting (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "31",
     "attribute": "",
@@ -1430,7 +1430,7 @@
   {
     "name": "Shapeshift Others (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "32",
     "attribute": "",
@@ -1451,7 +1451,7 @@
   {
     "name": "Permanent Shapeshifting (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "32",
     "attribute": "",
@@ -1472,7 +1472,7 @@
   {
     "name": "Shapeshifting (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "32",
     "attribute": "",
@@ -1493,7 +1493,7 @@
   {
     "name": "Partial Shapeshifting (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "33",
     "attribute": "",
@@ -1514,7 +1514,7 @@
   {
     "name": "(VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "33",
     "attribute": "",
@@ -1535,7 +1535,7 @@
   {
     "name": "Great Shapeshift (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "33",
     "attribute": "",
@@ -1556,7 +1556,7 @@
   {
     "name": "Climbing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "34",
     "attribute": "",
@@ -1577,7 +1577,7 @@
   {
     "name": "Itch",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "34",
     "attribute": "",
@@ -1598,7 +1598,7 @@
   {
     "name": "Touch",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "34",
     "attribute": "",
@@ -1619,7 +1619,7 @@
   {
     "name": "Perfume",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "34",
     "attribute": "",
@@ -1640,7 +1640,7 @@
   {
     "name": "Spasm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "34",
     "attribute": "",
@@ -1661,7 +1661,7 @@
   {
     "name": "Stop Spasm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "34",
     "attribute": "",
@@ -1682,7 +1682,7 @@
   {
     "name": "Tickle",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "35",
     "attribute": "",
@@ -1703,7 +1703,7 @@
   {
     "name": "Pain",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "35",
     "attribute": "",
@@ -1724,7 +1724,7 @@
   {
     "name": "Clumsiness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "35",
     "attribute": "",
@@ -1745,7 +1745,7 @@
   {
     "name": "Hinder",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "35",
     "attribute": "",
@@ -1766,7 +1766,7 @@
   {
     "name": "Rooted Feet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "35",
     "attribute": "",
@@ -1787,7 +1787,7 @@
   {
     "name": "Tanglefoot",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "35",
     "attribute": "",
@@ -1808,7 +1808,7 @@
   {
     "name": "Roundabout",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "35",
     "attribute": "",
@@ -1829,7 +1829,7 @@
   {
     "name": "Debility",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "35",
     "attribute": "",
@@ -1850,7 +1850,7 @@
   {
     "name": "Frailty",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "36",
     "attribute": "",
@@ -1871,7 +1871,7 @@
   {
     "name": "Might",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "36",
     "attribute": "",
@@ -1892,7 +1892,7 @@
   {
     "name": "Vigor",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "36",
     "attribute": "",
@@ -1913,7 +1913,7 @@
   {
     "name": "Boost (Attribute)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "36",
     "attribute": "",
@@ -1934,7 +1934,7 @@
   {
     "name": "Stun",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "36",
     "attribute": "",
@@ -1955,7 +1955,7 @@
   {
     "name": "Nauseate Strike Dumb",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "37",
     "attribute": "",
@@ -1976,7 +1976,7 @@
   {
     "name": "Strike Dumb",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "37",
     "attribute": "",
@@ -1997,7 +1997,7 @@
   {
     "name": "Retch",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "37",
     "attribute": "",
@@ -2018,7 +2018,7 @@
   {
     "name": "Fumble",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "37",
     "attribute": "",
@@ -2039,7 +2039,7 @@
   {
     "name": "Strike Blind",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "37",
     "attribute": "",
@@ -2060,7 +2060,7 @@
   {
     "name": "Strike Deaf",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "37",
     "attribute": "",
@@ -2081,7 +2081,7 @@
   {
     "name": "Hunger",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "37",
     "attribute": "",
@@ -2102,7 +2102,7 @@
   {
     "name": "Thirst",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "37",
     "attribute": "",
@@ -2123,7 +2123,7 @@
   {
     "name": "Resist Pain",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "37",
     "attribute": "",
@@ -2144,7 +2144,7 @@
   {
     "name": "Hold Breath",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "38",
     "attribute": "",
@@ -2165,7 +2165,7 @@
   {
     "name": "Regular Reflexes",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "38",
     "attribute": "",
@@ -2186,7 +2186,7 @@
   {
     "name": "Reflexes",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "38",
     "attribute": "",
@@ -2207,7 +2207,7 @@
   {
     "name": "Ambidexterity",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "38",
     "attribute": "",
@@ -2228,7 +2228,7 @@
   {
     "name": "Balance",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "38",
     "attribute": "",
@@ -2249,7 +2249,7 @@
   {
     "name": "Cadence",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "38",
     "attribute": "",
@@ -2270,7 +2270,7 @@
   {
     "name": "Hair Growth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "38",
     "attribute": "",
@@ -2291,7 +2291,7 @@
   {
     "name": "Haircut",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "38",
     "attribute": "",
@@ -2312,7 +2312,7 @@
   {
     "name": "Sensitize",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "38",
     "attribute": "",
@@ -2333,7 +2333,7 @@
   {
     "name": "Weaken Blood",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "39",
     "attribute": "",
@@ -2354,7 +2354,7 @@
   {
     "name": "Strike Numb",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "39",
     "attribute": "",
@@ -2375,7 +2375,7 @@
   {
     "name": "Choke",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "39",
     "attribute": "",
@@ -2396,7 +2396,7 @@
   {
     "name": "Control Limb",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "39",
     "attribute": "",
@@ -2417,7 +2417,7 @@
   {
     "name": "Paralyze Limb",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "39",
     "attribute": "",
@@ -2438,7 +2438,7 @@
   {
     "name": "Total Paralysis",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "39",
     "attribute": "",
@@ -2459,7 +2459,7 @@
   {
     "name": "Wither Limb",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "39",
     "attribute": "",
@@ -2480,7 +2480,7 @@
   {
     "name": "Strike Barren",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "40",
     "attribute": "",
@@ -2501,7 +2501,7 @@
   {
     "name": "Sickness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "40",
     "attribute": "",
@@ -2522,7 +2522,7 @@
   {
     "name": "Deathtouch",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "40",
     "attribute": "",
@@ -2543,7 +2543,7 @@
   {
     "name": "Alter Visage",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "40",
     "attribute": "",
@@ -2564,7 +2564,7 @@
   {
     "name": "Alter Body",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "40",
     "attribute": "",
@@ -2585,7 +2585,7 @@
   {
     "name": "Lengthen Limb",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "40",
     "attribute": "",
@@ -2606,7 +2606,7 @@
   {
     "name": "Decapitation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "41",
     "attribute": "",
@@ -2627,7 +2627,7 @@
   {
     "name": "Shrink (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "41",
     "attribute": "",
@@ -2648,7 +2648,7 @@
   {
     "name": "Shrink Other (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "41",
     "attribute": "",
@@ -2669,7 +2669,7 @@
   {
     "name": "Enlarge (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "41",
     "attribute": "",
@@ -2690,7 +2690,7 @@
   {
     "name": "Corpulence (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "42",
     "attribute": "",
@@ -2711,7 +2711,7 @@
   {
     "name": "Gauntness (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "42",
     "attribute": "",
@@ -2732,7 +2732,7 @@
   {
     "name": "Transform Body",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "42",
     "attribute": "",
@@ -2753,7 +2753,7 @@
   {
     "name": "Transform Other",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "42",
     "attribute": "",
@@ -2774,7 +2774,7 @@
   {
     "name": "Transmogrification",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "42",
     "attribute": "",
@@ -2795,7 +2795,7 @@
   {
     "name": "Sense Foes",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "43",
     "attribute": "",
@@ -2816,7 +2816,7 @@
   {
     "name": "Dream Viewing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "44",
     "attribute": "",
@@ -2837,7 +2837,7 @@
   {
     "name": "Sense Emotion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "44",
     "attribute": "",
@@ -2858,7 +2858,7 @@
   {
     "name": "Hide Emotion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "44",
     "attribute": "",
@@ -2879,7 +2879,7 @@
   {
     "name": "Vexation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "44",
     "attribute": "",
@@ -2900,7 +2900,7 @@
   {
     "name": "Truthsayer",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "44",
     "attribute": "",
@@ -2921,7 +2921,7 @@
   {
     "name": "Dream Sending",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "44",
     "attribute": "",
@@ -2942,7 +2942,7 @@
   {
     "name": "Dream Projection Mind-Reading",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "45",
     "attribute": "",
@@ -2963,7 +2963,7 @@
   {
     "name": "Mind-Reading",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "45",
     "attribute": "",
@@ -2984,7 +2984,7 @@
   {
     "name": "Hide Thoughts",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "45",
     "attribute": "",
@@ -3005,7 +3005,7 @@
   {
     "name": "Lend Language",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "45",
     "attribute": "",
@@ -3026,7 +3026,7 @@
   {
     "name": "Borrow Language",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "45",
     "attribute": "",
@@ -3047,7 +3047,7 @@
   {
     "name": "Gift of Tongues (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "45",
     "attribute": "",
@@ -3068,7 +3068,7 @@
   {
     "name": "Gift of Letters (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "45",
     "attribute": "",
@@ -3089,7 +3089,7 @@
   {
     "name": "Mind-Search (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "45",
     "attribute": "",
@@ -3110,7 +3110,7 @@
   {
     "name": "Mind-Sending Retrogression",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "46",
     "attribute": "",
@@ -3131,7 +3131,7 @@
   {
     "name": "Retrogression",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "46",
     "attribute": "",
@@ -3152,7 +3152,7 @@
   {
     "name": "Regular Lend Skill",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "46",
     "attribute": "",
@@ -3173,7 +3173,7 @@
   {
     "name": "Lend Skill",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "46",
     "attribute": "",
@@ -3194,7 +3194,7 @@
   {
     "name": "Borrow Skill",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "46",
     "attribute": "",
@@ -3215,7 +3215,7 @@
   {
     "name": "Compel Truth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "46",
     "attribute": "",
@@ -3236,7 +3236,7 @@
   {
     "name": "Compel Lie Communication (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "47",
     "attribute": "",
@@ -3257,7 +3257,7 @@
   {
     "name": "Communication (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "47",
     "attribute": "",
@@ -3278,7 +3278,7 @@
   {
     "name": "Insignificance",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "47",
     "attribute": "",
@@ -3299,7 +3299,7 @@
   {
     "name": "Presence",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "47",
     "attribute": "",
@@ -3320,7 +3320,7 @@
   {
     "name": "Message",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "48",
     "attribute": "",
@@ -3341,7 +3341,7 @@
   {
     "name": "Machine Speech/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "48",
     "attribute": "",
@@ -3362,7 +3362,7 @@
   {
     "name": "Soul Rider",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "48",
     "attribute": "",
@@ -3383,7 +3383,7 @@
   {
     "name": "Control Person",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "48",
     "attribute": "",
@@ -3404,7 +3404,7 @@
   {
     "name": "Possession (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "48",
     "attribute": "",
@@ -3425,7 +3425,7 @@
   {
     "name": "Dispel Possession",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "48",
     "attribute": "",
@@ -3446,7 +3446,7 @@
   {
     "name": "Permanent Possession (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "48",
     "attribute": "",
@@ -3467,7 +3467,7 @@
   {
     "name": "(VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "48",
     "attribute": "",
@@ -3488,7 +3488,7 @@
   {
     "name": "Exchange Bodies (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "48",
     "attribute": "",
@@ -3509,7 +3509,7 @@
   {
     "name": "Seek Earth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "49",
     "attribute": "",
@@ -3530,7 +3530,7 @@
   {
     "name": "Shape Earth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "49",
     "attribute": "",
@@ -3551,7 +3551,7 @@
   {
     "name": "Seek Pass",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "50",
     "attribute": "",
@@ -3572,7 +3572,7 @@
   {
     "name": "Earth Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "50",
     "attribute": "",
@@ -3593,7 +3593,7 @@
   {
     "name": "Earth to Stone",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "50",
     "attribute": "",
@@ -3614,7 +3614,7 @@
   {
     "name": "Create Earth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "50",
     "attribute": "",
@@ -3635,7 +3635,7 @@
   {
     "name": "Earth to Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "50",
     "attribute": "",
@@ -3656,7 +3656,7 @@
   {
     "name": "Stone to Earth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "50",
     "attribute": "",
@@ -3677,7 +3677,7 @@
   {
     "name": "Predict Earth Movement",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "50",
     "attribute": "",
@@ -3698,7 +3698,7 @@
   {
     "name": "Sand Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "51",
     "attribute": "",
@@ -3719,7 +3719,7 @@
   {
     "name": "Regular Earth to Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "51",
     "attribute": "",
@@ -3740,7 +3740,7 @@
   {
     "name": "Earth to Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "51",
     "attribute": "",
@@ -3761,7 +3761,7 @@
   {
     "name": "Mud Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "51",
     "attribute": "",
@@ -3782,7 +3782,7 @@
   {
     "name": "Walk Through Earth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "51",
     "attribute": "",
@@ -3803,7 +3803,7 @@
   {
     "name": "Partial Petrifaction (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "51",
     "attribute": "",
@@ -3824,7 +3824,7 @@
   {
     "name": "(VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "51",
     "attribute": "",
@@ -3845,7 +3845,7 @@
   {
     "name": "Rain of Stones",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "52",
     "attribute": "",
@@ -3866,7 +3866,7 @@
   {
     "name": "Entombment",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "52",
     "attribute": "",
@@ -3887,7 +3887,7 @@
   {
     "name": "Stone to Flesh",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "52",
     "attribute": "",
@@ -3908,7 +3908,7 @@
   {
     "name": "Body of Stone (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "53",
     "attribute": "",
@@ -3929,7 +3929,7 @@
   {
     "name": "Steelwraith",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "53",
     "attribute": "",
@@ -3950,7 +3950,7 @@
   {
     "name": "Purify Earth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "53",
     "attribute": "",
@@ -3971,7 +3971,7 @@
   {
     "name": "Sandstorm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "53",
     "attribute": "",
@@ -3992,7 +3992,7 @@
   {
     "name": "Earthquake",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "53",
     "attribute": "",
@@ -4013,7 +4013,7 @@
   {
     "name": "Volcano",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "53",
     "attribute": "",
@@ -4034,7 +4034,7 @@
   {
     "name": "Alter Terrain (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "54",
     "attribute": "",
@@ -4055,7 +4055,7 @@
   {
     "name": "Move Terrain (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "54",
     "attribute": "",
@@ -4076,7 +4076,7 @@
   {
     "name": "Enchant (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "56",
     "attribute": "",
@@ -4097,7 +4097,7 @@
   {
     "name": "Enchantment A prerequisite for all other",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "56",
     "attribute": "",
@@ -4118,7 +4118,7 @@
   {
     "name": "A prerequisite for all other",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "56",
     "attribute": "",
@@ -4139,7 +4139,7 @@
   {
     "name": "Scroll",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "56",
     "attribute": "",
@@ -4160,7 +4160,7 @@
   {
     "name": "Hex",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "56",
     "attribute": "",
@@ -4181,7 +4181,7 @@
   {
     "name": "Power",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "56",
     "attribute": "",
@@ -4202,7 +4202,7 @@
   {
     "name": "Speed",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "56",
     "attribute": "",
@@ -4223,7 +4223,7 @@
   {
     "name": "Any Limiting",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "200",
     "attribute": "",
@@ -4244,7 +4244,7 @@
   {
     "name": "Lesser Wish (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "200",
     "attribute": "",
@@ -4265,7 +4265,7 @@
   {
     "name": "Talisman",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "200",
     "attribute": "",
@@ -4286,7 +4286,7 @@
   {
     "name": "Amulet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "150",
     "attribute": "",
@@ -4307,7 +4307,7 @@
   {
     "name": "Adjustable Clothing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "150",
     "attribute": "",
@@ -4328,7 +4328,7 @@
   {
     "name": "Golem (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "58",
     "attribute": "",
@@ -4349,7 +4349,7 @@
   {
     "name": "Impression Blocker",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "59",
     "attribute": "",
@@ -4370,7 +4370,7 @@
   {
     "name": "Malefice (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "59",
     "attribute": "",
@@ -4391,7 +4391,7 @@
   {
     "name": "Ensorcel (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "59",
     "attribute": "",
@@ -4412,7 +4412,7 @@
   {
     "name": "Spell Stone",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "59",
     "attribute": "",
@@ -4433,7 +4433,7 @@
   {
     "name": "Any spell except a Blocking or",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "60",
     "attribute": "",
@@ -4454,7 +4454,7 @@
   {
     "name": "Hideaway",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "60",
     "attribute": "",
@@ -4475,7 +4475,7 @@
   {
     "name": "Wish (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "60",
     "attribute": "",
@@ -4496,7 +4496,7 @@
   {
     "name": "Leak",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "60",
     "attribute": "",
@@ -4517,7 +4517,7 @@
   {
     "name": "Simulacrum (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "60",
     "attribute": "",
@@ -4538,7 +4538,7 @@
   {
     "name": "Great Wish (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "61",
     "attribute": "",
@@ -4559,7 +4559,7 @@
   {
     "name": "Bane",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "61",
     "attribute": "",
@@ -4580,7 +4580,7 @@
   {
     "name": "Enchantment This is also considered a Limiting",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "61",
     "attribute": "",
@@ -4601,7 +4601,7 @@
   {
     "name": "This is also considered a Limiting",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "61",
     "attribute": "",
@@ -4622,7 +4622,7 @@
   {
     "name": "Graceful Weapon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "62",
     "attribute": "",
@@ -4643,7 +4643,7 @@
   {
     "name": "Loyal Sword",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "62",
     "attribute": "",
@@ -4664,7 +4664,7 @@
   {
     "name": "Quick-Draw",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "62",
     "attribute": "",
@@ -4685,7 +4685,7 @@
   {
     "name": "Dancing Weapon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "10",
     "attribute": "",
@@ -4706,7 +4706,7 @@
   {
     "name": "Defending Weapon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "63",
     "attribute": "",
@@ -4727,7 +4727,7 @@
   {
     "name": "Enchant and Weapon Spirit (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "63",
     "attribute": "",
@@ -4748,7 +4748,7 @@
   {
     "name": "Weapon Spirit (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "63",
     "attribute": "",
@@ -4769,7 +4769,7 @@
   {
     "name": "Cornucopia",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "63",
     "attribute": "",
@@ -4790,7 +4790,7 @@
   {
     "name": "Quick-Aim",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "64",
     "attribute": "",
@@ -4811,7 +4811,7 @@
   {
     "name": "Enchantment Ghost Weapon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "64",
     "attribute": "",
@@ -4832,7 +4832,7 @@
   {
     "name": "Ghost Weapon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "64",
     "attribute": "",
@@ -4853,7 +4853,7 @@
   {
     "name": "Accuracy",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "64",
     "attribute": "",
@@ -4874,7 +4874,7 @@
   {
     "name": "Puissance",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "250",
     "attribute": "",
@@ -4895,7 +4895,7 @@
   {
     "name": "Spell Arrow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "250",
     "attribute": "",
@@ -4916,7 +4916,7 @@
   {
     "name": "Blank Spell Arrow (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "65",
     "attribute": "",
@@ -4937,7 +4937,7 @@
   {
     "name": "Deflect",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "66",
     "attribute": "",
@@ -4958,7 +4958,7 @@
   {
     "name": "Defending Shield",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -4979,7 +4979,7 @@
   {
     "name": "Lighten",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -5000,7 +5000,7 @@
   {
     "name": "Dancing Shield",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -5021,7 +5021,7 @@
   {
     "name": "Limit",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "67",
     "attribute": "",
@@ -5042,7 +5042,7 @@
   {
     "name": "Name",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "67",
     "attribute": "",
@@ -5063,7 +5063,7 @@
   {
     "name": "Link",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "68",
     "attribute": "",
@@ -5084,7 +5084,7 @@
   {
     "name": "Attune",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "68",
     "attribute": "",
@@ -5105,7 +5105,7 @@
   {
     "name": "Powerstone",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "68",
     "attribute": "",
@@ -5126,7 +5126,7 @@
   {
     "name": "Manastone (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "69",
     "attribute": "",
@@ -5147,7 +5147,7 @@
   {
     "name": "Staff",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "69",
     "attribute": "",
@@ -5168,7 +5168,7 @@
   {
     "name": "Homunculus",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "69",
     "attribute": "",
@@ -5189,7 +5189,7 @@
   {
     "name": "Crystal Ball",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "70",
     "attribute": "",
@@ -5210,7 +5210,7 @@
   {
     "name": "Effigy (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "70",
     "attribute": "",
@@ -5231,7 +5231,7 @@
   {
     "name": "Soul Stone (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "70",
     "attribute": "",
@@ -5252,7 +5252,7 @@
   {
     "name": "Extinguish Fire",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "71",
     "attribute": "",
@@ -5273,7 +5273,7 @@
   {
     "name": "Ignite Fire",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "71",
     "attribute": "",
@@ -5294,7 +5294,7 @@
   {
     "name": "Shape Fire",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "71",
     "attribute": "",
@@ -5315,7 +5315,7 @@
   {
     "name": "Phantom Flame",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "72",
     "attribute": "",
@@ -5336,7 +5336,7 @@
   {
     "name": "Fireproof",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "72",
     "attribute": "",
@@ -5357,7 +5357,7 @@
   {
     "name": "Slow Fire",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "72",
     "attribute": "",
@@ -5378,7 +5378,7 @@
   {
     "name": "Fast Fire",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "72",
     "attribute": "",
@@ -5399,7 +5399,7 @@
   {
     "name": "Deflect Energy",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "72",
     "attribute": "",
@@ -5420,7 +5420,7 @@
   {
     "name": "Flame Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "72",
     "attribute": "",
@@ -5441,7 +5441,7 @@
   {
     "name": "Smoke",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "72",
     "attribute": "",
@@ -5462,7 +5462,7 @@
   {
     "name": "Heat",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "73",
     "attribute": "",
@@ -5483,7 +5483,7 @@
   {
     "name": "Cold",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "73",
     "attribute": "",
@@ -5504,7 +5504,7 @@
   {
     "name": "Rain of Fire",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "73",
     "attribute": "",
@@ -5525,7 +5525,7 @@
   {
     "name": "Resist Fire",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "73",
     "attribute": "",
@@ -5546,7 +5546,7 @@
   {
     "name": "Resist Cold",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "73",
     "attribute": "",
@@ -5567,7 +5567,7 @@
   {
     "name": "Warmth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "73",
     "attribute": "",
@@ -5588,7 +5588,7 @@
   {
     "name": "Fireball",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "73",
     "attribute": "",
@@ -5609,7 +5609,7 @@
   {
     "name": "Flaming Armor",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "74",
     "attribute": "",
@@ -5630,7 +5630,7 @@
   {
     "name": "Explosive Fireball",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "74",
     "attribute": "",
@@ -5651,7 +5651,7 @@
   {
     "name": "Essential Flame",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "74",
     "attribute": "",
@@ -5672,7 +5672,7 @@
   {
     "name": "Flaming Weapon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "74",
     "attribute": "",
@@ -5693,7 +5693,7 @@
   {
     "name": "Flaming Missiles",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "74",
     "attribute": "",
@@ -5714,7 +5714,7 @@
   {
     "name": "Fire Cloud",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "74",
     "attribute": "",
@@ -5735,7 +5735,7 @@
   {
     "name": "Breathe Fire (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "75",
     "attribute": "",
@@ -5756,7 +5756,7 @@
   {
     "name": "Burning Touch",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "75",
     "attribute": "",
@@ -5777,7 +5777,7 @@
   {
     "name": "Body of Flames (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "75",
     "attribute": "",
@@ -5798,7 +5798,7 @@
   {
     "name": "Burning Death (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "75",
     "attribute": "",
@@ -5819,7 +5819,7 @@
   {
     "name": "Information Far-Tasting",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "76",
     "attribute": "",
@@ -5840,7 +5840,7 @@
   {
     "name": "Far-Tasting",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "76",
     "attribute": "",
@@ -5861,7 +5861,7 @@
   {
     "name": "Mature",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "77",
     "attribute": "",
@@ -5882,7 +5882,7 @@
   {
     "name": "Purify Food",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "77",
     "attribute": "",
@@ -5903,7 +5903,7 @@
   {
     "name": "Cook",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "77",
     "attribute": "",
@@ -5924,7 +5924,7 @@
   {
     "name": "Prepare Game",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "77",
     "attribute": "",
@@ -5945,7 +5945,7 @@
   {
     "name": "Know Recipe",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "77",
     "attribute": "",
@@ -5966,7 +5966,7 @@
   {
     "name": "Poison Food",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "77",
     "attribute": "",
@@ -5987,7 +5987,7 @@
   {
     "name": "Hunger",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "77",
     "attribute": "",
@@ -6008,7 +6008,7 @@
   {
     "name": "Thirst",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "77",
     "attribute": "",
@@ -6029,7 +6029,7 @@
   {
     "name": "Foul Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "77",
     "attribute": "",
@@ -6050,7 +6050,7 @@
   {
     "name": "Preserve Food",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6071,7 +6071,7 @@
   {
     "name": "Create Food",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6092,7 +6092,7 @@
   {
     "name": "Essential Food",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6113,7 +6113,7 @@
   {
     "name": "Wizard Nose",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6134,7 +6134,7 @@
   {
     "name": "Wizard Mouth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6155,7 +6155,7 @@
   {
     "name": "Water to Wine",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6176,7 +6176,7 @@
   {
     "name": "Distill",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6197,7 +6197,7 @@
   {
     "name": "Fool’s Banquet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6218,7 +6218,7 @@
   {
     "name": "Monk’s Banquet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6239,7 +6239,7 @@
   {
     "name": "Scents of the Past",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "78",
     "attribute": "",
@@ -6260,7 +6260,7 @@
   {
     "name": "Teleport",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "80",
     "attribute": "",
@@ -6281,7 +6281,7 @@
   {
     "name": "Teleport Other",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "80",
     "attribute": "",
@@ -6302,7 +6302,7 @@
   {
     "name": "Blink",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "80",
     "attribute": "",
@@ -6323,7 +6323,7 @@
   {
     "name": "Blink Other",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "80",
     "attribute": "",
@@ -6344,7 +6344,7 @@
   {
     "name": "Timeport (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "80",
     "attribute": "",
@@ -6365,7 +6365,7 @@
   {
     "name": "Timeport Other (VH)-1",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "20",
     "attribute": "",
@@ -6386,7 +6386,7 @@
   {
     "name": "Timeslip Other",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "20",
     "attribute": "",
@@ -6407,7 +6407,7 @@
   {
     "name": "Rapid Journey (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "81",
     "attribute": "",
@@ -6428,7 +6428,7 @@
   {
     "name": "Planar Summons",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "81",
     "attribute": "",
@@ -6449,7 +6449,7 @@
   {
     "name": "Planar Visit (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "81",
     "attribute": "",
@@ -6470,7 +6470,7 @@
   {
     "name": "Plane Shift (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "82",
     "attribute": "",
@@ -6491,7 +6491,7 @@
   {
     "name": "Plane Shift Other (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "82",
     "attribute": "",
@@ -6512,7 +6512,7 @@
   {
     "name": "Phase",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "82",
     "attribute": "",
@@ -6533,7 +6533,7 @@
   {
     "name": "Phase Other (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "82",
     "attribute": "",
@@ -6554,7 +6554,7 @@
   {
     "name": "Beacon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "82",
     "attribute": "",
@@ -6575,7 +6575,7 @@
   {
     "name": "Trace Teleport Teleport Shield",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "83",
     "attribute": "",
@@ -6596,7 +6596,7 @@
   {
     "name": "Divert Teleport (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "83",
     "attribute": "",
@@ -6617,7 +6617,7 @@
   {
     "name": "Create Door",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "83",
     "attribute": "",
@@ -6638,7 +6638,7 @@
   {
     "name": "Seek Gate",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "84",
     "attribute": "",
@@ -6659,7 +6659,7 @@
   {
     "name": "Scry Gate",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "84",
     "attribute": "",
@@ -6680,7 +6680,7 @@
   {
     "name": "Control Gate",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "84",
     "attribute": "",
@@ -6701,7 +6701,7 @@
   {
     "name": "Create Gate (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "84",
     "attribute": "",
@@ -6722,7 +6722,7 @@
   {
     "name": "Slow Time (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "85",
     "attribute": "",
@@ -6743,7 +6743,7 @@
   {
     "name": "Accelerate Time (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "85",
     "attribute": "",
@@ -6764,7 +6764,7 @@
   {
     "name": "Hide Object",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "85",
     "attribute": "",
@@ -6785,7 +6785,7 @@
   {
     "name": "Sanctuary (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "85",
     "attribute": "",
@@ -6806,7 +6806,7 @@
   {
     "name": "Suspend Time (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "85",
     "attribute": "",
@@ -6827,7 +6827,7 @@
   {
     "name": "Time Out (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "86",
     "attribute": "",
@@ -6848,7 +6848,7 @@
   {
     "name": "Body-Reading",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "87",
     "attribute": "",
@@ -6869,7 +6869,7 @@
   {
     "name": "Lend Energy",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "88",
     "attribute": "",
@@ -6890,7 +6890,7 @@
   {
     "name": "Detect Poison",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "88",
     "attribute": "",
@@ -6911,7 +6911,7 @@
   {
     "name": "Final Rest",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "88",
     "attribute": "",
@@ -6932,7 +6932,7 @@
   {
     "name": "Lend Vitality",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "88",
     "attribute": "",
@@ -6953,7 +6953,7 @@
   {
     "name": "Share Energy",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "88",
     "attribute": "",
@@ -6974,7 +6974,7 @@
   {
     "name": "Recover Energy",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "88",
     "attribute": "",
@@ -6995,7 +6995,7 @@
   {
     "name": "Awaken",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "89",
     "attribute": "",
@@ -7016,7 +7016,7 @@
   {
     "name": "Share Vitality",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "89",
     "attribute": "",
@@ -7037,7 +7037,7 @@
   {
     "name": "Resist Disease",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "89",
     "attribute": "",
@@ -7058,7 +7058,7 @@
   {
     "name": "Resist Poison",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "90",
     "attribute": "",
@@ -7079,7 +7079,7 @@
   {
     "name": "Stop Bleeding",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "90",
     "attribute": "",
@@ -7100,7 +7100,7 @@
   {
     "name": "Minor Healing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "90",
     "attribute": "",
@@ -7121,7 +7121,7 @@
   {
     "name": "Major Healing (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "90",
     "attribute": "",
@@ -7142,7 +7142,7 @@
   {
     "name": "Great Healing (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "90",
     "attribute": "",
@@ -7163,7 +7163,7 @@
   {
     "name": "Cure Disease",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "90",
     "attribute": "",
@@ -7184,7 +7184,7 @@
   {
     "name": "Neutralize Poison",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "91",
     "attribute": "",
@@ -7205,7 +7205,7 @@
   {
     "name": "Regular Restore Hearing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "91",
     "attribute": "",
@@ -7226,7 +7226,7 @@
   {
     "name": "Restore Hearing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "91",
     "attribute": "",
@@ -7247,7 +7247,7 @@
   {
     "name": "Instant Neutralize Poison (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "91",
     "attribute": "",
@@ -7268,7 +7268,7 @@
   {
     "name": "Poison (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "91",
     "attribute": "",
@@ -7289,7 +7289,7 @@
   {
     "name": "Relieve Addiction",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "91",
     "attribute": "",
@@ -7310,7 +7310,7 @@
   {
     "name": "Relieve Madness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "91",
     "attribute": "",
@@ -7331,7 +7331,7 @@
   {
     "name": "Restore Sight",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "91",
     "attribute": "",
@@ -7352,7 +7352,7 @@
   {
     "name": "Restore Memory",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "91",
     "attribute": "",
@@ -7373,7 +7373,7 @@
   {
     "name": "Stop Paralysis",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "92",
     "attribute": "",
@@ -7394,7 +7394,7 @@
   {
     "name": "Relieve Paralysis",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "92",
     "attribute": "",
@@ -7415,7 +7415,7 @@
   {
     "name": "Restoration (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "92",
     "attribute": "",
@@ -7436,7 +7436,7 @@
   {
     "name": "Instant Restoration (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "92",
     "attribute": "",
@@ -7457,7 +7457,7 @@
   {
     "name": "(VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "92",
     "attribute": "",
@@ -7478,7 +7478,7 @@
   {
     "name": "Regeneration (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "92",
     "attribute": "",
@@ -7499,7 +7499,7 @@
   {
     "name": "Instant Regeneration (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "92",
     "attribute": "",
@@ -7520,7 +7520,7 @@
   {
     "name": "Cure Radiation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "92",
     "attribute": "",
@@ -7541,7 +7541,7 @@
   {
     "name": "Suspended Animation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "93",
     "attribute": "",
@@ -7562,7 +7562,7 @@
   {
     "name": "Youth (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "93",
     "attribute": "",
@@ -7583,7 +7583,7 @@
   {
     "name": "Halt Aging (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "93",
     "attribute": "",
@@ -7604,7 +7604,7 @@
   {
     "name": "Simple Illusion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "94",
     "attribute": "",
@@ -7625,7 +7625,7 @@
   {
     "name": "Phantom Flame",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "95",
     "attribute": "",
@@ -7646,7 +7646,7 @@
   {
     "name": "Area Illusion Disguise",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "95",
     "attribute": "",
@@ -7667,7 +7667,7 @@
   {
     "name": "Illusion Disguise",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "95",
     "attribute": "",
@@ -7688,7 +7688,7 @@
   {
     "name": "Complex Illusion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "95",
     "attribute": "",
@@ -7709,7 +7709,7 @@
   {
     "name": "Perfect Illusion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "95",
     "attribute": "",
@@ -7730,7 +7730,7 @@
   {
     "name": "Illusion Shell",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "95",
     "attribute": "",
@@ -7751,7 +7751,7 @@
   {
     "name": "Independence",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "95",
     "attribute": "",
@@ -7772,7 +7772,7 @@
   {
     "name": "Know Illusion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "96",
     "attribute": "",
@@ -7793,7 +7793,7 @@
   {
     "name": "Control Illusion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "96",
     "attribute": "",
@@ -7814,7 +7814,7 @@
   {
     "name": "Inscribe",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "96",
     "attribute": "",
@@ -7835,7 +7835,7 @@
   {
     "name": "Phantom (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "96",
     "attribute": "",
@@ -7856,7 +7856,7 @@
   {
     "name": "Initiative",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "96",
     "attribute": "",
@@ -7877,7 +7877,7 @@
   {
     "name": "Create Object (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "97",
     "attribute": "",
@@ -7898,7 +7898,7 @@
   {
     "name": "Duplicate (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "98",
     "attribute": "",
@@ -7919,7 +7919,7 @@
   {
     "name": "Create Servant",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "98",
     "attribute": "",
@@ -7940,7 +7940,7 @@
   {
     "name": "Create Warrior",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "98",
     "attribute": "",
@@ -7961,7 +7961,7 @@
   {
     "name": "Create Animal",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "98",
     "attribute": "",
@@ -7982,7 +7982,7 @@
   {
     "name": "Create Mount",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "98",
     "attribute": "",
@@ -8003,7 +8003,7 @@
   {
     "name": "Control Creation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "98",
     "attribute": "",
@@ -8024,7 +8024,7 @@
   {
     "name": "Dispel Creation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "98",
     "attribute": "",
@@ -8045,7 +8045,7 @@
   {
     "name": "Tell Time",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "99",
     "attribute": "",
@@ -8066,7 +8066,7 @@
   {
     "name": "Measurement",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "99",
     "attribute": "",
@@ -8087,7 +8087,7 @@
   {
     "name": "Alarm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8108,7 +8108,7 @@
   {
     "name": "Far-Feeling",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8129,7 +8129,7 @@
   {
     "name": "Find Direction",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8150,7 +8150,7 @@
   {
     "name": "Small Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8171,7 +8171,7 @@
   {
     "name": "Earth Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8192,7 +8192,7 @@
   {
     "name": "Air Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8213,7 +8213,7 @@
   {
     "name": "Tell Position",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8234,7 +8234,7 @@
   {
     "name": "Test Load",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8255,7 +8255,7 @@
   {
     "name": "Detect Magic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8276,7 +8276,7 @@
   {
     "name": "Sense Mana",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8297,7 +8297,7 @@
   {
     "name": "Aura",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "100",
     "attribute": "",
@@ -8318,7 +8318,7 @@
   {
     "name": "Identify Spell",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "101",
     "attribute": "",
@@ -8339,7 +8339,7 @@
   {
     "name": "Information Mage Sense",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "101",
     "attribute": "",
@@ -8360,7 +8360,7 @@
   {
     "name": "Mage Sense",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "101",
     "attribute": "",
@@ -8381,7 +8381,7 @@
   {
     "name": "Mage Sight",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "101",
     "attribute": "",
@@ -8402,7 +8402,7 @@
   {
     "name": "Seek Magic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "101",
     "attribute": "",
@@ -8423,7 +8423,7 @@
   {
     "name": "Analyze Magic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "101",
     "attribute": "",
@@ -8444,7 +8444,7 @@
   {
     "name": "Summon Shade (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "101",
     "attribute": "",
@@ -8465,7 +8465,7 @@
   {
     "name": "Glass Wall",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "102",
     "attribute": "",
@@ -8486,7 +8486,7 @@
   {
     "name": "Far-Tasting",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "102",
     "attribute": "",
@@ -8507,7 +8507,7 @@
   {
     "name": "Far-Hearing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "102",
     "attribute": "",
@@ -8528,7 +8528,7 @@
   {
     "name": "Water Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "102",
     "attribute": "",
@@ -8549,7 +8549,7 @@
   {
     "name": "Plant Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "102",
     "attribute": "",
@@ -8570,7 +8570,7 @@
   {
     "name": "Know Location",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "102",
     "attribute": "",
@@ -8591,7 +8591,7 @@
   {
     "name": "Know Recipe Wizard Mouth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "103",
     "attribute": "",
@@ -8612,7 +8612,7 @@
   {
     "name": "Wizard Eye",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "103",
     "attribute": "",
@@ -8633,7 +8633,7 @@
   {
     "name": "Invisible Wizard Eye",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "103",
     "attribute": "",
@@ -8654,7 +8654,7 @@
   {
     "name": "Wizard Nose",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "103",
     "attribute": "",
@@ -8675,7 +8675,7 @@
   {
     "name": "Wizard Hand",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "103",
     "attribute": "",
@@ -8696,7 +8696,7 @@
   {
     "name": "Plastic Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "104",
     "attribute": "",
@@ -8717,7 +8717,7 @@
   {
     "name": "Metal Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "104",
     "attribute": "",
@@ -8738,7 +8738,7 @@
   {
     "name": "Astral Vision (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "104",
     "attribute": "",
@@ -8759,7 +8759,7 @@
   {
     "name": "Memorize",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "104",
     "attribute": "",
@@ -8780,7 +8780,7 @@
   {
     "name": "Pathfinder",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "104",
     "attribute": "",
@@ -8801,7 +8801,7 @@
   {
     "name": "Projection",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "104",
     "attribute": "",
@@ -8822,7 +8822,7 @@
   {
     "name": "Seeker",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "104",
     "attribute": "",
@@ -8843,7 +8843,7 @@
   {
     "name": "Trace",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "105",
     "attribute": "",
@@ -8864,7 +8864,7 @@
   {
     "name": "History",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "105",
     "attribute": "",
@@ -8885,7 +8885,7 @@
   {
     "name": "Ancient History",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "105",
     "attribute": "",
@@ -8906,7 +8906,7 @@
   {
     "name": "Prehistory",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "105",
     "attribute": "",
@@ -8927,7 +8927,7 @@
   {
     "name": "Reconstruct Spell",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "105",
     "attribute": "",
@@ -8948,7 +8948,7 @@
   {
     "name": "Know True Shape",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "105",
     "attribute": "",
@@ -8969,7 +8969,7 @@
   {
     "name": "Recall",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "105",
     "attribute": "",
@@ -8990,7 +8990,7 @@
   {
     "name": "Remember Path",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "106",
     "attribute": "",
@@ -9011,7 +9011,7 @@
   {
     "name": "See Secrets",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "106",
     "attribute": "",
@@ -9032,7 +9032,7 @@
   {
     "name": "Schematic/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "106",
     "attribute": "",
@@ -9053,7 +9053,7 @@
   {
     "name": "Scents of the Past",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "106",
     "attribute": "",
@@ -9074,7 +9074,7 @@
   {
     "name": "Images of the Past",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "106",
     "attribute": "",
@@ -9095,7 +9095,7 @@
   {
     "name": "Echoes of the Past",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "106",
     "attribute": "",
@@ -9116,7 +9116,7 @@
   {
     "name": "Divination",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "108",
     "attribute": "",
@@ -9137,7 +9137,7 @@
   {
     "name": "Continual Light",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "109",
     "attribute": "",
@@ -9158,7 +9158,7 @@
   {
     "name": "Regular Remove Shadow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9179,7 +9179,7 @@
   {
     "name": "Remove Shadow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9200,7 +9200,7 @@
   {
     "name": "Small Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9221,7 +9221,7 @@
   {
     "name": "Shape Light",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9242,7 +9242,7 @@
   {
     "name": "Bright Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9263,7 +9263,7 @@
   {
     "name": "Infravision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9284,7 +9284,7 @@
   {
     "name": "Night Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9305,7 +9305,7 @@
   {
     "name": "Hawk Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9326,7 +9326,7 @@
   {
     "name": "Dark Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9347,7 +9347,7 @@
   {
     "name": "Darkness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "110",
     "attribute": "",
@@ -9368,7 +9368,7 @@
   {
     "name": "Blackout",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "111",
     "attribute": "",
@@ -9389,7 +9389,7 @@
   {
     "name": "Glow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "111",
     "attribute": "",
@@ -9410,7 +9410,7 @@
   {
     "name": "Gloom",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9431,7 +9431,7 @@
   {
     "name": "Light Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9452,7 +9452,7 @@
   {
     "name": "Mirror",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9473,7 +9473,7 @@
   {
     "name": "Remove Reflection See Invisible",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9494,7 +9494,7 @@
   {
     "name": "Wall of Light",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9515,7 +9515,7 @@
   {
     "name": "Shade",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9536,7 +9536,7 @@
   {
     "name": "Blur",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9557,7 +9557,7 @@
   {
     "name": "Shape Darkness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9578,7 +9578,7 @@
   {
     "name": "Hide",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9599,7 +9599,7 @@
   {
     "name": "Mage Light",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9620,7 +9620,7 @@
   {
     "name": "Continual Mage Light",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "112",
     "attribute": "",
@@ -9641,7 +9641,7 @@
   {
     "name": "Sunlight",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "113",
     "attribute": "",
@@ -9662,7 +9662,7 @@
   {
     "name": "Continual Sunlight",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "113",
     "attribute": "",
@@ -9683,7 +9683,7 @@
   {
     "name": "Invisibility",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "113",
     "attribute": "",
@@ -9704,7 +9704,7 @@
   {
     "name": "Body of Shadow (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "114",
     "attribute": "",
@@ -9725,7 +9725,7 @@
   {
     "name": "Sunbolt",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "114",
     "attribute": "",
@@ -9746,7 +9746,7 @@
   {
     "name": "Images of the Past",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "114",
     "attribute": "",
@@ -9767,7 +9767,7 @@
   {
     "name": "Find Weakness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "115",
     "attribute": "",
@@ -9788,7 +9788,7 @@
   {
     "name": "Information Clean",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "115",
     "attribute": "",
@@ -9809,7 +9809,7 @@
   {
     "name": "Clean",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "115",
     "attribute": "",
@@ -9830,7 +9830,7 @@
   {
     "name": "Weaken",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "115",
     "attribute": "",
@@ -9851,7 +9851,7 @@
   {
     "name": "Restore",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "115",
     "attribute": "",
@@ -9872,7 +9872,7 @@
   {
     "name": "Soilproof",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -9893,7 +9893,7 @@
   {
     "name": "Dye",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -9914,7 +9914,7 @@
   {
     "name": "Copy",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -9935,7 +9935,7 @@
   {
     "name": "Rejoin",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -9956,7 +9956,7 @@
   {
     "name": "Shatter (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -9977,7 +9977,7 @@
   {
     "name": "Animate Object (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -9998,7 +9998,7 @@
   {
     "name": "Inscribe",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -10019,7 +10019,7 @@
   {
     "name": "Stiffen",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -10040,7 +10040,7 @@
   {
     "name": "Knot",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -10061,7 +10061,7 @@
   {
     "name": "Reshape",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -10082,7 +10082,7 @@
   {
     "name": "Rive (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "116",
     "attribute": "",
@@ -10103,7 +10103,7 @@
   {
     "name": "Repair",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "117",
     "attribute": "",
@@ -10124,7 +10124,7 @@
   {
     "name": "Ruin",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "117",
     "attribute": "",
@@ -10145,7 +10145,7 @@
   {
     "name": "Explode (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "117",
     "attribute": "",
@@ -10166,7 +10166,7 @@
   {
     "name": "Fasten",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "117",
     "attribute": "",
@@ -10187,7 +10187,7 @@
   {
     "name": "Mapmaker",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "118",
     "attribute": "",
@@ -10208,7 +10208,7 @@
   {
     "name": "Shatterproof",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "118",
     "attribute": "",
@@ -10229,7 +10229,7 @@
   {
     "name": "Sharpen",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "118",
     "attribute": "",
@@ -10250,7 +10250,7 @@
   {
     "name": "Mystic Mark",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "118",
     "attribute": "",
@@ -10271,7 +10271,7 @@
   {
     "name": "Toughen",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "118",
     "attribute": "",
@@ -10292,7 +10292,7 @@
   {
     "name": "Transparency",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "118",
     "attribute": "",
@@ -10313,7 +10313,7 @@
   {
     "name": "Weapon Self (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "118",
     "attribute": "",
@@ -10334,7 +10334,7 @@
   {
     "name": "Transform Object (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "119",
     "attribute": "",
@@ -10355,7 +10355,7 @@
   {
     "name": "Contract Object (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "120",
     "attribute": "",
@@ -10376,7 +10376,7 @@
   {
     "name": "Extend Object (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "120",
     "attribute": "",
@@ -10397,7 +10397,7 @@
   {
     "name": "Shrink Object (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "120",
     "attribute": "",
@@ -10418,7 +10418,7 @@
   {
     "name": "Enlarge Object (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "120",
     "attribute": "",
@@ -10439,7 +10439,7 @@
   {
     "name": "Disintegrate (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "120",
     "attribute": "",
@@ -10460,7 +10460,7 @@
   {
     "name": "Rebuild/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "120",
     "attribute": "",
@@ -10481,7 +10481,7 @@
   {
     "name": "Counterspell",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "120",
     "attribute": "",
@@ -10502,7 +10502,7 @@
   {
     "name": "Suspend Spell",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "120",
     "attribute": "",
@@ -10523,7 +10523,7 @@
   {
     "name": "Scryguard",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "120",
     "attribute": "",
@@ -10544,7 +10544,7 @@
   {
     "name": "Scrywall Ward",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "121",
     "attribute": "",
@@ -10565,7 +10565,7 @@
   {
     "name": "Ward",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "121",
     "attribute": "",
@@ -10586,7 +10586,7 @@
   {
     "name": "Seek Magic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "121",
     "attribute": "",
@@ -10607,7 +10607,7 @@
   {
     "name": "Conceal Magic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "121",
     "attribute": "",
@@ -10628,7 +10628,7 @@
   {
     "name": "Reflect",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "121",
     "attribute": "",
@@ -10649,7 +10649,7 @@
   {
     "name": "Great Ward",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "121",
     "attribute": "",
@@ -10670,7 +10670,7 @@
   {
     "name": "Magic Resistance",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10691,7 +10691,7 @@
   {
     "name": "Scryfool",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10712,7 +10712,7 @@
   {
     "name": "Penetrating Spell",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10733,7 +10733,7 @@
   {
     "name": "Catch Spell (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10754,7 +10754,7 @@
   {
     "name": "When cast immediately after a",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10775,7 +10775,7 @@
   {
     "name": "Suspend Magic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10796,7 +10796,7 @@
   {
     "name": "Displace Spell Spell Shield",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10817,7 +10817,7 @@
   {
     "name": "Spell Shield",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10838,7 +10838,7 @@
   {
     "name": "Spell Wall",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10859,7 +10859,7 @@
   {
     "name": "Pentagram",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "122",
     "attribute": "",
@@ -10880,7 +10880,7 @@
   {
     "name": "Suspend Curse Suspend Mana (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "124",
     "attribute": "",
@@ -10901,7 +10901,7 @@
   {
     "name": "Suspend Mana (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "124",
     "attribute": "",
@@ -10922,7 +10922,7 @@
   {
     "name": "Enchantment method (though Pentagram is not technically an",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "124",
     "attribute": "",
@@ -10943,7 +10943,7 @@
   {
     "name": "Pentagram is not technically an",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "124",
     "attribute": "",
@@ -10964,7 +10964,7 @@
   {
     "name": "Dispel Magic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "125",
     "attribute": "",
@@ -10985,7 +10985,7 @@
   {
     "name": "Lend Spell",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "125",
     "attribute": "",
@@ -11006,7 +11006,7 @@
   {
     "name": "Remove Curse",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "125",
     "attribute": "",
@@ -11027,7 +11027,7 @@
   {
     "name": "Charge Powerstone (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "125",
     "attribute": "",
@@ -11048,7 +11048,7 @@
   {
     "name": "Spellguard (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "126",
     "attribute": "",
@@ -11069,7 +11069,7 @@
   {
     "name": "Suspend Enchantment and Remove",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "126",
     "attribute": "",
@@ -11090,7 +11090,7 @@
   {
     "name": "Drain Mana (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "126",
     "attribute": "",
@@ -11111,7 +11111,7 @@
   {
     "name": "Restore Mana (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "126",
     "attribute": "",
@@ -11132,7 +11132,7 @@
   {
     "name": "Steal Spell (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "126",
     "attribute": "",
@@ -11153,7 +11153,7 @@
   {
     "name": "Telecast (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "127",
     "attribute": "",
@@ -11174,7 +11174,7 @@
   {
     "name": "Hang Spell (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "127",
     "attribute": "",
@@ -11195,7 +11195,7 @@
   {
     "name": "Maintain Spell (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "127",
     "attribute": "",
@@ -11216,7 +11216,7 @@
   {
     "name": "Throw Spell",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "127",
     "attribute": "",
@@ -11237,7 +11237,7 @@
   {
     "name": "Bless",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "128",
     "attribute": "",
@@ -11258,7 +11258,7 @@
   {
     "name": "Curse",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "128",
     "attribute": "",
@@ -11279,7 +11279,7 @@
   {
     "name": "Suspend Magery (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "129",
     "attribute": "",
@@ -11300,7 +11300,7 @@
   {
     "name": "Drain Magery (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "129",
     "attribute": "",
@@ -11321,7 +11321,7 @@
   {
     "name": "Delay",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "129",
     "attribute": "",
@@ -11342,7 +11342,7 @@
   {
     "name": "Link",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "130",
     "attribute": "",
@@ -11363,7 +11363,7 @@
   {
     "name": "Reflex",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "131",
     "attribute": "",
@@ -11384,7 +11384,7 @@
   {
     "name": "Keen (Sense)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "132",
     "attribute": "",
@@ -11405,7 +11405,7 @@
   {
     "name": "Alertness (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "132",
     "attribute": "",
@@ -11426,7 +11426,7 @@
   {
     "name": "Dull (Sense)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "132",
     "attribute": "",
@@ -11447,7 +11447,7 @@
   {
     "name": "(Sense)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "132",
     "attribute": "",
@@ -11468,7 +11468,7 @@
   {
     "name": "Dullness (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "133",
     "attribute": "",
@@ -11489,7 +11489,7 @@
   {
     "name": "Fear",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "133",
     "attribute": "",
@@ -11510,7 +11510,7 @@
   {
     "name": "Panic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "133",
     "attribute": "",
@@ -11531,7 +11531,7 @@
   {
     "name": "Terror",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "133",
     "attribute": "",
@@ -11552,7 +11552,7 @@
   {
     "name": "Bravery",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "133",
     "attribute": "",
@@ -11573,7 +11573,7 @@
   {
     "name": "Rear Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "133",
     "attribute": "",
@@ -11594,7 +11594,7 @@
   {
     "name": "Berserker",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "133",
     "attribute": "",
@@ -11615,7 +11615,7 @@
   {
     "name": "Foolishness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "133",
     "attribute": "",
@@ -11636,7 +11636,7 @@
   {
     "name": "Daze",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "133",
     "attribute": "",
@@ -11657,7 +11657,7 @@
   {
     "name": "Mental Stun",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "134",
     "attribute": "",
@@ -11678,7 +11678,7 @@
   {
     "name": "Disorient",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "134",
     "attribute": "",
@@ -11699,7 +11699,7 @@
   {
     "name": "Encrypt",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "134",
     "attribute": "",
@@ -11720,7 +11720,7 @@
   {
     "name": "Fascinate",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "134",
     "attribute": "",
@@ -11741,7 +11741,7 @@
   {
     "name": "Forgetfulness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "134",
     "attribute": "",
@@ -11762,7 +11762,7 @@
   {
     "name": "Sleep",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "134",
     "attribute": "",
@@ -11783,7 +11783,7 @@
   {
     "name": "Wisdom",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "134",
     "attribute": "",
@@ -11804,7 +11804,7 @@
   {
     "name": "Boost (Attribute)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "135",
     "attribute": "",
@@ -11825,7 +11825,7 @@
   {
     "name": "Weaken Will",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "135",
     "attribute": "",
@@ -11846,7 +11846,7 @@
   {
     "name": "Strengthen Will",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "135",
     "attribute": "",
@@ -11867,7 +11867,7 @@
   {
     "name": "Memorize",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "135",
     "attribute": "",
@@ -11888,7 +11888,7 @@
   {
     "name": "Loyalty",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "135",
     "attribute": "",
@@ -11909,7 +11909,7 @@
   {
     "name": "Command",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "135",
     "attribute": "",
@@ -11930,7 +11930,7 @@
   {
     "name": "Drunkenness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "135",
     "attribute": "",
@@ -11951,7 +11951,7 @@
   {
     "name": "Madness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "135",
     "attribute": "",
@@ -11972,7 +11972,7 @@
   {
     "name": "Emotion Control",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "136",
     "attribute": "",
@@ -11993,7 +11993,7 @@
   {
     "name": "Mass Daze",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "136",
     "attribute": "",
@@ -12014,7 +12014,7 @@
   {
     "name": "Mindlessness (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "136",
     "attribute": "",
@@ -12035,7 +12035,7 @@
   {
     "name": "Compel Lie",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "136",
     "attribute": "",
@@ -12056,7 +12056,7 @@
   {
     "name": "Lure",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "136",
     "attribute": "",
@@ -12077,7 +12077,7 @@
   {
     "name": "Mass Sleep",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "136",
     "attribute": "",
@@ -12098,7 +12098,7 @@
   {
     "name": "Sickness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "137",
     "attribute": "",
@@ -12119,7 +12119,7 @@
   {
     "name": "Will Lock",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "137",
     "attribute": "",
@@ -12140,7 +12140,7 @@
   {
     "name": "Oath",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "137",
     "attribute": "",
@@ -12161,7 +12161,7 @@
   {
     "name": "Permanent Forgetfulness (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "137",
     "attribute": "",
@@ -12182,7 +12182,7 @@
   {
     "name": "Forgetfulness (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "137",
     "attribute": "",
@@ -12203,7 +12203,7 @@
   {
     "name": "Recall",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "137",
     "attribute": "",
@@ -12224,7 +12224,7 @@
   {
     "name": "Vigil (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "137",
     "attribute": "",
@@ -12245,7 +12245,7 @@
   {
     "name": "Relieve Madness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "138",
     "attribute": "",
@@ -12266,7 +12266,7 @@
   {
     "name": "Charm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "138",
     "attribute": "",
@@ -12287,7 +12287,7 @@
   {
     "name": "Ecstasy (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "138",
     "attribute": "",
@@ -12308,7 +12308,7 @@
   {
     "name": "Permanent Madness (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "138",
     "attribute": "",
@@ -12329,7 +12329,7 @@
   {
     "name": "(VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "138",
     "attribute": "",
@@ -12350,7 +12350,7 @@
   {
     "name": "Enthrall",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "138",
     "attribute": "",
@@ -12371,7 +12371,7 @@
   {
     "name": "Dream Sending",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "138",
     "attribute": "",
@@ -12392,7 +12392,7 @@
   {
     "name": "Dream Projection",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "138",
     "attribute": "",
@@ -12413,7 +12413,7 @@
   {
     "name": "False Memory",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "138",
     "attribute": "",
@@ -12434,7 +12434,7 @@
   {
     "name": "Avoid",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "139",
     "attribute": "",
@@ -12455,7 +12455,7 @@
   {
     "name": "Nightmare",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "139",
     "attribute": "",
@@ -12476,7 +12476,7 @@
   {
     "name": "Hallucination",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "139",
     "attribute": "",
@@ -12497,7 +12497,7 @@
   {
     "name": "Lesser Geas (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "139",
     "attribute": "",
@@ -12518,7 +12518,7 @@
   {
     "name": "Suggestion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "139",
     "attribute": "",
@@ -12539,7 +12539,7 @@
   {
     "name": "Mass Suggestion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "140",
     "attribute": "",
@@ -12560,7 +12560,7 @@
   {
     "name": "Glib Tongue",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "140",
     "attribute": "",
@@ -12581,7 +12581,7 @@
   {
     "name": "Enslave (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "140",
     "attribute": "",
@@ -12602,7 +12602,7 @@
   {
     "name": "Great Hallucination (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "140",
     "attribute": "",
@@ -12623,7 +12623,7 @@
   {
     "name": "(VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "140",
     "attribute": "",
@@ -12644,7 +12644,7 @@
   {
     "name": "Great Geas (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "140",
     "attribute": "",
@@ -12665,7 +12665,7 @@
   {
     "name": "Haste",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "142",
     "attribute": "",
@@ -12686,7 +12686,7 @@
   {
     "name": "Apportation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "142",
     "attribute": "",
@@ -12707,7 +12707,7 @@
   {
     "name": "Glue",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12728,7 +12728,7 @@
   {
     "name": "Grease",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12749,7 +12749,7 @@
   {
     "name": "Increase Burden Lighten Burden",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12770,7 +12770,7 @@
   {
     "name": "Lighten Burden",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12791,7 +12791,7 @@
   {
     "name": "Hinder",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12812,7 +12812,7 @@
   {
     "name": "Hold Fast",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12833,7 +12833,7 @@
   {
     "name": "Jump",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12854,7 +12854,7 @@
   {
     "name": "Levitation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12875,7 +12875,7 @@
   {
     "name": "Locksmith",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12896,7 +12896,7 @@
   {
     "name": "Long March",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "4",
     "attribute": "",
@@ -12917,7 +12917,7 @@
   {
     "name": "Poltergeist",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "143",
     "attribute": "",
@@ -12938,7 +12938,7 @@
   {
     "name": "Quick March",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "143",
     "attribute": "",
@@ -12959,7 +12959,7 @@
   {
     "name": "Slow Fall",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "143",
     "attribute": "",
@@ -12980,7 +12980,7 @@
   {
     "name": "Wallwalker",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "143",
     "attribute": "",
@@ -13001,7 +13001,7 @@
   {
     "name": "Dancing Object",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "143",
     "attribute": "",
@@ -13022,7 +13022,7 @@
   {
     "name": "Distant Blow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "143",
     "attribute": "",
@@ -13043,7 +13043,7 @@
   {
     "name": "Lockmaster",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "143",
     "attribute": "",
@@ -13064,7 +13064,7 @@
   {
     "name": "Manipulate",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "144",
     "attribute": "",
@@ -13085,7 +13085,7 @@
   {
     "name": "Slow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "144",
     "attribute": "",
@@ -13106,7 +13106,7 @@
   {
     "name": "Undo",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "144",
     "attribute": "",
@@ -13127,7 +13127,7 @@
   {
     "name": "Winged Knife",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "144",
     "attribute": "",
@@ -13148,7 +13148,7 @@
   {
     "name": "Flight (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "144",
     "attribute": "",
@@ -13169,7 +13169,7 @@
   {
     "name": "Slide",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "144",
     "attribute": "",
@@ -13190,7 +13190,7 @@
   {
     "name": "Flying Carpet (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "145",
     "attribute": "",
@@ -13211,7 +13211,7 @@
   {
     "name": "Hawk Flight (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "145",
     "attribute": "",
@@ -13232,7 +13232,7 @@
   {
     "name": "Wizard Hand",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "145",
     "attribute": "",
@@ -13253,7 +13253,7 @@
   {
     "name": "Ethereal Body (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "145",
     "attribute": "",
@@ -13274,7 +13274,7 @@
   {
     "name": "Great Haste (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "145",
     "attribute": "",
@@ -13295,7 +13295,7 @@
   {
     "name": "Pull",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "145",
     "attribute": "",
@@ -13316,7 +13316,7 @@
   {
     "name": "Repel",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "146",
     "attribute": "",
@@ -13337,7 +13337,7 @@
   {
     "name": "Swim",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "146",
     "attribute": "",
@@ -13358,7 +13358,7 @@
   {
     "name": "Teleport (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "146",
     "attribute": "",
@@ -13379,7 +13379,7 @@
   {
     "name": "Teleport Other (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "8",
     "attribute": "",
@@ -13400,7 +13400,7 @@
   {
     "name": "Blink",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "147",
     "attribute": "",
@@ -13421,7 +13421,7 @@
   {
     "name": "Blink Other (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "147",
     "attribute": "",
@@ -13442,7 +13442,7 @@
   {
     "name": "Beacon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "147",
     "attribute": "",
@@ -13463,7 +13463,7 @@
   {
     "name": "Trace Teleport",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "147",
     "attribute": "",
@@ -13484,7 +13484,7 @@
   {
     "name": "Divert Teleport (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "147",
     "attribute": "",
@@ -13505,7 +13505,7 @@
   {
     "name": "Air Vortex",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "147",
     "attribute": "",
@@ -13526,7 +13526,7 @@
   {
     "name": "Freedom",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "147",
     "attribute": "",
@@ -13547,7 +13547,7 @@
   {
     "name": "Cloud-Walking",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "147",
     "attribute": "",
@@ -13568,7 +13568,7 @@
   {
     "name": "Cloud-Vaulting (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "147",
     "attribute": "",
@@ -13589,7 +13589,7 @@
   {
     "name": "Death Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "148",
     "attribute": "",
@@ -13610,7 +13610,7 @@
   {
     "name": "Final Rest",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "148",
     "attribute": "",
@@ -13631,7 +13631,7 @@
   {
     "name": "Sense Spirit",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "148",
     "attribute": "",
@@ -13652,7 +13652,7 @@
   {
     "name": "Summon Spirit",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "149",
     "attribute": "",
@@ -13673,7 +13673,7 @@
   {
     "name": "Animation (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "149",
     "attribute": "",
@@ -13694,7 +13694,7 @@
   {
     "name": "Awaken Craft Spirit",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "149",
     "attribute": "",
@@ -13715,7 +13715,7 @@
   {
     "name": "Steal Energy",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "149",
     "attribute": "",
@@ -13736,7 +13736,7 @@
   {
     "name": "Materialize",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "149",
     "attribute": "",
@@ -13757,7 +13757,7 @@
   {
     "name": "Solidify",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "150",
     "attribute": "",
@@ -13778,7 +13778,7 @@
   {
     "name": "Affect Spirits",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "150",
     "attribute": "",
@@ -13799,7 +13799,7 @@
   {
     "name": "Weaken Blood",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "150",
     "attribute": "",
@@ -13820,7 +13820,7 @@
   {
     "name": "Skull-Spirit",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "150",
     "attribute": "",
@@ -13841,7 +13841,7 @@
   {
     "name": "Turn Spirit",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "150",
     "attribute": "",
@@ -13862,7 +13862,7 @@
   {
     "name": "Zombie",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "150",
     "attribute": "",
@@ -13883,7 +13883,7 @@
   {
     "name": "Control Zombie",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "151",
     "attribute": "",
@@ -13904,7 +13904,7 @@
   {
     "name": "Zombie Summoning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "152",
     "attribute": "",
@@ -13925,7 +13925,7 @@
   {
     "name": "Mass Zombie (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "152",
     "attribute": "",
@@ -13946,7 +13946,7 @@
   {
     "name": "Astral Vision (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "152",
     "attribute": "",
@@ -13967,7 +13967,7 @@
   {
     "name": "Slow Healing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "152",
     "attribute": "",
@@ -13988,7 +13988,7 @@
   {
     "name": "Stop Healing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "152",
     "attribute": "",
@@ -14009,7 +14009,7 @@
   {
     "name": "Command Spirit (type)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "152",
     "attribute": "",
@@ -14030,7 +14030,7 @@
   {
     "name": "Strike Barren",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "153",
     "attribute": "",
@@ -14051,7 +14051,7 @@
   {
     "name": "Age (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "153",
     "attribute": "",
@@ -14072,7 +14072,7 @@
   {
     "name": "Pestilence",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "153",
     "attribute": "",
@@ -14093,7 +14093,7 @@
   {
     "name": "Animate Shadow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "153",
     "attribute": "",
@@ -14114,7 +14114,7 @@
   {
     "name": "Rotting Death (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "153",
     "attribute": "",
@@ -14135,7 +14135,7 @@
   {
     "name": "Soul Jar (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "153",
     "attribute": "",
@@ -14156,7 +14156,7 @@
   {
     "name": "Summon Demon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "154",
     "attribute": "",
@@ -14177,7 +14177,7 @@
   {
     "name": "Banish",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "155",
     "attribute": "",
@@ -14198,7 +14198,7 @@
   {
     "name": "Burning Death (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "156",
     "attribute": "",
@@ -14219,7 +14219,7 @@
   {
     "name": "Resurrection (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "156",
     "attribute": "",
@@ -14240,7 +14240,7 @@
   {
     "name": "Entrap Spirit",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "156",
     "attribute": "",
@@ -14261,7 +14261,7 @@
   {
     "name": "Repel Spirits",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "157",
     "attribute": "",
@@ -14282,7 +14282,7 @@
   {
     "name": "Bind Spirit (type) (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "157",
     "attribute": "",
@@ -14303,7 +14303,7 @@
   {
     "name": "Steal (Attribute) (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "157",
     "attribute": "",
@@ -14324,7 +14324,7 @@
   {
     "name": "Frailty Steal Skill (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "157",
     "attribute": "",
@@ -14345,7 +14345,7 @@
   {
     "name": "Steal Skill (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "157",
     "attribute": "",
@@ -14366,7 +14366,7 @@
   {
     "name": "Steal Youth (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "157",
     "attribute": "",
@@ -14387,7 +14387,7 @@
   {
     "name": "Steal Beauty (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "158",
     "attribute": "",
@@ -14408,7 +14408,7 @@
   {
     "name": "Astral Block",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "158",
     "attribute": "",
@@ -14429,7 +14429,7 @@
   {
     "name": "Lich (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "158",
     "attribute": "",
@@ -14450,7 +14450,7 @@
   {
     "name": "Wraith (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "159",
     "attribute": "",
@@ -14471,7 +14471,7 @@
   {
     "name": "Seek Plant",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "160",
     "attribute": "",
@@ -14492,7 +14492,7 @@
   {
     "name": "Heal Plant",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "160",
     "attribute": "",
@@ -14513,7 +14513,7 @@
   {
     "name": "Shape Plant",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "160",
     "attribute": "",
@@ -14534,7 +14534,7 @@
   {
     "name": "Regular Bless Plants",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "160",
     "attribute": "",
@@ -14555,7 +14555,7 @@
   {
     "name": "Bless Plants",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "160",
     "attribute": "",
@@ -14576,7 +14576,7 @@
   {
     "name": "Identify Plant",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "160",
     "attribute": "",
@@ -14597,7 +14597,7 @@
   {
     "name": "Hide Path",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14618,7 +14618,7 @@
   {
     "name": "Regular Conceal",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14639,7 +14639,7 @@
   {
     "name": "Conceal",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14660,7 +14660,7 @@
   {
     "name": "Plant Growth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14681,7 +14681,7 @@
   {
     "name": "Plant Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14702,7 +14702,7 @@
   {
     "name": "Pollen Cloud",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14723,7 +14723,7 @@
   {
     "name": "Blight",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14744,7 +14744,7 @@
   {
     "name": "Blossom",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14765,7 +14765,7 @@
   {
     "name": "Forest Warning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14786,7 +14786,7 @@
   {
     "name": "Tangle Growth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "161",
     "attribute": "",
@@ -14807,7 +14807,7 @@
   {
     "name": "Purify Earth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "162",
     "attribute": "",
@@ -14828,7 +14828,7 @@
   {
     "name": "Create Plant",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "162",
     "attribute": "",
@@ -14849,7 +14849,7 @@
   {
     "name": "False Tracks",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "162",
     "attribute": "",
@@ -14870,7 +14870,7 @@
   {
     "name": "Plant Sense",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "162",
     "attribute": "",
@@ -14891,7 +14891,7 @@
   {
     "name": "Rejuvenate Plant",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "162",
     "attribute": "",
@@ -14912,7 +14912,7 @@
   {
     "name": "Wither Plant",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "162",
     "attribute": "",
@@ -14933,7 +14933,7 @@
   {
     "name": "Walk Through Plants",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "162",
     "attribute": "",
@@ -14954,7 +14954,7 @@
   {
     "name": "Walk Through Wood",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "163",
     "attribute": "",
@@ -14975,7 +14975,7 @@
   {
     "name": "Plant Control",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "163",
     "attribute": "",
@@ -14996,7 +14996,7 @@
   {
     "name": "Essential Wood",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "163",
     "attribute": "",
@@ -15017,7 +15017,7 @@
   {
     "name": "Animate Plant",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "163",
     "attribute": "",
@@ -15038,7 +15038,7 @@
   {
     "name": "Plant Form",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "163",
     "attribute": "",
@@ -15059,7 +15059,7 @@
   {
     "name": "Plant Speech",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "163",
     "attribute": "",
@@ -15080,7 +15080,7 @@
   {
     "name": "Plant Form Other (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "164",
     "attribute": "",
@@ -15101,7 +15101,7 @@
   {
     "name": "Body of Wood",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "164",
     "attribute": "",
@@ -15122,7 +15122,7 @@
   {
     "name": "Body of Slime",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "164",
     "attribute": "",
@@ -15143,7 +15143,7 @@
   {
     "name": "Sense Danger",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "165",
     "attribute": "",
@@ -15164,7 +15164,7 @@
   {
     "name": "Detect Poison",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15185,7 +15185,7 @@
   {
     "name": "Magelock",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15206,7 +15206,7 @@
   {
     "name": "Block",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15227,7 +15227,7 @@
   {
     "name": "Hardiness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15248,7 +15248,7 @@
   {
     "name": "Watchdog",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15269,7 +15269,7 @@
   {
     "name": "Protect Animal",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15290,7 +15290,7 @@
   {
     "name": "Nightingale",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15311,7 +15311,7 @@
   {
     "name": "Sense Observation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15332,7 +15332,7 @@
   {
     "name": "Shield",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15353,7 +15353,7 @@
   {
     "name": "Armor",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15374,7 +15374,7 @@
   {
     "name": "Turn Blade",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "166",
     "attribute": "",
@@ -15395,7 +15395,7 @@
   {
     "name": "Bladeturning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "167",
     "attribute": "",
@@ -15416,7 +15416,7 @@
   {
     "name": "Umbrella",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "167",
     "attribute": "",
@@ -15437,7 +15437,7 @@
   {
     "name": "Missile Shield",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "167",
     "attribute": "",
@@ -15458,7 +15458,7 @@
   {
     "name": "Reverse Missiles",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15479,7 +15479,7 @@
   {
     "name": "Regular Turns any ranged attack (including",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15500,7 +15500,7 @@
   {
     "name": "Turns any ranged attack (including",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15521,7 +15521,7 @@
   {
     "name": "Mystic Mist",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15542,7 +15542,7 @@
   {
     "name": "Resist Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15563,7 +15563,7 @@
   {
     "name": "Shade",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15584,7 +15584,7 @@
   {
     "name": "Resist Poison",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15605,7 +15605,7 @@
   {
     "name": "Resist Disease",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15626,7 +15626,7 @@
   {
     "name": "Resist Sound",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15647,7 +15647,7 @@
   {
     "name": "Resist Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15668,7 +15668,7 @@
   {
     "name": "Warmth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15689,7 +15689,7 @@
   {
     "name": "Coolness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15710,7 +15710,7 @@
   {
     "name": "Iron Arm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15731,7 +15731,7 @@
   {
     "name": "Blocking Atmosphere Dome",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15752,7 +15752,7 @@
   {
     "name": "Atmosphere Dome",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15773,7 +15773,7 @@
   {
     "name": "Weather Dome",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15794,7 +15794,7 @@
   {
     "name": "Resist Pressure",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "168",
     "attribute": "",
@@ -15815,7 +15815,7 @@
   {
     "name": "Force Wall",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "169",
     "attribute": "",
@@ -15836,7 +15836,7 @@
   {
     "name": "Resist Radiation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "169",
     "attribute": "",
@@ -15857,7 +15857,7 @@
   {
     "name": "Resist Acid",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "169",
     "attribute": "",
@@ -15878,7 +15878,7 @@
   {
     "name": "Freedom",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "169",
     "attribute": "",
@@ -15899,7 +15899,7 @@
   {
     "name": "Teleport Shield",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "169",
     "attribute": "",
@@ -15920,7 +15920,7 @@
   {
     "name": "Force Dome",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "170",
     "attribute": "",
@@ -15941,7 +15941,7 @@
   {
     "name": "Utter Dome",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "170",
     "attribute": "",
@@ -15962,7 +15962,7 @@
   {
     "name": "Utter Wall",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "170",
     "attribute": "",
@@ -15983,7 +15983,7 @@
   {
     "name": "Sound Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "170",
     "attribute": "",
@@ -16004,7 +16004,7 @@
   {
     "name": "Thunderclap",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "170",
     "attribute": "",
@@ -16025,7 +16025,7 @@
   {
     "name": "Silence",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "170",
     "attribute": "",
@@ -16046,7 +16046,7 @@
   {
     "name": "Voices",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "171",
     "attribute": "",
@@ -16067,7 +16067,7 @@
   {
     "name": "Imitate Voice",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "171",
     "attribute": "",
@@ -16088,7 +16088,7 @@
   {
     "name": "Wall of Silence",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "171",
     "attribute": "",
@@ -16109,7 +16109,7 @@
   {
     "name": "Garble",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "171",
     "attribute": "",
@@ -16130,7 +16130,7 @@
   {
     "name": "Hush",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "171",
     "attribute": "",
@@ -16151,7 +16151,7 @@
   {
     "name": "Mage-Stealth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "171",
     "attribute": "",
@@ -16172,7 +16172,7 @@
   {
     "name": "Great Voice",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "172",
     "attribute": "",
@@ -16193,7 +16193,7 @@
   {
     "name": "Noise",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "172",
     "attribute": "",
@@ -16214,7 +16214,7 @@
   {
     "name": "Delayed Message",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "172",
     "attribute": "",
@@ -16235,7 +16235,7 @@
   {
     "name": "Resist Sound",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "172",
     "attribute": "",
@@ -16256,7 +16256,7 @@
   {
     "name": "Sound Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "172",
     "attribute": "",
@@ -16277,7 +16277,7 @@
   {
     "name": "Concussion",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "172",
     "attribute": "",
@@ -16298,7 +16298,7 @@
   {
     "name": "Converse",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "172",
     "attribute": "",
@@ -16319,7 +16319,7 @@
   {
     "name": "Far-Hearing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "172",
     "attribute": "",
@@ -16340,7 +16340,7 @@
   {
     "name": "Scribe",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "173",
     "attribute": "",
@@ -16361,7 +16361,7 @@
   {
     "name": "Musical Scribe",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "173",
     "attribute": "",
@@ -16382,7 +16382,7 @@
   {
     "name": "Message",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "173",
     "attribute": "",
@@ -16403,7 +16403,7 @@
   {
     "name": "Wizard Mouth",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "173",
     "attribute": "",
@@ -16424,7 +16424,7 @@
   {
     "name": "Alter Voice",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "173",
     "attribute": "",
@@ -16445,7 +16445,7 @@
   {
     "name": "Silver Tongue",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "173",
     "attribute": "",
@@ -16466,7 +16466,7 @@
   {
     "name": "Echoes of the Past",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "173",
     "attribute": "",
@@ -16487,7 +16487,7 @@
   {
     "name": "Wizard Ear",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "173",
     "attribute": "",
@@ -16508,7 +16508,7 @@
   {
     "name": "Invisible Wizard Ear",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "173",
     "attribute": "",
@@ -16529,7 +16529,7 @@
   {
     "name": "Seek Machine/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "174",
     "attribute": "",
@@ -16550,7 +16550,7 @@
   {
     "name": "Reveal Function/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "175",
     "attribute": "",
@@ -16571,7 +16571,7 @@
   {
     "name": "Machine Control/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "175",
     "attribute": "",
@@ -16592,7 +16592,7 @@
   {
     "name": "Machine Summoning/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "175",
     "attribute": "",
@@ -16613,7 +16613,7 @@
   {
     "name": "Summoning/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "175",
     "attribute": "",
@@ -16634,7 +16634,7 @@
   {
     "name": "Machine Speech/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "175",
     "attribute": "",
@@ -16655,7 +16655,7 @@
   {
     "name": "Glitch/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "175",
     "attribute": "",
@@ -16676,7 +16676,7 @@
   {
     "name": "Malfunction/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "176",
     "attribute": "",
@@ -16697,7 +16697,7 @@
   {
     "name": "Schematic/TL (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "176",
     "attribute": "",
@@ -16718,7 +16718,7 @@
   {
     "name": "Animate Machine/TL (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "176",
     "attribute": "",
@@ -16739,7 +16739,7 @@
   {
     "name": "(VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "176",
     "attribute": "",
@@ -16760,7 +16760,7 @@
   {
     "name": "Rebuild/TL (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "176",
     "attribute": "",
@@ -16781,7 +16781,7 @@
   {
     "name": "Machine Possession/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "177",
     "attribute": "",
@@ -16802,7 +16802,7 @@
   {
     "name": "Permanent Machine Possession/TL (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "177",
     "attribute": "",
@@ -16823,7 +16823,7 @@
   {
     "name": "Possession/TL (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "177",
     "attribute": "",
@@ -16844,7 +16844,7 @@
   {
     "name": "Seek Power/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "178",
     "attribute": "",
@@ -16865,7 +16865,7 @@
   {
     "name": "Seek Fuel/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "178",
     "attribute": "",
@@ -16886,7 +16886,7 @@
   {
     "name": "Test Fuel/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "178",
     "attribute": "",
@@ -16907,7 +16907,7 @@
   {
     "name": "Preserve Fuel/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "178",
     "attribute": "",
@@ -16928,7 +16928,7 @@
   {
     "name": "Purify Fuel/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "178",
     "attribute": "",
@@ -16949,7 +16949,7 @@
   {
     "name": "Create Fuel/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "178",
     "attribute": "",
@@ -16970,7 +16970,7 @@
   {
     "name": "Essential Fuel/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "178",
     "attribute": "",
@@ -16991,7 +16991,7 @@
   {
     "name": "Stop Power",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "178",
     "attribute": "",
@@ -17012,7 +17012,7 @@
   {
     "name": "Lend Power/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "179",
     "attribute": "",
@@ -17033,7 +17033,7 @@
   {
     "name": "Propel/TL",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "179",
     "attribute": "",
@@ -17054,7 +17054,7 @@
   {
     "name": "Conduct Power/TL (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "179",
     "attribute": "",
@@ -17075,7 +17075,7 @@
   {
     "name": "Steal Power/TL (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "179",
     "attribute": "",
@@ -17096,7 +17096,7 @@
   {
     "name": "Draw Power/TL (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "179",
     "attribute": "",
@@ -17117,7 +17117,7 @@
   {
     "name": "Magnetic Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "180",
     "attribute": "",
@@ -17138,7 +17138,7 @@
   {
     "name": "Radio Hearing",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "180",
     "attribute": "",
@@ -17159,7 +17159,7 @@
   {
     "name": "Spectrum Vision (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "180",
     "attribute": "",
@@ -17180,7 +17180,7 @@
   {
     "name": "Seek Radiation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "180",
     "attribute": "",
@@ -17201,7 +17201,7 @@
   {
     "name": "Resist Radiation",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "181",
     "attribute": "",
@@ -17222,7 +17222,7 @@
   {
     "name": "Cure Radiation (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "181",
     "attribute": "",
@@ -17243,7 +17243,7 @@
   {
     "name": "Radiation Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "181",
     "attribute": "",
@@ -17264,7 +17264,7 @@
   {
     "name": "Breathe Radiation (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "181",
     "attribute": "",
@@ -17285,7 +17285,7 @@
   {
     "name": "Seek Plastic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "181",
     "attribute": "",
@@ -17306,7 +17306,7 @@
   {
     "name": "Identify Metal",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "181",
     "attribute": "",
@@ -17327,7 +17327,7 @@
   {
     "name": "Identify Plastic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "181",
     "attribute": "",
@@ -17348,7 +17348,7 @@
   {
     "name": "Shape Metal",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "181",
     "attribute": "",
@@ -17369,7 +17369,7 @@
   {
     "name": "Shape Plastic",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "182",
     "attribute": "",
@@ -17390,7 +17390,7 @@
   {
     "name": "Metal Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "182",
     "attribute": "",
@@ -17411,7 +17411,7 @@
   {
     "name": "Plastic Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "182",
     "attribute": "",
@@ -17432,7 +17432,7 @@
   {
     "name": "Body of Metal (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "182",
     "attribute": "",
@@ -17453,7 +17453,7 @@
   {
     "name": "Body of Plastic (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "182",
     "attribute": "",
@@ -17474,7 +17474,7 @@
   {
     "name": "Purify Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "183",
     "attribute": "",
@@ -17495,7 +17495,7 @@
   {
     "name": "Seek Coastline",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "183",
     "attribute": "",
@@ -17516,7 +17516,7 @@
   {
     "name": "Create Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "184",
     "attribute": "",
@@ -17537,7 +17537,7 @@
   {
     "name": "Shape Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "184",
     "attribute": "",
@@ -17558,7 +17558,7 @@
   {
     "name": "Destroy Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "184",
     "attribute": "",
@@ -17579,7 +17579,7 @@
   {
     "name": "Icy Weapon",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "184",
     "attribute": "",
@@ -17600,7 +17600,7 @@
   {
     "name": "Frost",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "184",
     "attribute": "",
@@ -17621,7 +17621,7 @@
   {
     "name": "Umbrella",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "184",
     "attribute": "",
@@ -17642,7 +17642,7 @@
   {
     "name": "Body of Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "184",
     "attribute": "",
@@ -17663,7 +17663,7 @@
   {
     "name": "Foul Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "184",
     "attribute": "",
@@ -17684,7 +17684,7 @@
   {
     "name": "Freeze",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "184",
     "attribute": "",
@@ -17705,7 +17705,7 @@
   {
     "name": "Fog",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "185",
     "attribute": "",
@@ -17726,7 +17726,7 @@
   {
     "name": "Ice Slick",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "185",
     "attribute": "",
@@ -17747,7 +17747,7 @@
   {
     "name": "Ice Sphere",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "185",
     "attribute": "",
@@ -17768,7 +17768,7 @@
   {
     "name": "Icy Missiles",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "185",
     "attribute": "",
@@ -17789,7 +17789,7 @@
   {
     "name": "Resist Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "185",
     "attribute": "",
@@ -17810,7 +17810,7 @@
   {
     "name": "Snow Shoes",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "185",
     "attribute": "",
@@ -17831,7 +17831,7 @@
   {
     "name": "Walk on Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "185",
     "attribute": "",
@@ -17852,7 +17852,7 @@
   {
     "name": "Whirlpool",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "186",
     "attribute": "",
@@ -17873,7 +17873,7 @@
   {
     "name": "Waves",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "186",
     "attribute": "",
@@ -17894,7 +17894,7 @@
   {
     "name": "Water Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "186",
     "attribute": "",
@@ -17915,7 +17915,7 @@
   {
     "name": "Water Vision",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "186",
     "attribute": "",
@@ -17936,7 +17936,7 @@
   {
     "name": "Coolness",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "186",
     "attribute": "",
@@ -17957,7 +17957,7 @@
   {
     "name": "Create Ice",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "187",
     "attribute": "",
@@ -17978,7 +17978,7 @@
   {
     "name": "Regular Walk Through Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "187",
     "attribute": "",
@@ -17999,7 +17999,7 @@
   {
     "name": "Walk Through Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "187",
     "attribute": "",
@@ -18020,7 +18020,7 @@
   {
     "name": "Dehydrate",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "187",
     "attribute": "",
@@ -18041,7 +18041,7 @@
   {
     "name": "Ice Dagger",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "187",
     "attribute": "",
@@ -18062,7 +18062,7 @@
   {
     "name": "Icy Touch",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "187",
     "attribute": "",
@@ -18083,7 +18083,7 @@
   {
     "name": "Dry Spring",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "187",
     "attribute": "",
@@ -18104,7 +18104,7 @@
   {
     "name": "Earth to Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "187",
     "attribute": "",
@@ -18125,7 +18125,7 @@
   {
     "name": "Essential Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18146,7 +18146,7 @@
   {
     "name": "Regular Body of Ice (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18167,7 +18167,7 @@
   {
     "name": "Body of Ice (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18188,7 +18188,7 @@
   {
     "name": "Frostbite",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18209,7 +18209,7 @@
   {
     "name": "Snow Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18230,7 +18230,7 @@
   {
     "name": "Breathe Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18251,7 +18251,7 @@
   {
     "name": "Breathe Air",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18272,7 +18272,7 @@
   {
     "name": "Swim",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18293,7 +18293,7 @@
   {
     "name": "Boil Water",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18314,7 +18314,7 @@
   {
     "name": "Condense Steam",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "188",
     "attribute": "",
@@ -18335,7 +18335,7 @@
   {
     "name": "Create Acid",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18356,7 +18356,7 @@
   {
     "name": "Create Spring",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18377,7 +18377,7 @@
   {
     "name": "Current",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18398,7 +18398,7 @@
   {
     "name": "Tide",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18419,7 +18419,7 @@
   {
     "name": "Flesh to Ice (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18440,7 +18440,7 @@
   {
     "name": "Create Steam",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18461,7 +18461,7 @@
   {
     "name": "Distill",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18482,7 +18482,7 @@
   {
     "name": "Resist Acid",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18503,7 +18503,7 @@
   {
     "name": "Rain",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18524,7 +18524,7 @@
   {
     "name": "Snow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18545,7 +18545,7 @@
   {
     "name": "Hail",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18566,7 +18566,7 @@
   {
     "name": "Mud Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18587,7 +18587,7 @@
   {
     "name": "Geyser (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "189",
     "attribute": "",
@@ -18608,7 +18608,7 @@
   {
     "name": "Rain of Acid",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "190",
     "attribute": "",
@@ -18629,7 +18629,7 @@
   {
     "name": "Acid Ball",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "190",
     "attribute": "",
@@ -18650,7 +18650,7 @@
   {
     "name": "Acid Jet",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "191",
     "attribute": "",
@@ -18671,7 +18671,7 @@
   {
     "name": "Regular Storm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "191",
     "attribute": "",
@@ -18692,7 +18692,7 @@
   {
     "name": "Storm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "191",
     "attribute": "",
@@ -18713,7 +18713,7 @@
   {
     "name": "Rain of Ice Daggers",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "191",
     "attribute": "",
@@ -18734,7 +18734,7 @@
   {
     "name": "Icy Breath (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "191",
     "attribute": "",
@@ -18755,7 +18755,7 @@
   {
     "name": "Breathe Steam (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "191",
     "attribute": "",
@@ -18776,7 +18776,7 @@
   {
     "name": "Spit Acid (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "191",
     "attribute": "",
@@ -18797,7 +18797,7 @@
   {
     "name": "Essential Acid (VH)",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "191",
     "attribute": "",
@@ -18818,7 +18818,7 @@
   {
     "name": "Frost",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "192",
     "attribute": "",
@@ -18839,7 +18839,7 @@
   {
     "name": "Fog",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "192",
     "attribute": "",
@@ -18860,7 +18860,7 @@
   {
     "name": "Predict Weather",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "192",
     "attribute": "",
@@ -18881,7 +18881,7 @@
   {
     "name": "Waves Clouds",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "17",
     "attribute": "",
@@ -18902,7 +18902,7 @@
   {
     "name": "Clouds",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "17",
     "attribute": "",
@@ -18923,7 +18923,7 @@
   {
     "name": "Current",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "17",
     "attribute": "",
@@ -18944,7 +18944,7 @@
   {
     "name": "Tide",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "17",
     "attribute": "",
@@ -18965,7 +18965,7 @@
   {
     "name": "Snow",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "194",
     "attribute": "",
@@ -18986,7 +18986,7 @@
   {
     "name": "Wind",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "194",
     "attribute": "",
@@ -19007,7 +19007,7 @@
   {
     "name": "Rain",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "194",
     "attribute": "",
@@ -19028,7 +19028,7 @@
   {
     "name": "Cool",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "194",
     "attribute": "",
@@ -19049,7 +19049,7 @@
   {
     "name": "Hail",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "194",
     "attribute": "",
@@ -19070,7 +19070,7 @@
   {
     "name": "Warm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "194",
     "attribute": "",
@@ -19091,7 +19091,7 @@
   {
     "name": "Storm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "194",
     "attribute": "",
@@ -19112,7 +19112,7 @@
   {
     "name": "Lightning Whip",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "195",
     "attribute": "",
@@ -19133,7 +19133,7 @@
   {
     "name": "Weather Dome",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "195",
     "attribute": "",
@@ -19154,7 +19154,7 @@
   {
     "name": "Cloud-Walking",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "195",
     "attribute": "",
@@ -19175,7 +19175,7 @@
   {
     "name": "Cloud-Vaulting",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "195",
     "attribute": "",
@@ -19196,7 +19196,7 @@
   {
     "name": "Resist Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "195",
     "attribute": "",
@@ -19217,7 +19217,7 @@
   {
     "name": "Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "195",
     "attribute": "",
@@ -19238,7 +19238,7 @@
   {
     "name": "Explosive Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "195",
     "attribute": "",
@@ -19259,7 +19259,7 @@
   {
     "name": "Shocking Touch",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "195",
     "attribute": "",
@@ -19280,7 +19280,7 @@
   {
     "name": "Spark Cloud",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "195",
     "attribute": "",
@@ -19301,7 +19301,7 @@
   {
     "name": "Spark Storm",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "196",
     "attribute": "",
@@ -19322,7 +19322,7 @@
   {
     "name": "Wall of Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "196",
     "attribute": "",
@@ -19343,7 +19343,7 @@
   {
     "name": "Ball of Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "196",
     "attribute": "",
@@ -19364,7 +19364,7 @@
   {
     "name": "Lightning Stare",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "197",
     "attribute": "",
@@ -19385,7 +19385,7 @@
   {
     "name": "Body of Lightning",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "197",
     "attribute": "",
@@ -19406,7 +19406,7 @@
   {
     "name": "Lightning Missiles",
     "type": "spell",
-    "bookKey": "magic",
+    "bookKey": "M",
     "sourceName": "Magic",
     "displayedPage": "197",
     "attribute": "",

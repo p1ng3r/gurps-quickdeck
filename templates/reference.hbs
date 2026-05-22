@@ -34,6 +34,19 @@
       >
         {{referenceIndexButtonLabel}}
       </button>
+      {{#if hasMappedPdf}}
+        <button
+          type="button"
+          class="quickdeck-reference-index-button"
+          data-action="open-mapped-pdf-page"
+          data-pdf-key="{{pdfOpenKey}}"
+          data-pdf-page="{{pdfOpenPage}}"
+        >
+          Open PDF Page{{#if pdfOpenLabel}} ({{pdfOpenLabel}}){{/if}}
+        </button>
+      {{else if pdfMissingKeyMessage}}
+        <p class="quickdeck-reference-muted">{{pdfMissingKeyMessage}}</p>
+      {{/if}}
     </div>
 
     {{#if hasBundledBaseMatch}}
