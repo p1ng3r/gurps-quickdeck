@@ -404,6 +404,7 @@ export class QuickDeckApp extends Application {
     const hasRealSkillField = this.objectHasAnyPath(value, [
       "difficulty",
       "defaults",
+      "default",
       "points",
       "calc.points",
       "calc.level",
@@ -715,10 +716,12 @@ export class QuickDeckApp extends Application {
           const baseSegments = String(source.path ?? "").split(".").filter(Boolean).length;
           const depth = Math.max(0, sourcePathSegments.length - baseSegments);
 
-          console.debug("QuickDeck Skill Indexed:", {
+          console.debug("QuickDeck Skill Indexed", {
             name: normalized.name,
+            specialization: this.getFirstDefinedValue(normalized.raw, ["specialization", "specialty", "speciality"]) ?? null,
             reference: normalized.reference ?? null,
             difficulty: this.getFirstDefinedValue(normalized.raw, ["difficulty", "diff", "calc.diff"]) ?? null,
+            level: normalized.level ?? null,
             sourcePath,
             depth
           });
