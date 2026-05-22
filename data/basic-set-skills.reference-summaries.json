@@ -852,5 +852,19 @@
     "description": "Fallback bundled popup text for Traps from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
+  },
+  {
+    "name": "Mind Block",
+    "type": "skill",
+    "bookKey": "B",
+    "sourceName": "Basic Set: Characters",
+    "displayedPage": "210",
+    "attribute": "Will",
+    "difficulty": "Average",
+    "defaults": "Will-5; Meditation-5",
+    "summary": "Establishes a mundane mental block against attempts to read thoughts or emotions.",
+    "description": "Use Mind Block to resist mind-reading attempts by filling your thoughts with distracting mental patterns such as calculations, songs, poetry, or repeated phrases. It works against mind reading and emotional reading, not general mind control or every mental attack.",
+    "notes": "Actor references may appear as B210. If B PDF is mapped, Open PDF Page should open displayed page 210 plus offset.",
+    "specialtyRequired": false
   }
 ]

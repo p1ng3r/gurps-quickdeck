@@ -709,7 +709,22 @@ export class QuickDeckApp extends Application {
           sourceKey: entry.key,
           sourceCollection: source.collection
         });
-        if (normalized) skills.push(normalized);
+        if (normalized) {
+          const sourcePath = String(entry.path ?? source.path ?? "");
+          const sourcePathSegments = sourcePath ? sourcePath.split(".").filter(Boolean) : [];
+          const baseSegments = String(source.path ?? "").split(".").filter(Boolean).length;
+          const depth = Math.max(0, sourcePathSegments.length - baseSegments);
+
+          console.debug("QuickDeck Skill Indexed:", {
+            name: normalized.name,
+            reference: normalized.reference ?? null,
+            difficulty: this.getFirstDefinedValue(normalized.raw, ["difficulty", "diff", "calc.diff"]) ?? null,
+            sourcePath,
+            depth
+          });
+
+          skills.push(normalized);
+        }
       }
     }
 
