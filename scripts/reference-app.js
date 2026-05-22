@@ -94,6 +94,9 @@ export class QuickDeckReferenceApp extends Application {
       manualEntry?.bookKey || this.referenceData.source || bundledSummaryEntry?.sourceName || bundledSummaryEntry?.bookKey || null;
     const displayedPage =
       manualEntry?.displayedPage || bundledSummaryEntry?.displayedPage || this.referenceData.pageHint || null;
+
+    // Keep bundled/manual fallback matching as the primary popup content source.
+    // PDF matching is a secondary optional action only.
     const referenceCandidates = [
       {
         bookKey: normalizePdfBookKeyAlias(manualEntry?.bookKey || ""),
@@ -118,6 +121,26 @@ export class QuickDeckReferenceApp extends Application {
     const mappings = game?.settings?.get?.("gurps-quickdeck", "pdfPageRefMappings");
     const pdfMapping = pageReference?.key ? mappings?.[pageReference.key] ?? null : null;
     const hasMappedPdf = Boolean(pdfMapping?.path);
+
+    console.debug("QuickDeck Reference Match:", {
+      clickedName: this.referenceData.name,
+      clickedType: this.referenceData.type,
+      clickedPageHint: this.referenceData.pageHint || null,
+      hasManualMatch: Boolean(manualEntry),
+      hasBundledMatch: Boolean(bundledSummaryEntry),
+      bundledEntry: bundledSummaryEntry
+        ? {
+            name: bundledSummaryEntry?.name || null,
+            bookKey: bundledSummaryEntry?.bookKey || null,
+            displayedPage: bundledSummaryEntry?.displayedPage || null
+          }
+        : null,
+      hasSummary: Boolean(bundledSummaryEntry?.summary),
+      hasDescription: Boolean(bundledSummaryEntry?.description),
+      pdfKey: pageReference?.key || null,
+      pdfPage: Number.isFinite(pageReference?.page) ? pageReference.page : null,
+      hasMappedPdf
+    });
 
     const manualEntryPrefill = {
       name: this.referenceData.name,
