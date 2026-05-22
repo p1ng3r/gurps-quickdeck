@@ -2683,6 +2683,17 @@ export class QuickDeckApp extends Application {
     this.render(false);
   }
 
+  bringReferenceAppToFrontSoon() {
+    const app = this.referenceApp;
+    if (!app || !app.rendered) return;
+
+    const bring = () => app.bringReferenceToFront?.() || app.bringToTop?.();
+
+    requestAnimationFrame(bring);
+    setTimeout(bring, 75);
+    setTimeout(bring, 200);
+  }
+
   openReferenceEntry(referenceData = {}) {
     try {
       const existing = this.referenceApp;
@@ -3495,6 +3506,7 @@ export class QuickDeckApp extends Application {
     await this.renderOverlay();
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
+    this.bringReferenceAppToFrontSoon();
     return result;
   }
 
@@ -4565,7 +4577,10 @@ export class QuickDeckApp extends Application {
     });
 
     const dropTarget = html.find("[data-drop-zone='roster']")[0];
-    if (!dropTarget) return;
+    if (!dropTarget) {
+      this.bringReferenceAppToFrontSoon();
+      return;
+    }
 
     dropTarget.addEventListener("dragenter", (event) => {
       event.preventDefault();
@@ -4615,6 +4630,7 @@ export class QuickDeckApp extends Application {
     this.applySkillsFilter(html);
     this.applyQuickSkillsFilter(html);
     this.applySpellsFilter(html);
+    this.bringReferenceAppToFrontSoon();
   }
 
 }

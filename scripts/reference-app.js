@@ -232,13 +232,21 @@ export class QuickDeckReferenceApp extends Application {
   }
 
   bringReferenceToFront() {
+    if (!this.rendered) return;
     this.bringToTop?.();
     this.bringToFront?.();
 
     const element = this.element?.[0];
-    if (element && typeof element.focus === "function") {
-      element.focus();
-    }
+    element?.focus?.();
+  }
+
+  async _render(force, options = {}) {
+    await super._render(force, options);
+    this.bringReferenceToFront();
+
+    requestAnimationFrame(() => this.bringReferenceToFront());
+    setTimeout(() => this.bringReferenceToFront(), 75);
+    setTimeout(() => this.bringReferenceToFront(), 200);
   }
 
   activateListeners(html) {
