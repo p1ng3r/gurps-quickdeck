@@ -1683,8 +1683,8 @@
 
 @media (max-width: 1280px) {
   .gurps-quickdeck {
-    min-width: min(1180px, calc(100vw - 32px));
-    min-height: min(720px, calc(100vh - 56px));
+    min-width: min(1120px, calc(100vw - 32px));
+    min-height: min(700px, calc(100vh - 56px));
   }
 
   .quickdeck-shell {
@@ -1692,7 +1692,7 @@
   }
 
   .quickdeck-content {
-    grid-template-columns: minmax(440px, 1fr) minmax(460px, 0.92fr);
+    grid-template-columns: minmax(380px, 1fr) minmax(400px, 0.92fr);
   }
 
   .quickdeck-actor-header {
@@ -1717,6 +1717,7 @@
 @media (max-width: 980px) {
   .gurps-quickdeck {
     min-width: min(920px, calc(100vw - 24px));
+    min-height: min(680px, calc(100vh - 40px));
   }
 
   .quickdeck-shell {
@@ -1748,6 +1749,36 @@
 }
 
 @media (max-width: 720px) {
+  .gurps-quickdeck {
+    min-width: min(680px, calc(100vw - 16px));
+    min-height: min(620px, calc(100vh - 24px));
+  }
+
+  .quickdeck-shell {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(170px, 0.45fr) minmax(0, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .quickdeck-sidebar {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+  }
+
+  .quickdeck-main::before {
+    min-height: 2rem;
+    margin-bottom: 0.48rem;
+    font-size: 0.86rem;
+    letter-spacing: 0.12em;
+  }
+
+  .quickdeck-window-actions {
+    position: static;
+    justify-content: flex-start;
+    margin-bottom: 0.48rem;
+  }
+
   .quickdeck-spell-row,
   .quickdeck-skill-row {
     grid-template-columns: 28px minmax(0, 1fr);
@@ -1760,6 +1791,41 @@
 }
 
 @media (max-width: 520px) {
+  .gurps-quickdeck {
+    min-width: calc(100vw - 12px);
+    min-height: calc(100vh - 18px);
+  }
+
+  .quickdeck-shell {
+    grid-template-rows: minmax(260px, 0.5fr) minmax(0, 1fr);
+  }
+
+  .quickdeck-sidebar {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(130px, 1fr) minmax(120px, 0.9fr);
+    gap: 0.5rem;
+  }
+
+  .quickdeck-sidebar-block,
+  .quickdeck-selected-cockpit,
+  .quickdeck-panel-content {
+    padding: 0.56rem;
+  }
+
+  .quickdeck-actor-header {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 0.52rem;
+  }
+
+  .quickdeck-actor-header img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .quickdeck-actor-header h3 {
+    font-size: 0.96rem;
+  }
+
   .quickdeck-attack-stats,
   .quickdeck-defense-buttons,
   .quickdeck-combat-flow-controls {
