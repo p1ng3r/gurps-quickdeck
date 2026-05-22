@@ -7,6 +7,7 @@ const SETTING_KEYS = {
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   COMBAT_FAVORITES: "combatFavoriteAttackKeysByActor",
   SPELL_FAVORITES: "spellFavoriteKeysByActor",
+  PINNED_ACTIONS: "pinnedActionsByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
@@ -85,6 +86,14 @@ Hooks.once("init", () => {
   game.settings.register(MODULE_ID, SETTING_KEYS.SPELL_FAVORITES, {
     name: "QuickDeck Spell Favorites",
     hint: "Client-side saved favorite spell keys per actor.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "{}"
+  });
+  game.settings.register(MODULE_ID, SETTING_KEYS.PINNED_ACTIONS, {
+    name: "QuickDeck Pinned Actions",
+    hint: "Client-side saved pinned quick actions per actor.",
     scope: "client",
     config: false,
     type: String,
