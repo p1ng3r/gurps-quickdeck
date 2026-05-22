@@ -4467,13 +4467,21 @@ export class QuickDeckApp extends Application {
     });
 
     html.find("[data-action='pdf-map-key']").on("input", (event) => {
-      const nextKey = this.normalizePdfMapKey(event.currentTarget.value);
+      const input = event.currentTarget;
+      const raw = String(input.value ?? "");
+      const nextKey = this.normalizePdfMapKey(raw);
       this.pdfMapDraft.key = nextKey;
-      if (!String(this.pdfMapDraft.name || "").trim()) {
+
+      if (input.value !== nextKey) input.value = nextKey;
+
+      const nameInput = html.find("[data-action='pdf-map-name']")[0];
+      if (nameInput && !String(nameInput.value || "").trim()) {
         const defaultName = this.getDefaultPdfMapName(nextKey);
-        if (defaultName) this.pdfMapDraft.name = defaultName;
+        if (defaultName) {
+          this.pdfMapDraft.name = defaultName;
+          nameInput.value = defaultName;
+        }
       }
-      this.render(false);
     });
     html.find("[data-action='pdf-map-name']").on("input", (event) => {
       this.pdfMapDraft.name = String(event.currentTarget.value ?? "");
