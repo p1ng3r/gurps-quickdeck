@@ -65,6 +65,7 @@ export class QuickDeckApp extends Application {
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
+    this.referenceApp = null;
     this._overlayRoot = null;
     this._overlayDragCleanup = null;
     this._overlayPosition = null;
@@ -404,6 +405,7 @@ export class QuickDeckApp extends Application {
     const hasRealSkillField = this.objectHasAnyPath(value, [
       "difficulty",
       "defaults",
+      "default",
       "points",
       "calc.points",
       "calc.level",
@@ -709,7 +711,24 @@ export class QuickDeckApp extends Application {
           sourceKey: entry.key,
           sourceCollection: source.collection
         });
-        if (normalized) skills.push(normalized);
+        if (normalized) {
+          const sourcePath = String(entry.path ?? source.path ?? "");
+          const sourcePathSegments = sourcePath ? sourcePath.split(".").filter(Boolean) : [];
+          const baseSegments = String(source.path ?? "").split(".").filter(Boolean).length;
+          const depth = Math.max(0, sourcePathSegments.length - baseSegments);
+
+          if (DEBUG) console.debug("QuickDeck Skill Indexed", {
+            name: normalized.name,
+            specialization: this.getFirstDefinedValue(normalized.raw, ["specialization", "specialty", "speciality"]) ?? null,
+            reference: normalized.reference ?? null,
+            difficulty: this.getFirstDefinedValue(normalized.raw, ["difficulty", "diff", "calc.diff"]) ?? null,
+            level: normalized.level ?? null,
+            sourcePath,
+            depth
+          });
+
+          skills.push(normalized);
+        }
       }
     }
 
@@ -2664,10 +2683,45 @@ export class QuickDeckApp extends Application {
     this.render(false);
   }
 
+  bringReferenceAppToFrontSoon() {
+    const app = this.referenceApp;
+    if (!app || !app.rendered) return;
+
+    const bring = () => app.bringReferenceToFront?.() || app.bringToTop?.();
+
+    requestAnimationFrame(bring);
+    setTimeout(bring, 75);
+    setTimeout(bring, 200);
+  }
+
   openReferenceEntry(referenceData = {}) {
     try {
+      const existing = this.referenceApp;
+      if (existing && typeof existing.close === "function") {
+        existing.close({ force: true });
+      }
+
       const app = new QuickDeckReferenceApp(referenceData);
-      app.render(true);
+      this.referenceApp = app;
+
+      const baseLeft = Number(this.position?.left ?? this._position?.left ?? 0);
+      const baseTop = Number(this.position?.top ?? this._position?.top ?? 0);
+      const width = 460;
+      const height = 520;
+      const left = Math.max(20, Math.min(window.innerWidth - width, baseLeft + 40));
+      const top = Math.max(20, Math.min(window.innerHeight - height, baseTop + 40));
+
+      app.render(true, { focus: true, left, top, width, height });
+
+      setTimeout(() => {
+        app.bringToTop?.();
+        app.bringToFront?.();
+        app.element?.[0]?.focus?.();
+      }, 0);
+
+      app.once?.("close", () => {
+        if (this.referenceApp === app) this.referenceApp = null;
+      });
     } catch (error) {
       console.warn("gurps-quickdeck | Failed to open QuickDeck reference window.", error);
       ui.notifications?.warn("QuickDeck: Could not open reference window.");
@@ -3452,6 +3506,7 @@ export class QuickDeckApp extends Application {
     await this.renderOverlay();
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
+    this.bringReferenceAppToFrontSoon();
     return result;
   }
 
@@ -4522,7 +4577,10 @@ export class QuickDeckApp extends Application {
     });
 
     const dropTarget = html.find("[data-drop-zone='roster']")[0];
-    if (!dropTarget) return;
+    if (!dropTarget) {
+      this.bringReferenceAppToFrontSoon();
+      return;
+    }
 
     dropTarget.addEventListener("dragenter", (event) => {
       event.preventDefault();
@@ -4572,6 +4630,7 @@ export class QuickDeckApp extends Application {
     this.applySkillsFilter(html);
     this.applyQuickSkillsFilter(html);
     this.applySpellsFilter(html);
+    this.bringReferenceAppToFrontSoon();
   }
 
 }
