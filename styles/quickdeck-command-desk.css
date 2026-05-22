@@ -3398,6 +3398,11 @@
 .qd31-defense-dial span{display:block;font-size:1rem;font-weight:800}
 .qd31-pinned-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:8px}
 .qd31-pinned-grid .qd31-square-button{width:100%;height:28px}
+.qd31-pinned-action{position:relative;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:2px;align-items:center;width:100%;min-height:52px;padding:6px 18px 6px 6px;text-align:left}
+.qd31-pinned-action-name{display:block;max-width:100%;font-size:.72rem;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.qd31-pinned-action-badge{display:inline-block;width:fit-content;font-size:.6rem;line-height:1;text-transform:uppercase;letter-spacing:.03em;padding:2px 5px;border-radius:999px;background:rgba(247,227,181,.16);border:1px solid rgba(247,227,181,.32)}
+.qd31-pinned-action-remove{position:absolute;top:3px;right:3px;width:14px;height:14px;display:grid;place-items:center;border-radius:999px;background:rgba(0,0,0,.35);font-size:.63rem;line-height:1}
+.qd31-pinned-empty-state{grid-column:1 / -1;font-size:.68rem;opacity:.92;padding:2px 4px}
 .qd31-roster-card{display:grid;grid-template-columns:40px 1fr 26px;gap:8px;align-items:start;padding:6px;border:1px solid rgba(183,138,67,.45);border-radius:8px}
 .qd31-roster-card img{width:40px;height:40px;object-fit:cover;border-radius:6px}
 .qd31-mini-bars{display:grid;gap:4px;margin-top:4px}
