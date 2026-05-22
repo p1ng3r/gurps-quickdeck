@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.6.3 key-name-map
+
+### Added
+- Adds a larger GCS-compatible page-reference key/name helper map for PDF mapping autofill and missing-PDF messages.
+- Adds attribution/notice for the GCS-derived key/name metadata.
+
 ## [Unreleased] - v0.8.6.2 pdf-offset
 
 ### Fixed
