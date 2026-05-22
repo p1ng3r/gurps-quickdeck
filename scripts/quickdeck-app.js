@@ -3955,6 +3955,7 @@ export class QuickDeckApp extends Application {
       return {
         ...entry,
         attackKey,
+        isPinnedAction: attackKey ? this.isPinnedAction(activeActorId, "attack", attackKey) : false,
         isFavoriteAttack: isFavorite,
         favoriteToggleLabel: isFavorite ? "Unpin attack" : "Pin attack",
         showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
@@ -4349,6 +4350,7 @@ export class QuickDeckApp extends Application {
       const attackKey = event.currentTarget.dataset.attackKey;
       this.togglePinnedAction(actorId, "attack", attackKey);
       this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
     });
     html.find("[data-action='toggle-pin-skill']").on("click", (event) => {
       event.preventDefault();
@@ -4357,6 +4359,7 @@ export class QuickDeckApp extends Application {
       const skillKey = event.currentTarget.dataset.skillKey;
       this.togglePinnedAction(actorId, "skill", skillKey);
       this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
     });
     html.find("[data-action='toggle-pin-spell']").on("click", (event) => {
       event.preventDefault();
@@ -4365,6 +4368,7 @@ export class QuickDeckApp extends Application {
       const spellKey = event.currentTarget.dataset.spellKey;
       this.togglePinnedAction(actorId, "spell", spellKey);
       this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
     });
 
     html.find("[data-action='toggle-favorite-spell']").on("click", (event) => {
