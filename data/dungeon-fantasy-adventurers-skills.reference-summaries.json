@@ -582,9 +582,9 @@
     "attribute": "IQ",
     "difficulty": "Average",
     "defaults": "",
-    "summary": "DFA fallback summary for Intimidation.",
-    "description": "Bundled fallback entry for Intimidation from Dungeon Fantasy RPG: Adventurers.",
-    "notes": "Supports specialization/base-name lookup when actor skill includes parentheses.",
+    "summary": "Use threats, presence, and forceful demeanor to frighten or pressure a target into compliance.",
+    "description": "Intimidation is a social pressure skill for coercing cooperation through fear, implied violence, status, or dominance. It is strongest for short-term compliance and can worsen long-term reactions if overused.",
+    "notes": "Actor hint DFA79 should prioritize this DFA entry. Combine with visible leverage, reputation, or superior force for best results.",
     "specialtyRequired": false
   },
   {
