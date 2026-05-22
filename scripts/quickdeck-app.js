@@ -12,6 +12,7 @@ const SETTING_KEYS = {
   QUICK_SKILLS: "quickSkillSelectionsByActor",
   COMBAT_FAVORITES: "combatFavoriteAttackKeysByActor",
   SPELL_FAVORITES: "spellFavoriteKeysByActor",
+  PINNED_ACTIONS: "pinnedActionsByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
@@ -37,6 +38,7 @@ export class QuickDeckApp extends Application {
     this.quickSkillSelectionsByActor = {};
     this.combatFavoriteAttackKeysByActor = {};
     this.spellFavoriteKeysByActor = {};
+    this.pinnedActionsByActor = {};
     this._actorSelectTimeout = null;
     this.isDragOverRoster = false;
     this.pendingTokenDropActorId = null;
@@ -1004,6 +1006,40 @@ export class QuickDeckApp extends Application {
     );
   }
 
+  getPinnedActions(actorId) {
+    if (!actorId) return [];
+    const pinned = this.pinnedActionsByActor[actorId];
+    if (!Array.isArray(pinned)) {
+      this.pinnedActionsByActor[actorId] = [];
+      return this.pinnedActionsByActor[actorId];
+    }
+    return pinned;
+  }
+
+  isPinnedAction(actorId, type, key) {
+    if (!actorId || !type || !key) return false;
+    return this.getPinnedActions(actorId).some((entry) => entry?.type === type && entry?.key === key);
+  }
+
+  togglePinnedAction(actorId, type, key) {
+    if (!actorId || !type || !key) return;
+    const current = this.getPinnedActions(actorId).filter((entry) => entry?.type && entry?.key);
+    const existingIndex = current.findIndex((entry) => entry.type === type && entry.key === key);
+    if (existingIndex >= 0) current.splice(existingIndex, 1);
+    else current.unshift({ type, key });
+    this.pinnedActionsByActor[actorId] = current.slice(0, 5);
+    this.persistPinnedActionsState();
+  }
+
+  serializePinnedActionsState() {
+    return Object.fromEntries(
+      Object.entries(this.pinnedActionsByActor).map(([actorId, pinned]) => [
+        actorId,
+        Array.isArray(pinned) ? pinned.filter((entry) => entry?.type && entry?.key).slice(0, 5) : []
+      ])
+    );
+  }
+
 
   getQuickSkillKey(skill) {
     if (!skill || typeof skill !== "object") return null;
@@ -1106,6 +1142,26 @@ export class QuickDeckApp extends Application {
     } else {
       this.spellFavoriteKeysByActor = {};
     }
+    const savedPinnedActions = this.parseJsonSetting(
+      game.settings.get(MODULE_ID, SETTING_KEYS.PINNED_ACTIONS),
+      {}
+    );
+    if (savedPinnedActions && typeof savedPinnedActions === "object") {
+      this.pinnedActionsByActor = Object.fromEntries(
+        Object.entries(savedPinnedActions).map(([actorId, pinned]) => [
+          String(actorId),
+          Array.isArray(pinned)
+            ? pinned
+                .filter((entry) => entry && typeof entry === "object")
+                .map((entry) => ({ type: String(entry.type ?? ""), key: String(entry.key ?? "") }))
+                .filter((entry) => entry.type && entry.key)
+                .slice(0, 5)
+            : []
+        ])
+      );
+    } else {
+      this.pinnedActionsByActor = {};
+    }
 
     this.isMinimized = Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.MINIMIZED));
     const savedRestorePillPosition = this.parseJsonSetting(
@@ -1148,6 +1204,12 @@ export class QuickDeckApp extends Application {
     if (!game?.settings) return;
     const serialized = this.serializeFavoriteSpellsState();
     game.settings.set(MODULE_ID, SETTING_KEYS.SPELL_FAVORITES, JSON.stringify(serialized));
+  }
+
+  persistPinnedActionsState() {
+    if (!game?.settings) return;
+    const serialized = this.serializePinnedActionsState();
+    game.settings.set(MODULE_ID, SETTING_KEYS.PINNED_ACTIONS, JSON.stringify(serialized));
   }
 
   persistMinimizedState() {
@@ -3893,6 +3955,7 @@ export class QuickDeckApp extends Application {
       return {
         ...entry,
         attackKey,
+        isPinnedAction: attackKey ? this.isPinnedAction(activeActorId, "attack", attackKey) : false,
         isFavoriteAttack: isFavorite,
         favoriteToggleLabel: isFavorite ? "Unpin attack" : "Pin attack",
         showDamageFollowup: pendingActorId === activeActorId && pendingAttackIndex === entry.index
@@ -3912,6 +3975,7 @@ export class QuickDeckApp extends Application {
         ...skill,
         quickSkillKey,
         isQuickSkillSelected,
+        isPinnedAction: quickSkillKey ? this.isPinnedAction(activeActorId, "skill", quickSkillKey) : false,
         quickSkillToggleLabel: isQuickSkillSelected ? "Unpin skill" : "Pin skill",
         levelDisplay: skill.level === undefined || skill.level === null ? "—" : String(skill.level),
         relativeLevelDisplay:
@@ -3937,9 +4001,31 @@ export class QuickDeckApp extends Application {
         ...spell,
         spellKey,
         isFavoriteSpell: isFavorite,
-        favoriteToggleLabel: isFavorite ? "Unpin spell" : "Pin spell"
+        favoriteToggleLabel: isFavorite ? "Unpin spell" : "Pin spell",
+        isPinnedAction: spellKey ? this.isPinnedAction(activeActorId, "spell", spellKey) : false
       };
     });
+    const attackByKey = new Map(indexedAttacks.map((entry) => [entry.attackKey, entry]));
+    const skillByKey = new Map(indexedSkills.map((entry) => [entry.quickSkillKey, entry]));
+    const spellByKey = new Map(indexedSpells.map((entry) => [entry.spellKey, entry]));
+    const pinnedActions = this.getPinnedActions(activeActorId).map((entry) => {
+      if (entry.type === "attack") {
+        const attack = attackByKey.get(entry.key);
+        if (!attack) return null;
+        return { type: "attack", label: attack.name, action: "roll-attack", actorId: activeActorId, index: attack.index };
+      }
+      if (entry.type === "skill") {
+        const skill = skillByKey.get(entry.key);
+        if (!skill) return null;
+        return { type: "skill", label: skill.name, action: "roll-skill", actorId: activeActorId, index: skill.index };
+      }
+      if (entry.type === "spell") {
+        const spell = spellByKey.get(entry.key);
+        if (!spell) return null;
+        return { type: "spell", label: spell.name, action: "roll-spell", actorId: activeActorId, index: spell.index };
+      }
+      return null;
+    }).filter(Boolean).slice(0, 5);
     const favoriteSpells = indexedSpells.filter((spell) => spell.isFavoriteSpell);
     const centerFavoriteSections = {
       combat: this.centerFavoriteSections?.combat ?? true,
@@ -4078,6 +4164,8 @@ export class QuickDeckApp extends Application {
       indexedSkills,
       indexedQuickSkills: quickSkills,
       indexedSpells,
+      pinnedActions,
+      hasPinnedActions: pinnedActions.length > 0,
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
       pdfMapDraft: this.pdfMapDraft,
@@ -4252,6 +4340,33 @@ export class QuickDeckApp extends Application {
 
       const selection = this.getFavoriteAttackSelection(actorId);
       this.setFavoriteAttackSelected(actorId, attackKey, !selection.has(attackKey));
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
+    });
+    html.find("[data-action='toggle-pin-attack']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
+      const attackKey = event.currentTarget.dataset.attackKey;
+      this.togglePinnedAction(actorId, "attack", attackKey);
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
+    });
+    html.find("[data-action='toggle-pin-skill']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
+      const skillKey = event.currentTarget.dataset.skillKey;
+      this.togglePinnedAction(actorId, "skill", skillKey);
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
+    });
+    html.find("[data-action='toggle-pin-spell']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
+      const spellKey = event.currentTarget.dataset.spellKey;
+      this.togglePinnedAction(actorId, "spell", spellKey);
       this.render(false, { focus: false });
       this.scheduleNativeWindowFocusAfterRender();
     });
