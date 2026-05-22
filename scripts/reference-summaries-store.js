@@ -1,4 +1,5 @@
 import { buildReferenceLookupNames } from "./reference-lookup-name.js";
+import { normalizePdfBookKeyAlias, parsePageReferences } from "./pdf-page-ref-utils.js";
 
 const MODULE_ID = "gurps-quickdeck";
 const REFERENCE_SUMMARIES_PATHS = [
@@ -158,10 +159,27 @@ function buildSummaryLookup(summaries = []) {
   return { byNameType, byName };
 }
 
+function resolveBookKeyAlias(value) {
+  const raw = asString(value);
+  if (!raw) return "";
+
+  const normalizedAlias = normalizePdfBookKeyAlias(raw);
+  const normalized = asLookupText(normalizedAlias || raw);
+  if (!normalized) return "";
+
+  if (normalized === "basic set: characters" || normalized === "gurps basic set: characters") return "b";
+  if (normalized === "dungeon fantasy rpg: adventurers") return "dfa";
+  if (normalized === "dungeon fantasy rpg: spells") return "dfs";
+  if (normalized === "magic") return "m";
+  if (normalized === "martial arts" || normalized === "martial arts styles" || normalized === "martial arts combat") return "ma";
+
+  return normalized;
+}
+
 function parsePreferredBookKeys(referenceData = {}) {
   const preferred = [];
   const push = (value) => {
-    const normalized = asLookupText(value);
+    const normalized = resolveBookKeyAlias(value);
     if (!normalized) return;
     if (!preferred.includes(normalized)) preferred.push(normalized);
   };
@@ -169,13 +187,20 @@ function parsePreferredBookKeys(referenceData = {}) {
   const source = asString(referenceData?.source);
   const pageHint = asString(referenceData?.pageHint);
 
-  if (/^b\b/i.test(source) || /basic\s*set/i.test(source)) push('b');
-  if (/^dfa?\b/i.test(source) || /dungeon\s*fantasy/i.test(source)) push('dfa');
-  if (/^m\b/i.test(source) || /^magic\b/i.test(source)) push('m');
+  push(source);
 
-  if (/\bB\s*\d+/i.test(pageHint) || /^B\b/i.test(pageHint)) push('b');
-  if (/\bDFA\s*\d+/i.test(pageHint) || /^DFA\b/i.test(pageHint)) push('dfa');
-  if (/\bM\s*\d+/i.test(pageHint) || /^M\b/i.test(pageHint)) push('m');
+  const parsedRefs = parsePageReferences(pageHint);
+  for (const ref of parsedRefs) {
+    if (ref?.key) push(ref.key);
+  }
+
+  if (!parsedRefs.length) {
+    if (/^b|basic\s*set/i.test(pageHint)) push("b");
+    if (/^dfa|dungeon\s*fantasy\s*rpg\s*:\s*adventurers/i.test(pageHint)) push("dfa");
+    if (/^dfs|dungeon\s*fantasy\s*rpg\s*:\s*spells/i.test(pageHint)) push("dfs");
+    if (/^ma|martial\s*arts/i.test(pageHint)) push("ma");
+    if (/^m|^magic/i.test(pageHint)) push("m");
+  }
 
   return preferred;
 }
@@ -191,14 +216,17 @@ function pickBestEntry(candidates = [], referenceData = {}) {
 
   for (const entry of candidates) {
     let score = 0;
-    const entryBookKey = asLookupText(entry?.bookKey);
+    const entryBookKey = resolveBookKeyAlias(entry?.bookKey || entry?.sourceName || "");
 
     if (preferredSet.size && preferredSet.has(entryBookKey)) {
       score += 100;
       score += Math.max(0, 10 - preferredBookKeys.indexOf(entryBookKey));
     }
 
-    if (entryBookKey === 'b') score += 2;
+    if (entryBookKey === "b") score += 2;
+    if (entryBookKey === "dfs") score += 2;
+    if (entryBookKey === "ma") score += 2;
+    if (entryBookKey === "dfa") score += 1;
 
     if (!best || score > bestScore) {
       best = entry;
