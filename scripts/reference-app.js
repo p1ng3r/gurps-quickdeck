@@ -5,6 +5,7 @@ import { buildReferenceLookupNames } from "./reference-lookup-name.js";
 import { buildPageReference, buildPdfPageUrl, getMappedPdfFinalPage, normalizePdfBookKeyAlias } from "./pdf-page-ref-utils.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/reference.hbs";
+const DEBUG = false;
 
 function normalizeText(value) {
   if (value === null || value === undefined) return "";
@@ -123,7 +124,7 @@ export class QuickDeckReferenceApp extends Application {
     const pdfMapping = pageReference?.key ? mappings?.[pageReference.key] ?? null : null;
     const hasMappedPdf = Boolean(pdfMapping?.path);
 
-    console.debug("QuickDeck Reference Match:", {
+    if (DEBUG) console.debug("QuickDeck Reference Match:", {
       clickedName: this.referenceData.name,
       clickedType: this.referenceData.type,
       clickedPageHint: this.referenceData.pageHint || null,

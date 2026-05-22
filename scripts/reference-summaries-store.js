@@ -12,6 +12,7 @@ const REFERENCE_SUMMARIES_PATHS = [
   `modules/${MODULE_ID}/data/magic.reference-summaries.json`
 ];
 const ALLOWED_TYPES = new Set(["skill", "spell", "rule", "technique"]);
+const DEBUG = false;
 
 let cachedSummaries = null;
 let loadAttempted = false;
@@ -118,6 +119,31 @@ async function loadSummaryFile(path) {
   } catch (error) {
     warnLoadIssue(`Failed to load bundled reference summaries from ${path}; continuing.`, error);
     return [];
+  }
+}
+
+
+function validateSummaryEntries(entries = []) {
+  for (const entry of entries) {
+    const name = asString(entry?.name);
+    const type = asString(entry?.type);
+    const bookKey = asString(entry?.bookKey);
+    const displayedPage = asString(entry?.displayedPage);
+
+    if (!name || !type || !bookKey) {
+      console.warn(`${MODULE_ID} | Bundled reference entry is missing required fields (name/type/bookKey); continuing.`, {
+        name: name || null,
+        type: type || null,
+        bookKey: bookKey || null
+      });
+    }
+
+    if (displayedPage && !/^\d+$/.test(displayedPage)) {
+      console.warn(`${MODULE_ID} | Bundled reference entry has invalid displayedPage; continuing.`, {
+        name: name || null,
+        displayedPage
+      });
+    }
   }
 }
 
@@ -274,10 +300,11 @@ export async function loadBundledReferenceSummaries() {
       }));
 
       cachedSummaries = dedupeSummaries(loadedArrays.flat());
+      validateSummaryEntries(cachedSummaries);
       cachedSummaryLookup = buildSummaryLookup(cachedSummaries);
 
       const diagnostics = collectDiagnostics(cachedSummaries);
-      console.debug("QuickDeck bundled references loaded", {
+      if (DEBUG) console.debug("QuickDeck bundled references loaded", {
         total: cachedSummaries.length,
         byType: diagnostics.byType,
         byBookKey: diagnostics.byBookKey,
