@@ -93,15 +93,28 @@ export class QuickDeckReferenceApp extends Application {
     const sourceName =
       manualEntry?.bookKey || this.referenceData.source || bundledSummaryEntry?.sourceName || bundledSummaryEntry?.bookKey || null;
     const displayedPage =
-      manualEntry?.displayedPage || this.referenceData.pageHint || bundledSummaryEntry?.displayedPage || null;
-    const bookKey = normalizePdfBookKeyAlias(
-      manualEntry?.bookKey || this.referenceData.source || bundledSummaryEntry?.bookKey || bundledSummaryEntry?.sourceName || ""
-    );
-    const pageReference = buildPageReference({
-      pageHint: this.referenceData.pageHint,
-      bookKey,
-      displayedPage
-    });
+      manualEntry?.displayedPage || bundledSummaryEntry?.displayedPage || this.referenceData.pageHint || null;
+    const referenceCandidates = [
+      {
+        bookKey: normalizePdfBookKeyAlias(manualEntry?.bookKey || ""),
+        displayedPage: manualEntry?.displayedPage || ""
+      },
+      {
+        bookKey: normalizePdfBookKeyAlias(bundledSummaryEntry?.bookKey || ""),
+        displayedPage: bundledSummaryEntry?.displayedPage || ""
+      },
+      {
+        bookKey: normalizePdfBookKeyAlias(this.referenceData.source || bundledSummaryEntry?.sourceName || ""),
+        displayedPage: this.referenceData.pageHint || displayedPage || ""
+      },
+      {
+        pageHint: this.referenceData.pageHint
+      }
+    ];
+    const pageReference =
+      referenceCandidates
+        .map((candidate) => buildPageReference(candidate))
+        .find((candidate) => Boolean(candidate?.key && Number.isFinite(candidate?.page))) || null;
     const mappings = game?.settings?.get?.("gurps-quickdeck", "pdfPageRefMappings");
     const pdfMapping = pageReference?.key ? mappings?.[pageReference.key] ?? null : null;
     const hasMappedPdf = Boolean(pdfMapping?.path);

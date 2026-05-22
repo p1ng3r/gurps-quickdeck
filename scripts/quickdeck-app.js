@@ -4435,13 +4435,6 @@ export class QuickDeckApp extends Application {
       const name = String(element.dataset.refName ?? "Reference");
       const pageHint = element.dataset.refPage ?? "";
       const source = element.dataset.refSource ?? "";
-      const pdfResult = this.tryOpenMappedPdfReference(pageHint);
-      if (pdfResult.opened) return;
-      if (pdfResult.hadParseableRefs && pdfResult.missingKey) {
-        const friendlyName = this.getPageRefKeyName(pdfResult.missingKey);
-        const friendlySuffix = friendlyName ? ` — ${friendlyName}` : "";
-        ui.notifications?.info(`QuickDeck: No PDF mapped for ${pdfResult.missingKey}${friendlySuffix}. Using built-in reference fallback.`);
-      }
       this.openReferenceEntry({ type, name, pageHint, source });
     });
 
