@@ -1,1 +1,44 @@
-[]
+[
+  {
+    "name": "Accounting",
+    "type": "skill",
+    "bookKey": "B",
+    "sourceName": "Basic Set: Characters",
+    "displayedPage": "174",
+    "attribute": "IQ",
+    "difficulty": "Hard",
+    "defaults": "Mathematics (Applied)-6; Finance-4",
+    "summary": "Knowledge of ledgers, balance sheets, cost controls, and business records.",
+    "description": "Use this skill to examine books, detect fraud, analyze financial records, and keep accurate accounts for merchants, guilds, or organizations.",
+    "notes": "May complement Merchant, Finance, or Administration for trade and business tasks.",
+    "specialtyRequired": false
+  },
+  {
+    "name": "Acrobatics",
+    "type": "skill",
+    "bookKey": "B",
+    "sourceName": "Basic Set: Characters",
+    "displayedPage": "174",
+    "attribute": "DX",
+    "difficulty": "Hard",
+    "defaults": "DX-6; Jumping-6",
+    "summary": "Balance, tumbling, and body control for falls, narrow footing, and agile movement.",
+    "description": "Roll for feats such as keeping your feet on unstable surfaces, reducing falling effects, or performing flips and rolls under pressure.",
+    "notes": "Useful with movement stunts, evasive maneuvers, and cinematic actions at GM discretion.",
+    "specialtyRequired": false
+  },
+  {
+    "name": "Acting",
+    "type": "skill",
+    "bookKey": "B",
+    "sourceName": "Basic Set: Characters",
+    "displayedPage": "174",
+    "attribute": "IQ",
+    "difficulty": "Average",
+    "defaults": "IQ-5; Performance-2; Public Speaking-5",
+    "summary": "Pretend convincingly, imitate behavior, and pass yourself off as someone else.",
+    "description": "Use Acting to lie with your mannerisms, maintain disguises, and sell a role in social scenes or covert operations.",
+    "notes": "Often opposed by Detect Lies, Body Language, or Observation.",
+    "specialtyRequired": false
+  }
+]

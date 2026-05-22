@@ -4,6 +4,7 @@ const MODULE_ID = "gurps-quickdeck";
 const REFERENCE_SUMMARIES_PATHS = [
   `modules/${MODULE_ID}/data/reference-summaries.json`,
   `modules/${MODULE_ID}/data/basic-set-skills.reference-summaries.json`,
+  `modules/${MODULE_ID}/data/dungeon-fantasy-adventurers-skills.reference-summaries.json`,
   `modules/${MODULE_ID}/data/martial-arts-techniques.reference-summaries.json`,
   `modules/${MODULE_ID}/data/martial-arts-combat.reference-summaries.json`,
   `modules/${MODULE_ID}/data/magic.reference-summaries.json`
@@ -151,6 +152,21 @@ function buildSummaryLookup(summaries = []) {
   return { byNameType, byName };
 }
 
+
+function collectDiagnostics(entries = []) {
+  const byType = {};
+  const byBookKey = {};
+
+  for (const entry of entries) {
+    const typeKey = asType(entry?.type);
+    const bookKey = asString(entry?.bookKey) || "unknown";
+    byType[typeKey] = (byType[typeKey] ?? 0) + 1;
+    byBookKey[bookKey] = (byBookKey[bookKey] ?? 0) + 1;
+  }
+
+  return { byType, byBookKey };
+}
+
 export async function loadBundledReferenceSummaries() {
   if (loadAttempted) return cachedSummaries ?? [];
   if (loadingPromise) return loadingPromise;
@@ -158,8 +174,22 @@ export async function loadBundledReferenceSummaries() {
 
   loadingPromise = Promise.all(REFERENCE_SUMMARIES_PATHS.map((path) => loadSummaryFile(path)))
     .then((loadedArrays) => {
+      const files = REFERENCE_SUMMARIES_PATHS.map((path, index) => ({
+        path,
+        count: loadedArrays[index]?.length ?? 0
+      }));
+
       cachedSummaries = dedupeSummaries(loadedArrays.flat());
       cachedSummaryLookup = buildSummaryLookup(cachedSummaries);
+
+      const diagnostics = collectDiagnostics(cachedSummaries);
+      console.debug("QuickDeck bundled references loaded", {
+        total: cachedSummaries.length,
+        byType: diagnostics.byType,
+        byBookKey: diagnostics.byBookKey,
+        files
+      });
+
       return cachedSummaries;
     })
     .catch((error) => {
