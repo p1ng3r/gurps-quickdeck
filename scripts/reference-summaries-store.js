@@ -144,12 +144,68 @@ function buildSummaryLookup(summaries = []) {
 
     for (const nameAlias of lookupNames.aliases) {
       const nameTypeKey = `${nameAlias}|${type}`;
-      if (!byNameType.has(nameTypeKey)) byNameType.set(nameTypeKey, entry);
-      if (!byName.has(nameAlias)) byName.set(nameAlias, entry);
+      const nameTypeEntries = byNameType.get(nameTypeKey) ?? [];
+      nameTypeEntries.push(entry);
+      byNameType.set(nameTypeKey, nameTypeEntries);
+
+      const nameEntries = byName.get(nameAlias) ?? [];
+      nameEntries.push(entry);
+      byName.set(nameAlias, nameEntries);
     }
   }
 
   return { byNameType, byName };
+}
+
+function parsePreferredBookKeys(referenceData = {}) {
+  const preferred = [];
+  const push = (value) => {
+    const normalized = asLookupText(value);
+    if (!normalized) return;
+    if (!preferred.includes(normalized)) preferred.push(normalized);
+  };
+
+  const source = asString(referenceData?.source);
+  const pageHint = asString(referenceData?.pageHint);
+
+  if (/^b\b/i.test(source) || /basic\s*set/i.test(source)) push('b');
+  if (/^dfa?\b/i.test(source) || /dungeon\s*fantasy/i.test(source)) push('dfa');
+  if (/^m\b/i.test(source) || /^magic\b/i.test(source)) push('m');
+
+  if (/\bB\s*\d+/i.test(pageHint) || /^B\b/i.test(pageHint)) push('b');
+  if (/\bDFA\s*\d+/i.test(pageHint) || /^DFA\b/i.test(pageHint)) push('dfa');
+  if (/\bM\s*\d+/i.test(pageHint) || /^M\b/i.test(pageHint)) push('m');
+
+  return preferred;
+}
+
+function pickBestEntry(candidates = [], referenceData = {}) {
+  if (!Array.isArray(candidates) || !candidates.length) return null;
+
+  const preferredBookKeys = parsePreferredBookKeys(referenceData);
+  const preferredSet = new Set(preferredBookKeys);
+
+  let best = null;
+  let bestScore = -Infinity;
+
+  for (const entry of candidates) {
+    let score = 0;
+    const entryBookKey = asLookupText(entry?.bookKey);
+
+    if (preferredSet.size && preferredSet.has(entryBookKey)) {
+      score += 100;
+      score += Math.max(0, 10 - preferredBookKeys.indexOf(entryBookKey));
+    }
+
+    if (entryBookKey === 'b') score += 2;
+
+    if (!best || score > bestScore) {
+      best = entry;
+      bestScore = score;
+    }
+  }
+
+  return best;
 }
 
 
@@ -218,16 +274,16 @@ export function findBundledReferenceSummary(referenceData = {}, summaries = []) 
       ? cachedSummaryLookup
       : buildSummaryLookup(normalizedSummaries);
 
-  const exactNameType = lookup.byNameType.get(`${normalizedName}|${normalizedType}`) ?? null;
+  const exactNameType = pickBestEntry(lookup.byNameType.get(`${normalizedName}|${normalizedType}`) ?? [], referenceData);
   if (exactNameType) return { entry: exactNameType, mode: "exact-name-type" };
 
-  const exactNameOnly = lookup.byName.get(normalizedName) ?? null;
+  const exactNameOnly = pickBestEntry(lookup.byName.get(normalizedName) ?? [], referenceData);
   if (exactNameOnly) return { entry: exactNameOnly, mode: "exact-name" };
 
-  const baseNameType = lookup.byNameType.get(`${normalizedBaseName}|${normalizedType}`) ?? null;
+  const baseNameType = pickBestEntry(lookup.byNameType.get(`${normalizedBaseName}|${normalizedType}`) ?? [], referenceData);
   if (baseNameType) return { entry: baseNameType, mode: "base-name-type", matchedBaseName: baseNameType.name };
 
-  const baseNameOnly = lookup.byName.get(normalizedBaseName) ?? null;
+  const baseNameOnly = pickBestEntry(lookup.byName.get(normalizedBaseName) ?? [], referenceData);
   if (baseNameOnly) return { entry: baseNameOnly, mode: "base-name", matchedBaseName: baseNameOnly.name };
 
   return null;
