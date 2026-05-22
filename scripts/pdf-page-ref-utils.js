@@ -2,6 +2,29 @@ export function normalizePdfMapKey(key) {
   return String(key ?? "").trim().toUpperCase();
 }
 
+export function normalizePdfBookKeyAlias(keyOrSlug) {
+  const trimmed = String(keyOrSlug ?? "").trim();
+  if (!trimmed) return "";
+  const normalizedSlug = trimmed.toLowerCase();
+  const aliases = {
+    "dungeon-fantasy-adventurers": "DFA",
+    "dungeon-fantasy-rpg-adventurers": "DFA",
+    "dungeon-fantasy-exploits": "DFX",
+    "dungeon-fantasy-rpg-exploits": "DFX",
+    "dungeon-fantasy-spells": "DFS",
+    "dungeon-fantasy-rpg-spells": "DFS",
+    magic: "M",
+    "gurps-magic": "M",
+    "martial-arts": "MA",
+    "gurps-martial-arts": "MA",
+    "basic-set-characters": "B",
+    "gurps-basic-set-characters": "B",
+    "basic-set-campaigns": "BX",
+    "gurps-basic-set-campaigns": "BX"
+  };
+  return aliases[normalizedSlug] ?? normalizePdfMapKey(trimmed);
+}
+
 export function parsePageReferences(refText) {
   return String(refText ?? "")
     .split(/[;,]/)
@@ -19,7 +42,7 @@ export function buildPageReference({ pageHint = "", bookKey = "", displayedPage 
   const parsedHint = parsePageReferences(pageHint)[0];
   if (parsedHint) return parsedHint;
 
-  const normalizedKey = normalizePdfMapKey(bookKey);
+  const normalizedKey = normalizePdfBookKeyAlias(bookKey);
   const page = Number.parseInt(String(displayedPage ?? "").trim(), 10);
   if (!normalizedKey || !Number.isFinite(page)) return null;
   return { raw: `${normalizedKey}${page}`, key: normalizedKey, page };

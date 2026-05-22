@@ -2,7 +2,7 @@ import { getReferenceIndex } from "./reference-index-store.js";
 import { loadBundledReferenceSummaries, findBundledReferenceSummary } from "./reference-summaries-store.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { buildReferenceLookupNames } from "./reference-lookup-name.js";
-import { buildPageReference, buildPdfPageUrl, getMappedPdfFinalPage } from "./pdf-page-ref-utils.js";
+import { buildPageReference, buildPdfPageUrl, getMappedPdfFinalPage, normalizePdfBookKeyAlias } from "./pdf-page-ref-utils.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/reference.hbs";
 
@@ -94,7 +94,9 @@ export class QuickDeckReferenceApp extends Application {
       manualEntry?.bookKey || this.referenceData.source || bundledSummaryEntry?.sourceName || bundledSummaryEntry?.bookKey || null;
     const displayedPage =
       manualEntry?.displayedPage || this.referenceData.pageHint || bundledSummaryEntry?.displayedPage || null;
-    const bookKey = manualEntry?.bookKey || this.referenceData.source || bundledSummaryEntry?.bookKey || "";
+    const bookKey = normalizePdfBookKeyAlias(
+      manualEntry?.bookKey || this.referenceData.source || bundledSummaryEntry?.bookKey || bundledSummaryEntry?.sourceName || ""
+    );
     const pageReference = buildPageReference({
       pageHint: this.referenceData.pageHint,
       bookKey,
