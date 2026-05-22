@@ -1,5 +1,6 @@
 import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
+import { PAGE_REF_KEY_NAMES, getPageRefKeyNameFromMap } from "./page-ref-key-names.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
@@ -1184,8 +1185,18 @@ export class QuickDeckApp extends Application {
     return String(key ?? "").trim().toUpperCase();
   }
 
-  getDefaultPdfMapName(key) {
-    const defaults = {
+  getPageRefKeyNameMap() {
+    return PAGE_REF_KEY_NAMES && typeof PAGE_REF_KEY_NAMES === "object" ? PAGE_REF_KEY_NAMES : {};
+  }
+
+  getPageRefKeyName(key) {
+    const normalizedKey = this.normalizePdfMapKey(key);
+    if (!normalizedKey) return "";
+
+    const mappedName = getPageRefKeyNameFromMap(normalizedKey, this.getPageRefKeyNameMap());
+    if (mappedName) return mappedName;
+
+    const fallbackDefaults = {
       B: "Basic Set: Characters / Combined Basic Set",
       BX: "Basic Set: Campaigns",
       M: "Magic",
@@ -1198,7 +1209,17 @@ export class QuickDeckApp extends Application {
       "DF2:": "Dungeon Fantasy 2: Dungeons",
       DFS: "Dungeon Fantasy RPG: Spells"
     };
-    return defaults[this.normalizePdfMapKey(key)] ?? "";
+
+    const pyramidIssue3 = normalizedKey.match(/^PY(\d+):$/);
+    if (pyramidIssue3) return `Pyramid Magazine, Issue 3-${pyramidIssue3[1]}`;
+    const pyramidIssue4 = normalizedKey.match(/^PY4-(\d+):$/);
+    if (pyramidIssue4) return `Pyramid Magazine, Issue 4-${pyramidIssue4[1]}`;
+
+    return fallbackDefaults[normalizedKey] ?? "";
+  }
+
+  getDefaultPdfMapName(key) {
+    return this.getPageRefKeyName(key);
   }
 
   parsePageReferences(refText) {
@@ -4438,19 +4459,29 @@ export class QuickDeckApp extends Application {
       const pdfResult = this.tryOpenMappedPdfReference(pageHint);
       if (pdfResult.opened) return;
       if (pdfResult.hadParseableRefs && pdfResult.missingKey) {
-        ui.notifications?.info(`QuickDeck: No PDF mapped for ${pdfResult.missingKey}. Using built-in reference fallback.`);
+        const friendlyName = this.getPageRefKeyName(pdfResult.missingKey);
+        const friendlySuffix = friendlyName ? ` — ${friendlyName}` : "";
+        ui.notifications?.info(`QuickDeck: No PDF mapped for ${pdfResult.missingKey}${friendlySuffix}. Using built-in reference fallback.`);
       }
       this.openReferenceEntry({ type, name, pageHint, source });
     });
 
     html.find("[data-action='pdf-map-key']").on("input", (event) => {
-      const nextKey = this.normalizePdfMapKey(event.currentTarget.value);
+      const input = event.currentTarget;
+      const raw = String(input.value ?? "");
+      const nextKey = this.normalizePdfMapKey(raw);
       this.pdfMapDraft.key = nextKey;
-      if (!String(this.pdfMapDraft.name || "").trim()) {
+
+      if (input.value !== nextKey) input.value = nextKey;
+
+      const nameInput = html.find("[data-action='pdf-map-name']")[0];
+      if (nameInput && !String(nameInput.value || "").trim()) {
         const defaultName = this.getDefaultPdfMapName(nextKey);
-        if (defaultName) this.pdfMapDraft.name = defaultName;
+        if (defaultName) {
+          this.pdfMapDraft.name = defaultName;
+          nameInput.value = defaultName;
+        }
       }
-      this.render(false);
     });
     html.find("[data-action='pdf-map-name']").on("input", (event) => {
       this.pdfMapDraft.name = String(event.currentTarget.value ?? "");
