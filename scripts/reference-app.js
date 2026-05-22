@@ -2,6 +2,7 @@ import { getReferenceIndex } from "./reference-index-store.js";
 import { loadBundledReferenceSummaries, findBundledReferenceSummary } from "./reference-summaries-store.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { buildReferenceLookupNames } from "./reference-lookup-name.js";
+import { buildPageReference, buildPdfPageUrl, getMappedPdfFinalPage } from "./pdf-page-ref-utils.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/reference.hbs";
 
@@ -93,6 +94,15 @@ export class QuickDeckReferenceApp extends Application {
       manualEntry?.bookKey || this.referenceData.source || bundledSummaryEntry?.sourceName || bundledSummaryEntry?.bookKey || null;
     const displayedPage =
       manualEntry?.displayedPage || this.referenceData.pageHint || bundledSummaryEntry?.displayedPage || null;
+    const bookKey = manualEntry?.bookKey || this.referenceData.source || bundledSummaryEntry?.bookKey || "";
+    const pageReference = buildPageReference({
+      pageHint: this.referenceData.pageHint,
+      bookKey,
+      displayedPage
+    });
+    const mappings = game?.settings?.get?.("gurps-quickdeck", "pdfPageRefMappings");
+    const pdfMapping = pageReference?.key ? mappings?.[pageReference.key] ?? null : null;
+    const hasMappedPdf = Boolean(pdfMapping?.path);
 
     const manualEntryPrefill = {
       name: this.referenceData.name,
@@ -173,7 +183,12 @@ export class QuickDeckReferenceApp extends Application {
       hasBundledBaseMatch: bundledBaseMatched,
       bundledMatchedBaseName: bundledSummaryMatch?.matchedBaseName || null,
       hasSummaryData: Boolean(bundledSummaryEntry?.summary || bundledSummaryEntry?.description || bundledSummaryEntry?.notes),
-      emptyStateText: "No bundled summary matched this entry yet."
+      emptyStateText: "No bundled summary matched this entry yet.",
+      hasMappedPdf,
+      pdfMissingKeyMessage: pageReference?.key ? `No PDF mapped for ${pageReference.key}.` : null,
+      pdfOpenLabel: pageReference?.raw || null,
+      pdfOpenKey: pageReference?.key || null,
+      pdfOpenPage: Number.isFinite(pageReference?.page) ? pageReference.page : null
     };
   }
 
@@ -198,6 +213,26 @@ export class QuickDeckReferenceApp extends Application {
           ? "QuickDeck: Opened existing Local Override entry."
           : "QuickDeck: Added a prefilled Local Override row.";
       ui.notifications?.info(notificationText);
+    });
+
+    html.find("[data-action='open-mapped-pdf-page']").on("click", (event) => {
+      event.preventDefault();
+      const key = String(event.currentTarget?.dataset?.pdfKey ?? "").trim().toUpperCase();
+      const page = Number.parseInt(String(event.currentTarget?.dataset?.pdfPage ?? ""), 10);
+      if (!key || !Number.isFinite(page)) return;
+      const mappings = game?.settings?.get?.("gurps-quickdeck", "pdfPageRefMappings");
+      const mapping = mappings?.[key];
+      if (!mapping?.path) {
+        ui.notifications?.info(`QuickDeck: No PDF mapped for ${key}.`);
+        return;
+      }
+      const finalPage = getMappedPdfFinalPage(mapping, page);
+      const url = buildPdfPageUrl(mapping.path, finalPage);
+      if (!url) {
+        ui.notifications?.warn(`QuickDeck: Invalid PDF path for key "${key}".`);
+        return;
+      }
+      window.open(url, "_blank");
     });
   }
 }

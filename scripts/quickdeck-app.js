@@ -1,6 +1,7 @@
 import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { PAGE_REF_KEY_NAMES, getPageRefKeyNameFromMap } from "./page-ref-key-names.js";
+import { normalizePdfMapKey, parsePageReferences, getMappedPdfFinalPage, buildPdfPageUrl } from "./pdf-page-ref-utils.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
@@ -1182,7 +1183,7 @@ export class QuickDeckApp extends Application {
   }
 
   normalizePdfMapKey(key) {
-    return String(key ?? "").trim().toUpperCase();
+    return normalizePdfMapKey(key);
   }
 
   getPageRefKeyNameMap() {
@@ -1223,16 +1224,7 @@ export class QuickDeckApp extends Application {
   }
 
   parsePageReferences(refText) {
-    return String(refText ?? "")
-      .split(/[;,]/)
-      .map((entry) => entry.trim())
-      .filter(Boolean)
-      .map((raw) => {
-        const match = raw.match(/^(.*?)(\d+)$/);
-        if (!match) return null;
-        return { raw, key: this.normalizePdfMapKey(match[1]), page: Number(match[2]) };
-      })
-      .filter((entry) => entry && entry.key && Number.isFinite(entry.page));
+    return parsePageReferences(refText);
   }
 
   resolvePageRef(rawRef) {
@@ -1245,24 +1237,11 @@ export class QuickDeckApp extends Application {
   }
 
   getMappedPdfFinalPage(mapping, page = 1) {
-    const basePage = Number(page);
-    const offset = Number(mapping?.offset ?? 0);
-    return Math.max(1, (Number.isFinite(basePage) ? basePage : 1) + (Number.isFinite(offset) ? offset : 0));
+    return getMappedPdfFinalPage(mapping, page);
   }
 
   buildPdfPageUrl(path, finalPage) {
-    const cleanPath = String(path || "").trim();
-    if (!cleanPath) return null;
-    const basePath = cleanPath.split("#")[0];
-    const route = basePath.startsWith("http://")
-      || basePath.startsWith("https://")
-      || basePath.startsWith("/")
-      || basePath.startsWith("data:")
-      ? basePath
-      : foundry?.utils?.getRoute
-        ? foundry.utils.getRoute(basePath)
-        : basePath;
-    return `${route}#page=${finalPage}`;
+    return buildPdfPageUrl(path, finalPage);
   }
 
   openMappedPdfReference(key, page = 1, { notify = false, refLabel = null } = {}) {
