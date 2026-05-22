@@ -2697,10 +2697,10 @@ export class QuickDeckApp extends Application {
       const baseTop = Number(this.position?.top ?? this._position?.top ?? 0);
       const width = 460;
       const height = 520;
-      const left = Math.max(0, Math.min(window.innerWidth - width, baseLeft + 40));
-      const top = Math.max(0, Math.min(window.innerHeight - height, baseTop + 40));
+      const left = Math.max(20, Math.min(window.innerWidth - width, baseLeft + 40));
+      const top = Math.max(20, Math.min(window.innerHeight - height, baseTop + 40));
 
-      app.render(true, { focus: true });
+      app.render(true, { focus: true, left, top });
       app.setPosition?.({ left, top, width, height });
 
       setTimeout(() => {
