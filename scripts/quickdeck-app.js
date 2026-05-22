@@ -2700,8 +2700,7 @@ export class QuickDeckApp extends Application {
       const left = Math.max(20, Math.min(window.innerWidth - width, baseLeft + 40));
       const top = Math.max(20, Math.min(window.innerHeight - height, baseTop + 40));
 
-      app.render(true, { focus: true, left, top });
-      app.setPosition?.({ left, top, width, height });
+      app.render(true, { focus: true, left, top, width, height });
 
       setTimeout(() => {
         app.bringToTop?.();

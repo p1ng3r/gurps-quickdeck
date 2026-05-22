@@ -231,6 +231,16 @@ export class QuickDeckReferenceApp extends Application {
     };
   }
 
+  bringReferenceToFront() {
+    this.bringToTop?.();
+    this.bringToFront?.();
+
+    const element = this.element?.[0];
+    if (element && typeof element.focus === "function") {
+      element.focus();
+    }
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
 
@@ -273,5 +283,15 @@ export class QuickDeckReferenceApp extends Application {
       }
       window.open(url, "_blank");
     });
+
+    this.bringReferenceToFront();
+
+    requestAnimationFrame(() => {
+      this.bringReferenceToFront();
+    });
+
+    setTimeout(() => {
+      this.bringReferenceToFront();
+    }, 75);
   }
 }
