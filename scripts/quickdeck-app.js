@@ -1,5 +1,6 @@
 import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
+import { PAGE_REF_KEY_NAMES, getPageRefKeyNameFromMap } from "./page-ref-key-names.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
@@ -12,7 +13,8 @@ const SETTING_KEYS = {
   SPELL_FAVORITES: "spellFavoriteKeysByActor",
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
-  RESTORE_PILL_POSITION: "restorePillPosition"
+  RESTORE_PILL_POSITION: "restorePillPosition",
+  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
@@ -70,6 +72,12 @@ export class QuickDeckApp extends Application {
       combat: true,
       skills: true,
       spells: true
+    };
+    this.pdfMapDraft = {
+      key: "",
+      name: "",
+      path: "",
+      offset: 0
     };
     this.loadPersistedState();
   }
@@ -1138,6 +1146,175 @@ export class QuickDeckApp extends Application {
     this.restorePillPosition = normalized;
     if (!game?.settings) return;
     game.settings.set(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, JSON.stringify(normalized));
+  }
+
+  loadPdfPageRefMappings() {
+    if (!game?.settings) return {};
+    const mappings = game.settings.get(MODULE_ID, SETTING_KEYS.PDF_PAGE_REF_MAPPINGS);
+    return mappings && typeof mappings === "object" ? mappings : {};
+  }
+
+  async savePdfPageRefMappings(mappings) {
+    if (!game?.settings) return;
+    const normalized = mappings && typeof mappings === "object" ? mappings : {};
+    await game.settings.set(MODULE_ID, SETTING_KEYS.PDF_PAGE_REF_MAPPINGS, normalized);
+  }
+
+  getPdfPageRefMappings() {
+    return this.loadPdfPageRefMappings();
+  }
+
+  getPdfPageRefMappingRows() {
+    const mappings = this.getPdfPageRefMappings();
+    return Object.entries(mappings)
+      .map(([key, mapping]) => ({
+        key,
+        name: String(mapping?.name ?? this.getDefaultPdfMapName(key) ?? key),
+        path: String(mapping?.path ?? ""),
+        offset: Number(mapping?.offset) || 0,
+        testPage: this.getMappedPdfFinalPage(mapping, 1)
+      }))
+      .sort((a, b) => a.key.localeCompare(b.key));
+  }
+
+  clearPdfMapDraft() {
+    this.pdfMapDraft = { key: "", name: "", path: "", offset: 0 };
+  }
+
+  normalizePdfMapKey(key) {
+    return String(key ?? "").trim().toUpperCase();
+  }
+
+  getPageRefKeyNameMap() {
+    return PAGE_REF_KEY_NAMES && typeof PAGE_REF_KEY_NAMES === "object" ? PAGE_REF_KEY_NAMES : {};
+  }
+
+  getPageRefKeyName(key) {
+    const normalizedKey = this.normalizePdfMapKey(key);
+    if (!normalizedKey) return "";
+
+    const mappedName = getPageRefKeyNameFromMap(normalizedKey, this.getPageRefKeyNameMap());
+    if (mappedName) return mappedName;
+
+    const fallbackDefaults = {
+      B: "Basic Set: Characters / Combined Basic Set",
+      BX: "Basic Set: Campaigns",
+      M: "Magic",
+      MA: "Martial Arts",
+      P: "Powers",
+      HT: "High-Tech",
+      LT: "Low-Tech",
+      UT: "Ultra-Tech",
+      "DF1:": "Dungeon Fantasy 1: Adventurers",
+      "DF2:": "Dungeon Fantasy 2: Dungeons",
+      DFS: "Dungeon Fantasy RPG: Spells"
+    };
+
+    const pyramidIssue3 = normalizedKey.match(/^PY(\d+):$/);
+    if (pyramidIssue3) return `Pyramid Magazine, Issue 3-${pyramidIssue3[1]}`;
+    const pyramidIssue4 = normalizedKey.match(/^PY4-(\d+):$/);
+    if (pyramidIssue4) return `Pyramid Magazine, Issue 4-${pyramidIssue4[1]}`;
+
+    return fallbackDefaults[normalizedKey] ?? "";
+  }
+
+  getDefaultPdfMapName(key) {
+    return this.getPageRefKeyName(key);
+  }
+
+  parsePageReferences(refText) {
+    return String(refText ?? "")
+      .split(/[;,]/)
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .map((raw) => {
+        const match = raw.match(/^(.*?)(\d+)$/);
+        if (!match) return null;
+        return { raw, key: this.normalizePdfMapKey(match[1]), page: Number(match[2]) };
+      })
+      .filter((entry) => entry && entry.key && Number.isFinite(entry.page));
+  }
+
+  resolvePageRef(rawRef) {
+    const first = this.parsePageReferences(rawRef)[0];
+    if (!first) return null;
+    const mapping = this.getPdfPageRefMappings()[first.key];
+    if (!mapping) return null;
+    const finalPage = this.getMappedPdfFinalPage(mapping, first.page);
+    return { raw: first.raw, key: first.key, page: first.page, finalPage, mapping };
+  }
+
+  getMappedPdfFinalPage(mapping, page = 1) {
+    const basePage = Number(page);
+    const offset = Number(mapping?.offset ?? 0);
+    return Math.max(1, (Number.isFinite(basePage) ? basePage : 1) + (Number.isFinite(offset) ? offset : 0));
+  }
+
+  buildPdfPageUrl(path, finalPage) {
+    const cleanPath = String(path || "").trim();
+    if (!cleanPath) return null;
+    const basePath = cleanPath.split("#")[0];
+    const route = basePath.startsWith("http://")
+      || basePath.startsWith("https://")
+      || basePath.startsWith("/")
+      || basePath.startsWith("data:")
+      ? basePath
+      : foundry?.utils?.getRoute
+        ? foundry.utils.getRoute(basePath)
+        : basePath;
+    return `${route}#page=${finalPage}`;
+  }
+
+  openMappedPdfReference(key, page = 1, { notify = false, refLabel = null } = {}) {
+    const normalizedKey = this.normalizePdfMapKey(key);
+    const mapping = this.getPdfPageRefMappings()[normalizedKey];
+    if (!mapping) {
+      ui.notifications?.warn(`QuickDeck: No PDF mapping found for key "${normalizedKey}".`);
+      return;
+    }
+    const basePage = Number(page);
+    const safeBasePage = Number.isFinite(basePage) ? basePage : 1;
+    const offset = Number(mapping?.offset ?? 0);
+    const safeOffset = Number.isFinite(offset) ? offset : 0;
+    const finalPage = this.getMappedPdfFinalPage(mapping, safeBasePage);
+    const url = this.buildPdfPageUrl(mapping.path, finalPage);
+    if (!url) {
+      ui.notifications?.warn(`QuickDeck: Invalid PDF path for key "${normalizedKey}".`);
+      return;
+    }
+    if (notify) {
+      if (refLabel) ui.notifications?.info(`QuickDeck PDF: ${refLabel} → PDF page ${finalPage}.`);
+      else ui.notifications?.info(`QuickDeck PDF: ${normalizedKey} page ${safeBasePage} + offset ${safeOffset} = PDF page ${finalPage}.`);
+    }
+    window.open(url, "_blank");
+  }
+
+  tryOpenMappedPdfReference(pageHint) {
+    const refs = this.parsePageReferences(pageHint);
+    if (!refs.length) return { opened: false, missingKey: null, hadParseableRefs: false };
+
+    let firstMissingKey = null;
+    for (const ref of refs) {
+      const resolved = this.resolvePageRef(ref.raw);
+      if (resolved?.mapping?.path) {
+        this.openMappedPdfReference(resolved.key, resolved.page, { notify: true, refLabel: resolved.raw });
+        return { opened: true, missingKey: null, hadParseableRefs: true };
+      }
+      if (!firstMissingKey && ref?.key) firstMissingKey = ref.key;
+    }
+
+    return { opened: false, missingKey: firstMissingKey, hadParseableRefs: true };
+  }
+
+  prefillPdfMapDraftForKey(key) {
+    const normalized = this.normalizePdfMapKey(key);
+    this.pdfMapDraft = {
+      key: normalized,
+      name: this.getDefaultPdfMapName(normalized) || normalized,
+      path: "",
+      offset: 0
+    };
+    this.openActionsDrawer("settings");
   }
 
   getQd18ShellWidth() {
@@ -3866,7 +4043,9 @@ export class QuickDeckApp extends Application {
       indexedQuickSkills: quickSkills,
       indexedSpells,
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
-      isInfoPopoverOpen: this.isInfoPopoverOpen
+      isInfoPopoverOpen: this.isInfoPopoverOpen,
+      pdfMapDraft: this.pdfMapDraft,
+      pdfPageRefMappings: this.getPdfPageRefMappingRows()
     };
   }
 
@@ -4277,7 +4456,97 @@ export class QuickDeckApp extends Application {
       const name = String(element.dataset.refName ?? "Reference");
       const pageHint = element.dataset.refPage ?? "";
       const source = element.dataset.refSource ?? "";
+      const pdfResult = this.tryOpenMappedPdfReference(pageHint);
+      if (pdfResult.opened) return;
+      if (pdfResult.hadParseableRefs && pdfResult.missingKey) {
+        const friendlyName = this.getPageRefKeyName(pdfResult.missingKey);
+        const friendlySuffix = friendlyName ? ` — ${friendlyName}` : "";
+        ui.notifications?.info(`QuickDeck: No PDF mapped for ${pdfResult.missingKey}${friendlySuffix}. Using built-in reference fallback.`);
+      }
       this.openReferenceEntry({ type, name, pageHint, source });
+    });
+
+    html.find("[data-action='pdf-map-key']").on("input", (event) => {
+      const input = event.currentTarget;
+      const raw = String(input.value ?? "");
+      const nextKey = this.normalizePdfMapKey(raw);
+      this.pdfMapDraft.key = nextKey;
+
+      if (input.value !== nextKey) input.value = nextKey;
+
+      const nameInput = html.find("[data-action='pdf-map-name']")[0];
+      if (nameInput && !String(nameInput.value || "").trim()) {
+        const defaultName = this.getDefaultPdfMapName(nextKey);
+        if (defaultName) {
+          this.pdfMapDraft.name = defaultName;
+          nameInput.value = defaultName;
+        }
+      }
+    });
+    html.find("[data-action='pdf-map-name']").on("input", (event) => {
+      this.pdfMapDraft.name = String(event.currentTarget.value ?? "");
+    });
+    html.find("[data-action='pdf-map-path']").on("input", (event) => {
+      this.pdfMapDraft.path = String(event.currentTarget.value ?? "");
+    });
+    html.find("[data-action='pdf-map-offset']").on("input", (event) => {
+      const parsed = Number.parseInt(event.currentTarget.value, 10);
+      this.pdfMapDraft.offset = Number.isFinite(parsed) ? parsed : 0;
+    });
+    html.find("[data-action='choose-pdf-source']").on("click", (event) => {
+      event.preventDefault();
+      new FilePicker({
+        type: "any",
+        current: this.pdfMapDraft.path || "",
+        callback: (path) => {
+          this.pdfMapDraft.path = path;
+          if (!String(path).toLowerCase().endsWith(".pdf")) ui.notifications?.warn("QuickDeck: Selected file does not end in .pdf.");
+          this.render(false);
+        }
+      }).render(true);
+    });
+    html.find("[data-action='save-pdf-source']").on("click", async (event) => {
+      event.preventDefault();
+      const key = this.normalizePdfMapKey(this.pdfMapDraft.key);
+      const path = String(this.pdfMapDraft.path || "").trim();
+      if (!key) return ui.notifications?.warn("QuickDeck: PDF source key is required.");
+      if (!path) return ui.notifications?.warn("QuickDeck: PDF path is required.");
+      if (!path.toLowerCase().endsWith(".pdf")) return ui.notifications?.warn("QuickDeck: PDF path must end in .pdf.");
+      const mappings = this.getPdfPageRefMappings();
+      mappings[key] = {
+        name: String(this.pdfMapDraft.name || this.getDefaultPdfMapName(key) || key),
+        path,
+        offset: Number.isFinite(Number.parseInt(this.pdfMapDraft.offset, 10)) ? Number.parseInt(this.pdfMapDraft.offset, 10) : 0
+      };
+      await this.savePdfPageRefMappings(mappings);
+      this.clearPdfMapDraft();
+      this.render(false);
+    });
+    html.find("[data-action='clear-pdf-source-draft']").on("click", (event) => {
+      event.preventDefault();
+      this.clearPdfMapDraft();
+      this.render(false);
+    });
+    html.find("[data-action='edit-pdf-source']").on("click", (event) => {
+      event.preventDefault();
+      const key = this.normalizePdfMapKey(event.currentTarget.dataset.key);
+      const mapping = this.getPdfPageRefMappings()[key];
+      if (!mapping) return;
+      this.pdfMapDraft = { key, name: String(mapping.name ?? ""), path: String(mapping.path ?? ""), offset: Number(mapping.offset) || 0 };
+      this.render(false);
+    });
+    html.find("[data-action='remove-pdf-source']").on("click", async (event) => {
+      event.preventDefault();
+      const key = this.normalizePdfMapKey(event.currentTarget.dataset.key);
+      const mappings = this.getPdfPageRefMappings();
+      if (!mappings[key]) return;
+      delete mappings[key];
+      await this.savePdfPageRefMappings(mappings);
+      this.render(false);
+    });
+    html.find("[data-action='test-pdf-source']").on("click", (event) => {
+      event.preventDefault();
+      this.openMappedPdfReference(event.currentTarget.dataset.key, 1, { notify: true });
     });
 
     const dropTarget = html.find("[data-drop-zone='roster']")[0];

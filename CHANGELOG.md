@@ -1,3 +1,33 @@
+## [Unreleased] - v0.8.6.4 pdf-input-focus
+
+### Fixed
+- Fixes PDF Source Manager key/name/offset inputs losing focus while typing by avoiding full QuickDeck re-renders during input.
+
+## [Unreleased] - v0.8.6.3 key-name-map
+
+### Added
+- Adds a larger GCS-compatible page-reference key/name helper map for PDF mapping autofill and missing-PDF messages.
+- Adds attribution/notice for the GCS-derived key/name metadata.
+
+## [Unreleased] - v0.8.6.2 pdf-offset
+
+### Fixed
+- Normalizes mapped PDF URLs and makes page-offset calculations visible when opening mapped PDFs.
+
+## [Unreleased] - v0.8.6.1 pdf-ref-open
+
+### Added
+- Opens mapped user PDFs from attack, skill, and spell reference buttons using GCS-style page-reference keys.
+
+### Changed
+- Keeps built-in QuickDeck reference summaries as fallback when no mapped user PDF exists.
+
+## [Unreleased] - v0.8.6.0 pdf-picker
+
+### Added
+- Adds a Settings-tab PDF Source Manager for user-selected GURPS page-reference PDFs.
+- Stores client-side key/path/offset mappings for GCS-style references while keeping built-in summaries as fallback.
+
 ## [Unreleased] - v0.8.5.6 cards-damage
 
 ### Fixed
