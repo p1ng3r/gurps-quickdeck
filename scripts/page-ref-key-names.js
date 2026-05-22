@@ -11,8 +11,8 @@ const PAGE_REF_KEY_NAMES = {
   DFX: "Dungeon Fantasy RPG: Exploits",
   DFS: "Dungeon Fantasy RPG: Spells",
   DFM: "Dungeon Fantasy RPG: Monsters",
-  DFMI1: "Dungeon Fantasy RPG: Magic Items 1",
-  DFMI2: "Dungeon Fantasy RPG: Magic Items 2"
+  "DFMI1:": "Dungeon Fantasy RPG: Magic Items 1",
+  "DFMI2:": "Dungeon Fantasy RPG: Magic Items 2"
 };
 
 function addRange(prefix, start, end, resolver) {
