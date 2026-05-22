@@ -1,4 +1,4 @@
-## [Unreleased] - v0.8.6.6 bundled-ref-priority
+## [Unreleased] - v0.8.6.8 ref-data-load
 
 ### Fixed
 - Restores bundled reference summaries as the primary popup content while keeping mapped PDFs as an optional secondary Open PDF Page action.
