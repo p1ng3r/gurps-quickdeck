@@ -65,6 +65,7 @@ export class QuickDeckApp extends Application {
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
+    this.referenceApp = null;
     this._overlayRoot = null;
     this._overlayDragCleanup = null;
     this._overlayPosition = null;
@@ -2684,8 +2685,33 @@ export class QuickDeckApp extends Application {
 
   openReferenceEntry(referenceData = {}) {
     try {
+      const existing = this.referenceApp;
+      if (existing && typeof existing.close === "function") {
+        existing.close({ force: true });
+      }
+
       const app = new QuickDeckReferenceApp(referenceData);
-      app.render(true);
+      this.referenceApp = app;
+
+      const baseLeft = Number(this.position?.left ?? this._position?.left ?? 0);
+      const baseTop = Number(this.position?.top ?? this._position?.top ?? 0);
+      const width = 460;
+      const height = 520;
+      const left = Math.max(0, Math.min(window.innerWidth - width, baseLeft + 40));
+      const top = Math.max(0, Math.min(window.innerHeight - height, baseTop + 40));
+
+      app.render(true, { focus: true });
+      app.setPosition?.({ left, top, width, height });
+
+      setTimeout(() => {
+        app.bringToTop?.();
+        app.bringToFront?.();
+        app.element?.[0]?.focus?.();
+      }, 0);
+
+      app.once?.("close", () => {
+        if (this.referenceApp === app) this.referenceApp = null;
+      });
     } catch (error) {
       console.warn("gurps-quickdeck | Failed to open QuickDeck reference window.", error);
       ui.notifications?.warn("QuickDeck: Could not open reference window.");
