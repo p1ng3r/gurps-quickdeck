@@ -1,3 +1,8 @@
+## [Unreleased] - v0.8.6.4 pdf-input-focus
+
+### Fixed
+- Fixes PDF Source Manager key/name/offset inputs losing focus while typing by avoiding full QuickDeck re-renders during input.
+
 ## [Unreleased] - v0.8.6.3 key-name-map
 
 ### Added
