@@ -22,7 +22,7 @@
   {{#if isInfoPopoverOpen}}
   <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck version information">
     <div class="qd40-info-title">GURPS QuickDeck</div>
-    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.6.6 — bundled-ref-priority</strong></div>
+    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.6.7 — name-ref-popup</strong></div>
     <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
     <div class="qd40-info-row"><span>Mode</span><strong>qd40 chromeless command desk</strong></div>
     <div class="qd40-info-row"><span>Branch</span><strong>v0.8.5.1 info popover pass</strong></div>
@@ -199,7 +199,7 @@
                   <div class="qd31-center-fav-controls">
                     <button type="button" class="qd31-square-button qd31-center-fav-pin is-active" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="Unpin">📌</button>
                     <button type="button" class="qd31-square-button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill">🎲</button>
-                    {{#if skill.referenceDisplay}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>{{/if}}
+                    <button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>
                   </div>
                 </article>
               {{/each}}
@@ -227,7 +227,7 @@
                     <button type="button" class="qd31-square-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
                     <button type="button" class="qd31-square-button qd31-center-fav-pin is-active" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="Unpin">📌</button>
                     <button type="button" class="qd31-square-button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell">✨</button>
-                    {{#if spell.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>{{/if}}
+                    <button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>
                   </div>
                 </article>
               {{/each}}
@@ -263,21 +263,21 @@
     </section>
     <section class="qd31-drawer-body" {{#unless isSkillsDrawerOpen}}hidden{{/unless}}><input type="search" data-action="skills-search" value="{{skillsSearch}}" placeholder="Search skills" />
       {{#each indexedSkills as |skill|}}
-      <div class="qd31-action-row {{#if skill.isQuickSkillSelected}}is-favorite{{/if}}" data-search-row data-search-text="{{skill.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" {{#unless skill.referenceDisplay}}disabled{{/unless}} title="Open skill reference"><strong>{{skill.name}}</strong></button>{{#if skill.relativeLevelDisplay}}<small>{{skill.relativeLevelDisplay}}</small>{{/if}}{{#if skill.specialization}}<small>{{skill.specialization}}</small>{{/if}}</div><div class="qd31-action-controls">
+      <div class="qd31-action-row {{#if skill.isQuickSkillSelected}}is-favorite{{/if}}" data-search-row data-search-text="{{skill.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Open skill reference"><strong>{{skill.name}}</strong></button>{{#if skill.relativeLevelDisplay}}<small>{{skill.relativeLevelDisplay}}</small>{{/if}}{{#if skill.specialization}}<small>{{skill.specialization}}</small>{{/if}}</div><div class="qd31-action-controls">
         <button type="button" class="qd31-square-button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill">🎲</button>
         <button type="button" class="qd31-square-button {{#if skill.isQuickSkillSelected}}is-active{{/if}}" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="{{skill.quickSkillToggleLabel}}">📌</button>
-        {{#if skill.referenceDisplay}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>{{/if}}
+        <button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>
       </div></div>
       {{/each}}
     </section>
     <section class="qd31-drawer-body" {{#unless isSpellsDrawerOpen}}hidden{{/unless}}><input type="search" data-action="spells-search" value="{{spellsSearch}}" placeholder="Search spells" />
       {{#each indexedSpells as |spell|}}
-      <div class="qd31-action-row {{#if spell.isFavoriteSpell}}is-favorite{{/if}}" data-search-row data-search-text="{{spell.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" {{#unless spell.reference}}disabled{{/unless}} title="Open spell reference"><strong>{{spell.name}}</strong></button>{{#if spell.class}}<small>{{spell.class}}</small>{{/if}}{{#if spell.college}}<small>{{spell.college}}</small>{{/if}}</div><div class="qd31-action-controls">
+      <div class="qd31-action-row {{#if spell.isFavoriteSpell}}is-favorite{{/if}}" data-search-row data-search-text="{{spell.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Open spell reference"><strong>{{spell.name}}</strong></button>{{#if spell.class}}<small>{{spell.class}}</small>{{/if}}{{#if spell.college}}<small>{{spell.college}}</small>{{/if}}</div><div class="qd31-action-controls">
         <button type="button" class="qd31-square-button" data-action="target-action" title="Target">🎯</button>
         <button type="button" class="qd31-square-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
         <button type="button" class="qd31-square-button {{#if spell.isFavoriteSpell}}is-active{{/if}}" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="{{spell.favoriteToggleLabel}}">📌</button>
         <button type="button" class="qd31-square-button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell">✨</button>
-        {{#if spell.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>{{/if}}
+        <button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>
       </div></div>
       {{/each}}
     </section>
