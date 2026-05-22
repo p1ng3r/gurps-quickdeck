@@ -195,11 +195,11 @@ function parsePreferredBookKeys(referenceData = {}) {
   }
 
   if (!parsedRefs.length) {
-    if (/^b|basic\s*set/i.test(pageHint)) push("b");
-    if (/^dfa|dungeon\s*fantasy\s*rpg\s*:\s*adventurers/i.test(pageHint)) push("dfa");
-    if (/^dfs|dungeon\s*fantasy\s*rpg\s*:\s*spells/i.test(pageHint)) push("dfs");
-    if (/^ma|martial\s*arts/i.test(pageHint)) push("ma");
-    if (/^m|^magic/i.test(pageHint)) push("m");
+    if (/^b\b|basic\s*set/i.test(pageHint)) push("b");
+    if (/^dfa\b|dungeon\s*fantasy\s*rpg\s*:\s*adventurers/i.test(pageHint)) push("dfa");
+    if (/^dfs\b|dungeon\s*fantasy\s*rpg\s*:\s*spells/i.test(pageHint)) push("dfs");
+    if (/^ma\b|martial\s*arts/i.test(pageHint)) push("ma");
+    if (/^m\b|^magic\b/i.test(pageHint)) push("m");
   }
 
   return preferred;
@@ -210,6 +210,7 @@ function pickBestEntry(candidates = [], referenceData = {}) {
 
   const preferredBookKeys = parsePreferredBookKeys(referenceData);
   const preferredSet = new Set(preferredBookKeys);
+  const normalizedType = asType(referenceData?.type);
 
   let best = null;
   let bestScore = -Infinity;
@@ -219,13 +220,21 @@ function pickBestEntry(candidates = [], referenceData = {}) {
     const entryBookKey = resolveBookKeyAlias(entry?.bookKey || entry?.sourceName || "");
 
     if (preferredSet.size && preferredSet.has(entryBookKey)) {
-      score += 100;
-      score += Math.max(0, 10 - preferredBookKeys.indexOf(entryBookKey));
+      score += 1000;
+      score += Math.max(0, 20 - preferredBookKeys.indexOf(entryBookKey));
+    }
+
+    if (!preferredSet.size) {
+      if (normalizedType === "skill") {
+        if (entryBookKey === "b") score += 120;
+        else if (entryBookKey === "dfa") score += 90;
+        else if (entryBookKey === "ma") score += 60;
+      }
     }
 
     if (entryBookKey === "b") score += 2;
     if (entryBookKey === "dfs") score += 2;
-    if (entryBookKey === "ma") score += 2;
+    if (entryBookKey === "ma") score += 1;
     if (entryBookKey === "dfa") score += 1;
 
     if (!best || score > bestScore) {
