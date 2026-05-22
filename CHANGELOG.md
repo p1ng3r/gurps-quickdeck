@@ -1,3 +1,10 @@
+## [Unreleased] - v0.8.6.9 reference-polish
+
+### Changed
+- Gates noisy reference matching/indexing debug logs behind DEBUG while leaving warnings visible.
+- Replaces weak placeholder bundled skill summaries with short useful popup text.
+- Adds non-fatal bundled reference integrity warnings for missing name/type/bookKey and invalid displayedPage values.
+
 ## [Unreleased] - v0.8.6.8 ref-data-load
 
 ### Fixed

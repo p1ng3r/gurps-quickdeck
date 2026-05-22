@@ -484,7 +484,7 @@
     "attribute": "DX",
     "difficulty": "Easy",
     "defaults": "DX-5",
-    "summary": "Basic Set Brawling skill reference summary.",
+    "summary": "Covers Brawling use, rolls, and common modifiers; see B182.",
     "description": "Fallback bundled popup text for Brawling from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -498,7 +498,7 @@
     "attribute": "DX",
     "difficulty": "Average",
     "defaults": "DX-5",
-    "summary": "Basic Set Broadsword skill reference summary.",
+    "summary": "Covers Broadsword use, rolls, and common modifiers; see B182.",
     "description": "Fallback bundled popup text for Broadsword from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -512,7 +512,7 @@
     "attribute": "IQ",
     "difficulty": "Easy",
     "defaults": "IQ-5",
-    "summary": "Basic Set Camouflage skill reference summary.",
+    "summary": "Covers Camouflage use, rolls, and common modifiers; see B183.",
     "description": "Fallback bundled popup text for Camouflage from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -526,7 +526,7 @@
     "attribute": "HT",
     "difficulty": "Easy",
     "defaults": "HT-5",
-    "summary": "Basic Set Carousing skill reference summary.",
+    "summary": "Covers Carousing use, rolls, and common modifiers; see B183.",
     "description": "Fallback bundled popup text for Carousing from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -540,7 +540,7 @@
     "attribute": "Per",
     "difficulty": "Hard",
     "defaults": "Per-5",
-    "summary": "Basic Set Detect Lies skill reference summary.",
+    "summary": "Covers Detect Lies use, rolls, and common modifiers; see B187.",
     "description": "Fallback bundled popup text for Detect Lies from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -554,7 +554,7 @@
     "attribute": "DX",
     "difficulty": "Hard",
     "defaults": "DX-5",
-    "summary": "Basic Set Escape skill reference summary.",
+    "summary": "Covers Escape use, rolls, and common modifiers; see B192.",
     "description": "Fallback bundled popup text for Escape from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -568,7 +568,7 @@
     "attribute": "DX",
     "difficulty": "Average",
     "defaults": "DX-5",
-    "summary": "Basic Set Filch skill reference summary.",
+    "summary": "Covers Filch use, rolls, and common modifiers; see B195.",
     "description": "Fallback bundled popup text for Filch from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -582,7 +582,7 @@
     "attribute": "DX",
     "difficulty": "Easy",
     "defaults": "DX-5",
-    "summary": "Basic Set Forced Entry skill reference summary.",
+    "summary": "Covers Forced Entry use, rolls, and common modifiers; see B196.",
     "description": "Fallback bundled popup text for Forced Entry from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -596,7 +596,7 @@
     "attribute": "IQ",
     "difficulty": "Average",
     "defaults": "IQ-5",
-    "summary": "Basic Set Gambling skill reference summary.",
+    "summary": "Covers Gambling use, rolls, and common modifiers; see B197.",
     "description": "Fallback bundled popup text for Gambling from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -610,7 +610,7 @@
     "attribute": "IQ",
     "difficulty": "Easy",
     "defaults": "IQ-5",
-    "summary": "Basic Set Gesture skill reference summary.",
+    "summary": "Covers Gesture use, rolls, and common modifiers; see B198.",
     "description": "Fallback bundled popup text for Gesture from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -624,7 +624,7 @@
     "attribute": "DX",
     "difficulty": "Easy",
     "defaults": "DX-5",
-    "summary": "Basic Set Guns skill reference summary.",
+    "summary": "Covers Guns use, rolls, and common modifiers; see B198.",
     "description": "Fallback bundled popup text for Guns from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -638,7 +638,7 @@
     "attribute": "DX",
     "difficulty": "Easy",
     "defaults": "DX-5",
-    "summary": "Basic Set Knife skill reference summary.",
+    "summary": "Covers Knife use, rolls, and common modifiers; see B208.",
     "description": "Fallback bundled popup text for Knife from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -652,7 +652,7 @@
     "attribute": "IQ",
     "difficulty": "Average",
     "defaults": "IQ-5",
-    "summary": "Basic Set Lockpicking skill reference summary.",
+    "summary": "Covers Lockpicking use, rolls, and common modifiers; see B206.",
     "description": "Fallback bundled popup text for Lockpicking from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -666,7 +666,7 @@
     "attribute": "IQ",
     "difficulty": "Average",
     "defaults": "IQ-5",
-    "summary": "Basic Set Mechanic skill reference summary.",
+    "summary": "Covers Mechanic use, rolls, and common modifiers; see B207.",
     "description": "Fallback bundled popup text for Mechanic from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -680,7 +680,7 @@
     "attribute": "IQ",
     "difficulty": "Average",
     "defaults": "IQ-5",
-    "summary": "Basic Set Merchant skill reference summary.",
+    "summary": "Covers Merchant use, rolls, and common modifiers; see B209.",
     "description": "Fallback bundled popup text for Merchant from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -694,7 +694,7 @@
     "attribute": "IQ",
     "difficulty": "Hard",
     "defaults": "IQ-5",
-    "summary": "Basic Set Mimicry skill reference summary.",
+    "summary": "Covers Mimicry use, rolls, and common modifiers; see B210.",
     "description": "Fallback bundled popup text for Mimicry from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -708,7 +708,7 @@
     "attribute": "IQ",
     "difficulty": "Hard",
     "defaults": "IQ-5",
-    "summary": "Basic Set Navigation skill reference summary.",
+    "summary": "Covers Navigation use, rolls, and common modifiers; see B211.",
     "description": "Fallback bundled popup text for Navigation from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -722,7 +722,7 @@
     "attribute": "IQ",
     "difficulty": "Hard",
     "defaults": "IQ-5",
-    "summary": "Basic Set Physician skill reference summary.",
+    "summary": "Covers Physician use, rolls, and common modifiers; see B213.",
     "description": "Fallback bundled popup text for Physician from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -736,7 +736,7 @@
     "attribute": "DX",
     "difficulty": "Hard",
     "defaults": "DX-5",
-    "summary": "Basic Set Pickpocket skill reference summary.",
+    "summary": "Covers Pickpocket use, rolls, and common modifiers; see B213.",
     "description": "Fallback bundled popup text for Pickpocket from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -750,7 +750,7 @@
     "attribute": "Per",
     "difficulty": "Easy",
     "defaults": "Per-5",
-    "summary": "Basic Set Scrounging skill reference summary.",
+    "summary": "Covers Scrounging use, rolls, and common modifiers; see B218.",
     "description": "Fallback bundled popup text for Scrounging from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -764,7 +764,7 @@
     "attribute": "IQ",
     "difficulty": "Easy",
     "defaults": "IQ-5",
-    "summary": "Basic Set Seamanship skill reference summary.",
+    "summary": "Covers Seamanship use, rolls, and common modifiers; see B220.",
     "description": "Fallback bundled popup text for Seamanship from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -778,7 +778,7 @@
     "attribute": "HT",
     "difficulty": "Average",
     "defaults": "HT-5",
-    "summary": "Basic Set Sex Appeal skill reference summary.",
+    "summary": "Covers Sex Appeal use, rolls, and common modifiers; see B219.",
     "description": "Fallback bundled popup text for Sex Appeal from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -792,7 +792,7 @@
     "attribute": "IQ",
     "difficulty": "Average",
     "defaults": "IQ-5",
-    "summary": "Basic Set Shadowing skill reference summary.",
+    "summary": "Covers Shadowing use, rolls, and common modifiers; see B219.",
     "description": "Fallback bundled popup text for Shadowing from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -806,7 +806,7 @@
     "attribute": "IQ",
     "difficulty": "Average",
     "defaults": "IQ-5",
-    "summary": "Basic Set Smuggling skill reference summary.",
+    "summary": "Covers Smuggling use, rolls, and common modifiers; see B221.",
     "description": "Fallback bundled popup text for Smuggling from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -820,7 +820,7 @@
     "attribute": "DX",
     "difficulty": "Average",
     "defaults": "DX-5",
-    "summary": "Basic Set Spear skill reference summary.",
+    "summary": "Covers Spear use, rolls, and common modifiers; see B223.",
     "description": "Fallback bundled popup text for Spear from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -834,7 +834,7 @@
     "attribute": "IQ",
     "difficulty": "Hard",
     "defaults": "IQ-5",
-    "summary": "Basic Set Tactics skill reference summary.",
+    "summary": "Covers Tactics use, rolls, and common modifiers; see B224.",
     "description": "Fallback bundled popup text for Tactics from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
@@ -848,7 +848,7 @@
     "attribute": "IQ",
     "difficulty": "Average",
     "defaults": "IQ-5",
-    "summary": "Basic Set Traps skill reference summary.",
+    "summary": "Covers Traps use, rolls, and common modifiers; see B226.",
     "description": "Fallback bundled popup text for Traps from Basic Set: Characters.",
     "notes": "Bundled fallback entry for QuickDeck popup display.",
     "specialtyRequired": false
