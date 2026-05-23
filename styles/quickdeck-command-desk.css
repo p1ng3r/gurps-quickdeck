@@ -3421,8 +3421,8 @@
   position: relative;
 }
 
-.qd31-left-drawer { padding-left: 34px; }
-.qd31-right-drawer { padding-right: 34px; }
+.qd31-left-drawer { padding-left: 8px; }
+.qd31-right-drawer { padding-right: 8px; }
 
 .qd31-open-drawer-tab {
   position: absolute !important;
@@ -3868,6 +3868,8 @@
   white-space: nowrap !important;
   opacity: .9 !important;
 }
+
+.qd40-corner-badge .quickdeck-dev-badge { display: none !important; }
 
 .qd40-window-controls {
   position: absolute !important;
