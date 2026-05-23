@@ -5,6 +5,10 @@ import { normalizePdfMapKey, parsePageReferences, getMappedPdfFinalPage, buildPd
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
+const renderQuickDeckTemplate = async (path, data) => {
+  const renderer = foundry?.applications?.handlebars?.renderTemplate ?? renderTemplate;
+  return renderer(path, data);
+};
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
@@ -3778,7 +3782,7 @@ export class QuickDeckApp extends Application {
   async renderOverlay() {
     this.mountOverlay();
     if (!this._overlayRoot) return;
-    const html = await renderTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
+    const html = await renderQuickDeckTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
     this._overlayRoot.innerHTML = html;
     this.setOverlayPosition();
     this.activateOverlayListeners(this._overlayRoot);
@@ -4173,8 +4177,8 @@ export class QuickDeckApp extends Application {
       indexedSpells,
       pinnedActions,
       hasPinnedActions: pinnedActions.length > 0,
-      uiBuildLabel: "QD v0.8.7.1 — pinned-polish",
-      uiBranchLabel: "v0.8.7.1 pinned-actions-polish",
+      uiBuildLabel: "QD v0.8.7.2 — v13-compat",
+      uiBranchLabel: "v0.8.7.2 foundry-v13-compat",
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
       pdfMapDraft: this.pdfMapDraft,
