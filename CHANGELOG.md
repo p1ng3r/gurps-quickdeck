@@ -1,3 +1,10 @@
+## [Unreleased] - v0.8.7.1 pinned-actions-polish
+
+### Changed
+- Adds center Quick Actions card polish: per-action remove control, type badge, truncated labels with full title tooltips, and an explicit empty-state prompt while preserving fallback Attack/Skill/Spell/More buttons.
+- Updates drawer pin-button tooltips to reflect current pin state with “Pin to Quick Actions” / “Remove from Quick Actions”.
+- Keeps Quick Actions pinned entries client-scoped, per-actor, and capped at five slots with no reorder/drag-sort UI changes.
+
 ## [Unreleased] - v0.8.6.9 reference-polish
 
 ### Changed

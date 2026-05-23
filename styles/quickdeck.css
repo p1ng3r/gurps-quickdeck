@@ -3428,7 +3428,7 @@
 .qd31-action-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;padding:4px;border:1px solid rgba(215,170,88,.25);border-radius:8px}.qd31-action-controls{display:flex;gap:4px;align-items:center;justify-content:flex-end}
 .qd31-reference-button{background:none;border:none;color:#f6e8c8;text-align:left;cursor:pointer;padding:0}.qd31-reference-button[disabled]{opacity:.65;cursor:default;pointer-events:none}
 .qd31-defense-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}.qd31-defense-dial{aspect-ratio:1/1;border-radius:999px;min-height:96px;font-size:.9rem}
-.qd31-pinned-grid{grid-template-columns:repeat(4,1fr)}
+.qd31-pinned-grid{grid-template-columns:repeat(5,1fr)}
 .quickdeck-actor-header{display:grid;grid-template-columns:auto 1fr;gap:8px;align-items:center}.quickdeck-actor-identity h3{margin:0}.quickdeck-actor-identity p{margin:2px 0 0}
 
 .qd40-overlay {

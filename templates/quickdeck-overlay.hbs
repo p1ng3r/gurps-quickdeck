@@ -22,10 +22,10 @@
   {{#if isInfoPopoverOpen}}
   <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck version information">
     <div class="qd40-info-title">GURPS QuickDeck</div>
-    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.6.8 — ref-data-load</strong></div>
+    <div class="qd40-info-row"><span>UI</span><strong>{{uiBuildLabel}}</strong></div>
     <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
     <div class="qd40-info-row"><span>Mode</span><strong>qd40 chromeless command desk</strong></div>
-    <div class="qd40-info-row"><span>Branch</span><strong>v0.8.5.1 info popover pass</strong></div>
+    <div class="qd40-info-row"><span>Branch</span><strong>{{uiBranchLabel}}</strong></div>
   </div>
   {{/if}}
 
@@ -68,15 +68,12 @@
       </div>
     </section>
   </aside>
-    <button class="qd31-edge-tab qd31-left-edge-tab" type="button" data-action="toggle-roster-drawer" title="Collapse roster">« Collapse</button>
   </div>
   {{else}}
   {{/if}}
 
   <div class="qd31-center-wrap qd31-panel-wrap">
-  {{#unless isRosterDrawerOpen}}
-    <button class="qd31-edge-tab qd31-left-edge-tab qd31-closed-edge-tab" type="button" data-action="toggle-roster-drawer">Roster ›</button>
-  {{/unless}}
+    <button class="qd31-edge-tab qd31-left-edge-tab {{#unless isRosterDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}« Collapse{{else}}Roster ›{{/if}}</button>
   <section class="qd31-center-cockpit">
     <header class="qd31-header"><h2>QuickDeck Cockpit</h2></header>
     {{#if activeActor}}
@@ -240,9 +237,7 @@
     </section>
     {{/if}}
   </section>
-  {{#unless isActionsDrawerOpen}}
-    <button class="qd31-edge-tab qd31-right-edge-tab qd31-closed-edge-tab" type="button" data-action="toggle-actions-drawer" data-drawer="combat">‹ Actions</button>
-  {{/unless}}
+    <button class="qd31-edge-tab qd31-right-edge-tab {{#unless isActionsDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}">{{#if isActionsDrawerOpen}}Collapse »{{else}}‹ Actions{{/if}}</button>
   </div>
 
   {{#if isActionsDrawerOpen}}
@@ -326,7 +321,6 @@
       </section>
     </section>
   </aside>
-    <button class="qd31-edge-tab qd31-right-edge-tab" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="Collapse actions">Collapse »</button>
   </div>
 
   {{/if}}

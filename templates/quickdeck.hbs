@@ -41,7 +41,7 @@
   </aside>
 
   <section class="qd31-center-cockpit">
-    <header class="qd31-header"><div class="quickdeck-dev-badge">QD v0.8.7.0 — pinned-actions</div><h2>QuickDeck Cockpit</h2></header>
+    <header class="qd31-header"><div class="quickdeck-dev-badge">{{uiBuildLabel}}</div><h2>QuickDeck Cockpit</h2></header>
     {{#if activeActor}}
     <section class="qd31-actor-card">
       <header class="quickdeck-actor-header"><img class="qd31-actor-portrait qd31-actor-sheet-link" src="{{activeActor.img}}" alt="{{activeActor.name}}" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}" /><div class="quickdeck-actor-identity"><h3 class="qd31-actor-name-link qd31-actor-sheet-link" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}">{{activeActor.name}}</h3><p>{{activeActor.actorType}}</p></div></header>
@@ -88,9 +88,14 @@
       <div class="qd31-pinned-grid">
         {{#if hasPinnedActions}}
           {{#each pinnedActions as |entry|}}
-            <button type="button" class="qd31-square-button" data-action="{{entry.action}}" data-actor-id="{{entry.actorId}}" data-{{entry.type}}-index="{{entry.index}}" title="{{entry.label}}">{{entry.label}}</button>
+            <button type="button" class="qd31-pinned-action" data-action="{{entry.action}}" data-actor-id="{{entry.actorId}}" data-{{entry.type}}-index="{{entry.index}}" title="{{entry.label}}">
+              <span class="qd31-pinned-action-name">{{entry.label}}</span>
+              <span class="qd31-pinned-action-badge">{{entry.badge}}</span>
+              <span class="qd31-pinned-action-remove" role="button" aria-label="Remove {{entry.label}} from Quick Actions" title="Remove from Quick Actions" data-action="remove-pinned-action" data-actor-id="{{entry.actorId}}" data-pin-type="{{entry.type}}" data-pin-key="{{entry.key}}">✕</span>
+            </button>
           {{/each}}
         {{else}}
+          <div class="qd31-pinned-empty-state">Pin up to 5 actions from the drawers.</div>
           <button type="button" class="qd31-square-button" data-action="open-actions-drawer" data-drawer="combat">Attack</button>
           <button type="button" class="qd31-square-button" data-action="open-actions-drawer" data-drawer="skills">Skill</button>
           <button type="button" class="qd31-square-button" data-action="open-actions-drawer" data-drawer="spells">Spell</button>
@@ -106,7 +111,7 @@
     <section class="qd31-drawer-body" {{#unless isCombatDrawerOpen}}hidden{{/unless}}><div class="qd31-action-row"><span>Target</span><button type="button" class="qd31-square-button" data-action="target-action">🎯</button></div><input type="search" data-action="combat-search" value="{{combatSearch}}" placeholder="Search attacks" />
       {{#each indexedAttacks as |attack|}}
       <div class="qd31-action-row" data-search-row data-search-text="{{attack.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" {{#unless attack.reference}}disabled{{/unless}} title="Open attack reference"><strong>{{attack.name}}</strong></button>{{#if attack.type}}<small>{{attack.type}}</small>{{/if}}</div><div>
-        <button type="button" class="qd31-square-button" data-action="toggle-pin-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="Pin to Quick Actions">{{#if attack.isPinnedAction}}★{{else}}☆{{/if}}</button>
+        <button type="button" class="qd31-square-button" data-action="toggle-pin-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="{{#if attack.isPinnedAction}}Remove from Quick Actions{{else}}Pin to Quick Actions{{/if}}">{{#if attack.isPinnedAction}}★{{else}}☆{{/if}}</button>
         <button type="button" class="qd31-square-button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}">Atk</button>
         <button type="button" class="qd31-square-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}">Dmg</button>
         {{#if attack.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}">Ref</button>{{/if}}
@@ -117,7 +122,7 @@
       {{#each indexedSkills as |skill|}}
       <div class="qd31-action-row" data-search-row data-search-text="{{skill.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" {{#unless skill.referenceDisplay}}disabled{{/unless}} title="Open skill reference"><strong>{{skill.name}}</strong></button>{{#if skill.relativeLevelDisplay}}<small>{{skill.relativeLevelDisplay}}</small>{{/if}}</div><div>
         <button type="button" class="qd31-square-button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}">Roll</button>
-        <button type="button" class="qd31-square-button" data-action="toggle-pin-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="Pin to Quick Actions">{{#if skill.isPinnedAction}}★{{else}}☆{{/if}}</button>
+        <button type="button" class="qd31-square-button" data-action="toggle-pin-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="{{#if skill.isPinnedAction}}Remove from Quick Actions{{else}}Pin to Quick Actions{{/if}}">{{#if skill.isPinnedAction}}★{{else}}☆{{/if}}</button>
         {{#if skill.referenceDisplay}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}">Ref</button>{{/if}}
       </div></div>
       {{/each}}
@@ -125,7 +130,7 @@
     <section class="qd31-drawer-body" {{#unless isSpellsDrawerOpen}}hidden{{/unless}}><div class="qd31-action-row"><span>Target</span><button type="button" class="qd31-square-button" data-action="target-action">🎯</button></div><input type="search" data-action="spells-search" value="{{spellsSearch}}" placeholder="Search spells" />
       {{#each indexedSpells as |spell|}}
       <div class="qd31-action-row" data-search-row data-search-text="{{spell.searchText}}"><div><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" {{#unless spell.reference}}disabled{{/unless}} title="Open spell reference"><strong>{{spell.name}}</strong></button>{{#if spell.class}}<small>{{spell.class}}</small>{{/if}}</div><div>
-        <button type="button" class="qd31-square-button" data-action="toggle-pin-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="Pin to Quick Actions">{{#if spell.isPinnedAction}}★{{else}}☆{{/if}}</button>
+        <button type="button" class="qd31-square-button" data-action="toggle-pin-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="{{#if spell.isPinnedAction}}Remove from Quick Actions{{else}}Pin to Quick Actions{{/if}}">{{#if spell.isPinnedAction}}★{{else}}☆{{/if}}</button>
         <button type="button" class="qd31-square-button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}">Roll</button>
         {{#if spell.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}">Ref</button>{{/if}}
       </div></div>

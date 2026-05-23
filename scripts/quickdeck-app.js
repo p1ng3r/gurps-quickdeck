@@ -1031,6 +1031,13 @@ export class QuickDeckApp extends Application {
     this.persistPinnedActionsState();
   }
 
+  removePinnedAction(actorId, type, key) {
+    if (!actorId || !type || !key) return;
+    const current = this.getPinnedActions(actorId).filter((entry) => entry?.type && entry?.key);
+    this.pinnedActionsByActor[actorId] = current.filter((entry) => !(entry.type === type && entry.key === key)).slice(0, 5);
+    this.persistPinnedActionsState();
+  }
+
   serializePinnedActionsState() {
     return Object.fromEntries(
       Object.entries(this.pinnedActionsByActor).map(([actorId, pinned]) => [
@@ -4012,17 +4019,17 @@ export class QuickDeckApp extends Application {
       if (entry.type === "attack") {
         const attack = attackByKey.get(entry.key);
         if (!attack) return null;
-        return { type: "attack", label: attack.name, action: "roll-attack", actorId: activeActorId, index: attack.index };
+        return { type: "attack", badge: "Attack", key: entry.key, label: attack.name, action: "roll-attack", actorId: activeActorId, index: attack.index };
       }
       if (entry.type === "skill") {
         const skill = skillByKey.get(entry.key);
         if (!skill) return null;
-        return { type: "skill", label: skill.name, action: "roll-skill", actorId: activeActorId, index: skill.index };
+        return { type: "skill", badge: "Skill", key: entry.key, label: skill.name, action: "roll-skill", actorId: activeActorId, index: skill.index };
       }
       if (entry.type === "spell") {
         const spell = spellByKey.get(entry.key);
         if (!spell) return null;
-        return { type: "spell", label: spell.name, action: "roll-spell", actorId: activeActorId, index: spell.index };
+        return { type: "spell", badge: "Spell", key: entry.key, label: spell.name, action: "roll-spell", actorId: activeActorId, index: spell.index };
       }
       return null;
     }).filter(Boolean).slice(0, 5);
@@ -4166,6 +4173,8 @@ export class QuickDeckApp extends Application {
       indexedSpells,
       pinnedActions,
       hasPinnedActions: pinnedActions.length > 0,
+      uiBuildLabel: "QD v0.8.7.1 — pinned-polish",
+      uiBranchLabel: "v0.8.7.1 pinned-actions-polish",
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
       pdfMapDraft: this.pdfMapDraft,
@@ -4349,6 +4358,16 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const attackKey = event.currentTarget.dataset.attackKey;
       this.togglePinnedAction(actorId, "attack", attackKey);
+      this.render(false, { focus: false });
+      this.scheduleNativeWindowFocusAfterRender();
+    });
+    html.find("[data-action='remove-pinned-action']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
+      const type = event.currentTarget.dataset.pinType;
+      const key = event.currentTarget.dataset.pinKey;
+      this.removePinnedAction(actorId, type, key);
       this.render(false, { focus: false });
       this.scheduleNativeWindowFocusAfterRender();
     });
