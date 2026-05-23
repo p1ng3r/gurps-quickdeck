@@ -1,3 +1,9 @@
+## [Unreleased] - v0.9.3 dwarven-shell-css
+
+### Changed
+- Applied a CSS-only dwarven shell pass to QuickDeck using Batch 1 assets (frame rails/corners, header plate/knotwork accents, button skins, and collapse-tab art) while preserving existing three-pane behavior and collapse contracts.
+- Strengthened left/right edge-tab outside positioning (`left: -32px` for left tab, `right: -32px` for right tab) within wrapper-scoped selectors so tabs remain on outer edges in both open and collapsed states.
+
 ## [Unreleased] - v0.9.0 settings-source-manager-local
 
 ### Changed
