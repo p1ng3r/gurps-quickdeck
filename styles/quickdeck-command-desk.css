@@ -4518,20 +4518,21 @@
 .qd40-overlay .qd40-body,
 .qd40-overlay {
   background:
-    linear-gradient(155deg, rgba(68, 52, 35, 0.32), rgba(16, 13, 10, 0.84) 52%, rgba(7, 6, 5, 0.95)),
-    linear-gradient(180deg, rgba(200, 155, 72, 0.08), rgba(0, 0, 0, 0) 28%),
+    linear-gradient(155deg, rgba(68, 52, 35, 0.38), rgba(16, 13, 10, 0.86) 52%, rgba(7, 6, 5, 0.95)),
+    linear-gradient(180deg, rgba(200, 155, 72, 0.12), rgba(0, 0, 0, 0) 28%),
     #0b0907 !important;
 }
 
 .qd40-overlay .qd40-frame {
   position: relative;
-  border: 1px solid rgba(188, 142, 65, 0.7) !important;
-  box-shadow: inset 0 0 0 1px rgba(239, 206, 138, 0.14), inset 0 0 20px rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(188, 142, 65, 0.8) !important;
+  box-shadow: inset 0 0 0 1px rgba(239, 206, 138, 0.18), inset 0 0 22px rgba(0, 0, 0, 0.45);
+  /* 24px rails are intentionally visible but still compact enough to avoid crowding content. */
   background:
-    var(--qd-dwarf-top-rail) top center / 100% 18px no-repeat,
-    var(--qd-dwarf-bottom-rail) bottom center / 100% 18px no-repeat,
-    var(--qd-dwarf-left-rail) left center / 18px 100% no-repeat,
-    var(--qd-dwarf-right-rail) right center / 18px 100% no-repeat,
+    var(--qd-dwarf-top-rail) top center / 100% 24px no-repeat,
+    var(--qd-dwarf-bottom-rail) bottom center / 100% 24px no-repeat,
+    var(--qd-dwarf-left-rail) left center / 24px 100% no-repeat,
+    var(--qd-dwarf-right-rail) right center / 24px 100% no-repeat,
     linear-gradient(155deg, rgba(68, 52, 35, 0.32), rgba(16, 13, 10, 0.84) 52%, rgba(7, 6, 5, 0.95)),
     #0b0907 !important;
 }
@@ -4540,8 +4541,8 @@
 .qd40-overlay .qd40-frame::after {
   content: "";
   position: absolute;
-  width: 64px;
-  height: 64px;
+  width: 72px;
+  height: 72px;
   pointer-events: none;
   z-index: 0;
   background-repeat: no-repeat;
@@ -4564,10 +4565,10 @@
 .qd40-overlay .qd31-center-cockpit,
 .qd40-overlay .qd31-right-drawer {
   background:
-    linear-gradient(180deg, rgba(255, 218, 152, 0.05), rgba(0, 0, 0, 0.16)),
-    linear-gradient(150deg, rgba(51, 38, 24, 0.92), rgba(14, 11, 8, 0.96) 62%),
+    linear-gradient(180deg, rgba(255, 218, 152, 0.07), rgba(0, 0, 0, 0.2)),
+    linear-gradient(150deg, rgba(51, 38, 24, 0.94), rgba(14, 11, 8, 0.97) 62%),
     #120e0a !important;
-  border-color: rgba(185, 140, 63, 0.5) !important;
+  border-color: rgba(185, 140, 63, 0.62) !important;
 }
 
 .qd40-overlay .qd31-header,
@@ -4578,9 +4579,11 @@
   font-family: "Book Antiqua", "Palatino Linotype", Georgia, serif;
   letter-spacing: 0.07em;
   text-shadow: 0 1px 2px #000;
+  border: 1px solid rgba(206, 162, 83, 0.62) !important;
+  /* Keep header plate tall enough to read as art without growing the section height too much. */
   background:
-    var(--qd-dwarf-title-plate) center / 100% 100% no-repeat,
-    linear-gradient(180deg, rgba(95, 69, 36, 0.62), rgba(22, 17, 12, 0.9)) !important;
+    var(--qd-dwarf-title-plate) center / 100% 120% no-repeat,
+    linear-gradient(180deg, rgba(95, 69, 36, 0.7), rgba(22, 17, 12, 0.94)) !important;
 }
 
 .qd40-overlay .qd31-header::after,
@@ -4589,14 +4592,14 @@
 .qd40-overlay .qd31-settings-header::after {
   content: "";
   position: absolute;
-  left: 8px;
-  right: 8px;
-  bottom: -2px;
-  height: 8px;
+  left: 6px;
+  right: 6px;
+  bottom: -1px;
+  height: 10px;
   pointer-events: none;
   z-index: 0;
   background: var(--qd-dwarf-knot-strip) center / 100% 100% no-repeat;
-  opacity: 0.78;
+  opacity: 0.9;
 }
 
 .qd40-overlay .qd31-square-button,
@@ -4604,10 +4607,10 @@
 .qd40-overlay .qd31-search-clear,
 .qd40-overlay .qd31-center-fav-unpin {
   background:
-    linear-gradient(180deg, rgba(255, 231, 177, 0.14), rgba(60, 41, 18, 0.2)),
+    linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)),
     var(--qd-dwarf-button-square) center / 100% 100% no-repeat,
-    rgba(30, 20, 10, 0.96) !important;
-  border-color: rgba(219, 175, 94, 0.74) !important;
+    rgba(30, 20, 10, 0.98) !important;
+  border: 1px solid rgba(219, 175, 94, 0.84) !important;
   color: #f5e2b4 !important;
   text-shadow: 0 1px 2px #000;
 }
@@ -4615,10 +4618,10 @@
 .qd40-overlay .qd31-center-fav-action-main,
 .qd40-overlay .qd31-center-fav-action-damage {
   background:
-    linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.22)),
+    linear-gradient(180deg, rgba(255, 231, 177, 0.25), rgba(60, 41, 18, 0.26)),
     var(--qd-dwarf-button-wide) center / 100% 100% no-repeat,
     rgba(33, 22, 11, 0.98) !important;
-  border-color: rgba(229, 183, 98, 0.82) !important;
+  border: 1px solid rgba(229, 183, 98, 0.88) !important;
   color: #f9e9c3 !important;
 }
 
@@ -4626,20 +4629,20 @@
 .qd40-overlay .qd31-right-edge-tab,
 .qd40-overlay .qd31-closed-edge-tab {
   background-color: transparent !important;
-  border-color: rgba(214, 168, 86, 0.78) !important;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 225, 156, 0.2);
+  border-color: rgba(214, 168, 86, 0.82) !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.52), inset 0 0 0 1px rgba(255, 225, 156, 0.22);
 }
 
 .qd40-overlay .qd31-left-edge-tab {
-  background-image: var(--qd-dwarf-left-tab) !important;
-  background-repeat: no-repeat !important;
-  background-size: 100% 100% !important;
+  background:
+    var(--qd-dwarf-left-tab) center / 100% 100% no-repeat,
+    rgba(24, 16, 9, 0.95) !important;
 }
 
 .qd40-overlay .qd31-right-edge-tab {
-  background-image: var(--qd-dwarf-right-tab) !important;
-  background-repeat: no-repeat !important;
-  background-size: 100% 100% !important;
+  background:
+    var(--qd-dwarf-right-tab) center / 100% 100% no-repeat,
+    rgba(24, 16, 9, 0.95) !important;
 }
 
 .qd40-overlay .qd31-left-panel-wrap > .qd31-left-edge-tab {
