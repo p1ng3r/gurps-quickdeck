@@ -1,23 +1,4 @@
 <div class="qd40-frame">
-  {{!-- DO NOT MOVE EDGE TABS INTO DRAWER OR CENTER LAYOUT.
-        These tabs are intentionally hard-anchored to the outer QuickDeck frame. --}}
-  <div class="qd31-edge-tabs-layer" aria-label="QuickDeck drawer controls">
-    <button
-      class="qd31-edge-tab qd31-left-edge-tab"
-      type="button"
-      data-action="toggle-roster-drawer"
-      title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}"
-    >{{#if isRosterDrawerOpen}}‹ Collapse{{else}}Roster ›{{/if}}</button>
-
-    <button
-      class="qd31-edge-tab qd31-right-edge-tab"
-      type="button"
-      data-action="toggle-actions-drawer"
-      data-drawer="combat"
-      title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}"
-    >{{#if isActionsDrawerOpen}}Collapse ›{{else}}‹ Actions{{/if}}</button>
-  </div>
-
   <div class="qd40-chrome-row" data-action="drag-overlay" title="Drag QuickDeck">
     <div class="qd40-corner-badge">
       <span class="qd40-corner-title">GURPS QuickDeck</span>
@@ -50,9 +31,9 @@
 
   <div class="qd40-body">
   <section class="qd40-shell qd31-shell {{#if isRosterDrawerOpen}}qd31-left-open{{/if}} {{#if isActionsDrawerOpen}}qd31-right-open{{/if}}" data-active-drawer="{{activeDrawer}}">
-  {{#if isRosterDrawerOpen}}
   <div class="qd31-left-panel-wrap qd31-panel-wrap">
-  <aside class="qd31-left-drawer">
+    <button class="qd31-edge-tab qd31-left-edge-tab" type="button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}‹ Collapse{{else}}Roster ›{{/if}}</button>
+  <aside class="qd31-left-drawer" {{#unless isRosterDrawerOpen}}hidden{{/unless}}>
     <header class="qd31-drawer-header">
       <h3>Active Roster</h3>
       <button type="button" class="qd31-square-button qd31-trash-button" data-action="clear-roster" title="Clear roster">🗑</button>
@@ -88,8 +69,6 @@
     </section>
   </aside>
   </div>
-  {{else}}
-  {{/if}}
 
   <div class="qd31-center-wrap qd31-panel-wrap">
   <section class="qd31-center-cockpit">
@@ -257,8 +236,8 @@
   </section>
   </div>
 
-  {{#if isActionsDrawerOpen}}
   <div class="qd31-right-panel-wrap qd31-panel-wrap">
+    <button class="qd31-edge-tab qd31-right-edge-tab" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}">{{#if isActionsDrawerOpen}}Collapse ›{{else}}‹ Actions{{/if}}</button>
   <aside class="qd31-right-drawer">
     <nav class="qd31-drawer-tabs"><button data-action="toggle-drawer" data-drawer="combat">Combat</button><button data-action="toggle-drawer" data-drawer="skills">Skills</button><button data-action="toggle-drawer" data-drawer="spells">Spells</button><button data-action="toggle-drawer" data-drawer="settings">Settings</button></nav>
     <section class="qd31-drawer-body" {{#unless isCombatDrawerOpen}}hidden{{/unless}}><input type="search" data-action="combat-search" value="{{combatSearch}}" placeholder="Search attacks" />
@@ -339,8 +318,6 @@
     </section>
   </aside>
   </div>
-
-  {{/if}}
   </section>
   </div>
 </div>
