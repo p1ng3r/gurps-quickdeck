@@ -30,8 +30,8 @@
   {{/if}}
 
   <div class="qd40-body">
-  <section class="qd40-shell qd31-shell {{#if isRosterDrawerOpen}}qd31-left-open{{/if}} {{#if isActionsDrawerOpen}}qd31-right-open{{/if}}" data-active-drawer="{{activeDrawer}}">
-    <div class="qd31-left-panel-wrap qd31-panel-wrap">
+  <section class="qd40-shell qd31-shell {{#if isRosterDrawerOpen}}qd31-left-open{{else}}qd31-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd31-right-open{{else}}qd31-right-collapsed{{/if}}" data-active-drawer="{{activeDrawer}}">
+    <div class="qd31-left-panel-wrap qd31-panel-wrap {{#if isRosterDrawerOpen}}is-open{{else}}is-collapsed{{/if}}">
     <button class="qd31-edge-tab qd31-left-edge-tab {{#unless isRosterDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}« Collapse{{else}}Roster ›{{/if}}</button>
   {{#if isRosterDrawerOpen}}
   <aside class="qd31-left-drawer">
@@ -238,7 +238,7 @@
   </section>
   </div>
 
-  <div class="qd31-right-panel-wrap qd31-panel-wrap">
+  <div class="qd31-right-panel-wrap qd31-panel-wrap {{#if isActionsDrawerOpen}}is-open{{else}}is-collapsed{{/if}}">
     <button class="qd31-edge-tab qd31-right-edge-tab {{#unless isActionsDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}">{{#if isActionsDrawerOpen}}Collapse »{{else}}‹ Actions{{/if}}</button>
   {{#if isActionsDrawerOpen}}
   <aside class="qd31-right-drawer">
