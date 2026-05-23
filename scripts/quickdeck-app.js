@@ -1268,6 +1268,9 @@ export class QuickDeckApp extends Application {
         key,
         name: String(mapping?.name ?? this.getDefaultPdfMapName(key) ?? key),
         path: String(mapping?.path ?? ""),
+        pathDisplay: String(mapping?.path ?? "").trim() || "No path set",
+        pathDisplayTooltip: String(mapping?.path ?? "").trim() || "No path set",
+        statusText: String(mapping?.path ?? "").trim() ? "Mapped" : "Missing path",
         offset: Number(mapping?.offset) || 0,
         testPage: this.getMappedPdfFinalPage(mapping, 1)
       }))

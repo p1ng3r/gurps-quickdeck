@@ -1,3 +1,10 @@
+## [Unreleased] - v0.9.0 settings-source-manager-local
+
+### Changed
+- Clarifies PDF Source Manager with an explicit source-priority panel: mapped user PDFs first, built-in summaries fallback, and no PDF parsing/extraction in Foundry.
+- Improves mapping rows to show clearer key/name/path/offset/test-page diagnostics plus explicit mapping status text.
+- Keeps existing save/edit/test/remove actions while improving settings copy and long-path readability with truncation-safe styling.
+
 ## [Unreleased] - v0.8.9.0 drawer-search-usability
 
 ### Changed
