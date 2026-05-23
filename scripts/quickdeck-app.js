@@ -23,6 +23,12 @@ const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
 
+const renderQuickDeckTemplate = async (path, data) => {
+  const foundryRenderTemplate = foundry?.applications?.handlebars?.renderTemplate;
+  const renderer = foundryRenderTemplate ?? renderTemplate;
+  return renderer(path, data);
+};
+
 
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
@@ -3778,7 +3784,7 @@ export class QuickDeckApp extends Application {
   async renderOverlay() {
     this.mountOverlay();
     if (!this._overlayRoot) return;
-    const html = await renderTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
+    const html = await renderQuickDeckTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
     this._overlayRoot.innerHTML = html;
     this.setOverlayPosition();
     this.activateOverlayListeners(this._overlayRoot);

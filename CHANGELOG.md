@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.8.1 console-warning-cleanup
+
+### Fixed
+- Uses Foundry v13 namespaced Handlebars rendering in QuickDeck overlay rendering with compatibility fallback to legacy global renderTemplate.
+- Removes missing command-desk .webp references by replacing them with CSS gradient/border fills to eliminate repeated 404 console noise without layout changes.
+
 ## [Unreleased] - v0.8.7.1 pinned-actions-polish
 
 ### Changed
