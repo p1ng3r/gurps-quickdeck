@@ -3620,9 +3620,9 @@
 }
 
 .qd40-overlay .qd31-left-edge-tab.qd31-closed-edge-tab { left: -32px !important; }
-.qd40-overlay .qd31-right-edge-tab.qd31-closed-edge-tab { right: -32px !important; }
+.qd40-overlay .qd31-right-edge-tab.qd31-closed-edge-tab { right: -32px !important; left: auto !important; }
 .qd40-overlay .qd31-left-panel-wrap .qd31-left-edge-tab { left: -32px !important; }
-.qd40-overlay .qd31-right-panel-wrap .qd31-right-edge-tab { right: -32px !important; }
+.qd40-overlay .qd31-right-panel-wrap .qd31-right-edge-tab { right: -32px !important; left: auto !important; }
 
 .qd40-overlay .qd31-drawer-body { overflow-y: auto !important; }
 
@@ -3705,7 +3705,7 @@
 }
 
 .qd31-right-edge-tab {
-  right: -32px !important;
+  left: -32px !important;
 }
 
 /* QD v0.8.4.8 — mirror-tabs: separate body paint from frame chrome */
@@ -3808,7 +3808,7 @@
 }
 
 .qd31-right-edge-tab {
-  right: -32px !important;
+  left: -32px !important;
 }
 
 /* v0.8.4.9 badge-frame: compact painted frame + overlay badge chrome without layout-width pressure. */
@@ -3929,7 +3929,7 @@
 }
 
 .qd31-right-edge-tab {
-  right: -32px !important;
+  left: -32px !important;
 }
 
 
@@ -4382,3 +4382,75 @@
 .qd31-pdf-map-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 4px; padding: 4px; border: 1px solid rgba(183,138,67,.35); background: rgba(36,24,12,.86); border-radius: 6px; }
 .qd31-pdf-map-row > div:first-child { display: grid; min-width: 0; }
 .qd31-pdf-map-row span, .qd31-pdf-map-row small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* v0.8.7.3 locked three-pane contract (final override) */
+.qd40-overlay .qd31-shell {
+  display: flex !important;
+  align-items: stretch !important;
+  gap: 0 !important;
+  overflow: visible !important;
+}
+
+.qd40-overlay .qd31-panel-wrap {
+  position: relative !important;
+  overflow: visible !important;
+  min-width: 0 !important;
+}
+
+.qd40-overlay .qd31-center-wrap {
+  flex: 0 0 var(--qd31-center-width, 460px) !important;
+  width: var(--qd31-center-width, 460px) !important;
+  min-width: var(--qd31-center-width, 460px) !important;
+  max-width: var(--qd31-center-width, 460px) !important;
+}
+
+.qd40-overlay .qd31-left-panel-wrap,
+.qd40-overlay .qd31-right-panel-wrap {
+  flex: 0 0 0 !important;
+  width: 0 !important;
+  min-width: 0 !important;
+  max-width: 0 !important;
+  overflow: visible !important;
+}
+
+.qd40-overlay .qd31-left-panel-wrap.is-open {
+  flex-basis: var(--qd31-left-drawer-width, 400px) !important;
+  width: var(--qd31-left-drawer-width, 400px) !important;
+  max-width: var(--qd31-left-drawer-width, 400px) !important;
+}
+
+.qd40-overlay .qd31-right-panel-wrap.is-open {
+  flex-basis: var(--qd31-right-drawer-width, 400px) !important;
+  width: var(--qd31-right-drawer-width, 400px) !important;
+  max-width: var(--qd31-right-drawer-width, 400px) !important;
+}
+
+.qd40-overlay .qd31-edge-tab {
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 132px !important;
+  z-index: 100 !important;
+}
+
+.qd40-overlay .qd31-left-edge-tab {
+  left: -32px !important;
+  right: auto !important;
+}
+
+.qd40-overlay .qd31-right-edge-tab {
+  right: -32px !important;
+  left: auto !important;
+}
+
+.qd40-overlay .qd31-right-panel-wrap > .qd31-right-edge-tab {
+  right: -32px !important;
+  left: auto !important;
+}
+
+.qd40-overlay .qd31-right-panel-wrap.is-open > .qd31-right-edge-tab,
+.qd40-overlay .qd31-right-panel-wrap.is-collapsed > .qd31-right-edge-tab {
+  right: -32px !important;
+  left: auto !important;
+}
