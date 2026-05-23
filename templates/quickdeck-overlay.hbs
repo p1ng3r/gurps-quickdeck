@@ -31,8 +31,9 @@
 
   <div class="qd40-body">
   <section class="qd40-shell qd31-shell {{#if isRosterDrawerOpen}}qd31-left-open{{/if}} {{#if isActionsDrawerOpen}}qd31-right-open{{/if}}" data-active-drawer="{{activeDrawer}}">
+    <div class="qd31-left-panel-wrap qd31-panel-wrap">
+    <button class="qd31-edge-tab qd31-left-edge-tab {{#unless isRosterDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}« Collapse{{else}}Roster ›{{/if}}</button>
   {{#if isRosterDrawerOpen}}
-  <div class="qd31-left-panel-wrap qd31-panel-wrap">
   <aside class="qd31-left-drawer">
     <header class="qd31-drawer-header">
       <h3>Active Roster</h3>
@@ -68,12 +69,10 @@
       </div>
     </section>
   </aside>
-  </div>
-  {{else}}
   {{/if}}
+  </div>
 
   <div class="qd31-center-wrap qd31-panel-wrap">
-    <button class="qd31-edge-tab qd31-left-edge-tab {{#unless isRosterDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}« Collapse{{else}}Roster ›{{/if}}</button>
   <section class="qd31-center-cockpit">
     <header class="qd31-header"><h2>QuickDeck Cockpit</h2></header>
     {{#if activeActor}}
@@ -237,11 +236,11 @@
     </section>
     {{/if}}
   </section>
-    <button class="qd31-edge-tab qd31-right-edge-tab {{#unless isActionsDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}">{{#if isActionsDrawerOpen}}Collapse »{{else}}‹ Actions{{/if}}</button>
   </div>
 
-  {{#if isActionsDrawerOpen}}
   <div class="qd31-right-panel-wrap qd31-panel-wrap">
+    <button class="qd31-edge-tab qd31-right-edge-tab {{#unless isActionsDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}">{{#if isActionsDrawerOpen}}Collapse »{{else}}‹ Actions{{/if}}</button>
+  {{#if isActionsDrawerOpen}}
   <aside class="qd31-right-drawer">
     <nav class="qd31-drawer-tabs"><button data-action="toggle-drawer" data-drawer="combat">Combat</button><button data-action="toggle-drawer" data-drawer="skills">Skills</button><button data-action="toggle-drawer" data-drawer="spells">Spells</button><button data-action="toggle-drawer" data-drawer="settings">Settings</button></nav>
     <section class="qd31-drawer-body" {{#unless isCombatDrawerOpen}}hidden{{/unless}}><input type="search" data-action="combat-search" value="{{combatSearch}}" placeholder="Search attacks" />

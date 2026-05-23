@@ -3620,9 +3620,9 @@
 }
 
 .qd40-overlay .qd31-left-edge-tab.qd31-closed-edge-tab { left: -32px !important; }
-.qd40-overlay .qd31-right-edge-tab.qd31-closed-edge-tab { right: -32px !important; }
+.qd40-overlay .qd31-right-edge-tab.qd31-closed-edge-tab { left: -32px !important; }
 .qd40-overlay .qd31-left-panel-wrap .qd31-left-edge-tab { left: -32px !important; }
-.qd40-overlay .qd31-right-panel-wrap .qd31-right-edge-tab { right: -32px !important; }
+.qd40-overlay .qd31-right-panel-wrap .qd31-right-edge-tab { left: -32px !important; }
 
 .qd40-overlay .qd31-drawer-body { overflow-y: auto !important; }
 
@@ -3705,7 +3705,7 @@
 }
 
 .qd31-right-edge-tab {
-  right: -32px !important;
+  left: -32px !important;
 }
 
 /* QD v0.8.4.8 — mirror-tabs: separate body paint from frame chrome */
@@ -3808,7 +3808,7 @@
 }
 
 .qd31-right-edge-tab {
-  right: -32px !important;
+  left: -32px !important;
 }
 
 /* v0.8.4.9 badge-frame: compact painted frame + overlay badge chrome without layout-width pressure. */
@@ -3929,7 +3929,7 @@
 }
 
 .qd31-right-edge-tab {
-  right: -32px !important;
+  left: -32px !important;
 }
 
 
