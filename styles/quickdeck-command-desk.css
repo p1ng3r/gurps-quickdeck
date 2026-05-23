@@ -3620,9 +3620,9 @@
 }
 
 .qd40-overlay .qd31-left-edge-tab.qd31-closed-edge-tab { left: -32px !important; }
-.qd40-overlay .qd31-right-edge-tab.qd31-closed-edge-tab { left: -32px !important; }
+.qd40-overlay .qd31-right-edge-tab.qd31-closed-edge-tab { right: -32px !important; left: auto !important; }
 .qd40-overlay .qd31-left-panel-wrap .qd31-left-edge-tab { left: -32px !important; }
-.qd40-overlay .qd31-right-panel-wrap .qd31-right-edge-tab { left: -32px !important; }
+.qd40-overlay .qd31-right-panel-wrap .qd31-right-edge-tab { right: -32px !important; left: auto !important; }
 
 .qd40-overlay .qd31-drawer-body { overflow-y: auto !important; }
 
@@ -4440,6 +4440,17 @@
 }
 
 .qd40-overlay .qd31-right-edge-tab {
+  right: -32px !important;
+  left: auto !important;
+}
+
+.qd40-overlay .qd31-right-panel-wrap > .qd31-right-edge-tab {
+  right: -32px !important;
+  left: auto !important;
+}
+
+.qd40-overlay .qd31-right-panel-wrap.is-open > .qd31-right-edge-tab,
+.qd40-overlay .qd31-right-panel-wrap.is-collapsed > .qd31-right-edge-tab {
   right: -32px !important;
   left: auto !important;
 }
