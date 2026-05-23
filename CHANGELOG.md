@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.7.2 foundry-v13-compat
+
+### Changed
+- Replaces QuickDeck template rendering calls with a Foundry v13+ compatibility renderer that prefers `foundry.applications.handlebars.renderTemplate` and falls back to global `renderTemplate` for older compatibility without behavior changes.
+- Updates the in-app info popup build labels to `QD v0.8.7.2 — v13-compat` and `v0.8.7.2 foundry-v13-compat`.
+
 ## [Unreleased] - v0.8.7.1 pinned-actions-polish
 
 ### Changed
