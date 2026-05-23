@@ -297,11 +297,19 @@
       <section class="qd31-settings-panel">
         <header class="qd31-settings-header">
           <h3>PDF Source Manager</h3>
-          <small>User PDFs primary · built-in summaries fallback</small>
+          <small>User PDFs primary · built-in summaries fallback · no PDF parsing</small>
         </header>
+        <section class="qd31-source-priority-panel" aria-label="Source priority">
+          <h4>Source Priority</h4>
+          <ol>
+            <li><strong>Mapped user PDF source</strong> opens externally/browser-linked when available.</li>
+            <li><strong>Built-in QuickDeck summaries</strong> provide fallback popup content.</li>
+            <li><strong>Reference lookup key/page data</strong> helps resolve source/page targets.</li>
+          </ol>
+        </section>
         <div class="qd31-pdf-map-form">
-          <label>Key<input type="text" data-action="pdf-map-key" value="{{pdfMapDraft.key}}" placeholder="B"></label>
-          <label>Name<input type="text" data-action="pdf-map-name" value="{{pdfMapDraft.name}}" placeholder="Basic Set"></label>
+          <label>Source Key<input type="text" data-action="pdf-map-key" value="{{pdfMapDraft.key}}" placeholder="B"></label>
+          <label>Display Name<input type="text" data-action="pdf-map-name" value="{{pdfMapDraft.name}}" placeholder="Basic Set"></label>
           <small>Known keys auto-fill names. Examples: B, BX, DFA, DFX, DFS, MA, M, DF1:, PU2:.</small>
           <label>PDF Path
             <div class="qd31-pdf-path-row">
@@ -309,7 +317,7 @@
               <button type="button" class="qd31-square-button" data-action="choose-pdf-source" title="Choose PDF">📁</button>
             </div>
           </label>
-          <label>Offset<input type="number" data-action="pdf-map-offset" value="{{pdfMapDraft.offset}}"></label>
+          <label>Page Offset<input type="number" data-action="pdf-map-offset" value="{{pdfMapDraft.offset}}"></label>
           <div class="qd31-pdf-map-actions">
             <button type="button" class="qd31-square-button" data-action="save-pdf-source" title="Save PDF mapping">💾</button>
             <button type="button" class="qd31-square-button" data-action="clear-pdf-source-draft" title="Clear form">✕</button>
@@ -318,10 +326,16 @@
         <div class="qd31-pdf-map-list">
           {{#each pdfPageRefMappings as |mapping|}}
             <article class="qd31-pdf-map-row">
-              <div>
-                <strong>{{mapping.key}}</strong><span>{{mapping.name}}</span><small>{{mapping.path}}</small><small>Offset {{mapping.offset}}</small><small>Test page: {{mapping.testPage}}</small>
+              <div class="qd31-pdf-map-main">
+                <div class="qd31-pdf-map-title"><strong>{{mapping.key}}</strong><span>{{mapping.name}}</span></div>
+                <small class="qd31-pdf-map-path" title="{{mapping.pathDisplayTooltip}}">{{mapping.pathDisplay}}</small>
+                <div class="qd31-pdf-map-diagnostics">
+                  <small>{{mapping.statusText}}</small>
+                  <small>Offset: {{mapping.offset}}</small>
+                  <small>Test opens page: {{mapping.testPage}}</small>
+                </div>
               </div>
-              <div class="qd31-action-controls">
+              <div class="qd31-action-controls qd31-pdf-map-controls">
                 <button type="button" class="qd31-square-button" data-action="edit-pdf-source" data-key="{{mapping.key}}" title="Edit">✎</button>
                 <button type="button" class="qd31-square-button" data-action="test-pdf-source" data-key="{{mapping.key}}" title="Test Open: page 1 + offset">▶</button>
                 <button type="button" class="qd31-square-button" data-action="remove-pdf-source" data-key="{{mapping.key}}" title="Remove">🗑</button>
