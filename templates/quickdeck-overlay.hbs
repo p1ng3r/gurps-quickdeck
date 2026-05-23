@@ -164,12 +164,12 @@
                     {{#if attack.variant}}<div class="qd31-center-fav-variant">{{attack.variant}}</div>{{/if}}
                   </div>
                   <div class="qd31-center-fav-controls">
+                    <button type="button" class="qd31-square-button qd31-center-fav-action-main" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll">Attack</button>
+                    {{#if attack.damageDisplay}}<button type="button" class="qd31-square-button qd31-center-fav-action-main qd31-center-fav-action-damage" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">Damage</button>{{else if attack.damageFormula}}<button type="button" class="qd31-square-button qd31-center-fav-action-main qd31-center-fav-action-damage" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">Damage</button>{{else if attack.damage}}<button type="button" class="qd31-square-button qd31-center-fav-action-main qd31-center-fav-action-damage" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">Damage</button>{{/if}}
                     <button type="button" class="qd31-square-button" data-action="target-opponent" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Target Opponent">🎯</button>
                     <button type="button" class="qd31-square-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
-                    <button type="button" class="qd31-square-button qd31-center-fav-pin is-active" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="Unpin">📌</button>
-                    <button type="button" class="qd31-square-button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll">⚔</button>
-                    <button type="button" class="qd31-square-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">💥</button>
-                    {{#if attack.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" title="Reference">ℹ</button>{{/if}}
+                    {{#if attack.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" title="Reference">Ref</button>{{/if}}
+                    <button type="button" class="qd31-square-button qd31-center-fav-pin is-active qd31-center-fav-unpin" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="Unpin">Unpin</button>
                   </div>
                 </article>
               {{/each}}

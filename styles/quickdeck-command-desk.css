@@ -4366,8 +4366,21 @@
 .qd31-center-fav-main { display: grid; gap: 2px; }
 .qd31-center-fav-detail { font-size: 11px; color: rgba(240,228,198,.88); line-height: 1.2; }
 .qd31-center-fav-variant { font-size: 10px; color: rgba(243,198,119,.95); line-height: 1.2; }
-.qd31-center-fav-controls { display: flex; flex-wrap: wrap; gap: 4px; }
-.qd31-center-fav-controls .qd31-square-button { width: 24px; height: 24px; padding: 0; font-size: 12px; }
+.qd31-center-fav-controls { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.qd31-center-fav-controls .qd31-square-button { min-width: 24px; height: 24px; padding: 0 6px; font-size: 11px; line-height: 1; }
+.qd31-center-fav-combat .qd31-center-fav-card .qd31-center-fav-action-main {
+  min-width: 64px;
+  height: 28px;
+  padding: 0 10px;
+  font-size: 12px;
+  font-weight: 700;
+}
+.qd31-center-fav-combat .qd31-center-fav-card .qd31-center-fav-action-damage {
+  min-width: 70px;
+}
+.qd31-center-fav-combat .qd31-center-fav-card .qd31-center-fav-unpin {
+  min-width: 54px;
+}
 
 .qd31-settings-panel { display: grid; gap: 6px; max-width: 100%; }
 .qd31-settings-header h3 { margin: 0; font-size: 0.78rem; color: #e3c27a; letter-spacing: .04em; }
