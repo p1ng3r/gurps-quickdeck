@@ -1504,6 +1504,21 @@ export class QuickDeckApp extends Application {
     if (target) target.textContent = String(value);
   }
 
+
+  formatSearchStatus(visible, label, hasQuery) {
+    if (hasQuery && visible === 0) return `No matching ${label}`;
+    return `${visible} ${label}`;
+  }
+
+  updateSearchUiState(html, section, visible, label, hasQuery) {
+    const status = html.find(`[data-search-status='${section}']`)[0];
+    if (status) status.textContent = this.formatSearchStatus(visible, label, hasQuery);
+    const empty = html.find(`[data-search-empty='${section}']`)[0];
+    if (empty) empty.hidden = !(hasQuery && visible === 0);
+    const clearButton = html.find(`[data-action='clear-${section}-search']`)[0];
+    if (clearButton) clearButton.hidden = !hasQuery;
+  }
+
   applyDomFilterBySelector(html, rowSelector, searchTerm) {
     const normalizedSearch = this.normalizeSearchText(searchTerm);
     const rows = html.find(rowSelector).toArray();
@@ -1537,6 +1552,7 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "attacks-visible", visible);
     this.updateCountText(html, "attacks-total", total);
+    this.updateSearchUiState(html, "combat", visible, "attacks", Boolean(this.normalizeSearchText(this.combatSearch)));
   }
 
   applySkillsFilter(html) {
@@ -1547,6 +1563,7 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "skills-visible", visible);
     this.updateCountText(html, "skills-total", total);
+    this.updateSearchUiState(html, "skills", visible, "skills", Boolean(this.normalizeSearchText(this.skillsSearch)));
   }
 
   applyQuickSkillsFilter(html) {
@@ -1567,6 +1584,7 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "spells-visible", visible);
     this.updateCountText(html, "spells-total", total);
+    this.updateSearchUiState(html, "spells", visible, "spells", Boolean(this.normalizeSearchText(this.spellsSearch)));
   }
 
   toDisplayValue(value) {
@@ -4159,16 +4177,28 @@ export class QuickDeckApp extends Application {
       isDebugMode: DEBUG,
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
+      combatSearchCount: filteredAttacks.length,
+      combatSearchHasQuery: Boolean(this.normalizeSearchText(combatSearch)),
+      combatSearchShowEmpty: Boolean(this.normalizeSearchText(combatSearch)) && filteredAttacks.length === 0,
+      combatSearchStatusText: this.formatSearchStatus(filteredAttacks.length, "attacks", Boolean(this.normalizeSearchText(combatSearch))),
       meleeAttacks,
       rangedAttacks,
       favoriteAttacks,
       favoriteAttackCount: favoriteAttacks.length,
       skillsCount: skills.length,
       visibleSkillsCount: filteredSkills.length,
+      skillsSearchCount: filteredSkills.length,
+      skillsSearchHasQuery: Boolean(this.normalizeSearchText(skillsSearch)),
+      skillsSearchShowEmpty: Boolean(this.normalizeSearchText(skillsSearch)) && filteredSkills.length === 0,
+      skillsSearchStatusText: this.formatSearchStatus(filteredSkills.length, "skills", Boolean(this.normalizeSearchText(skillsSearch))),
       quickSkillsCount: quickSkills.length,
       visibleQuickSkillsCount: filteredQuickSkills.length,
       spellsCount: spells.length,
       visibleSpellsCount: filteredSpells.length,
+      spellsSearchCount: filteredSpells.length,
+      spellsSearchHasQuery: Boolean(this.normalizeSearchText(spellsSearch)),
+      spellsSearchShowEmpty: Boolean(this.normalizeSearchText(spellsSearch)) && filteredSpells.length === 0,
+      spellsSearchStatusText: this.formatSearchStatus(filteredSpells.length, "spells", Boolean(this.normalizeSearchText(spellsSearch))),
       favoriteSpells,
       favoriteSpellCount: favoriteSpells.length,
       centerFavoriteSections,
@@ -4315,6 +4345,33 @@ export class QuickDeckApp extends Application {
       const searchValue = event.currentTarget?.value;
       this.spellsSearch = typeof searchValue === "string" ? searchValue : "";
       this.applySpellsFilter(html);
+    });
+
+    html.find("[data-action='clear-combat-search']").on("click", (event) => {
+      event.preventDefault();
+      this.combatSearch = "";
+      const input = html.find("[data-action='combat-search']")[0];
+      if (input) input.value = "";
+      this.applyCombatFilter(html);
+      input?.focus?.();
+    });
+
+    html.find("[data-action='clear-skills-search']").on("click", (event) => {
+      event.preventDefault();
+      this.skillsSearch = "";
+      const input = html.find("[data-action='skills-search']")[0];
+      if (input) input.value = "";
+      this.applySkillsFilter(html);
+      input?.focus?.();
+    });
+
+    html.find("[data-action='clear-spells-search']").on("click", (event) => {
+      event.preventDefault();
+      this.spellsSearch = "";
+      const input = html.find("[data-action='spells-search']")[0];
+      if (input) input.value = "";
+      this.applySpellsFilter(html);
+      input?.focus?.();
     });
 
     html.find("[data-action='toggle-quick-skill']").on("change click", (event) => {
