@@ -1,3 +1,10 @@
+## [Unreleased] - v0.8.7.3 side-rail-lock
+
+### Changed
+- Replaces floating Roster and Actions tabs with fixed left/right side rail columns.
+- Collapsed rails now use real 64px columns and open drawers use full-width 484px/420px columns.
+- No roll, reference lookup, or PDF behavior changes.
+
 ## [Unreleased] - v0.8.7.2 foundry-v13-compat
 
 ### Changed
