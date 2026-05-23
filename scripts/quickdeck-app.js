@@ -4173,6 +4173,8 @@ export class QuickDeckApp extends Application {
       indexedSpells,
       pinnedActions,
       hasPinnedActions: pinnedActions.length > 0,
+      uiBuildLabel: "QD v0.8.7.1 — pinned-polish",
+      uiBranchLabel: "v0.8.7.1 pinned-actions-polish",
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
       pdfMapDraft: this.pdfMapDraft,

@@ -2,6 +2,7 @@
   <div class="qd40-chrome-row" data-action="drag-overlay" title="Drag QuickDeck">
     <div class="qd40-corner-badge">
       <span class="qd40-corner-title">GURPS QuickDeck</span>
+      <span class="quickdeck-dev-badge">{{uiBuildLabel}}</span>
       <button
         type="button"
         class="qd40-info-button"
@@ -22,10 +23,10 @@
   {{#if isInfoPopoverOpen}}
   <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck version information">
     <div class="qd40-info-title">GURPS QuickDeck</div>
-    <div class="qd40-info-row"><span>UI</span><strong>QD v0.8.6.8 — ref-data-load</strong></div>
+    <div class="qd40-info-row"><span>UI</span><strong>{{uiBuildLabel}}</strong></div>
     <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
     <div class="qd40-info-row"><span>Mode</span><strong>qd40 chromeless command desk</strong></div>
-    <div class="qd40-info-row"><span>Branch</span><strong>v0.8.5.1 info popover pass</strong></div>
+    <div class="qd40-info-row"><span>Branch</span><strong>{{uiBranchLabel}}</strong></div>
   </div>
   {{/if}}
 
