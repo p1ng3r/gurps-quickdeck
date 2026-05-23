@@ -1,0 +1,121 @@
+{
+  "name": "QuickDeck Dwarven Core Batch 1 Draft",
+  "format": "webp",
+  "quality": 75,
+  "transparent": "best-effort alpha-keyed from generated checkerboard previews",
+  "warning": "Draft assets: inspect transparency edges before committing to repo. Some checkerboard/white halo may remain.",
+  "assets": [
+    {
+      "path": "assets/ui/dwarven/frame/top-rail.webp",
+      "source_preview": "medieval_steampunk_ornamental_frame_ui.png",
+      "size": [
+        2508,
+        627
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/frame/bottom-rail.webp",
+      "source_preview": "decorative_fantasy_ui_border_element.png",
+      "size": [
+        2508,
+        627
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/frame/left-rail.webp",
+      "source_preview": "medieval_decorative_ui_border_panel.png",
+      "size": [
+        627,
+        2508
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/frame/right-rail.webp",
+      "source_preview": "ornate_medieval_nordic_ui_frame.png",
+      "size": [
+        627,
+        2508
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/frame/corner-top-left.webp",
+      "source_preview": "ornate_fantasy_corner_frame_detail.png",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/frame/corner-top-right.webp",
+      "source_preview": "ornate_metallic_frame_corner_with_gem.png",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/frame/corner-bottom-left.webp",
+      "source_preview": "ornate_fantasy_metal_corner_frame.png",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/frame/corner-bottom-right.webp",
+      "source_preview": "ornate_medieval_metal_corner_frame.png",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/header/section-title-plate.webp",
+      "source_preview": "medieval_steampunk_ui_frame_with_gems.png",
+      "size": [
+        1774,
+        887
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/header/knotwork-strip.webp",
+      "source_preview": "ornate_metallic_ui_divider_panel.png",
+      "size": [
+        2508,
+        627
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/button/button-square.webp",
+      "source_preview": "ornate_fantasy_ui_button_frame.png",
+      "size": [
+        1254,
+        1254
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/button/button-wide.webp",
+      "source_preview": "medieval_steampunk_ui_frame_with_gems.png",
+      "size": [
+        1774,
+        887
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/collapse/left-collapse-tab.webp",
+      "source_preview": "ornate_metallic_ui_tab_with_amethyst_gems.png",
+      "size": [
+        887,
+        1774
+      ]
+    },
+    {
+      "path": "assets/ui/dwarven/collapse/right-collapse-tab.webp",
+      "source_preview": "ornate_metallic_ui_tab_with_amethyst_gems.png",
+      "size": [
+        887,
+        1774
+      ]
+    }
+  ]
+}
