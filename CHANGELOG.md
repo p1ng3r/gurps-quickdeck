@@ -1,3 +1,10 @@
+## [Unreleased] - v0.8.9.0 drawer-search-usability
+
+### Changed
+- Improves Actions drawer search usability for Combat, Skills, and Spells with per-section visible match status text.
+- Adds per-section clear-search controls that only clear the corresponding search field.
+- Adds per-section empty-state messaging for zero-match queries while preserving existing row actions and roll/reference behavior.
+
 ## [Unreleased] - v0.8.8.1 console-warning-cleanup
 
 ### Fixed

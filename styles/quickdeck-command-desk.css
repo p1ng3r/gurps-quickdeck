@@ -4470,3 +4470,10 @@
   right: -32px !important;
   left: auto !important;
 }
+
+/* qd v0.8.9.0 search usability */
+.qd31-search-row{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center}
+.qd31-search-row input[type="search"]{min-width:0}
+.qd31-search-clear{height:26px;padding:0 8px;font-size:.72rem;line-height:1}
+.qd31-search-status{font-size:.72rem;opacity:.9;white-space:nowrap}
+.qd31-search-empty{font-size:.72rem;opacity:.9;padding:2px 0 4px 2px}
