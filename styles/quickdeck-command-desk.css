@@ -4382,3 +4382,49 @@
 .qd31-pdf-map-row { display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 4px; padding: 4px; border: 1px solid rgba(183,138,67,.35); background: rgba(36,24,12,.86); border-radius: 6px; }
 .qd31-pdf-map-row > div:first-child { display: grid; min-width: 0; }
 .qd31-pdf-map-row span, .qd31-pdf-map-row small { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* QD v0.8.7.3 tab-lock
+   DO NOT MOVE EDGE TABS INTO DRAWER OR CENTER LAYOUT.
+   These tabs are intentionally hard-anchored to the outer QuickDeck frame. */
+.qd40-frame {
+  position: relative !important;
+}
+
+.qd31-edge-tabs-layer {
+  position: absolute !important;
+  inset: 0 !important;
+  pointer-events: none !important;
+  z-index: 80 !important;
+}
+
+.qd31-edge-tabs-layer .qd31-edge-tab {
+  pointer-events: auto !important;
+  position: absolute !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 32px !important;
+  height: 132px !important;
+  z-index: 81 !important;
+}
+
+.qd31-left-edge-tab {
+  left: -42px !important;
+}
+
+.qd31-right-edge-tab {
+  right: -42px !important;
+}
+
+.qd40-overlay .qd31-left-drawer {
+  padding-left: 0 !important;
+}
+
+.qd40-overlay .qd31-right-drawer {
+  padding-right: 0 !important;
+}
+
+.qd31-closed-edge-tab,
+.qd31-open-drawer-tab {
+  left: auto !important;
+  right: auto !important;
+}

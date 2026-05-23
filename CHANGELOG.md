@@ -1,3 +1,9 @@
+## [Unreleased] - v0.8.7.3 tab-lock
+
+### Changed
+- Hard-locks Roster/Actions edge tabs into a dedicated overlay layer anchored to the outer QuickDeck frame so they never shift into drawer or center layouts.
+- Removes duplicate in-layout edge-tab buttons and neutralizes drawer gutter padding used only for tab placement.
+
 ## [Unreleased] - v0.8.7.2 foundry-v13-compat
 
 ### Changed

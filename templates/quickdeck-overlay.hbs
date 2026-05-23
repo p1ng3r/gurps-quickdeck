@@ -1,4 +1,23 @@
 <div class="qd40-frame">
+  {{!-- DO NOT MOVE EDGE TABS INTO DRAWER OR CENTER LAYOUT.
+        These tabs are intentionally hard-anchored to the outer QuickDeck frame. --}}
+  <div class="qd31-edge-tabs-layer" aria-label="QuickDeck drawer controls">
+    <button
+      class="qd31-edge-tab qd31-left-edge-tab"
+      type="button"
+      data-action="toggle-roster-drawer"
+      title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}"
+    >{{#if isRosterDrawerOpen}}‹ Collapse{{else}}Roster ›{{/if}}</button>
+
+    <button
+      class="qd31-edge-tab qd31-right-edge-tab"
+      type="button"
+      data-action="toggle-actions-drawer"
+      data-drawer="combat"
+      title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}"
+    >{{#if isActionsDrawerOpen}}Collapse ›{{else}}‹ Actions{{/if}}</button>
+  </div>
+
   <div class="qd40-chrome-row" data-action="drag-overlay" title="Drag QuickDeck">
     <div class="qd40-corner-badge">
       <span class="qd40-corner-title">GURPS QuickDeck</span>
@@ -73,7 +92,6 @@
   {{/if}}
 
   <div class="qd31-center-wrap qd31-panel-wrap">
-    <button class="qd31-edge-tab qd31-left-edge-tab {{#unless isRosterDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}« Collapse{{else}}Roster ›{{/if}}</button>
   <section class="qd31-center-cockpit">
     <header class="qd31-header"><h2>QuickDeck Cockpit</h2></header>
     {{#if activeActor}}
@@ -237,7 +255,6 @@
     </section>
     {{/if}}
   </section>
-    <button class="qd31-edge-tab qd31-right-edge-tab {{#unless isActionsDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}">{{#if isActionsDrawerOpen}}Collapse »{{else}}‹ Actions{{/if}}</button>
   </div>
 
   {{#if isActionsDrawerOpen}}
