@@ -1,3 +1,9 @@
+## [Unreleased] - v0.9.4 dwarven-assets-normalize-local
+
+### Changed
+- Added `dev/dwarven-asset-proof.html` to preview all 14 dwarven Batch 1 assets with path, actual image dimensions, target dimensions, intended usage, and repeat/stretch guidance on checkerboard/dark backgrounds.
+- Tuned dwarven header/button background sizing to better match normalized-asset proportions at UI scale while preserving existing layout and tab positioning contracts.
+
 ## [Unreleased] - v0.9.3 dwarven-shell-css
 
 ### Changed

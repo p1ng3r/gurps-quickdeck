@@ -4590,7 +4590,7 @@
   background-image: var(--qd-dwarf-title-plate), linear-gradient(180deg, rgba(95, 69, 36, 0.7), rgba(22, 17, 12, 0.94)) !important;
   background-position: center center, center center !important;
   background-repeat: no-repeat, repeat !important;
-  background-size: 100% 120%, auto !important;
+  background-size: 100% 100%, auto !important;
 }
 
 .qd40-overlay .qd31-header::after,
@@ -4617,7 +4617,7 @@
   background-image: linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)), var(--qd-dwarf-button-square) !important;
   background-position: center center, center center !important;
   background-repeat: repeat, no-repeat !important;
-  background-size: auto, 100% 100% !important;
+  background-size: auto, 92% 92% !important;
   border: 1px solid rgba(219, 175, 94, 0.84) !important;
   color: #f5e2b4 !important;
   text-shadow: 0 1px 2px #000;
@@ -4629,7 +4629,7 @@
   background-image: linear-gradient(180deg, rgba(255, 231, 177, 0.25), rgba(60, 41, 18, 0.26)), var(--qd-dwarf-button-wide) !important;
   background-position: center center, center center !important;
   background-repeat: repeat, no-repeat !important;
-  background-size: auto, 100% 100% !important;
+  background-size: auto, 96% 90% !important;
   border: 1px solid rgba(229, 183, 98, 0.88) !important;
   color: #f9e9c3 !important;
 }
