@@ -11,8 +11,10 @@
  * existing QuickDeck DOM and layer over styles/quickdeck.css.
  */
 
+:root,
 .gurps-quickdeck-app,
-.gurps-quickdeck {
+.gurps-quickdeck,
+.qd40-overlay {
   --qd-art-root: "../assets/ui/command-desk";
   --qd-brass: #c79a38;
   --qd-brass-bright: #f0cd7a;
@@ -4496,8 +4498,11 @@
 .qd31-search-empty{font-size:.72rem;opacity:.9;padding:2px 0 4px 2px}
 
 /* QD v0.9.3 — dwarven shell CSS */
+/* Scoped on :root + overlay to ensure Foundry-injected overlay nodes always inherit variables. */
+:root,
 .gurps-quickdeck-app,
-.gurps-quickdeck {
+.gurps-quickdeck,
+.qd40-overlay {
   --qd-dwarf-top-rail: url("../assets/ui/dwarven/frame/top-rail.webp");
   --qd-dwarf-bottom-rail: url("../assets/ui/dwarven/frame/bottom-rail.webp");
   --qd-dwarf-left-rail: url("../assets/ui/dwarven/frame/left-rail.webp");
@@ -4581,9 +4586,11 @@
   text-shadow: 0 1px 2px #000;
   border: 1px solid rgba(206, 162, 83, 0.62) !important;
   /* Keep header plate tall enough to read as art without growing the section height too much. */
-  background:
-    var(--qd-dwarf-title-plate) center / 100% 120% no-repeat,
-    linear-gradient(180deg, rgba(95, 69, 36, 0.7), rgba(22, 17, 12, 0.94)) !important;
+  background-color: rgba(22, 17, 12, 0.94) !important;
+  background-image: var(--qd-dwarf-title-plate), linear-gradient(180deg, rgba(95, 69, 36, 0.7), rgba(22, 17, 12, 0.94)) !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 120%, auto !important;
 }
 
 .qd40-overlay .qd31-header::after,
@@ -4606,10 +4613,11 @@
 .qd40-overlay .qd31-icon-button,
 .qd40-overlay .qd31-search-clear,
 .qd40-overlay .qd31-center-fav-unpin {
-  background:
-    linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)),
-    var(--qd-dwarf-button-square) center / 100% 100% no-repeat,
-    rgba(30, 20, 10, 0.98) !important;
+  background-color: rgba(30, 20, 10, 0.98) !important;
+  background-image: linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)), var(--qd-dwarf-button-square) !important;
+  background-position: center center, center center !important;
+  background-repeat: repeat, no-repeat !important;
+  background-size: auto, 100% 100% !important;
   border: 1px solid rgba(219, 175, 94, 0.84) !important;
   color: #f5e2b4 !important;
   text-shadow: 0 1px 2px #000;
@@ -4617,10 +4625,11 @@
 
 .qd40-overlay .qd31-center-fav-action-main,
 .qd40-overlay .qd31-center-fav-action-damage {
-  background:
-    linear-gradient(180deg, rgba(255, 231, 177, 0.25), rgba(60, 41, 18, 0.26)),
-    var(--qd-dwarf-button-wide) center / 100% 100% no-repeat,
-    rgba(33, 22, 11, 0.98) !important;
+  background-color: rgba(33, 22, 11, 0.98) !important;
+  background-image: linear-gradient(180deg, rgba(255, 231, 177, 0.25), rgba(60, 41, 18, 0.26)), var(--qd-dwarf-button-wide) !important;
+  background-position: center center, center center !important;
+  background-repeat: repeat, no-repeat !important;
+  background-size: auto, 100% 100% !important;
   border: 1px solid rgba(229, 183, 98, 0.88) !important;
   color: #f9e9c3 !important;
 }
@@ -4634,15 +4643,19 @@
 }
 
 .qd40-overlay .qd31-left-edge-tab {
-  background:
-    var(--qd-dwarf-left-tab) center / 100% 100% no-repeat,
-    rgba(24, 16, 9, 0.95) !important;
+  background-color: rgba(24, 16, 9, 0.95) !important;
+  background-image: var(--qd-dwarf-left-tab) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
 }
 
 .qd40-overlay .qd31-right-edge-tab {
-  background:
-    var(--qd-dwarf-right-tab) center / 100% 100% no-repeat,
-    rgba(24, 16, 9, 0.95) !important;
+  background-color: rgba(24, 16, 9, 0.95) !important;
+  background-image: var(--qd-dwarf-right-tab) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
 }
 
 .qd40-overlay .qd31-left-panel-wrap > .qd31-left-edge-tab {

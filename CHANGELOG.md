@@ -1,6 +1,7 @@
 ## [Unreleased] - v0.9.3 dwarven-shell-css
 
 ### Changed
+- Fixed dwarven CSS variable scope by defining `--qd-dwarf-*` on `:root` and `.qd40-overlay`, and switched key header/button/tab skins to explicit background-image/background-size/background-repeat/background-position declarations for reliable Foundry cascade resolution.
 - Applied a CSS-only dwarven shell pass to QuickDeck using Batch 1 assets (frame rails/corners, header plate/knotwork accents, button skins, and collapse-tab art) while preserving existing three-pane behavior and collapse contracts.
 - Strengthened left/right edge-tab outside positioning (`left: -32px` for left tab, `right: -32px` for right tab) within wrapper-scoped selectors so tabs remain on outer edges in both open and collapsed states.
 - Follow-up visual tuning increases dwarven art visibility (thicker-but-compact rails, stronger header plate/knotwork treatment, stronger square/wide button art, and clearer collapse-tab skins) without changing layout or behavior.
