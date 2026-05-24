@@ -41,7 +41,7 @@ const assets = [
 const grid=document.getElementById('grid');
 for (const [path,target,usage,guide] of assets){
   const card=document.createElement('article'); card.className='card';
-  const img = new Image(); img.src='../../'+path; img.alt=path;
+  const img = new Image(); img.src='../'+path; img.alt=path;
   img.onload=()=>meta.textContent=`actual: ${img.naturalWidth}x${img.naturalHeight} | target: ${target}`;
   const pv=document.createElement('div'); pv.className='preview'; pv.appendChild(img);
   const p=document.createElement('p'); p.innerHTML=`<code>${path}</code><br><strong>usage:</strong> ${usage}<br><strong>guidance:</strong> ${guide}`;
