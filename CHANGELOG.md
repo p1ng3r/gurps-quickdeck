@@ -1,3 +1,8 @@
+## [Unreleased] - v0.9.7 batch1-fit
+
+### Changed
+- Wired Batch 1 dwarven UI assets into CSS (header plates, drawer title plate, mini-header strip, left/right collapse tabs, square/wide button shells) without changing QuickDeck behavior.
+
 ## [Unreleased] - v0.9.6 dwarven-measured-fit-local
 
 ### Changed

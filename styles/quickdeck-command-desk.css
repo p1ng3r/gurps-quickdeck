@@ -41,6 +41,14 @@
     linear-gradient(180deg, rgba(19, 13, 9, 0.96), rgba(9, 6, 4, 0.98));
   --qd-header-rail-fill: linear-gradient(180deg, rgba(255, 220, 156, 0.18), rgba(84, 55, 20, 0.08) 48%, rgba(11, 7, 4, 0.14));
   --qd-divider-brass-fill: linear-gradient(90deg, rgba(118, 80, 24, 0), rgba(216, 164, 73, 0.8) 18%, rgba(255, 221, 154, 0.86) 50%, rgba(216, 164, 73, 0.8) 82%, rgba(118, 80, 24, 0));
+  /* Dwarven Batch 1 asset variables (defined across root/app/overlay scope) */
+  --qd-dwarf-title-plate: url("../assets/ui/dwarven/section-title-plate.webp");
+  --qd-dwarf-drawer-title-plate: url("../assets/ui/dwarven/drawer-title-plate.webp");
+  --qd-dwarf-knot-strip: url("../assets/ui/dwarven/mini-header-strip.webp");
+  --qd-dwarf-left-tab: url("../assets/ui/dwarven/left-collapse-tab.webp");
+  --qd-dwarf-right-tab: url("../assets/ui/dwarven/right-collapse-tab.webp");
+  --qd-dwarf-button-square: url("../assets/ui/dwarven/button/button-square.webp");
+  --qd-dwarf-button-wide: url("../assets/ui/dwarven/button/button-wide.webp");
 }
 
 .gurps-quickdeck,
@@ -4594,19 +4602,58 @@
   background-repeat: no-repeat, repeat !important;
 }
 
-.qd40-overlay .qd31-header { background-size: 96% 88%, auto !important; }
-.qd40-overlay .qd31-drawer-header { background-size: 98% 94%, auto !important; }
+.qd40-overlay .qd31-header { background-size: 100% 100%, auto !important; }
+.qd40-overlay .qd31-drawer-header { background-size: 100% 100%, auto !important; background-position: center center, center center !important; }
 .qd40-overlay .qd31-center-fav-header,
 .qd40-overlay .qd31-settings-header {
-  background-size: 100% 210%, auto !important;
-  background-position: center 46%, center center !important;
+  background-size: 100% 100%, auto !important;
+  background-position: center center, center center !important;
+}
+
+/* Center favorite header uses the mini strip as the exact fitted Batch 1 asset */
+.qd40-overlay .qd31-center-fav-header {
+  background-image: var(--qd-dwarf-knot-strip), linear-gradient(180deg, rgba(111, 81, 41, 0.82), rgba(25, 18, 12, 0.96)) !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, auto !important;
+}
+
+.qd40-overlay .qd31-center-fav-header::after {
+  background: none !important;
+  height: 0 !important;
+}
+
+/* Drawer-specific title plate (use the dedicated drawer asset from Batch 1) */
+.qd40-overlay .qd31-drawer-header {
+  background-image: var(--qd-dwarf-drawer-title-plate), linear-gradient(180deg, rgba(111, 81, 41, 0.82), rgba(25, 18, 12, 0.96)) !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
 }
 
 .qd40-overlay .qd31-header h2 {
   font-size: 28px;
   line-height: 32px;
   letter-spacing: 0.03em;
-  padding-inline: 8px;
+  margin: 0;
+  padding: 0.26rem 1rem 0.16rem;
+  text-align: center;
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.qd40-overlay .qd31-drawer-header h3 {
+  font-size: 1rem;
+  line-height: 1.1;
+  margin: 0;
+  padding: 0.32rem 1rem 0.2rem 1.4rem;
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+.qd40-overlay .qd31-center-fav-header {
+  padding-inline: 0.85rem !important;
 }
 
 .qd40-overlay .qd31-header::after,
@@ -4630,10 +4677,10 @@
 .qd40-overlay .qd31-search-clear,
 .qd40-overlay .qd31-center-fav-unpin {
   background-color: rgba(30, 20, 10, 0.98) !important;
-  background-image: linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)), var(--qd-dwarf-button-square) !important;
+  background-image: var(--qd-dwarf-button-square), linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)) !important;
   background-position: center center, center center !important;
-  background-repeat: repeat, no-repeat !important;
-  background-size: auto, 84% 78% !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, auto !important;
   border: 1px solid rgba(219, 175, 94, 0.84) !important;
   color: #f5e2b4 !important;
   text-shadow: 0 1px 2px #000;
@@ -4642,10 +4689,10 @@
 .qd40-overlay .qd31-center-fav-action-main,
 .qd40-overlay .qd31-center-fav-action-damage {
   background-color: rgba(33, 22, 11, 0.98) !important;
-  background-image: linear-gradient(180deg, rgba(255, 231, 177, 0.25), rgba(60, 41, 18, 0.26)), var(--qd-dwarf-button-wide) !important;
+  background-image: var(--qd-dwarf-button-wide), linear-gradient(180deg, rgba(255, 231, 177, 0.25), rgba(60, 41, 18, 0.26)) !important;
   background-position: center center, center center !important;
-  background-repeat: repeat, no-repeat !important;
-  background-size: auto, 90% 76% !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, auto !important;
   border: 1px solid rgba(229, 183, 98, 0.88) !important;
   color: #f9e9c3 !important;
 }
@@ -4663,7 +4710,7 @@
   background-image: var(--qd-dwarf-left-tab) !important;
   background-position: center center !important;
   background-repeat: no-repeat !important;
-  background-size: 90% 96% !important;
+  background-size: 100% 100% !important;
 }
 
 .qd40-overlay .qd31-right-edge-tab {
@@ -4671,7 +4718,7 @@
   background-image: var(--qd-dwarf-right-tab) !important;
   background-position: center center !important;
   background-repeat: no-repeat !important;
-  background-size: 90% 96% !important;
+  background-size: 100% 100% !important;
 }
 
 .qd40-overlay .qd31-left-panel-wrap > .qd31-left-edge-tab {
