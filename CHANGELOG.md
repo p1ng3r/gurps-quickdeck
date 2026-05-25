@@ -1,3 +1,8 @@
+## [Unreleased] - v0.9.7.2 batch2-fit
+
+### Changed
+- Wired Batch 2 dwarven UI assets for unpin buttons, top drawer tabs, search field frames, window header buttons, and defense medallions.
+
 ## [Unreleased] - v0.9.7 batch1-fit
 
 ### Changed

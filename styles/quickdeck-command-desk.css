@@ -4523,6 +4523,11 @@
   --qd-dwarf-knot-strip: url("../assets/ui/dwarven/header/knotwork-strip.webp");
   --qd-dwarf-button-square: url("../assets/ui/dwarven/button/button-square.webp");
   --qd-dwarf-button-wide: url("../assets/ui/dwarven/button/button-wide.webp");
+  --qd-dwarf-button-unpin: url("../assets/ui/dwarven/button/button-unpin.webp");
+  --qd-dwarf-top-tab-button: url("../assets/ui/dwarven/top-tab-button.webp");
+  --qd-dwarf-search-field-frame: url("../assets/ui/dwarven/search-field-frame.webp");
+  --qd-dwarf-window-header-button: url("../assets/ui/dwarven/window-header-button.webp");
+  --qd-dwarf-defense-medallion: url("../assets/ui/dwarven/defense-medallion.webp");
   --qd-dwarf-left-tab: url("../assets/ui/dwarven/collapse/left-collapse-tab.webp");
   --qd-dwarf-right-tab: url("../assets/ui/dwarven/collapse/right-collapse-tab.webp");
 }
@@ -4684,6 +4689,136 @@
   border: 1px solid rgba(219, 175, 94, 0.84) !important;
   color: #f5e2b4 !important;
   text-shadow: 0 1px 2px #000;
+}
+
+.qd40-overlay .qd31-center-fav-unpin {
+  background-image: var(--qd-dwarf-button-unpin), linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)) !important;
+  background-size: 100% 100%, auto !important;
+}
+
+.qd40-overlay .qd31-drawer-tabs button {
+  background-color: rgba(33, 22, 11, 0.96) !important;
+  background-image: var(--qd-dwarf-top-tab-button), linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)) !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, auto !important;
+  border: 1px solid rgba(219, 175, 94, 0.82) !important;
+  color: #f5e2b4 !important;
+  text-shadow: 0 1px 2px #000;
+}
+
+.qd40-overlay .qd31-drawer-tabs button:hover {
+  filter: brightness(1.05);
+}
+
+.qd40-overlay .qd31-search-row input[type="search"] {
+  background-color: transparent !important;
+  background-image: var(--qd-dwarf-search-field-frame), linear-gradient(180deg, rgba(20, 14, 9, 0.9), rgba(40, 28, 18, 0.95)) !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, auto !important;
+  border: 0 !important;
+  color: #f6e4aa !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  text-align: center !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28) !important;
+  padding-left: 36px !important;
+  padding-right: 36px !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.qd40-overlay .window-header .header-button,
+.gurps-quickdeck-app .window-header .header-button,
+.gurps-quickdeck .window-header .header-button {
+  background-image: var(--qd-dwarf-window-header-button), linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)) !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, auto !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-defense-dial {
+  background-image: var(--qd-dwarf-defense-medallion), linear-gradient(180deg, rgba(60, 41, 18, 0.22), rgba(33, 22, 11, 0.96)) !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 0.08rem !important;
+  text-align: center !important;
+  padding: 0 !important;
+  color: #f3e1a6 !important;
+  font-weight: 700 !important;
+}
+
+.qd40-overlay .qd31-search-row input[type="search"]::placeholder {
+  color: rgba(238, 214, 160, 0.85) !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.32) !important;
+}
+
+.qd40-overlay .qd31-search-row input[type="search"]:focus {
+  outline: none !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-defense-dial span {
+  display: block !important;
+  font-weight: 900 !important;
+  color: #f4e0ad !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55) !important;
+  line-height: 1.05 !important;
+}
+
+.qd40-overlay .qd31-center-fav-unpin,
+.qd40-overlay .qd31-search-clear,
+.qd40-overlay .qd31-drawer-tabs button,
+.qd40-overlay .window-header .header-button,
+.qd40-overlay .qd31-center-cockpit .qd31-defense-dial {
+  position: relative;
+  z-index: 1;
+}
+
+.qd40-overlay .qd31-drawer-tabs button span,
+.qd40-overlay .qd31-drawer-tabs button strong {
+  position: relative;
+  z-index: 1;
+}
+
+.qd40-overlay .qd31-search-row input[type="search"] {
+  background-clip: padding-box !important;
+}
+
+.qd40-overlay .qd31-drawer-tabs button {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.qd40-overlay .qd31-drawer-tabs button {
+  min-height: 38px !important;
+}
+
+.qd40-overlay .qd31-center-fav-unpin {
+  min-width: 54px !important;
+  height: 24px !important;
+  padding: 0 10px !important;
+}
+
+.qd40-overlay .qd31-search-row input[type="search"] {
+  min-height: 40px !important;
+}
+
+.qd40-overlay .window-header .header-button,
+.gurps-quickdeck .window-header .header-button {
+  width: 18px !important;
+  height: 17px !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-defense-dial {
+  width: 82px !important;
+  height: 82px !important;
 }
 
 .qd40-overlay .qd31-center-fav-action-main,
