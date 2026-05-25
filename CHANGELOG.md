@@ -1,3 +1,11 @@
+## [Unreleased] - v0.9.5 dwarven-ui-composition-local
+
+### Changed
+- Strengthened dwarven visual composition via CSS-only pass across headers, buttons, edge tabs, and panel/card rows while preserving QuickDeck behavior, three-pane layout, and collapse-tab position contracts.
+- Improved title-plate readability with stronger bronze/iron edging, inset shadowing, and knotwork accent layering using existing dwarven assets.
+- Improved framed button states (default/hover/focus-visible) for clearer affordance and contrast without reducing click targets or adding new controls.
+- Enhanced left/right/closed collapse-tab handle readability and metal-edge treatment without moving tabs or changing collapse behavior.
+
 ## [Unreleased] - v0.9.4 dwarven-assets-normalize-local
 
 ### Changed
