@@ -1,3 +1,11 @@
+## [Unreleased] - v0.9.6 dwarven-measured-fit-local
+
+### Changed
+- Tuned dwarven header/title fit against measured live slots with per-header background sizing and a reduced main cockpit H2 footprint for improved title-plate breathing room.
+- Rebalanced tiny-slot button skins (square/icon/unpin and pinned action buttons) so ornate art reads as subtle texture while preserving readability and click affordance.
+- Adjusted left/right collapse-tab art scaling for the measured 32x132 tab boxes while preserving strict outside-edge positioning contracts.
+- Refined roster/quick-action/action-row surface treatment with compact bronze gradients/borders/inset highlights to reduce noise while keeping the UI visually cohesive.
+
 ## [Unreleased] - v0.9.5 dwarven-ui-composition-local
 
 ### Changed
