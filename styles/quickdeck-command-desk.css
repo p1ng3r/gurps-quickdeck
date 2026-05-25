@@ -4583,7 +4583,7 @@
   position: relative;
   z-index: 1;
   font-family: "Book Antiqua", "Palatino Linotype", Georgia, serif;
-  letter-spacing: 0.075em;
+  letter-spacing: 0.055em;
   color: #f8e6bc !important;
   text-shadow: 0 1px 0 #130b06, 0 2px 3px #000;
   border: 1px solid rgba(225, 182, 102, 0.84) !important;
@@ -4592,7 +4592,21 @@
   background-image: var(--qd-dwarf-title-plate), linear-gradient(180deg, rgba(111, 81, 41, 0.82), rgba(25, 18, 12, 0.96)) !important;
   background-position: center center, center center !important;
   background-repeat: no-repeat, repeat !important;
-  background-size: 100% 100%, auto !important;
+}
+
+.qd40-overlay .qd31-header { background-size: 96% 88%, auto !important; }
+.qd40-overlay .qd31-drawer-header { background-size: 98% 94%, auto !important; }
+.qd40-overlay .qd31-center-fav-header,
+.qd40-overlay .qd31-settings-header {
+  background-size: 100% 210%, auto !important;
+  background-position: center 46%, center center !important;
+}
+
+.qd40-overlay .qd31-header h2 {
+  font-size: 28px;
+  line-height: 32px;
+  letter-spacing: 0.03em;
+  padding-inline: 8px;
 }
 
 .qd40-overlay .qd31-header::after,
@@ -4619,7 +4633,7 @@
   background-image: linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)), var(--qd-dwarf-button-square) !important;
   background-position: center center, center center !important;
   background-repeat: repeat, no-repeat !important;
-  background-size: auto, 92% 92% !important;
+  background-size: auto, 84% 78% !important;
   border: 1px solid rgba(219, 175, 94, 0.84) !important;
   color: #f5e2b4 !important;
   text-shadow: 0 1px 2px #000;
@@ -4631,7 +4645,7 @@
   background-image: linear-gradient(180deg, rgba(255, 231, 177, 0.25), rgba(60, 41, 18, 0.26)), var(--qd-dwarf-button-wide) !important;
   background-position: center center, center center !important;
   background-repeat: repeat, no-repeat !important;
-  background-size: auto, 96% 90% !important;
+  background-size: auto, 90% 76% !important;
   border: 1px solid rgba(229, 183, 98, 0.88) !important;
   color: #f9e9c3 !important;
 }
@@ -4649,7 +4663,7 @@
   background-image: var(--qd-dwarf-left-tab) !important;
   background-position: center center !important;
   background-repeat: no-repeat !important;
-  background-size: 100% 100% !important;
+  background-size: 90% 96% !important;
 }
 
 .qd40-overlay .qd31-right-edge-tab {
@@ -4657,7 +4671,7 @@
   background-image: var(--qd-dwarf-right-tab) !important;
   background-position: center center !important;
   background-repeat: no-repeat !important;
-  background-size: 100% 100% !important;
+  background-size: 90% 96% !important;
 }
 
 .qd40-overlay .qd31-left-panel-wrap > .qd31-left-edge-tab {
@@ -4754,4 +4768,18 @@
   border: 1px solid rgba(194, 149, 72, 0.5) !important;
   background: linear-gradient(180deg, rgba(255, 224, 149, 0.08), rgba(12, 8, 5, 0.25)), linear-gradient(160deg, rgba(63, 46, 29, 0.88), rgba(19, 14, 10, 0.96) 64%) !important;
   box-shadow: inset 0 1px 0 rgba(255, 232, 174, 0.12), inset 0 -10px 18px rgba(0, 0, 0, 0.28), 0 2px 10px rgba(0, 0, 0, 0.24);
+}
+
+.qd40-overlay .qd31-left-drawer .qd31-roster-card,
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-card {
+  border-color: rgba(196, 152, 76, 0.56) !important;
+  background: linear-gradient(180deg, rgba(255, 227, 155, 0.1), rgba(10, 7, 4, 0.2)), linear-gradient(158deg, rgba(63, 46, 30, 0.88), rgba(18, 13, 9, 0.96) 68%) !important;
+}
+
+.qd40-overlay .qd31-right-drawer .qd31-action-row {
+  border-left: 1px solid rgba(186, 141, 67, 0.36);
+  border-right: 1px solid rgba(186, 141, 67, 0.36);
+  border-bottom: 1px solid rgba(186, 141, 67, 0.3);
+  background: linear-gradient(180deg, rgba(255, 222, 146, 0.05), rgba(18, 12, 8, 0.38)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 233, 179, 0.08);
 }
