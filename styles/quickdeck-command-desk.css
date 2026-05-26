@@ -29,6 +29,10 @@
   --qd-leather-glow: rgba(181, 118, 37, 0.13);
   --qd-leather-tile-size: 384px 384px;
   --qd-leather-card-tile-size: 260px 260px;
+  --qd-blackened-iron-tile: url("../assets/ui/dwarven/blackened-iron-tile.webp");
+  --qd-dark-stone-tile: url("../assets/ui/dwarven/dark-stone-tile.webp");
+  --qd-blackened-iron-tile-size: 220px 220px;
+  --qd-dark-stone-tile-size: 240px 240px;
   --qd-ink: #1a1208;
   --qd-parchment: #ead7ad;
   --qd-parchment-drawer: #ead5a8;
@@ -37,10 +41,9 @@
   --qd-shadow: rgba(0, 0, 0, 0.68);
   --qd-panel-shadow: 0 12px 28px rgba(0, 0, 0, 0.38), inset 0 0 0 1px rgba(255, 231, 170, 0.06);
   --qd-panel-shadow-inset: inset 0 0 34px rgba(0, 0, 0, 0.44), inset 0 0 0 1px rgba(255, 231, 170, 0.06);
-  --qd-leather-panel-fill: linear-gradient(135deg, rgba(255, 214, 145, 0.04) 0%, rgba(255, 214, 145, 0) 42%),
-    linear-gradient(180deg, rgba(19, 13, 9, 0.96), rgba(9, 6, 4, 0.98));
-  --qd-header-rail-fill: linear-gradient(180deg, rgba(255, 220, 156, 0.18), rgba(84, 55, 20, 0.08) 48%, rgba(11, 7, 4, 0.14));
-  --qd-divider-brass-fill: linear-gradient(90deg, rgba(118, 80, 24, 0), rgba(216, 164, 73, 0.8) 18%, rgba(255, 221, 154, 0.86) 50%, rgba(216, 164, 73, 0.8) 82%, rgba(118, 80, 24, 0));
+  --qd-leather-panel-fill: var(--qd-blackened-iron-tile), rgba(12, 10, 8, 0.95);
+  --qd-header-rail-fill: rgba(11, 8, 5, 0.92);
+  --qd-divider-brass-fill: linear-gradient(90deg, rgba(118, 80, 24, 0), rgba(216, 164, 73, 0.6) 32%, rgba(216, 164, 73, 0.6) 68%, rgba(118, 80, 24, 0));
   /* Dwarven Batch 1 asset variables (defined across root/app/overlay scope) */
   --qd-dwarf-title-plate: url("../assets/ui/dwarven/section-title-plate.webp");
   --qd-dwarf-drawer-title-plate: url("../assets/ui/dwarven/drawer-title-plate.webp");
@@ -67,16 +70,15 @@
   overflow: hidden;
   color: #f4e6be;
   background:
-    radial-gradient(circle at 72% 5%, rgba(224, 172, 73, 0.16), transparent 28%),
-    var(--qd-leather-panel-fill),
-    #090805;
+    var(--qd-blackened-iron-tile) center / var(--qd-blackened-iron-tile-size) repeat,
+    rgba(12, 10, 8, 0.96);
 }
 
 .gurps-quickdeck .window-header {
   border-bottom: 1px solid rgba(240, 205, 122, 0.62);
   background:
-    linear-gradient(90deg, rgba(22, 13, 7, 0.96), rgba(62, 38, 16, 0.96) 48%, rgba(18, 11, 7, 0.98)),
-    var(--qd-header-rail-fill);
+    var(--qd-blackened-iron-tile) center / var(--qd-blackened-iron-tile-size) repeat,
+    rgba(13, 10, 7, 0.94);
   box-shadow: 0 3px 16px rgba(0, 0, 0, 0.54);
 }
 
@@ -101,9 +103,8 @@
     url("../assets/ui/command-desk/frames/qd-shell-bottom-rail.webp") bottom left / 100% 18px no-repeat,
     url("../assets/ui/command-desk/frames/qd-shell-left-rail.webp") top left / 18px 100% no-repeat,
     url("../assets/ui/command-desk/frames/qd-shell-right-rail.webp") top right / 18px 100% no-repeat,
-    radial-gradient(circle at 58% 18%, rgba(212, 146, 52, 0.12), transparent 30%),
-    var(--qd-leather-panel-fill),
-    #070504;
+    var(--qd-blackened-iron-tile) center / var(--qd-blackened-iron-tile-size) repeat,
+    rgba(11, 8, 6, 0.96);
   border: 1px solid rgba(199, 154, 56, 0.72);
   box-shadow:
     inset 0 0 0 2px rgba(255, 232, 167, 0.08),
@@ -3413,17 +3414,17 @@
 .qd31-pinned-grid .qd31-square-button{width:100%;height:28px}
 .qd31-pinned-action{position:relative;display:grid;grid-template-rows:minmax(0,1fr) auto;gap:2px;align-items:center;width:100%;min-height:52px;padding:6px 18px 6px 6px;text-align:left}
 .qd31-pinned-action-name{display:block;max-width:100%;font-size:.72rem;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.qd31-pinned-action-badge{display:inline-block;width:fit-content;font-size:.6rem;line-height:1;text-transform:uppercase;letter-spacing:.03em;padding:2px 5px;border-radius:999px;background:rgba(247,227,181,.16);border:1px solid rgba(247,227,181,.32)}
-.qd31-pinned-action-remove{position:absolute;top:3px;right:3px;width:14px;height:14px;display:grid;place-items:center;border-radius:999px;background:rgba(0,0,0,.35);font-size:.63rem;line-height:1}
+.qd31-pinned-action-badge{display:inline-block;width:fit-content;font-size:.62rem;line-height:1;text-transform:uppercase;letter-spacing:.05em;padding:2px 6px;border-radius:2px;background:rgba(18,14,10,0.96);border:1px solid rgba(196,152,76,0.10);color:#d6c591}
+.qd31-pinned-action-remove{position:absolute;top:3px;right:3px;width:16px;height:16px;display:grid;place-items:center;border-radius:4px;background:rgba(0,0,0,0.6);border:1px solid rgba(0,0,0,0.4);font-size:.63rem;line-height:1}
 .qd31-pinned-empty-state{grid-column:1 / -1;font-size:.68rem;opacity:.92;padding:2px 4px}
-.qd31-roster-card{display:grid;grid-template-columns:40px 1fr 26px;gap:8px;align-items:start;padding:6px;border:1px solid rgba(183,138,67,.45);border-radius:8px}
-.qd31-roster-card img{width:40px;height:40px;object-fit:cover;border-radius:6px}
+.qd31-roster-card{display:grid;grid-template-columns:40px 1fr 26px;gap:8px;align-items:start;padding:6px;border:1px solid rgba(160,118,52,0.08);border-radius:3px;background:linear-gradient(180deg, rgba(9,9,8,0.99), rgba(15,14,13,0.995));box-shadow: inset 0 -1px 2px rgba(0,0,0,0.14)}
+.qd31-roster-card img{width:40px;height:40px;object-fit:cover;border-radius:4px}
 .qd31-mini-bars{display:grid;gap:4px;margin-top:4px}
 .qd31-mini-row{display:grid;gap:2px}
 .qd31-mini-row span{font-size:.68rem}
 .qd31-mini-fill{height:4px;background:#27170b;border-radius:999px;overflow:hidden}
 .qd31-mini-fill span{display:block;height:100%;background:#b78a43}
-.qd31-action-row{display:flex;justify-content:space-between;gap:6px;align-items:center;padding:6px;border-bottom:1px solid rgba(183,138,67,.28)}
+.qd31-action-row{display:flex;justify-content:space-between;gap:6px;align-items:center;padding:6px;border-top:1px solid rgba(180,134,63,0.08);border-bottom:1px solid rgba(180,134,63,0.08);border-left:1px solid rgba(0,0,0,0.30);border-right:1px solid rgba(0,0,0,0.30);background:#070605;box-shadow: none;border-radius:3px}
 .qd31-action-row > div:last-child{display:flex;gap:4px;align-items:center}
 .qd31-drawer-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-bottom:6px}
 .qd31-drawer-body{display:grid;gap:4px}
@@ -3478,14 +3479,21 @@
 .qd40-overlay .qd31-center-cockpit .quickdeck-actor-identity h3,
 .qd40-overlay .qd31-center-cockpit .qd31-actor-name-link {
   margin: 0 !important;
-  font-size: 0.76rem !important;
+  font-size: 0.92rem !important;
   line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  color: #f8e2b8 !important;
+  text-transform: uppercase !important;
 }
 
 .qd40-overlay .qd31-center-cockpit .quickdeck-actor-identity p {
   margin: 1px 0 0 !important;
-  font-size: 0.62rem !important;
-  line-height: 1 !important;
+  font-size: 0.56rem !important;
+  line-height: 1.2 !important;
+  color: rgba(214, 190, 140, 0.72) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.06em !important;
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-actor-card { gap: 3px !important; }
@@ -4193,8 +4201,9 @@
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-center-vital-label {
-  font-weight: 800 !important;
-  color: #d9bd78 !important;
+  font-weight: 700 !important;
+  color: rgba(217, 189, 120, 0.72) !important;
+  letter-spacing: 0.04em !important;
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-center-vital-input {
@@ -4202,10 +4211,10 @@
   height: 16px !important;
   min-height: 16px !important;
   padding: 0 2px !important;
-  border: 1px solid rgba(199,154,56,.45) !important;
-  border-radius: 4px !important;
-  background: rgba(8,6,4,.9) !important;
-  color: #f0e2b7 !important;
+  border: 1px solid rgba(199,154,56,0.28) !important;
+  border-radius: 2px !important;
+  background: rgba(10,6,4,0.92) !important;
+  color: #f3e2b1 !important;
   font-size: 0.62rem !important;
   line-height: 1 !important;
   text-align: center !important;
@@ -4219,7 +4228,7 @@
 .qd40-overlay .qd31-center-cockpit .qd31-center-vital-bar {
   width: 100% !important;
   height: 4px !important;
-  border-radius: 999px !important;
+  border-radius: 2px !important;
   background: rgba(43, 26, 13, 0.95) !important;
   overflow: hidden !important;
 }
@@ -4298,9 +4307,9 @@
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-center-fav-section {
-  border: 1px solid rgba(199,154,56,.32) !important;
+  border: 1px solid rgba(199,154,56,0.18) !important;
   border-radius: 8px !important;
-  background: rgba(12,10,7,.78) !important;
+  background: rgba(12,10,7,0.92) !important;
   padding: 4px !important;
 }
 
@@ -4309,16 +4318,18 @@
   align-items: center !important;
   justify-content: space-between !important;
   margin-bottom: 3px !important;
-  font-size: 0.62rem !important;
+  font-size: 0.64rem !important;
   font-weight: 900 !important;
   text-transform: uppercase !important;
-  letter-spacing: .12em !important;
-  color: #d9bd78 !important;
+  letter-spacing: .14em !important;
+  color: #d4bc7f !important;
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-center-fav-header small {
-  font-size: 0.58rem !important;
-  opacity: .8 !important;
+  font-size: 0.54rem !important;
+  opacity: .72 !important;
+  color: rgba(212, 183, 117, 0.72) !important;
+  letter-spacing: .08em !important;
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-center-fav-list {
@@ -4335,19 +4346,23 @@
   max-width: 100% !important;
   min-height: 22px !important;
   padding: 2px 6px !important;
-  border: 1px solid rgba(199,154,56,.38) !important;
-  border-radius: 999px !important;
-  background: rgba(24,18,10,.95) !important;
-  color: #f0e2b7 !important;
-  font-size: 0.66rem !important;
-  font-weight: 800 !important;
+  border: 1px solid rgba(180,130,60,0.12) !important;
+  border-radius: 2px !important;
+  background: rgba(12,10,8,0.94) !important;
+  color: #d8c68f !important;
+  font-size: 0.62rem !important;
+  font-weight: 700 !important;
   line-height: 1 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
   cursor: pointer !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-center-fav-pill:hover {
-  border-color: rgba(240,182,76,.75) !important;
-  background: rgba(42,30,14,.98) !important;
+  border-color: rgba(180,130,60,0.16) !important;
+  background: rgba(16,13,10,0.96) !important;
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-center-fav-name {
@@ -4357,9 +4372,10 @@
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-center-fav-pill small {
-  color: #c7a45d !important;
-  font-size: 0.56rem !important;
+  color: #bfae7b !important;
+  font-size: 0.54rem !important;
   white-space: nowrap !important;
+  letter-spacing: 0.05em !important;
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-center-fav-empty {
@@ -4370,12 +4386,12 @@
 }
 
 /* QD v0.8.5.4 action-cards */
-.qd31-action-row.is-favorite { border-color: rgba(240,182,76,.75); background: rgba(42,30,14,.96); }
+.qd31-action-row.is-favorite { border-color: rgba(180,130,60,0.10); background: #0a0908; box-shadow: none; }
 .qd31-square-button.is-active,
-.qd31-center-fav-pin.is-active { border-color: rgba(240,182,76,.85); background: rgba(159,109,36,.95); color: #130d07; }
+.qd31-center-fav-pin.is-active { border-color: rgba(180,130,60,0.34); background: rgba(126,88,44,0.92); color: #130d07; }
 .qd31-center-fav-toggle { width: 100%; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-.qd31-center-fav-card { border: 1px solid rgba(183,138,67,.35); background: rgba(36,24,12,.92); border-radius: 8px; padding: 6px; display: grid; gap: 6px; }
-.qd31-center-fav-card.is-favorite { border-color: rgba(240,182,76,.75); box-shadow: 0 0 0 1px rgba(210,156,58,.35), inset 0 0 10px rgba(75,54,23,.35); }
+.qd31-center-fav-card { border: 1px solid rgba(160,118,52,0.08); background: #0b0a09; border-radius: 3px; padding: 6px; display: grid; gap: 6px; box-shadow: inset 0 1px 1px rgba(0,0,0,0.10); }
+.qd31-center-fav-card.is-favorite { border-color: rgba(160,118,52,0.12); box-shadow: inset 0 1px 1px rgba(0,0,0,0.12); }
 .qd31-center-fav-main { display: grid; gap: 2px; }
 .qd31-center-fav-detail { font-size: 11px; color: rgba(240,228,198,.88); line-height: 1.2; }
 .qd31-center-fav-variant { font-size: 10px; color: rgba(243,198,119,.95); line-height: 1.2; }
@@ -4536,23 +4552,21 @@
 .qd40-overlay .qd40-body,
 .qd40-overlay {
   background:
-    linear-gradient(155deg, rgba(68, 52, 35, 0.38), rgba(16, 13, 10, 0.86) 52%, rgba(7, 6, 5, 0.95)),
-    linear-gradient(180deg, rgba(200, 155, 72, 0.12), rgba(0, 0, 0, 0) 28%),
-    #0b0907 !important;
+    var(--qd-blackened-iron-tile) center / var(--qd-blackened-iron-tile-size) repeat !important;
+    rgba(11, 9, 7, 0.98) !important;
 }
 
 .qd40-overlay .qd40-frame {
   position: relative;
-  border: 1px solid rgba(188, 142, 65, 0.8) !important;
-  box-shadow: inset 0 0 0 1px rgba(239, 206, 138, 0.18), inset 0 0 22px rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(188, 142, 65, 0.70) !important;
+  box-shadow: inset 0 0 0 1px rgba(239, 206, 138, 0.12), inset 0 0 16px rgba(0, 0, 0, 0.38);
   /* 24px rails are intentionally visible but still compact enough to avoid crowding content. */
   background:
     var(--qd-dwarf-top-rail) top center / 100% 24px no-repeat,
     var(--qd-dwarf-bottom-rail) bottom center / 100% 24px no-repeat,
     var(--qd-dwarf-left-rail) left center / 24px 100% no-repeat,
     var(--qd-dwarf-right-rail) right center / 24px 100% no-repeat,
-    linear-gradient(155deg, rgba(68, 52, 35, 0.32), rgba(16, 13, 10, 0.84) 52%, rgba(7, 6, 5, 0.95)),
-    #0b0907 !important;
+    var(--qd-blackened-iron-tile) center / var(--qd-blackened-iron-tile-size) repeat !important    rgba(11, 9, 7, 0.98) !important;
 }
 
 .qd40-overlay .qd40-frame::before,
@@ -4583,9 +4597,8 @@
 .qd40-overlay .qd31-center-cockpit,
 .qd40-overlay .qd31-right-drawer {
   background:
-    linear-gradient(180deg, rgba(255, 218, 152, 0.07), rgba(0, 0, 0, 0.2)),
-    linear-gradient(150deg, rgba(51, 38, 24, 0.94), rgba(14, 11, 8, 0.97) 62%),
-    #120e0a !important;
+    var(--qd-dark-stone-tile) center / var(--qd-dark-stone-tile-size) repeat !important;
+    rgba(14, 12, 10, 0.95) !important;
   border-color: rgba(185, 140, 63, 0.62) !important;
 }
 
@@ -4596,31 +4609,31 @@
   position: relative;
   z-index: 1;
   font-family: "Book Antiqua", "Palatino Linotype", Georgia, serif;
-  letter-spacing: 0.055em;
-  color: #f8e6bc !important;
-  text-shadow: 0 1px 0 #130b06, 0 2px 3px #000;
-  border: 1px solid rgba(225, 182, 102, 0.84) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 234, 176, 0.32), inset 0 -2px 8px rgba(0, 0, 0, 0.44), 0 1px 8px rgba(0, 0, 0, 0.24);
-  background-color: rgba(22, 17, 12, 0.94) !important;
-  background-image: var(--qd-dwarf-title-plate), linear-gradient(180deg, rgba(111, 81, 41, 0.82), rgba(25, 18, 12, 0.96)) !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat, repeat !important;
+  letter-spacing: 0.045em;
+  color: #f3ddaf !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(205, 162, 86, 0.72) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 234, 176, 0.18), inset 0 -2px 6px rgba(0, 0, 0, 0.30), 0 1px 4px rgba(0, 0, 0, 0.16);
+  background-color: rgba(20, 16, 12, 0.95) !important;
+  background-image: var(--qd-dwarf-title-plate) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
 }
 
-.qd40-overlay .qd31-header { background-size: 100% 100%, auto !important; }
-.qd40-overlay .qd31-drawer-header { background-size: 100% 100%, auto !important; background-position: center center, center center !important; }
+.qd40-overlay .qd31-header { background-size: 100% 100% !important; }
+.qd40-overlay .qd31-drawer-header { background-size: 100% 100% !important; background-position: center center !important; }
 .qd40-overlay .qd31-center-fav-header,
 .qd40-overlay .qd31-settings-header {
-  background-size: 100% 100%, auto !important;
-  background-position: center center, center center !important;
+  background-size: 100% 100% !important;
+  background-position: center center !important;
 }
 
 /* Center favorite header uses the mini strip as the exact fitted Batch 1 asset */
 .qd40-overlay .qd31-center-fav-header {
-  background-image: var(--qd-dwarf-knot-strip), linear-gradient(180deg, rgba(111, 81, 41, 0.82), rgba(25, 18, 12, 0.96)) !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat, repeat !important;
-  background-size: 100% 100%, auto !important;
+  background-image: var(--qd-dwarf-knot-strip) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
 }
 
 .qd40-overlay .qd31-center-fav-header::after {
@@ -4630,31 +4643,36 @@
 
 /* Drawer-specific title plate (use the dedicated drawer asset from Batch 1) */
 .qd40-overlay .qd31-drawer-header {
-  background-image: var(--qd-dwarf-drawer-title-plate), linear-gradient(180deg, rgba(111, 81, 41, 0.82), rgba(25, 18, 12, 0.96)) !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat, repeat !important;
+  background-image: var(--qd-dwarf-drawer-title-plate) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
 }
 
 .qd40-overlay .qd31-header h2 {
   font-size: 28px;
   line-height: 32px;
-  letter-spacing: 0.03em;
+  font-weight: 900;
+  letter-spacing: 0.05em;
   margin: 0;
   padding: 0.26rem 1rem 0.16rem;
   text-align: center;
   width: 100%;
   position: relative;
   z-index: 1;
+  text-transform: uppercase;
 }
 
 .qd40-overlay .qd31-drawer-header h3 {
-  font-size: 1rem;
+  font-size: 0.95rem;
   line-height: 1.1;
+  font-weight: 800;
   margin: 0;
-  padding: 0.32rem 1rem 0.2rem 1.4rem;
+  padding: 0.28rem 1rem 0.18rem 1.4rem;
   text-align: left;
   position: relative;
   z-index: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
 }
 
 .qd40-overlay .qd31-center-fav-header {
@@ -4681,68 +4699,143 @@
 .qd40-overlay .qd31-icon-button,
 .qd40-overlay .qd31-search-clear,
 .qd40-overlay .qd31-center-fav-unpin {
-  background-color: rgba(30, 20, 10, 0.98) !important;
-  background-image: var(--qd-dwarf-button-square), linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)) !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat, repeat !important;
-  background-size: 100% 100%, auto !important;
-  border: 1px solid rgba(219, 175, 94, 0.84) !important;
-  color: #f5e2b4 !important;
-  text-shadow: 0 1px 2px #000;
+  background-color: rgba(18, 14, 10, 0.96) !important;
+  background-image: var(--qd-dwarf-button-square) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  border: 1px solid rgba(205, 160, 82, 0.52) !important;
+  color: #e5d6ae !important;
+  text-shadow: none !important;
 }
 
 .qd40-overlay .qd31-center-fav-unpin {
-  background-image: var(--qd-dwarf-button-unpin), linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)) !important;
-  background-size: 100% 100%, auto !important;
+  background-image: var(--qd-dwarf-button-unpin) !important;
 }
 
 .qd40-overlay .qd31-drawer-tabs button {
-  background-color: rgba(33, 22, 11, 0.96) !important;
-  background-image: var(--qd-dwarf-top-tab-button), linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)) !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat, repeat !important;
-  background-size: 100% 100%, auto !important;
-  border: 1px solid rgba(219, 175, 94, 0.82) !important;
-  color: #f5e2b4 !important;
-  text-shadow: 0 1px 2px #000;
-}
-
-.qd40-overlay .qd31-drawer-tabs button:hover {
-  filter: brightness(1.05);
+  background-color: rgba(24, 16, 10, 0.96) !important;
+  background-image: var(--qd-dwarf-top-tab-button) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  border: 1px solid rgba(180, 130, 60, 0.32) !important;
+  color: #efe5c2 !important;
+  text-shadow: 0 1px 0 rgba(0,0,0,0.6);
 }
 
 .qd40-overlay .qd31-search-row input[type="search"] {
   background-color: transparent !important;
-  background-image: var(--qd-dwarf-search-field-frame), linear-gradient(180deg, rgba(20, 14, 9, 0.9), rgba(40, 28, 18, 0.95)) !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat, repeat !important;
-  background-size: 100% 100%, auto !important;
+  background-image: var(--qd-dwarf-search-field-frame) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
   border: 0 !important;
   color: #f6e4aa !important;
   height: 40px !important;
   line-height: 40px !important;
   text-align: center !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.28) !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.5) !important;
   padding-left: 36px !important;
   padding-right: 36px !important;
   padding-top: 0 !important;
   padding-bottom: 0 !important;
 }
 
+.qd40-overlay .qd31-left-drawer .qd31-search-row input[type="search"] {
+  background-image: var(--qd-dwarf-search-field-frame) !important;
+}
+
+.qd31-reference-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background: rgba(14, 12, 10, 0.94) !important;
+  border: 1px solid rgba(140, 100, 40, 0.08) !important;
+  border-radius: 2px !important;
+  color: #d6c69e !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  padding: 4px 8px !important;
+  font-size: 0.72rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.04em !important;
+}
+
+.qd31-reference-button strong {
+  color: inherit !important;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45) !important;
+}
+
+.qd31-action-row small {
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 0.25rem !important;
+  padding: 2px 5px !important;
+  border: 1px solid rgba(140, 100, 40, 0.06) !important;
+  border-radius: 2px !important;
+  background: rgba(10, 9, 8, 0.94) !important;
+  color: #bfad87 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  font-size: 0.65rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+}
+
+.qd40-overlay .qd31-left-drawer .qd31-action-row {
+  background: #070605 !important;
+  border-top: 1px solid rgba(160, 118, 52, 0.08) !important;
+  border-bottom: 1px solid rgba(160, 118, 52, 0.08) !important;
+  border-left: 1px solid rgba(0, 0, 0, 0.30) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.30) !important;
+  box-shadow: none !important;
+}
+
+.qd40-overlay .qd31-left-drawer .qd31-roster-card {
+  background: #0d0c0b !important;
+  border: 1px solid rgba(160, 118, 52, 0.08) !important;
+  border-radius: 3px !important;
+  box-shadow: inset 0 -1px 1px rgba(0,0,0,0.12) !important;
+}
+
+.qd40-overlay .qd31-left-drawer .qd31-roster-card img {
+  border-radius: 2px !important;
+}
+
+.qd40-overlay .qd31-center-cockpit .qd31-center-fav-card {
+  border: 1px solid rgba(160, 118, 52, 0.08) !important;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.10) !important;
+  background: #0a0908 !important;
+}
+
+.qd31-action-row strong,
+.qd31-action-row span {
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.45) !important;
+}
+
+.qd31-action-row span {
+  color: #e7d7a2 !important;
+}
+
+.qd31-action-row strong {
+  color: #e9d8ae !important;
+}
+
 .qd40-overlay .window-header .header-button,
 .gurps-quickdeck-app .window-header .header-button,
 .gurps-quickdeck .window-header .header-button {
-  background-image: var(--qd-dwarf-window-header-button), linear-gradient(180deg, rgba(255, 231, 177, 0.2), rgba(60, 41, 18, 0.24)) !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat, repeat !important;
-  background-size: 100% 100%, auto !important;
+  background-image: var(--qd-dwarf-window-header-button) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
 }
 
 .qd40-overlay .qd31-center-cockpit .qd31-defense-dial {
-  background-image: var(--qd-dwarf-defense-medallion), linear-gradient(180deg, rgba(60, 41, 18, 0.22), rgba(33, 22, 11, 0.96)) !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat, repeat !important;
-  background-size: 100% 100%, auto !important;
+  background-image: var(--qd-dwarf-defense-medallion) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
   display: flex !important;
   flex-direction: column !important;
   justify-content: center !important;
@@ -4750,7 +4843,7 @@
   gap: 0.08rem !important;
   text-align: center !important;
   padding: 0 !important;
-  color: #f3e1a6 !important;
+  color: #e8d2a0 !important;
   font-weight: 700 !important;
 }
 
@@ -4766,8 +4859,8 @@
 .qd40-overlay .qd31-center-cockpit .qd31-defense-dial span {
   display: block !important;
   font-weight: 900 !important;
-  color: #f4e0ad !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.55) !important;
+  color: #e8d4a6 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35) !important;
   line-height: 1.05 !important;
 }
 
@@ -4823,13 +4916,16 @@
 
 .qd40-overlay .qd31-center-fav-action-main,
 .qd40-overlay .qd31-center-fav-action-damage {
-  background-color: rgba(33, 22, 11, 0.98) !important;
-  background-image: var(--qd-dwarf-button-wide), linear-gradient(180deg, rgba(255, 231, 177, 0.25), rgba(60, 41, 18, 0.26)) !important;
-  background-position: center center, center center !important;
-  background-repeat: no-repeat, repeat !important;
-  background-size: 100% 100%, auto !important;
-  border: 1px solid rgba(229, 183, 98, 0.88) !important;
-  color: #f9e9c3 !important;
+  background-color: rgba(24, 17, 11, 0.98) !important;
+  background-image: var(--qd-dwarf-button-wide) !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+  background-size: 100% 100% !important;
+  border: 1px solid rgba(210, 165, 78, 0.66) !important;
+  color: #f4e7c1 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.05em !important;
+  box-shadow: inset 0 1px 0 rgba(255, 240, 196, 0.22), inset 0 -2px 4px rgba(16, 9, 5, 0.38), 0 1px 3px rgba(0, 0, 0, 0.24);
 }
 
 .qd40-overlay .qd31-left-edge-tab,
@@ -4882,7 +4978,7 @@
 .qd40-overlay .window-header .header-button {
   position: relative;
   z-index: 1;
-  box-shadow: inset 0 1px 0 rgba(255, 237, 187, 0.34), inset 0 -2px 4px rgba(19, 11, 6, 0.65), 0 1px 5px rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 237, 187, 0.18), inset 0 -1px 2px rgba(19, 11, 6, 0.35), 0 1px 2px rgba(0, 0, 0, 0.22);
   transition: filter 120ms ease, box-shadow 120ms ease, border-color 120ms ease;
 }
 
@@ -4893,9 +4989,9 @@
 .qd40-overlay .qd31-center-fav-action-damage:hover,
 .qd40-overlay .qd31-center-fav-unpin:hover,
 .qd40-overlay .window-header .header-button:hover {
-  border-color: rgba(252, 214, 132, 0.95) !important;
-  filter: brightness(1.08) saturate(1.08);
-  box-shadow: inset 0 1px 0 rgba(255, 241, 198, 0.4), inset 0 -2px 6px rgba(11, 7, 4, 0.7), 0 0 0 1px rgba(255, 224, 152, 0.2), 0 2px 8px rgba(0, 0, 0, 0.5);
+  border-color: rgba(252, 214, 132, 0.55) !important;
+  filter: brightness(1.04) saturate(1.02);
+  box-shadow: inset 0 1px 0 rgba(255, 241, 198, 0.2), inset 0 -1px 2px rgba(11, 7, 4, 0.42), 0 0 0 1px rgba(255, 224, 152, 0.10), 0 1px 4px rgba(0, 0, 0, 0.22);
 }
 
 .qd40-overlay .qd31-square-button:focus-visible,
@@ -4905,9 +5001,9 @@
 .qd40-overlay .qd31-center-fav-action-damage:focus-visible,
 .qd40-overlay .qd31-center-fav-unpin:focus-visible,
 .qd40-overlay .window-header .header-button:focus-visible {
-  outline: 1px solid rgba(255, 226, 155, 0.95);
+  outline: 1px solid rgba(255, 226, 155, 0.68);
   outline-offset: 1px;
-  border-color: rgba(255, 219, 139, 0.96) !important;
+  border-color: rgba(255, 219, 139, 0.72) !important;
 }
 
 .qd40-overlay .qd31-center-fav-action-main,
@@ -4947,21 +5043,97 @@
 .qd40-overlay .qd31-settings-panel,
 .qd40-overlay .qd31-settings-card,
 .qd40-overlay .qd31-settings-section {
-  border: 1px solid rgba(194, 149, 72, 0.5) !important;
-  background: linear-gradient(180deg, rgba(255, 224, 149, 0.08), rgba(12, 8, 5, 0.25)), linear-gradient(160deg, rgba(63, 46, 29, 0.88), rgba(19, 14, 10, 0.96) 64%) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 232, 174, 0.12), inset 0 -10px 18px rgba(0, 0, 0, 0.28), 0 2px 10px rgba(0, 0, 0, 0.24);
-}
-
-.qd40-overlay .qd31-left-drawer .qd31-roster-card,
-.qd40-overlay .qd31-center-cockpit .qd31-center-fav-card {
-  border-color: rgba(196, 152, 76, 0.56) !important;
-  background: linear-gradient(180deg, rgba(255, 227, 155, 0.1), rgba(10, 7, 4, 0.2)), linear-gradient(158deg, rgba(63, 46, 30, 0.88), rgba(18, 13, 9, 0.96) 68%) !important;
+  border: 1px solid rgba(140, 100, 40, 0.10) !important;
+  background:
+    var(--qd-dark-stone-tile) center / var(--qd-dark-stone-tile-size) repeat !important;
+    rgba(11, 10, 9, 0.96) !important;
+  background-blend-mode: multiply !important;
+  box-shadow: inset 0 -1px 1px rgba(0, 0, 0, 0.08) !important;
 }
 
 .qd40-overlay .qd31-right-drawer .qd31-action-row {
-  border-left: 1px solid rgba(186, 141, 67, 0.36);
-  border-right: 1px solid rgba(186, 141, 67, 0.36);
-  border-bottom: 1px solid rgba(186, 141, 67, 0.3);
-  background: linear-gradient(180deg, rgba(255, 222, 146, 0.05), rgba(18, 12, 8, 0.38)) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 233, 179, 0.08);
+  border-left: 1px solid rgba(140, 100, 40, 0.08);
+  border-right: 1px solid rgba(140, 100, 40, 0.08);
+  border-bottom: 1px solid rgba(140, 100, 40, 0.06);
+  background:
+    var(--qd-dark-stone-tile) center / var(--qd-dark-stone-tile-size) repeat !important;
+    rgba(11, 10, 9, 0.96) !important;
+  background-blend-mode: multiply !important;
+  box-shadow: none;
+}
+
+/* Dwarven material texture proof overrides */
+/* Centralize the stone texture on the body only; nested panels use dark solids.
+   This prevents repeated-tiling seams and forces muted bronze borders/shadows. */
+
+/* Remove rail/frame art layers that can show bright edges and rely on body texture */
+.qd40-frame,
+.qd40-overlay .qd40-frame {
+  background-image: none !important;
+  background-color: rgba(8, 7, 6, 0.96) !important;
+  border-color: rgba(105, 76, 35, 0.55) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.qd40-frame::before,
+.qd40-frame::after,
+.qd40-overlay .qd40-frame::before,
+.qd40-overlay .qd40-frame::after {
+  background-image: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+
+/* Apply the single shared dark-stone material to the QuickDeck body */
+
+/* Apply the single shared dark-stone material to the QuickDeck body ONLY */
+.qd40-body {
+  background-color: rgba(8, 7, 6, 0.96) !important;
+  background-image: linear-gradient(rgba(4, 4, 4, 0.28), rgba(4, 4, 4, 0.28)), url("../assets/ui/dwarven/dark-stone-tile.webp") !important;
+  background-repeat: no-repeat, no-repeat !important;
+  background-size: cover, cover !important;
+  background-position: center center, center center !important;
+  border-color: rgba(105, 76, 35, 0.45) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Nested containers should not repeat the texture; use dark solids to avoid seams */
+.qd40-overlay,
+.qd40-overlay * {
+  background-image: none !important;
+  background-color: transparent !important;
+  outline: none !important;
+}
+
+.qd40-frame,
+.qd40-overlay .qd40-frame {
+  background-image: none !important;
+  background-color: rgba(8, 7, 6, 0.96) !important;
+  border-color: rgba(105, 76, 35, 0.45) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Drawer/center panel backgrounds: dark translucent slabs (no textures) */
+.qd31-left-drawer,
+.qd31-right-drawer,
+.qd31-center-cockpit {
+  background-image: none !important;
+  background-color: rgba(5, 4, 3, 0.72) !important;
+  border-color: rgba(105, 76, 35, 0.45) !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Cards and rows: solid dark surfaces */
+.qd31-roster-card,
+.qd31-action-row,
+.qd31-center-fav-card {
+  background-image: none !important;
+  background-color: rgb(7, 6, 5) !important;
+  border-color: rgba(105, 76, 35, 0.45) !important;
+  box-shadow: none !important;
+  outline: none !important;
 }
