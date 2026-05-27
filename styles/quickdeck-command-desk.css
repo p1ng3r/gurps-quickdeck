@@ -2341,6 +2341,25 @@
   height: 100%;
 }
 
+/* Keep wrapper-based rails from changing flex height ownership in major panes. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-wrap > .qd-custom-scroll-wrapper,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer > .qd-custom-scroll-wrapper,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper,
+.qd40-overlay .qd31-center-wrap > .qd-custom-scroll-wrapper,
+.qd40-overlay .qd31-left-drawer > .qd-custom-scroll-wrapper,
+.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-wrap > .qd-custom-scroll-wrapper > .qd31-center-cockpit,
+.qd40-overlay .qd31-center-wrap > .qd-custom-scroll-wrapper > .qd31-center-cockpit {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 #gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-hidden-native {
   scrollbar-width: none !important;
   -ms-overflow-style: none !important;
