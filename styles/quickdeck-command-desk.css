@@ -2289,9 +2289,9 @@
 #gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-list,
 .qd40-overlay .qd31-center-fav-list {
   margin-top: 1px !important;
-  max-height: none !important;
-  overflow-y: visible !important;
-  overflow-x: visible !important;
+  max-height: 156px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
   padding-right: 3px !important;
 }
 

@@ -53,6 +53,7 @@ class QuickDeckCustomScrollbarManager {
       ".qd31-left-drawer .qd31-drawer-body",
       ".qd31-roster-list",
       ".qd31-available-list",
+      ".qd31-center-fav-list",
       ".qd31-pdf-map-list"
     ];
   }
@@ -176,13 +177,29 @@ class QuickDeckCustomScrollbarManager {
 
   isUsableScrollHost(host, entry) {
     if (!entry || !this.isVisible(host)) return false;
+    const thresholds = this.getHostThresholds(host);
     const clientHeight = Number(host.clientHeight) || 0;
-    if (clientHeight < QuickDeckCustomScrollbarManager.MIN_HOST_HEIGHT) return false;
+    if (clientHeight < thresholds.minHostHeight) return false;
     const trackHeight = Number(entry.track.clientHeight) || 0;
-    if (trackHeight < QuickDeckCustomScrollbarManager.MIN_TRACK_HEIGHT) return false;
+    if (trackHeight < thresholds.minTrackHeight) return false;
     const scrollRange = Math.max(0, (Number(host.scrollHeight) || 0) - clientHeight);
-    if (scrollRange < QuickDeckCustomScrollbarManager.MIN_SCROLL_RANGE) return false;
+    if (scrollRange < thresholds.minScrollRange) return false;
     return true;
+  }
+
+  getHostThresholds(host) {
+    if (host?.classList?.contains("qd31-center-fav-list")) {
+      return {
+        minHostHeight: 96,
+        minTrackHeight: 64,
+        minScrollRange: 32
+      };
+    }
+    return {
+      minHostHeight: QuickDeckCustomScrollbarManager.MIN_HOST_HEIGHT,
+      minTrackHeight: QuickDeckCustomScrollbarManager.MIN_TRACK_HEIGHT,
+      minScrollRange: QuickDeckCustomScrollbarManager.MIN_SCROLL_RANGE
+    };
   }
 
   refreshHost(host) {
