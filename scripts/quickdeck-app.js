@@ -32,6 +32,11 @@ const renderQuickDeckTemplate = async (path, data) => {
 
 
 class QuickDeckCustomScrollbarManager {
+  static MIN_SCROLL_RANGE = 16;
+  static MIN_HOST_HEIGHT = 64;
+  static MIN_TRACK_HEIGHT = 40;
+  static MIN_THUMB_HEIGHT = 32;
+
   constructor(root) {
     this.root = root;
     this.entries = new Map();
@@ -123,15 +128,47 @@ class QuickDeckCustomScrollbarManager {
     entry.rail.remove();
     this.entries.delete(host);
   }
-  isVisible(host) { const r=host.getBoundingClientRect(); return r.width>0 && r.height>0; }
+  isVisible(host) {
+    if (!host || host.hidden) return false;
+    const style = window.getComputedStyle(host);
+    if (!style || style.display === "none" || style.visibility === "hidden") return false;
+    if (host.offsetParent === null && style.position !== "fixed") return false;
+    const rect = host.getBoundingClientRect();
+    if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+    if (host.clientHeight <= 0) return false;
+    return true;
+  }
+
+  isUsableScrollHost(host, entry) {
+    if (!entry || !this.isVisible(host)) return false;
+    const clientHeight = Number(host.clientHeight) || 0;
+    if (clientHeight < QuickDeckCustomScrollbarManager.MIN_HOST_HEIGHT) return false;
+    const trackHeight = Number(entry.track.clientHeight) || 0;
+    if (trackHeight < QuickDeckCustomScrollbarManager.MIN_TRACK_HEIGHT) return false;
+    const scrollRange = Math.max(0, (Number(host.scrollHeight) || 0) - clientHeight);
+    if (scrollRange < QuickDeckCustomScrollbarManager.MIN_SCROLL_RANGE) return false;
+    return true;
+  }
+
   refreshHost(host) {
-    const entry=this.entries.get(host); if(!entry) return;
-    const scrollable = this.isVisible(host) && host.scrollHeight > (host.clientHeight + 1);
-    entry.rail.classList.toggle("is-active", scrollable);
-    if (!scrollable) return;
+    const entry = this.entries.get(host);
+    if (!entry) return;
+
+    const isUsable = this.isUsableScrollHost(host, entry);
+    entry.rail.classList.toggle("is-active", isUsable);
+    if (!isUsable) {
+      entry.thumb.style.removeProperty("height");
+      entry.thumb.style.removeProperty("transform");
+      return;
+    }
+
     const trackHeight = Math.max(0, entry.track.clientHeight);
     const maxScroll = Math.max(0, host.scrollHeight - host.clientHeight);
-    const thumbHeight = Math.max(32, Math.min(trackHeight, Math.round((host.clientHeight / host.scrollHeight) * trackHeight)));
+    const rawThumbHeight = Math.round((host.clientHeight / host.scrollHeight) * trackHeight);
+    const thumbHeight = Math.max(
+      QuickDeckCustomScrollbarManager.MIN_THUMB_HEIGHT,
+      Math.min(trackHeight, rawThumbHeight)
+    );
     const maxTop = Math.max(0, trackHeight - thumbHeight);
     const top = maxScroll > 0 ? (host.scrollTop / maxScroll) * maxTop : 0;
     entry.thumb.style.height = `${thumbHeight}px`;
