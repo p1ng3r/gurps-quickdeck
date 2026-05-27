@@ -30,6 +30,145 @@ const renderQuickDeckTemplate = async (path, data) => {
 };
 
 
+
+class QuickDeckCustomScrollbarManager {
+  constructor(root) {
+    this.root = root;
+    this.entries = new Map();
+    this.resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver((records) => {
+      for (const record of records) this.refreshHost(record.target);
+    }) : null;
+    this.mutationObserver = typeof MutationObserver === "function" ? new MutationObserver(() => this.refreshAll()) : null;
+    this.refreshRaf = null;
+    this.handleWindowResize = () => this.refreshAll();
+    this.candidateSelectors = [
+      ".qd31-center-cockpit",
+      ".qd31-right-drawer .qd31-drawer-body",
+      ".qd31-left-drawer .qd31-drawer-body",
+      ".qd31-roster-list",
+      ".qd31-available-list",
+      ".qd31-center-fav-list",
+      ".qd31-pdf-map-list"
+    ];
+  }
+
+  setup() {
+    if (!this.root) return;
+    this.scanCandidates();
+    this.refreshAll();
+    this.mutationObserver?.observe(this.root, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style", "hidden", "open"] });
+    window.addEventListener("resize", this.handleWindowResize);
+  }
+
+  teardown() {
+    if (this.refreshRaf) cancelAnimationFrame(this.refreshRaf);
+    this.refreshRaf = null;
+    window.removeEventListener("resize", this.handleWindowResize);
+    this.mutationObserver?.disconnect();
+    this.resizeObserver?.disconnect();
+    for (const [host, entry] of this.entries.entries()) this.unbindHost(host, entry);
+    this.entries.clear();
+  }
+  refreshAll() { this.scheduleRefresh(); }
+  scheduleRefresh() {
+    if (this.refreshRaf) return;
+    this.refreshRaf = requestAnimationFrame(() => {
+      this.refreshRaf = null;
+      this.scanCandidates();
+      for (const host of this.entries.keys()) this.refreshHost(host);
+    });
+  }
+  scanCandidates() {
+    const found = new Set();
+    for (const selector of this.candidateSelectors) {
+      for (const host of this.root.querySelectorAll(selector)) {
+        found.add(host);
+        if (!this.entries.has(host)) this.bindHost(host);
+      }
+    }
+    for (const host of this.root.querySelectorAll('[data-qd-custom-scroll-candidate="true"]')) {
+      found.add(host);
+      if (!this.entries.has(host)) this.bindHost(host);
+    }
+    for (const host of Array.from(this.entries.keys())) {
+      if (!this.root.contains(host) || !found.has(host)) this.unbindHost(host, this.entries.get(host));
+    }
+  }
+  bindHost(host) {
+    const rail = document.createElement("div");
+    rail.className = "qd-custom-scrollbar";
+    const track = document.createElement("div");
+    track.className = "qd-custom-scrollbar-track";
+    const thumb = document.createElement("div");
+    thumb.className = "qd-custom-scrollbar-thumb";
+    track.appendChild(thumb); rail.appendChild(track); host.appendChild(rail);
+    host.classList.add("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
+    const onScroll = () => this.refreshHost(host);
+    const onTrackPointerDown = (event) => this.onTrackPointerDown(host, event);
+    const onThumbPointerDown = (event) => this.onThumbPointerDown(host, event);
+    host.addEventListener("scroll", onScroll, { passive: true });
+    track.addEventListener("pointerdown", onTrackPointerDown);
+    thumb.addEventListener("pointerdown", onThumbPointerDown);
+    const entry = { rail, track, thumb, onScroll, onTrackPointerDown, onThumbPointerDown, cleanupDrag: null };
+    this.entries.set(host, entry);
+    this.resizeObserver?.observe(host);
+  }
+  unbindHost(host, entry) {
+    if (!entry) return;
+    entry.cleanupDrag?.();
+    host.removeEventListener("scroll", entry.onScroll);
+    entry.track.removeEventListener("pointerdown", entry.onTrackPointerDown);
+    entry.thumb.removeEventListener("pointerdown", entry.onThumbPointerDown);
+    host.classList.remove("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
+    entry.rail.remove();
+    this.entries.delete(host);
+  }
+  isVisible(host) { const r=host.getBoundingClientRect(); return r.width>0 && r.height>0; }
+  refreshHost(host) {
+    const entry=this.entries.get(host); if(!entry) return;
+    const scrollable = this.isVisible(host) && host.scrollHeight > (host.clientHeight + 1);
+    entry.rail.classList.toggle("is-active", scrollable);
+    if (!scrollable) return;
+    const trackHeight = Math.max(0, entry.track.clientHeight);
+    const maxScroll = Math.max(0, host.scrollHeight - host.clientHeight);
+    const thumbHeight = Math.max(32, Math.min(trackHeight, Math.round((host.clientHeight / host.scrollHeight) * trackHeight)));
+    const maxTop = Math.max(0, trackHeight - thumbHeight);
+    const top = maxScroll > 0 ? (host.scrollTop / maxScroll) * maxTop : 0;
+    entry.thumb.style.height = `${thumbHeight}px`;
+    entry.thumb.style.transform = `translateY(${Math.max(0, Math.min(maxTop, top))}px)`;
+  }
+  onTrackPointerDown(host,event){
+    const entry=this.entries.get(host); if(!entry) return; if(event.target===entry.thumb) return;
+    event.preventDefault();
+    const rect=entry.track.getBoundingClientRect();
+    const thumbH=entry.thumb.getBoundingClientRect().height;
+    const clickTop=event.clientY-rect.top-(thumbH/2);
+    const maxTop=Math.max(0, rect.height-thumbH);
+    const nextTop=Math.max(0, Math.min(maxTop, clickTop));
+    const maxScroll=Math.max(0, host.scrollHeight-host.clientHeight);
+    host.scrollTop = maxTop > 0 ? (nextTop/maxTop)*maxScroll : 0;
+    this.refreshHost(host);
+  }
+  onThumbPointerDown(host,event){
+    const entry=this.entries.get(host); if(!entry) return;
+    event.preventDefault(); event.stopPropagation();
+    const startY=event.clientY; const startTop=host.scrollTop;
+    const trackRect=entry.track.getBoundingClientRect();
+    const thumbRect=entry.thumb.getBoundingClientRect();
+    const dragScale=Math.max(1, trackRect.height-thumbRect.height);
+    const maxScroll=Math.max(0, host.scrollHeight-host.clientHeight);
+    const onMove=(moveEvent)=>{ const delta=moveEvent.clientY-startY; host.scrollTop = Math.max(0, Math.min(maxScroll, startTop + (delta/dragScale)*maxScroll)); this.refreshHost(host); };
+    const onUp=()=>cleanup();
+    const cleanup=()=>{ window.removeEventListener("pointermove", onMove); window.removeEventListener("pointerup", onUp); window.removeEventListener("pointercancel", onUp); entry.cleanupDrag=null; entry.thumb.classList.remove("is-dragging"); if (entry.thumb.hasPointerCapture?.(event.pointerId)) entry.thumb.releasePointerCapture(event.pointerId);};
+    entry.cleanupDrag=cleanup;
+    entry.thumb.classList.add("is-dragging");
+    entry.thumb.setPointerCapture?.(event.pointerId);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp, { once: true });
+    window.addEventListener("pointercancel", onUp, { once: true });
+  }
+}
+
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
     super(options);
@@ -3585,6 +3724,7 @@ export class QuickDeckApp extends Application {
 
   async close(options) {
     this.cancelTokenDrop({ render: false });
+    this.teardownQuickDeckCustomScrollbars();
     this.cancelTargetOpponentMode({ render: false, restore: false });
     this.unmountOverlay();
     this.showApplicationShellIfNeeded();
@@ -3806,9 +3946,11 @@ export class QuickDeckApp extends Application {
     this.mountOverlay();
     if (!this._overlayRoot) return;
     const html = await renderQuickDeckTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
+    this.teardownQuickDeckCustomScrollbars();
     this._overlayRoot.innerHTML = html;
     this.setOverlayPosition();
     this.activateOverlayListeners(this._overlayRoot);
+    this.setupQuickDeckCustomScrollbars(this._overlayRoot);
   }
 
   mountOverlay() {
@@ -3822,6 +3964,7 @@ export class QuickDeckApp extends Application {
   }
 
   unmountOverlay() {
+    this.teardownQuickDeckCustomScrollbars();
     this.stopOverlayDrag();
     this._overlayRoot?.remove();
     this._overlayRoot = null;
@@ -3903,6 +4046,22 @@ export class QuickDeckApp extends Application {
   activateOverlayListeners(root) {
     this.activateListeners($(root));
     root.querySelector("[data-action=\"drag-overlay\"]")?.addEventListener("pointerdown", (event) => this.startOverlayDrag(event));
+  }
+
+  setupQuickDeckCustomScrollbars(root) {
+    if (!root) return;
+    this.teardownQuickDeckCustomScrollbars();
+    this._quickDeckCustomScrollbarManager = new QuickDeckCustomScrollbarManager(root);
+    this._quickDeckCustomScrollbarManager.setup();
+  }
+
+  teardownQuickDeckCustomScrollbars() {
+    this._quickDeckCustomScrollbarManager?.teardown?.();
+    this._quickDeckCustomScrollbarManager = null;
+  }
+
+  refreshQuickDeckCustomScrollbars() {
+    this._quickDeckCustomScrollbarManager?.refreshAll?.();
   }
 
   hideApplicationShellForOverlay() {
