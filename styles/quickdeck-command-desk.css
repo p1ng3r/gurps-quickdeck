@@ -2343,7 +2343,7 @@
   top: 6px;
   right: 3px;
   bottom: 6px;
-  width: 15px;
+  width: 20px;
   z-index: 4;
   pointer-events: none;
   opacity: 0;
@@ -2358,13 +2358,13 @@
   position: absolute;
   inset: 0;
   border: 1px solid rgba(7, 6, 5, 0.98);
-  border-radius: 4px;
+  border-radius: 5px;
   background:
-    repeating-linear-gradient(180deg, rgba(92, 70, 35, 0.24) 0 2px, rgba(10, 9, 8, 0.0) 2px 14px),
-    radial-gradient(circle at 50% 10px, rgba(0, 0, 0, 0.85) 0 4px, transparent 5px),
-    radial-gradient(circle at 50% 24px, rgba(128, 96, 48, 0.28) 0 2px, transparent 3px),
-    linear-gradient(180deg, rgba(6, 6, 6, 0.98), rgba(18, 14, 11, 0.98), rgba(5, 5, 5, 0.98));
-  background-size: 100% 16px, 100% 32px, 100% 32px, 100% 100%;
+    repeating-linear-gradient(180deg, rgba(0, 0, 0, 0.34) 0 7px, rgba(88, 66, 33, 0.34) 7px 9px, rgba(0, 0, 0, 0.34) 9px 16px),
+    repeating-radial-gradient(circle at 50% 0px, rgba(120, 90, 44, 0.34) 0 1.6px, rgba(0, 0, 0, 0) 1.7px 16px),
+    linear-gradient(180deg, rgba(6, 6, 6, 0.99), rgba(18, 14, 11, 0.99), rgba(5, 5, 5, 0.99));
+  background-size: 100% 16px, 100% 16px, 100% 100%;
+  background-repeat: repeat-y, repeat-y, no-repeat;
   box-shadow:
     inset 0 0 0 1px rgba(78, 57, 25, 0.30),
     inset 0 0 9px rgba(0, 0, 0, 0.82),
@@ -2378,17 +2378,18 @@
   top: 0;
   left: 1px;
   right: 1px;
-  min-height: 32px;
+  min-width: 16px;
+  min-height: 56px;
   border: 2px solid rgba(10, 9, 8, 0.98);
-  border-radius: 4px;
+  border-radius: 3px;
   background:
     linear-gradient(135deg, rgba(107, 101, 90, 0.98), rgba(50, 45, 40, 0.98) 46%, rgba(24, 22, 21, 0.98) 100%),
     repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 2px, rgba(255, 255, 255, 0.03) 2px 4px);
   box-shadow:
-    inset 0 0 0 1px rgba(170, 130, 76, 0.28),
-    inset 0 6px 8px rgba(255, 244, 220, 0.05),
-    inset 0 -7px 9px rgba(0, 0, 0, 0.62),
-    0 1px 5px rgba(0, 0, 0, 0.55);
+    inset 0 0 0 1px rgba(170, 130, 76, 0.36),
+    inset 0 7px 10px rgba(255, 244, 220, 0.08),
+    inset 0 -8px 11px rgba(0, 0, 0, 0.68),
+    0 2px 7px rgba(0, 0, 0, 0.60);
   pointer-events: auto;
   cursor: grab;
 }
@@ -2396,10 +2397,10 @@
 #gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb::before {
   content: "";
   position: absolute;
-  inset: 5px 3px;
+  inset: 8px 4px;
   border-radius: 2px;
   background:
-    radial-gradient(circle at 50% 30%, rgba(148, 40, 30, 0.72) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 50% 30%, rgba(170, 45, 31, 0.88) 0 1.5px, transparent 2.5px),
     repeating-linear-gradient(90deg, rgba(116, 86, 43, 0.42) 0 2px, rgba(18, 16, 14, 0.0) 2px 6px);
   box-shadow: inset 0 0 0 1px rgba(120, 92, 54, 0.28);
 }
@@ -2425,5 +2426,6 @@
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb.is-dragging {
   cursor: grabbing;
-  filter: brightness(1.12);
+  filter: brightness(1.16);
+  transform: scaleX(1.02);
 }

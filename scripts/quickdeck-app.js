@@ -35,7 +35,7 @@ class QuickDeckCustomScrollbarManager {
   static MIN_SCROLL_RANGE = 16;
   static MIN_HOST_HEIGHT = 64;
   static MIN_TRACK_HEIGHT = 40;
-  static MIN_THUMB_HEIGHT = 32;
+  static MIN_THUMB_HEIGHT = 56;
 
   constructor(root) {
     this.root = root;
@@ -186,13 +186,14 @@ class QuickDeckCustomScrollbarManager {
   onTrackPointerDown(host,event){
     const entry=this.entries.get(host); if(!entry) return; if(event.target===entry.thumb) return;
     event.preventDefault();
-    const rect=entry.track.getBoundingClientRect();
-    const thumbH=entry.thumb.getBoundingClientRect().height;
-    const clickTop=event.clientY-rect.top-(thumbH/2);
-    const maxTop=Math.max(0, rect.height-thumbH);
-    const nextTop=Math.max(0, Math.min(maxTop, clickTop));
-    const maxScroll=Math.max(0, host.scrollHeight-host.clientHeight);
-    host.scrollTop = maxTop > 0 ? (nextTop/maxTop)*maxScroll : 0;
+    const thumbRect = entry.thumb.getBoundingClientRect();
+    const clickY = Number(event.clientY);
+    const pageStep = Math.max(1, host.clientHeight * 0.85);
+    const maxScroll = Math.max(0, host.scrollHeight - host.clientHeight);
+    let nextScrollTop = host.scrollTop;
+    if (clickY > thumbRect.bottom) nextScrollTop += pageStep;
+    else if (clickY < thumbRect.top) nextScrollTop -= pageStep;
+    host.scrollTop = Math.max(0, Math.min(maxScroll, nextScrollTop));
     this.scheduleHostRefresh(host);
   }
   onThumbPointerDown(host,event){
