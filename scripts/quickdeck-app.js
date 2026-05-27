@@ -108,13 +108,24 @@ class QuickDeckCustomScrollbarManager {
     }
   }
   bindHost(host) {
+    if (host.parentElement?.classList?.contains("qd-custom-scroll-wrapper")) return;
+    const originalParent = host.parentElement;
+    if (!originalParent) return;
+    const nextSibling = host.nextSibling;
+    const wrapper = document.createElement("div");
+    wrapper.className = "qd-custom-scroll-wrapper";
+    originalParent.insertBefore(wrapper, nextSibling);
+    wrapper.appendChild(host);
+
     const rail = document.createElement("div");
     rail.className = "qd-custom-scrollbar";
     const track = document.createElement("div");
     track.className = "qd-custom-scrollbar-track";
     const thumb = document.createElement("div");
     thumb.className = "qd-custom-scrollbar-thumb";
-    track.appendChild(thumb); rail.appendChild(track); host.appendChild(rail);
+    track.appendChild(thumb);
+    rail.appendChild(track);
+    wrapper.appendChild(rail);
     host.classList.add("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
     const onScroll = () => this.refreshHost(host);
     const onTrackPointerDown = (event) => this.onTrackPointerDown(host, event);
@@ -122,7 +133,18 @@ class QuickDeckCustomScrollbarManager {
     host.addEventListener("scroll", onScroll, { passive: true });
     track.addEventListener("pointerdown", onTrackPointerDown);
     thumb.addEventListener("pointerdown", onThumbPointerDown);
-    const entry = { rail, track, thumb, onScroll, onTrackPointerDown, onThumbPointerDown, cleanupDrag: null };
+    const entry = {
+      rail,
+      track,
+      thumb,
+      wrapper,
+      originalParent,
+      nextSibling,
+      onScroll,
+      onTrackPointerDown,
+      onThumbPointerDown,
+      cleanupDrag: null
+    };
     this.entries.set(host, entry);
     this.resizeObserver?.observe(host);
   }
@@ -134,6 +156,11 @@ class QuickDeckCustomScrollbarManager {
     entry.thumb.removeEventListener("pointerdown", entry.onThumbPointerDown);
     host.classList.remove("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
     entry.rail.remove();
+    if (entry.wrapper?.contains?.(host)) {
+      const parent = entry.wrapper.parentElement ?? entry.originalParent;
+      if (parent) parent.insertBefore(host, entry.wrapper);
+    }
+    entry.wrapper?.remove?.();
     this.entries.delete(host);
   }
   isVisible(host) {
