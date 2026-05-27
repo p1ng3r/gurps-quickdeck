@@ -53,7 +53,6 @@ class QuickDeckCustomScrollbarManager {
       ".qd31-left-drawer .qd31-drawer-body",
       ".qd31-roster-list",
       ".qd31-available-list",
-      ".qd31-center-fav-list",
       ".qd31-pdf-map-list"
     ];
   }
