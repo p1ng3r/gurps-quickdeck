@@ -2343,7 +2343,7 @@
   top: 6px;
   right: 3px;
   bottom: 6px;
-  width: 14px;
+  width: 15px;
   z-index: 4;
   pointer-events: none;
   opacity: 0;
@@ -2357,13 +2357,19 @@
 #gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-track {
   position: absolute;
   inset: 0;
-  border: 1px solid rgba(9, 8, 8, 0.95);
-  border-radius: 999px;
+  border: 1px solid rgba(7, 6, 5, 0.98);
+  border-radius: 4px;
   background:
-    radial-gradient(circle at 50% 10px, rgba(124, 92, 50, 0.30) 0 2px, transparent 3px),
-    linear-gradient(180deg, rgba(4, 4, 4, 0.95), rgba(17, 12, 10, 0.95), rgba(5, 5, 5, 0.95));
-  background-size: 100% 28px, 100% 100%;
-  box-shadow: inset 0 0 0 1px rgba(86, 63, 28, 0.28), inset 0 0 8px rgba(0, 0, 0, 0.7);
+    repeating-linear-gradient(180deg, rgba(92, 70, 35, 0.24) 0 2px, rgba(10, 9, 8, 0.0) 2px 14px),
+    radial-gradient(circle at 50% 10px, rgba(0, 0, 0, 0.85) 0 4px, transparent 5px),
+    radial-gradient(circle at 50% 24px, rgba(128, 96, 48, 0.28) 0 2px, transparent 3px),
+    linear-gradient(180deg, rgba(6, 6, 6, 0.98), rgba(18, 14, 11, 0.98), rgba(5, 5, 5, 0.98));
+  background-size: 100% 16px, 100% 32px, 100% 32px, 100% 100%;
+  box-shadow:
+    inset 0 0 0 1px rgba(78, 57, 25, 0.30),
+    inset 0 0 9px rgba(0, 0, 0, 0.82),
+    inset 2px 0 2px rgba(0, 0, 0, 0.45),
+    inset -2px 0 2px rgba(0, 0, 0, 0.45);
   pointer-events: auto;
 }
 
@@ -2373,35 +2379,51 @@
   left: 1px;
   right: 1px;
   min-height: 32px;
-  border: 2px solid rgba(8, 7, 6, 0.96);
-  border-radius: 10px;
+  border: 2px solid rgba(10, 9, 8, 0.98);
+  border-radius: 4px;
   background:
-    radial-gradient(circle at 50% 16%, rgba(255, 227, 160, 0.18), transparent 35%),
-    linear-gradient(145deg, rgba(96, 90, 80, 0.98), rgba(30, 28, 25, 0.98) 52%, rgba(10, 10, 10, 0.98));
+    linear-gradient(135deg, rgba(107, 101, 90, 0.98), rgba(50, 45, 40, 0.98) 46%, rgba(24, 22, 21, 0.98) 100%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 2px, rgba(255, 255, 255, 0.03) 2px 4px);
   box-shadow:
-    inset 0 0 0 1px rgba(168, 130, 78, 0.35),
-    inset 0 -8px 9px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(170, 130, 76, 0.28),
+    inset 0 6px 8px rgba(255, 244, 220, 0.05),
+    inset 0 -7px 9px rgba(0, 0, 0, 0.62),
     0 1px 5px rgba(0, 0, 0, 0.55);
   pointer-events: auto;
   cursor: grab;
 }
 
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb::before {
+  content: "";
+  position: absolute;
+  inset: 5px 3px;
+  border-radius: 2px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(148, 40, 30, 0.72) 0 1.5px, transparent 2.5px),
+    repeating-linear-gradient(90deg, rgba(116, 86, 43, 0.42) 0 2px, rgba(18, 16, 14, 0.0) 2px 6px);
+  box-shadow: inset 0 0 0 1px rgba(120, 92, 54, 0.28);
+}
+
 #gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb::after {
   content: "";
   position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  top: 6px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(150, 42, 30, 0.85), rgba(38, 8, 7, 0.85));
+  inset: 1px;
+  border-radius: 2px;
+  border-top: 1px solid rgba(220, 188, 130, 0.20);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.40);
+  pointer-events: none;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb:hover {
   filter: brightness(1.08);
+  box-shadow:
+    inset 0 0 0 1px rgba(186, 140, 82, 0.35),
+    inset 0 7px 8px rgba(255, 244, 220, 0.08),
+    inset 0 -7px 9px rgba(0, 0, 0, 0.62),
+    0 0 9px rgba(121, 76, 37, 0.22);
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb.is-dragging {
   cursor: grabbing;
+  filter: brightness(1.12);
 }
