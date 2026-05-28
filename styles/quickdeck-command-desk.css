@@ -368,6 +368,10 @@
   flex: 0 0 var(--qd31-center-width) !important;
   min-width: var(--qd31-center-width) !important;
   max-width: var(--qd31-center-width) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd31-left-panel-wrap,
