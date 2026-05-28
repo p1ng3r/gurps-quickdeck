@@ -32,8 +32,10 @@
       <div class="qd31-available-list">
       {{#each availableActors as |actor|}}
         <div class="qd31-action-row" data-search-row data-search-text="{{actor.searchText}}">
-          <span>{{actor.name}} ({{actor.actorType}})</span>
-          <button type="button" class="qd31-square-button" data-action="add-actor" data-actor-id="{{actor.id}}">+</button>
+          <img class="qd31-available-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+          <span class="qd31-available-name" title="{{actor.name}}">{{actor.name}}</span>
+          <small class="qd31-available-type" aria-hidden="true">{{actor.actorType}}</small>
+          <button type="button" class="qd31-square-button" data-action="add-actor" data-actor-id="{{actor.id}}" title="Add {{actor.name}}">+</button>
         </div>
       {{/each}}
       </div>

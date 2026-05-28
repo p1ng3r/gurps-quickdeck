@@ -2899,3 +2899,186 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+/* ------------------------------------------------------------------------- */
+/* PR #329 follow-up (left panel only)                                       */
+/* ------------------------------------------------------------------------- */
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-corner-badge,
+.qd40-overlay .qd40-corner-badge {
+  border-color: rgba(199, 154, 56, 0.22);
+  background: rgba(7, 6, 5, 0.28);
+  box-shadow: none;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-corner-title,
+.qd40-overlay .qd40-corner-title {
+  text-shadow: 0 1px 0 #0f0b07, 0 0 3px rgba(0, 0, 0, 0.8);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer,
+.qd40-overlay .qd31-left-drawer {
+  --qd-left-scroll-lane: 44px;
+  --qd-left-control-lane: 30px;
+}
+
+/* Premium steel/chrome section heading language for left panel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-drawer-header h3,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section h4,
+.qd40-overlay .qd31-left-drawer .qd31-drawer-header h3,
+.qd40-overlay .qd31-left-drawer .qd31-available-section h4 {
+  position: relative;
+  color: #d8dde5;
+  background: linear-gradient(180deg, #f0f3f8 0%, #c9d0d9 45%, #8e99a7 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.14), 0 2px 4px rgba(0, 0, 0, 0.62);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-drawer-header h3::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section h4::before,
+.qd40-overlay .qd31-left-drawer .qd31-drawer-header h3::before,
+.qd40-overlay .qd31-left-drawer .qd31-available-section h4::before {
+  content: "✦";
+  position: absolute;
+  left: -11px;
+  top: 0;
+  font-size: 0.56rem;
+  color: rgba(194, 204, 216, 0.72);
+}
+
+/* Reserve hard lanes so X and + never sit under the custom scrollbar. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-list,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-roster-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-list {
+  padding-right: calc(var(--qd-left-scroll-lane) + 5px) !important;
+}
+
+/* Compact active roster card target layout. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card {
+  grid-template-columns: 48px minmax(0, 1fr);
+  align-items: start;
+  min-height: 96px;
+  gap: 8px;
+  padding: 7px 8px;
+  padding-right: calc(var(--qd-left-scroll-lane) + var(--qd-left-control-lane));
+  border-color: rgba(112, 89, 57, 0.72);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card img,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card img {
+  width: 48px;
+  height: 48px;
+  border-color: rgba(176, 139, 76, 0.78);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-meta,
+.qd40-overlay .qd31-left-drawer .qd31-roster-meta {
+  gap: 1px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-meta strong,
+.qd40-overlay .qd31-left-drawer .qd31-roster-meta strong {
+  font-size: 0.81rem;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-bars,
+.qd40-overlay .qd31-left-drawer .qd31-mini-bars {
+  width: 104px;
+  max-width: 104px;
+  margin-top: 1px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row span {
+  font-size: 0.60rem;
+  line-height: 1.15;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-fill,
+.qd40-overlay .qd31-left-drawer .qd31-mini-fill {
+  height: 5px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-square-button[data-action="remove-actor"],
+.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-square-button[data-action="remove-actor"] {
+  position: absolute;
+  right: calc(var(--qd-left-scroll-lane) + 6px);
+  top: 8px;
+  width: 22px;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  font-size: 13px;
+  z-index: 2;
+}
+
+/* Actors-to-add header + compact search width aligned away from scroll lane. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section,
+.qd40-overlay .qd31-left-drawer .qd31-available-section {
+  margin-top: 8px;
+  padding-right: calc(var(--qd-left-scroll-lane) + 5px);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section > input[type="search"],
+.qd40-overlay .qd31-left-drawer .qd31-available-section > input[type="search"] {
+  width: min(248px, 100%);
+  justify-self: start;
+}
+
+/* Add-actor rows with portrait, clean name, integrated + control lane-safe. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-action-row,
+.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-action-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  align-items: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 4px 7px;
+  padding-right: calc(var(--qd-left-scroll-lane) + var(--qd-left-control-lane));
+  border: 1px solid rgba(103, 79, 49, 0.72);
+  border-radius: 7px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-portrait,
+.qd40-overlay .qd31-available-portrait {
+  width: 30px;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid rgba(165, 131, 73, 0.64);
+  object-fit: cover;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-name,
+.qd40-overlay .qd31-available-name {
+  overflow: hidden;
+  color: var(--qd-text-strong);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-type,
+.qd40-overlay .qd31-available-type {
+  display: none;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-square-button[data-action="add-actor"],
+.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-square-button[data-action="add-actor"] {
+  position: absolute;
+  right: calc(var(--qd-left-scroll-lane) + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  border-radius: 5px;
+  z-index: 2;
+}
