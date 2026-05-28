@@ -2419,7 +2419,8 @@
   background-image:
     var(--qd-scroll-chain-channel-tile),
     linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.34));
-  background-size: 20px 64px, 100% 100%;
+  /* 40x64 source art scaled proportionally to 20x32; do not stretch to 20x64. */
+  background-size: 20px 32px, 100% 100%;
   background-repeat: repeat-y, no-repeat;
   background-position: center top, center center;
   box-shadow:
@@ -2464,51 +2465,76 @@
   left: 1px;
   right: 1px;
   min-width: 16px;
-  min-height: 64px;
-  border: 1px solid rgba(14, 12, 11, 0.88);
+  min-height: 56px;
+  border: 0;
   border-radius: 4px;
   background: transparent;
-  box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.62),
-    inset 0 0 0 1px rgba(177, 135, 72, 0.20);
+  box-shadow: none;
   pointer-events: auto;
   cursor: grab;
 }
 
+/*
+ * Runestone thumb:
+ * - one rune-stone asset only
+ * - top-aligned inside the JS-moved thumb element
+ * - not stretched
+ * - not repeated
+ */
 #gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb::before {
   content: "";
   position: absolute;
-  inset: 0;
-  border-radius: 3px;
-  background: var(--qd-scroll-thumb-stone) center center / 100% 100% no-repeat;
-  box-shadow: inset 0 0 0 1px rgba(122, 93, 54, 0.18);
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb::after {
-  content: "";
-  position: absolute;
-  inset: -1px;
-  border-radius: 3px;
-  border-top: 1px solid rgba(228, 195, 132, 0.22);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.44);
-  box-shadow: inset 0 0 0 1px rgba(23, 19, 16, 0.34);
+  left: 50%;
+  top: 0;
+  width: 18px;
+  height: 50px;
+  transform: translateX(-50%);
+  border-radius: 4px;
+  background: var(--qd-scroll-thumb-stone) center top / 18px 50px no-repeat;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.72));
   pointer-events: none;
 }
 
-#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb:hover {
-  filter: brightness(1.09) saturate(1.04) drop-shadow(0 0 5px rgba(220, 166, 76, 0.34)) drop-shadow(0 0 10px rgba(130, 90, 34, 0.28));
+/* Thin blue/steel highlight over the runestone only. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 18px;
+  height: 50px;
+  transform: translateX(-50%);
+  border-radius: 4px;
   box-shadow:
-    0 0 12px rgba(136, 95, 38, 0.30),
-    inset 0 0 0 1px rgba(196, 149, 84, 0.38);
+    inset 0 0 0 1px rgba(126, 214, 255, 0.22),
+    inset 0 1px 0 rgba(160, 225, 255, 0.18),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.42);
+  pointer-events: none;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb:hover::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb:active::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb.is-dragging::before {
+  filter:
+    brightness(1.12)
+    saturate(1.08)
+    drop-shadow(0 2px 4px rgba(0, 0, 0, 0.74))
+    drop-shadow(0 0 5px rgba(80, 190, 255, 0.55))
+    drop-shadow(0 0 12px rgba(45, 125, 255, 0.38));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb:hover::after,
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb:active::after,
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb.is-dragging::after {
+  box-shadow:
+    inset 0 0 0 1px rgba(126, 214, 255, 0.42),
+    inset 0 1px 0 rgba(190, 238, 255, 0.28),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.42),
+    0 0 8px rgba(80, 190, 255, 0.30);
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb.is-dragging {
   cursor: grabbing;
-  filter: brightness(1.14) saturate(1.08) drop-shadow(0 0 8px rgba(226, 175, 82, 0.46)) drop-shadow(0 0 14px rgba(137, 95, 38, 0.36));
-  transform: scaleX(1.03);
-  box-shadow:
-    0 1px 4px rgba(0, 0, 0, 0.72),
-    inset 0 0 0 1px rgba(207, 161, 96, 0.46);
   touch-action: none;
   user-select: none;
 }

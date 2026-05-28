@@ -216,11 +216,12 @@ class QuickDeckCustomScrollbarManager {
 
     const trackHeight = Math.max(0, entry.track.clientHeight);
     const maxScroll = Math.max(0, host.scrollHeight - host.clientHeight);
-    const rawThumbHeight = Math.round((host.clientHeight / host.scrollHeight) * trackHeight);
-    const thumbHeight = Math.max(
-      QuickDeckCustomScrollbarManager.MIN_THUMB_HEIGHT,
-      Math.min(trackHeight, rawThumbHeight)
-    );
+    // Runestone thumb travel:
+    // The visible thumb art is a fixed-size rune stone, so the custom thumb
+    // should travel using that fixed height instead of a browser-style ratio
+    // height. This keeps the runestone moving linearly from the top of the
+    // chain track to the bottom.
+    const thumbHeight = Math.min(trackHeight, QuickDeckCustomScrollbarManager.MIN_THUMB_HEIGHT);
     const maxTop = Math.max(0, trackHeight - thumbHeight);
     const top = maxScroll > 0 ? (host.scrollTop / maxScroll) * maxTop : 0;
     entry.thumb.style.height = `${thumbHeight}px`;
