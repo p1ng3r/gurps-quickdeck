@@ -1087,6 +1087,210 @@
   font-size: 0.7rem;
 }
 
+/* Left roster cleanup: roster cards and collapsible add-actor tray only. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-list,
+.qd40-overlay .qd31-left-drawer .qd31-roster-list {
+  flex: 1 1 auto;
+  align-content: start;
+  padding-right: 10px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card {
+  position: relative;
+  grid-template-columns: 44px minmax(0, 1fr);
+  min-height: 74px;
+  padding: 7px 42px 7px 7px;
+  border-radius: 7px;
+  background-color: #14100c !important;
+  background-image: var(--qd-card-bg) !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: center center !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card > img,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card > img {
+  width: 44px;
+  height: 56px;
+  align-self: start;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-meta,
+.qd40-overlay .qd31-left-drawer .qd31-roster-meta {
+  align-content: start;
+  gap: 3px;
+  padding-top: 1px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-meta strong,
+.qd40-overlay .qd31-left-drawer .qd31-roster-meta strong {
+  padding-right: 2px;
+  font-size: 0.86rem;
+  line-height: 1.05;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-bars,
+.qd40-overlay .qd31-left-drawer .qd31-mini-bars {
+  gap: 4px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row {
+  width: 136px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row span {
+  color: #d8c9a8;
+  font-size: 0.68rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-fill,
+.qd40-overlay .qd31-left-drawer .qd31-mini-fill {
+  width: 136px;
+  height: 5px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row-hp .qd31-mini-fill span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row-hp .qd31-mini-fill span {
+  background: linear-gradient(90deg, #8f241f, #d2553f) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row-fp .qd31-mini-fill span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row-fp .qd31-mini-fill span {
+  background: linear-gradient(90deg, #237b91, #5bc8dc) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-square-button,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-square-button {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  z-index: 2;
+  width: 26px;
+  min-width: 26px;
+  height: 26px;
+  min-height: 26px;
+  padding: 0;
+  line-height: 1;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section,
+.qd40-overlay .qd31-left-drawer .qd31-available-section {
+  flex: 0 0 auto;
+  margin-top: 8px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(145, 103, 45, 0.28);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-summary,
+.qd40-overlay .qd31-left-drawer .qd31-available-summary {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 4px 8px;
+  border: 1px solid rgba(20, 18, 15, 0.92);
+  border-radius: 6px;
+  color: var(--qd-text-strong);
+  background: rgba(10, 8, 6, 0.88);
+  font-family: var(--qd-font-title);
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-body,
+.qd40-overlay .qd31-left-drawer .qd31-available-body {
+  display: grid;
+  gap: 6px;
+  min-height: 0;
+  padding-top: 6px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section:not([open]) .qd31-available-body,
+.qd40-overlay .qd31-left-drawer .qd31-available-section:not([open]) .qd31-available-body {
+  display: none;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer [data-action='available-search'],
+.qd40-overlay .qd31-left-drawer [data-action='available-search'] {
+  justify-self: center;
+  width: min(170px, 72%);
+  min-height: 28px;
+  padding: 3px 9px;
+  text-align: center;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-list {
+  display: grid;
+  gap: 5px;
+  max-height: 220px;
+  padding-right: 10px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-row,
+.qd40-overlay .qd31-left-drawer .qd31-available-row {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 28px;
+  align-items: center;
+  gap: 7px;
+  min-height: 42px;
+  padding: 5px 6px;
+  border: 1px solid rgba(20, 18, 15, 0.92);
+  border-radius: 7px;
+  color: var(--qd-text);
+  background-color: #14100c !important;
+  background-image: var(--qd-card-bg) !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(145, 103, 45, 0.12),
+    inset 0 0 18px rgba(0, 0, 0, 0.22) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-row > img,
+.qd40-overlay .qd31-left-drawer .qd31-available-row > img {
+  width: 32px;
+  height: 32px;
+  border: 1px solid rgba(240, 205, 122, 0.58);
+  border-radius: 5px;
+  object-fit: cover;
+  background: #050403;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-meta,
+.qd40-overlay .qd31-left-drawer .qd31-available-meta {
+  min-width: 0;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-meta span,
+.qd40-overlay .qd31-left-drawer .qd31-available-meta span {
+  display: block;
+  overflow: hidden;
+  color: var(--qd-text-strong);
+  font-size: 0.78rem;
+  font-weight: 850;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-row > .qd31-square-button,
+.qd40-overlay .qd31-left-drawer .qd31-available-row > .qd31-square-button {
+  width: 26px;
+  min-width: 26px;
+  height: 26px;
+  min-height: 26px;
+  padding: 0;
+  line-height: 1;
+}
+
 /* ------------------------------------------------------------------------- */
 /* Defense dials                                                             */
 /* ------------------------------------------------------------------------- */
