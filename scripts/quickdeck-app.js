@@ -30,6 +30,248 @@ const renderQuickDeckTemplate = async (path, data) => {
 };
 
 
+
+class QuickDeckCustomScrollbarManager {
+  static MIN_SCROLL_RANGE = 16;
+  static MIN_HOST_HEIGHT = 64;
+  static MIN_TRACK_HEIGHT = 40;
+  static MIN_THUMB_HEIGHT = 56;
+
+  constructor(root) {
+    this.root = root;
+    this.entries = new Map();
+    this.resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver((records) => {
+      for (const record of records) this.refreshHost(record.target);
+    }) : null;
+    this.mutationObserver = typeof MutationObserver === "function" ? new MutationObserver(() => this.refreshAll()) : null;
+    this.refreshRaf = null;
+    this.handleWindowResize = () => this.refreshAll();
+    this.pendingHostRefresh = new Set();
+    this.candidateSelectors = [
+      ".qd31-center-cockpit",
+      ".qd31-right-drawer .qd31-drawer-body",
+      ".qd31-left-drawer .qd31-drawer-body",
+      ".qd31-roster-list",
+      ".qd31-available-list",
+      ".qd31-center-fav-list",
+      ".qd31-pdf-map-list"
+    ];
+  }
+
+  setup() {
+    if (!this.root) return;
+    this.scanCandidates();
+    this.refreshAll();
+    this.mutationObserver?.observe(this.root, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style", "hidden", "open"] });
+    window.addEventListener("resize", this.handleWindowResize);
+  }
+
+  teardown() {
+    if (this.refreshRaf) cancelAnimationFrame(this.refreshRaf);
+    this.refreshRaf = null;
+    this.pendingHostRefresh.clear();
+    window.removeEventListener("resize", this.handleWindowResize);
+    this.mutationObserver?.disconnect();
+    this.resizeObserver?.disconnect();
+    for (const [host, entry] of this.entries.entries()) this.unbindHost(host, entry);
+    this.entries.clear();
+  }
+  refreshAll() { this.scheduleRefresh(); }
+
+  scheduleHostRefresh(host) {
+    if (host) this.pendingHostRefresh.add(host);
+    if (this.refreshRaf) return;
+    this.refreshRaf = requestAnimationFrame(() => {
+      this.refreshRaf = null;
+      this.scanCandidates();
+      const hosts = this.pendingHostRefresh.size ? Array.from(this.pendingHostRefresh) : Array.from(this.entries.keys());
+      this.pendingHostRefresh.clear();
+      for (const targetHost of hosts) this.refreshHost(targetHost);
+    });
+  }
+  scheduleRefresh() {
+    this.scheduleHostRefresh(null);
+  }
+  scanCandidates() {
+    const found = new Set();
+    for (const selector of this.candidateSelectors) {
+      for (const host of this.root.querySelectorAll(selector)) {
+        found.add(host);
+        if (!this.entries.has(host)) this.bindHost(host);
+      }
+    }
+    for (const host of this.root.querySelectorAll('[data-qd-custom-scroll-candidate="true"]')) {
+      found.add(host);
+      if (!this.entries.has(host)) this.bindHost(host);
+    }
+    for (const host of Array.from(this.entries.keys())) {
+      if (!this.root.contains(host) || !found.has(host)) this.unbindHost(host, this.entries.get(host));
+    }
+  }
+  bindHost(host) {
+    if (host.parentElement?.classList?.contains("qd-custom-scroll-wrapper")) return;
+    const originalParent = host.parentElement;
+    if (!originalParent) return;
+    const nextSibling = host.nextSibling;
+    const wrapper = document.createElement("div");
+    wrapper.className = "qd-custom-scroll-wrapper";
+    originalParent.insertBefore(wrapper, nextSibling);
+    wrapper.appendChild(host);
+
+    const rail = document.createElement("div");
+    rail.className = "qd-custom-scrollbar";
+    const track = document.createElement("div");
+    track.className = "qd-custom-scrollbar-track";
+    const thumb = document.createElement("div");
+    thumb.className = "qd-custom-scrollbar-thumb";
+    track.appendChild(thumb);
+    rail.appendChild(track);
+    wrapper.appendChild(rail);
+    host.classList.add("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
+    const onScroll = () => this.refreshHost(host);
+    const onTrackPointerDown = (event) => this.onTrackPointerDown(host, event);
+    const onThumbPointerDown = (event) => this.onThumbPointerDown(host, event);
+    host.addEventListener("scroll", onScroll, { passive: true });
+    track.addEventListener("pointerdown", onTrackPointerDown);
+    thumb.addEventListener("pointerdown", onThumbPointerDown);
+    const entry = {
+      rail,
+      track,
+      thumb,
+      wrapper,
+      originalParent,
+      nextSibling,
+      onScroll,
+      onTrackPointerDown,
+      onThumbPointerDown,
+      cleanupDrag: null
+    };
+    this.entries.set(host, entry);
+    this.resizeObserver?.observe(host);
+  }
+  unbindHost(host, entry) {
+    if (!entry) return;
+    entry.cleanupDrag?.();
+    host.removeEventListener("scroll", entry.onScroll);
+    entry.track.removeEventListener("pointerdown", entry.onTrackPointerDown);
+    entry.thumb.removeEventListener("pointerdown", entry.onThumbPointerDown);
+    host.classList.remove("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
+    entry.rail.remove();
+    if (entry.wrapper?.contains?.(host)) {
+      const parent = entry.wrapper.parentElement ?? entry.originalParent;
+      if (parent) parent.insertBefore(host, entry.wrapper);
+    }
+    entry.wrapper?.remove?.();
+    this.entries.delete(host);
+  }
+  isVisible(host) {
+    if (!host || host.hidden) return false;
+    const style = window.getComputedStyle(host);
+    if (!style || style.display === "none" || style.visibility === "hidden") return false;
+    if (host.offsetParent === null && style.position !== "fixed") return false;
+    const rect = host.getBoundingClientRect();
+    if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+    if (host.clientHeight <= 0) return false;
+    return true;
+  }
+
+  isUsableScrollHost(host, entry) {
+    if (!entry || !this.isVisible(host)) return false;
+    const thresholds = this.getHostThresholds(host);
+    const clientHeight = Number(host.clientHeight) || 0;
+    if (clientHeight < thresholds.minHostHeight) return false;
+    const trackHeight = Number(entry.track.clientHeight) || 0;
+    if (trackHeight < thresholds.minTrackHeight) return false;
+    const scrollRange = Math.max(0, (Number(host.scrollHeight) || 0) - clientHeight);
+    if (scrollRange < thresholds.minScrollRange) return false;
+    return true;
+  }
+
+  getHostThresholds(host) {
+    if (host?.classList?.contains("qd31-center-fav-list")) {
+      return {
+        minHostHeight: 96,
+        minTrackHeight: 64,
+        minScrollRange: 32
+      };
+    }
+    return {
+      minHostHeight: QuickDeckCustomScrollbarManager.MIN_HOST_HEIGHT,
+      minTrackHeight: QuickDeckCustomScrollbarManager.MIN_TRACK_HEIGHT,
+      minScrollRange: QuickDeckCustomScrollbarManager.MIN_SCROLL_RANGE
+    };
+  }
+
+  refreshHost(host) {
+    const entry = this.entries.get(host);
+    if (!entry) return;
+
+    const isUsable = this.isUsableScrollHost(host, entry);
+    entry.rail.classList.toggle("is-active", isUsable);
+    if (!isUsable) {
+      entry.thumb.style.removeProperty("height");
+      entry.thumb.style.removeProperty("transform");
+      return;
+    }
+
+    const trackHeight = Math.max(0, entry.track.clientHeight);
+    const maxScroll = Math.max(0, host.scrollHeight - host.clientHeight);
+    const rawThumbHeight = Math.round((host.clientHeight / host.scrollHeight) * trackHeight);
+    const thumbHeight = Math.max(
+      QuickDeckCustomScrollbarManager.MIN_THUMB_HEIGHT,
+      Math.min(trackHeight, rawThumbHeight)
+    );
+    const maxTop = Math.max(0, trackHeight - thumbHeight);
+    const top = maxScroll > 0 ? (host.scrollTop / maxScroll) * maxTop : 0;
+    entry.thumb.style.height = `${thumbHeight}px`;
+    entry.thumb.style.transform = `translateY(${Math.max(0, Math.min(maxTop, top))}px)`;
+  }
+  onTrackPointerDown(host,event){
+    const entry=this.entries.get(host); if(!entry) return; if(event.target===entry.thumb) return;
+    event.preventDefault();
+    const thumbRect = entry.thumb.getBoundingClientRect();
+    const clickY = Number(event.clientY);
+    const pageStep = Math.max(1, host.clientHeight * 0.85);
+    const maxScroll = Math.max(0, host.scrollHeight - host.clientHeight);
+    let nextScrollTop = host.scrollTop;
+    if (clickY > thumbRect.bottom) nextScrollTop += pageStep;
+    else if (clickY < thumbRect.top) nextScrollTop -= pageStep;
+    host.scrollTop = Math.max(0, Math.min(maxScroll, nextScrollTop));
+    this.refreshHost(host);
+  }
+  onThumbPointerDown(host,event){
+    const entry=this.entries.get(host); if(!entry) return;
+    event.preventDefault(); event.stopPropagation();
+    const startY=event.clientY; const startTop=host.scrollTop;
+    const trackRect=entry.track.getBoundingClientRect();
+    const thumbRect=entry.thumb.getBoundingClientRect();
+    const dragScale=Math.max(1, trackRect.height-thumbRect.height);
+    const maxScroll=Math.max(0, host.scrollHeight-host.clientHeight);
+    const onMove=(moveEvent)=>{
+      moveEvent.preventDefault();
+      const delta=Number(moveEvent.clientY)-startY;
+      const liveMaxScroll=Math.max(0, host.scrollHeight-host.clientHeight);
+      const liveTrackRect=entry.track.getBoundingClientRect();
+      const liveThumbRect=entry.thumb.getBoundingClientRect();
+      const maxThumbTravel=Math.max(1, liveTrackRect.height-liveThumbRect.height);
+      const scrollRatio=liveMaxScroll/maxThumbTravel;
+      host.scrollTop=Math.max(0, Math.min(liveMaxScroll, startTop + (delta*scrollRatio)));
+      this.refreshHost(host);
+    };
+    const onUp=()=>cleanup();
+    const cleanup=()=>{ window.removeEventListener("pointermove", onMove); window.removeEventListener("pointerup", onUp); window.removeEventListener("pointercancel", onUp); entry.cleanupDrag=null; entry.thumb.classList.remove("is-dragging"); entry.thumb.style.removeProperty("user-select"); entry.thumb.style.removeProperty("touch-action"); document.body.style.removeProperty("user-select"); if (entry.thumb.hasPointerCapture?.(event.pointerId)) entry.thumb.releasePointerCapture(event.pointerId);};
+    entry.cleanupDrag=cleanup;
+    entry.thumb.classList.add("is-dragging");
+    entry.thumb.style.userSelect = "none";
+    entry.thumb.style.touchAction = "none";
+    document.body.style.userSelect = "none";
+    entry.thumb.setPointerCapture?.(event.pointerId);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp, { once: true });
+    window.addEventListener("pointercancel", onUp, { once: true });
+  }
+}
+
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
     super(options);
@@ -3585,6 +3827,7 @@ export class QuickDeckApp extends Application {
 
   async close(options) {
     this.cancelTokenDrop({ render: false });
+    this.teardownQuickDeckCustomScrollbars();
     this.cancelTargetOpponentMode({ render: false, restore: false });
     this.unmountOverlay();
     this.showApplicationShellIfNeeded();
@@ -3806,9 +4049,11 @@ export class QuickDeckApp extends Application {
     this.mountOverlay();
     if (!this._overlayRoot) return;
     const html = await renderQuickDeckTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
+    this.teardownQuickDeckCustomScrollbars();
     this._overlayRoot.innerHTML = html;
     this.setOverlayPosition();
     this.activateOverlayListeners(this._overlayRoot);
+    this.setupQuickDeckCustomScrollbars(this._overlayRoot);
   }
 
   mountOverlay() {
@@ -3822,6 +4067,7 @@ export class QuickDeckApp extends Application {
   }
 
   unmountOverlay() {
+    this.teardownQuickDeckCustomScrollbars();
     this.stopOverlayDrag();
     this._overlayRoot?.remove();
     this._overlayRoot = null;
@@ -3903,6 +4149,22 @@ export class QuickDeckApp extends Application {
   activateOverlayListeners(root) {
     this.activateListeners($(root));
     root.querySelector("[data-action=\"drag-overlay\"]")?.addEventListener("pointerdown", (event) => this.startOverlayDrag(event));
+  }
+
+  setupQuickDeckCustomScrollbars(root) {
+    if (!root) return;
+    this.teardownQuickDeckCustomScrollbars();
+    this._quickDeckCustomScrollbarManager = new QuickDeckCustomScrollbarManager(root);
+    this._quickDeckCustomScrollbarManager.setup();
+  }
+
+  teardownQuickDeckCustomScrollbars() {
+    this._quickDeckCustomScrollbarManager?.teardown?.();
+    this._quickDeckCustomScrollbarManager = null;
+  }
+
+  refreshQuickDeckCustomScrollbars() {
+    this._quickDeckCustomScrollbarManager?.refreshAll?.();
   }
 
   hideApplicationShellForOverlay() {

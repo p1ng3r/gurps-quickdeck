@@ -368,6 +368,10 @@
   flex: 0 0 var(--qd31-center-width) !important;
   min-width: var(--qd31-center-width) !important;
   max-width: var(--qd31-center-width) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100% !important;
+  min-height: 0 !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd31-left-panel-wrap,
@@ -1133,15 +1137,22 @@
 
 #gurps-quickdeck-overlay.qd40-overlay .qd31-center-favorites,
 .qd40-overlay .qd31-center-favorites {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 6px;
-  min-height: 0;
+  min-height: min-content;
+  flex: 0 0 auto;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-section,
 .qd40-overlay .qd31-center-fav-section {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 4px;
+  flex: 0 0 auto;
+  min-height: min-content;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-toggle,
@@ -1153,6 +1164,8 @@
 .qd40-overlay .qd31-center-fav-list {
   display: grid;
   gap: 4px;
+  flex: 0 0 auto;
+  min-height: 0;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-card,
@@ -2290,7 +2303,15 @@
 .qd40-overlay .qd31-center-fav-list {
   margin-top: 1px !important;
   max-height: 156px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
   padding-right: 3px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-section > .qd31-center-fav-list:not([hidden]),
+.qd40-overlay .qd31-center-fav-section > .qd31-center-fav-list:not([hidden]) {
+  min-height: 96px !important;
+  flex: 0 0 auto !important;
 }
 
 /* Slightly reduce favorite card top spacing so sections feel premium and tight. */
@@ -2321,137 +2342,143 @@
   }
 }
 /* ------------------------------------------------------------------------- */
-/* Dwarven chain-and-stone scrollbars                                        */
+/* Custom QuickDeck overlay scrollbars                                       */
 /* ------------------------------------------------------------------------- */
 
-:root,
-.gurps-quickdeck-app,
-.gurps-quickdeck,
-#gurps-quickdeck-overlay.qd40-overlay,
-.qd40-overlay {
-  --qd-scroll-size: 15px;
-
-  --qd-chain-track:
-    radial-gradient(circle at 50% 9px, rgba(118, 88, 46, 0.55) 0 2px, transparent 3px),
-    radial-gradient(circle at 50% 24px, rgba(0, 0, 0, 0.80) 0 4px, transparent 5px),
-    linear-gradient(180deg, rgba(5, 5, 5, 0.98), rgba(15, 12, 9, 0.98), rgba(4, 4, 4, 0.98));
-
-  --qd-chain-thumb:
-    radial-gradient(circle at 50% 18%, rgba(255, 230, 160, 0.12), transparent 26%),
-    linear-gradient(145deg, rgba(88, 84, 76, 0.98), rgba(24, 23, 21, 0.98) 52%, rgba(7, 7, 7, 0.98)),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.55), transparent 44%, rgba(0, 0, 0, 0.55));
-
-  --qd-chain-thumb-hover:
-    radial-gradient(circle at 50% 18%, rgba(255, 220, 145, 0.18), transparent 28%),
-    linear-gradient(145deg, rgba(112, 105, 91, 0.98), rgba(34, 31, 27, 0.98) 52%, rgba(9, 9, 8, 0.98)),
-    linear-gradient(90deg, rgba(0, 0, 0, 0.55), transparent 44%, rgba(0, 0, 0, 0.55));
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scroll-host {
+  position: relative;
 }
 
-/* Firefox fallback */
-#gurps-quickdeck-overlay.qd40-overlay,
-#gurps-quickdeck-overlay.qd40-overlay *,
-.qd40-overlay,
-.qd40-overlay * {
-  scrollbar-width: thin !important;
-  scrollbar-color: rgba(88, 84, 76, 0.98) rgba(7, 6, 5, 0.94) !important;
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scroll-wrapper {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
 }
 
-/* Chromium / Foundry */
-#gurps-quickdeck-overlay.qd40-overlay::-webkit-scrollbar,
-#gurps-quickdeck-overlay.qd40-overlay *::-webkit-scrollbar,
-.qd40-overlay::-webkit-scrollbar,
-.qd40-overlay *::-webkit-scrollbar {
-  width: var(--qd-scroll-size) !important;
-  height: var(--qd-scroll-size) !important;
-  background: rgba(4, 4, 4, 0.96) !important;
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scroll-wrapper > .qd-custom-scroll-host {
+  width: 100%;
+  height: 100%;
 }
 
-/* Chain track */
-#gurps-quickdeck-overlay.qd40-overlay::-webkit-scrollbar-track,
-#gurps-quickdeck-overlay.qd40-overlay *::-webkit-scrollbar-track,
-.qd40-overlay::-webkit-scrollbar-track,
-.qd40-overlay *::-webkit-scrollbar-track {
-  background-image: var(--qd-chain-track) !important;
-  background-size:
-    100% 32px,
-    100% 32px,
-    100% 100% !important;
-  background-repeat:
-    repeat-y,
-    repeat-y,
-    no-repeat !important;
-  background-position:
-    center top,
-    center top,
-    center center !important;
-  border: 1px solid rgba(3, 3, 3, 0.98) !important;
-  border-radius: 999px !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(91, 68, 34, 0.18),
-    inset 0 0 9px rgba(0, 0, 0, 0.78) !important;
+/* Keep wrapper-based rails from changing flex height ownership in major panes. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-wrap > .qd-custom-scroll-wrapper,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer > .qd-custom-scroll-wrapper,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper,
+.qd40-overlay .qd31-center-wrap > .qd-custom-scroll-wrapper,
+.qd40-overlay .qd31-left-drawer > .qd-custom-scroll-wrapper,
+.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
-/* Moving stone weight / thumb */
-#gurps-quickdeck-overlay.qd40-overlay::-webkit-scrollbar-thumb,
-#gurps-quickdeck-overlay.qd40-overlay *::-webkit-scrollbar-thumb,
-.qd40-overlay::-webkit-scrollbar-thumb,
-.qd40-overlay *::-webkit-scrollbar-thumb {
-  min-height: 46px !important;
-  min-width: 46px !important;
-  background-image: var(--qd-chain-thumb) !important;
-  background-size: 100% 100% !important;
-  border: 3px solid rgba(5, 5, 4, 0.98) !important;
-  border-radius: 9px !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(170, 130, 70, 0.20),
-    inset 0 7px 8px rgba(255, 255, 255, 0.06),
-    inset 0 -8px 9px rgba(0, 0, 0, 0.54),
-    0 0 7px rgba(0, 0, 0, 0.46) !important;
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-wrap > .qd-custom-scroll-wrapper > .qd31-center-cockpit,
+.qd40-overlay .qd31-center-wrap > .qd-custom-scroll-wrapper > .qd31-center-cockpit {
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
-/* Small red gem/rivet illusion on thumb */
-#gurps-quickdeck-overlay.qd40-overlay::-webkit-scrollbar-thumb:hover,
-#gurps-quickdeck-overlay.qd40-overlay *::-webkit-scrollbar-thumb:hover,
-.qd40-overlay::-webkit-scrollbar-thumb:hover,
-.qd40-overlay *::-webkit-scrollbar-thumb:hover {
-  background-image: var(--qd-chain-thumb-hover) !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(210, 156, 75, 0.28),
-    inset 0 7px 8px rgba(255, 255, 255, 0.08),
-    inset 0 -8px 9px rgba(0, 0, 0, 0.54),
-    0 0 9px rgba(139, 80, 28, 0.22) !important;
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-hidden-native {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
 }
 
-/* Scrollbar buttons, if Foundry/Chromium renders them */
-#gurps-quickdeck-overlay.qd40-overlay::-webkit-scrollbar-button,
-#gurps-quickdeck-overlay.qd40-overlay *::-webkit-scrollbar-button,
-.qd40-overlay::-webkit-scrollbar-button,
-.qd40-overlay *::-webkit-scrollbar-button {
-  width: var(--qd-scroll-size) !important;
-  height: var(--qd-scroll-size) !important;
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-hidden-native::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar {
+  position: absolute;
+  top: 6px;
+  right: 3px;
+  bottom: 6px;
+  width: 20px;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar.is-active {
+  opacity: 1;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-track {
+  position: absolute;
+  inset: 0;
+  border: 1px solid rgba(7, 6, 5, 0.98);
+  border-radius: 5px;
   background:
-    radial-gradient(circle at 50% 50%, rgba(120, 32, 24, 0.75) 0 2px, transparent 3px),
-    linear-gradient(180deg, rgba(35, 28, 20, 0.98), rgba(5, 5, 4, 0.98)) !important;
-  border: 1px solid rgba(4, 4, 3, 0.98) !important;
+    repeating-radial-gradient(circle at 50% 10px, rgba(133, 99, 48, 0.42) 0 1.6px, rgba(0, 0, 0, 0) 1.7px 20px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.56) 0 3px, rgba(24, 18, 14, 0.9) 3px 17px, rgba(0, 0, 0, 0.56) 17px 100%),
+    linear-gradient(180deg, rgba(6, 6, 6, 0.99), rgba(18, 14, 11, 0.99), rgba(5, 5, 5, 0.99));
+  background-size: 100% 20px, 100% 100%, 100% 100%;
+  background-repeat: repeat-y, no-repeat, no-repeat;
+  box-shadow:
+    inset 0 0 0 1px rgba(78, 57, 25, 0.30),
+    inset 0 0 9px rgba(0, 0, 0, 0.82),
+    inset 2px 0 2px rgba(0, 0, 0, 0.45),
+    inset -2px 0 2px rgba(0, 0, 0, 0.45);
+  pointer-events: auto;
 }
 
-/* Remove ugly corner block */
-#gurps-quickdeck-overlay.qd40-overlay::-webkit-scrollbar-corner,
-#gurps-quickdeck-overlay.qd40-overlay *::-webkit-scrollbar-corner,
-.qd40-overlay::-webkit-scrollbar-corner,
-.qd40-overlay *::-webkit-scrollbar-corner {
-  background: transparent !important;
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb {
+  position: absolute;
+  top: 0;
+  left: 1px;
+  right: 1px;
+  min-width: 16px;
+  min-height: 56px;
+  border: 2px solid rgba(10, 9, 8, 0.98);
+  border-radius: 3px;
+  background:
+    linear-gradient(135deg, rgba(107, 101, 90, 0.98), rgba(50, 45, 40, 0.98) 46%, rgba(24, 22, 21, 0.98) 100%),
+    repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.16) 0 2px, rgba(255, 255, 255, 0.03) 2px 4px);
+  box-shadow:
+    inset 0 0 0 1px rgba(170, 130, 76, 0.36),
+    inset 0 7px 10px rgba(255, 244, 220, 0.08),
+    inset 0 -8px 11px rgba(0, 0, 0, 0.68),
+    0 2px 7px rgba(0, 0, 0, 0.60);
+  pointer-events: auto;
+  cursor: grab;
 }
 
-/* Smaller inner list scrollbars */
-#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-list::-webkit-scrollbar,
-.qd40-overlay .qd31-center-fav-list::-webkit-scrollbar {
-  width: 10px !important;
-  height: 10px !important;
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb::before {
+  content: "";
+  position: absolute;
+  inset: 8px 4px;
+  border-radius: 2px;
+  background:
+    radial-gradient(circle at 50% 30%, rgba(170, 45, 31, 0.88) 0 1.5px, transparent 2.5px),
+    repeating-linear-gradient(90deg, rgba(116, 86, 43, 0.42) 0 2px, rgba(18, 16, 14, 0.0) 2px 6px);
+  box-shadow: inset 0 0 0 1px rgba(120, 92, 54, 0.28);
 }
 
-#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-list::-webkit-scrollbar-thumb,
-.qd40-overlay .qd31-center-fav-list::-webkit-scrollbar-thumb {
-  border-width: 2px !important;
-  min-height: 34px !important;
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: 2px;
+  border-top: 1px solid rgba(220, 188, 130, 0.20);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.40);
+  pointer-events: none;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb:hover {
+  filter: brightness(1.08);
+  box-shadow:
+    inset 0 0 0 1px rgba(186, 140, 82, 0.35),
+    inset 0 7px 8px rgba(255, 244, 220, 0.08),
+    inset 0 -7px 9px rgba(0, 0, 0, 0.62),
+    0 0 9px rgba(121, 76, 37, 0.22);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb.is-dragging {
+  cursor: grabbing;
+  filter: brightness(1.16);
+  transform: scaleX(1.02);
+  touch-action: none;
+  user-select: none;
 }
