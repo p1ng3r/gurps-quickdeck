@@ -2701,3 +2701,201 @@
   justify-self: end;
   margin-right: 2px;
 }
+
+/* ------------------------------------------------------------------------- */
+/* PR #329 follow-up: aggressive spacing/lane fixes                          */
+/* ------------------------------------------------------------------------- */
+
+#gurps-quickdeck-overlay.qd40-overlay,
+.qd40-overlay {
+  --qd-scroll-lane: 44px;
+  --qd-control-lane: 34px;
+}
+
+/* Stronger, shorter command chrome. */
+#gurps-quickdeck-overlay.qd40-overlay .qd40-chrome-row,
+.qd40-overlay .qd40-chrome-row {
+  height: 31px;
+  padding: 2px 7px;
+  background:
+    linear-gradient(180deg, rgba(255, 236, 176, 0.07), rgba(255, 236, 176, 0) 48%),
+    linear-gradient(135deg, rgba(74, 64, 50, 0.20), rgba(0, 0, 0, 0) 56%),
+    linear-gradient(180deg, rgba(20, 18, 16, 0.98), rgba(7, 7, 7, 0.98));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-corner-badge,
+.qd40-overlay .qd40-corner-badge {
+  min-height: 23px;
+  padding: 0 7px 0 9px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-corner-title,
+.qd40-overlay .qd40-corner-title {
+  font-size: 17px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-info-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd40-window-button,
+.qd40-overlay .qd40-info-button,
+.qd40-overlay .qd40-window-button {
+  width: 24px;
+  height: 24px;
+  min-width: 24px;
+  border-radius: 5px;
+  border-color: rgba(189, 145, 64, 0.86);
+  background:
+    linear-gradient(180deg, rgba(255, 238, 188, 0.05), rgba(0, 0, 0, 0.14)),
+    linear-gradient(135deg, rgba(95, 85, 68, 0.32), rgba(23, 24, 26, 0.66)),
+    linear-gradient(180deg, #272521, #121110);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 236, 196, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.45),
+    0 1px 2px rgba(0, 0, 0, 0.45);
+  font-size: 14px;
+}
+
+/* Visible bottom rail / reduce dead void. */
+#gurps-quickdeck-overlay.qd40-overlay .qd40-body::after,
+.qd40-overlay .qd40-body::after {
+  content: "";
+  position: absolute;
+  left: 7px;
+  right: 7px;
+  bottom: 5px;
+  height: 30px;
+  border-top: 1px solid rgba(198, 149, 66, 0.44);
+  border-radius: 0 0 8px 8px;
+  background:
+    linear-gradient(180deg, rgba(186, 146, 74, 0.09), rgba(186, 146, 74, 0) 7px),
+    linear-gradient(180deg, rgba(26, 22, 18, 0.66), rgba(9, 8, 7, 0.97));
+}
+
+/* Left roster/available: reserve explicit control + scrollbar lanes. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-list,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-roster-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-list {
+  padding-right: calc(var(--qd-scroll-lane) + 4px);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-action-row,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card,
+.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-action-row {
+  position: relative;
+  padding-right: calc(var(--qd-scroll-lane) + var(--qd-control-lane));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-square-button[data-action="remove-actor"],
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-square-button[data-action="add-actor"],
+.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-square-button[data-action="remove-actor"],
+.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-square-button[data-action="add-actor"] {
+  position: absolute;
+  top: 50%;
+  right: calc(var(--qd-scroll-lane) + 6px);
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+/* Roster bars: shorter + moved into name block area. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roster-meta,
+.qd40-overlay .qd31-roster-meta {
+  gap: 1px;
+  padding-right: 2px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-mini-bars,
+.qd40-overlay .qd31-mini-bars {
+  width: min(118px, 78%);
+  margin-top: -4px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-mini-row,
+.qd40-overlay .qd31-mini-row {
+  gap: 1px;
+}
+
+/* Right drawer: three-lane row layout (content | buttons | reserved scroll lane). */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-body,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-body {
+  align-content: start !important;
+  justify-content: start !important;
+  padding-top: 4px !important;
+  padding-right: calc(var(--qd-scroll-lane) + 4px) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row,
+.qd40-overlay .qd31-right-drawer .qd31-action-row {
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-rows: auto auto !important;
+  padding-right: calc(var(--qd-scroll-lane) + 6px) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row > div:first-child,
+.qd40-overlay .qd31-right-drawer .qd31-action-row > div:first-child {
+  grid-column: 1;
+  grid-row: 1 / span 2;
+  display: grid !important;
+  grid-template-columns: 1fr !important;
+  align-content: start !important;
+  gap: 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row small,
+.qd40-overlay .qd31-right-drawer .qd31-action-row small {
+  justify-content: flex-start !important;
+  max-width: 92% !important;
+  background: transparent !important;
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-controls,
+.qd40-overlay .qd31-right-drawer .qd31-action-controls {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  align-self: center;
+  justify-self: end;
+  margin-right: 2px;
+}
+
+/* Spells/combat/skills gap killer: force top-aligned stacking for active drawer sections. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd31-drawer-body:not([hidden]),
+.qd40-overlay .qd31-right-drawer > .qd31-drawer-body:not([hidden]) {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  gap: 5px !important;
+  min-height: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd31-drawer-body:not([hidden]) > input[type="search"],
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd31-drawer-body:not([hidden]) > .qd31-search-row,
+.qd40-overlay .qd31-right-drawer > .qd31-drawer-body:not([hidden]) > input[type="search"],
+.qd40-overlay .qd31-right-drawer > .qd31-drawer-body:not([hidden]) > .qd31-search-row {
+  margin-top: 0 !important;
+}
+
+/* Move tile theme pass. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-tile,
+.qd40-overlay .qd31-center-move-tile {
+  min-height: 86px;
+  border: 1px solid rgba(191, 148, 66, 0.76);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 48% 20%, rgba(255, 230, 170, 0.10), transparent 52%),
+    linear-gradient(180deg, rgba(64, 54, 42, 0.28), rgba(0, 0, 0, 0) 48%),
+    linear-gradient(180deg, #1f1c18, #0f0e0d);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 235, 196, 0.10),
+    inset 0 -2px 0 rgba(0, 0, 0, 0.42),
+    0 6px 14px rgba(0, 0, 0, 0.36);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-title,
+.qd40-overlay .qd31-center-move-title {
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
