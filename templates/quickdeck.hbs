@@ -12,34 +12,37 @@
     <div class="qd31-roster-list" data-drop-zone="roster">
       {{#each rosterActors as |actor|}}
       <article class="qd31-roster-card {{#if actor.isActive}}is-active{{/if}}" data-action="open-actor" data-actor-id="{{actor.id}}">
-        <img src="{{actor.img}}" alt="{{actor.name}}" />
-        <div class="qd31-roster-meta">
-          <strong>{{actor.name}}</strong>
-          <small>{{actor.actorType}}</small>
+        <img class="qd31-roster-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+        <div class="qd31-roster-meta" title="{{actor.actorType}}">
+          <strong class="qd31-roster-name">{{actor.name}}</strong>
           <div class="qd31-mini-bars">
-            <div class="qd31-mini-row"><span>HP {{actor.hpDisplay}}/{{actor.hpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.hpPercent}}%;"></span></div></div>
-            <div class="qd31-mini-row"><span>FP {{actor.fpDisplay}}/{{actor.fpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.fpPercent}}%;"></span></div></div>
+            <div class="qd31-mini-row qd31-mini-row-hp"><span>HP {{actor.hpDisplay}}/{{actor.hpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.hpPercent}}%;"></span></div></div>
+            <div class="qd31-mini-row qd31-mini-row-fp"><span>FP {{actor.fpDisplay}}/{{actor.fpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.fpPercent}}%;"></span></div></div>
           </div>
         </div>
-        <button type="button" class="qd31-square-button" data-action="remove-actor" data-actor-id="{{actor.id}}" title="Remove actor">×</button>
+        <button type="button" class="qd31-square-button qd31-roster-remove" data-action="remove-actor" data-actor-id="{{actor.id}}" title="Remove actor">×</button>
       </article>
       {{/each}}
     </div>
 
-    <section class="qd31-available-section">
-      <h4>Actors to Add</h4>
-      <input type="search" data-action="available-search" value="{{availableSearch}}" placeholder="Search characters + NPCs" />
-      <div class="qd31-available-list">
-      {{#each availableActors as |actor|}}
-        <div class="qd31-action-row" data-search-row data-search-text="{{actor.searchText}}">
-          <img class="qd31-available-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
-          <span class="qd31-available-name" title="{{actor.name}}">{{actor.name}}</span>
-          <small class="qd31-available-type" aria-hidden="true">{{actor.actorType}}</small>
-          <button type="button" class="qd31-square-button" data-action="add-actor" data-actor-id="{{actor.id}}" title="Add {{actor.name}}">+</button>
+    <details class="qd31-available-section" open>
+      <summary class="qd31-available-summary">
+        <h4>Actors to Add</h4>
+        <span class="qd31-available-toggle" aria-hidden="true">▾</span>
+      </summary>
+      <div class="qd31-available-content">
+        <input type="search" data-action="available-search" value="{{availableSearch}}" placeholder="Search actors" />
+        <div class="qd31-available-list">
+        {{#each availableActors as |actor|}}
+          <div class="qd31-action-row qd31-available-row" data-search-row data-search-text="{{actor.searchText}}">
+            <img class="qd31-available-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+            <span class="qd31-available-name" title="{{actor.name}}">{{actor.name}}</span>
+            <button type="button" class="qd31-square-button qd31-add-actor-button" data-action="add-actor" data-actor-id="{{actor.id}}" title="Add {{actor.name}}">+</button>
+          </div>
+        {{/each}}
         </div>
-      {{/each}}
       </div>
-    </section>
+    </details>
   </aside>
 
   <section class="qd31-center-cockpit">
