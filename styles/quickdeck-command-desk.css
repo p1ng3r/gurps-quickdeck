@@ -3334,3 +3334,89 @@
   padding: 0;
   border-radius: 6px;
 }
+
+/* ------------------------------------------------------------------------- */
+/* Final left-panel-only corrective trim: compact roster cards and rows       */
+/* ------------------------------------------------------------------------- */
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card {
+  grid-template-columns: 52px minmax(0, 1fr) !important;
+  gap: 8px;
+  min-height: 92px;
+  padding: 7px 40px 7px 8px !important;
+  background-color: var(--qd-bg-card) !important;
+  background-image:
+    radial-gradient(320px 150px at 18% 10%, rgba(255, 238, 190, 0.055), transparent 38%),
+    radial-gradient(280px 160px at 84% 92%, rgba(0, 0, 0, 0.24), transparent 44%),
+    var(--qd-card-bg) !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+  border-color: rgba(117, 88, 47, 0.72) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-roster-portrait,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-roster-portrait {
+  width: 52px;
+  height: 52px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-roster-meta,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-roster-meta {
+  gap: 3px;
+  padding-right: 0;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-mini-bars,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-mini-bars {
+  gap: 3px;
+  width: 142px;
+  max-width: min(142px, 100%);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-mini-row,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-mini-row {
+  gap: 1px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-mini-fill,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card .qd31-mini-fill {
+  width: 142px;
+  height: 5px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-roster-remove,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-roster-remove {
+  top: 8px !important;
+  right: 10px !important;
+  width: 23px;
+  min-width: 23px;
+  height: 23px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-content > input[type="search"],
+.qd40-overlay .qd31-left-drawer .qd31-available-content > input[type="search"] {
+  width: min(220px, 100%);
+  text-align: center;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-content > input[type="search"]::placeholder,
+.qd40-overlay .qd31-left-drawer .qd31-available-content > input[type="search"]::placeholder {
+  text-align: center;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-action-row.qd31-available-row,
+.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-action-row.qd31-available-row {
+  grid-template-columns: 34px minmax(0, 1fr) 30px !important;
+  padding: 5px 7px !important;
+  padding-right: 7px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-action-row.qd31-available-row .qd31-add-actor-button,
+.qd40-overlay .qd31-left-drawer .qd31-available-list .qd31-action-row.qd31-available-row .qd31-add-actor-button {
+  position: static !important;
+  right: auto !important;
+  top: auto !important;
+  transform: none !important;
+  grid-column: 3;
+}
