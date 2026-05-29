@@ -4202,6 +4202,7 @@ export class QuickDeckApp extends Application {
         isInRoster: this.rosterActorIds.includes(actor.id),
         searchText: this.buildSearchText([actor.name, actor.type])
       }))
+      .filter((actor) => !actor.isInRoster)
       .filter((actor) => {
         if (!actor.actorType) return true;
         const type = actor.actorType.toLowerCase();

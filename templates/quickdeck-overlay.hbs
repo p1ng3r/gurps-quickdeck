@@ -45,10 +45,9 @@
         <img src="{{actor.img}}" alt="{{actor.name}}" />
         <div class="qd31-roster-meta">
           <strong>{{actor.name}}</strong>
-          <small>{{actor.actorType}}</small>
           <div class="qd31-mini-bars">
-            <div class="qd31-mini-row"><span>HP {{actor.hpDisplay}}/{{actor.hpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.hpPercent}}%;"></span></div></div>
-            <div class="qd31-mini-row"><span>FP {{actor.fpDisplay}}/{{actor.fpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.fpPercent}}%;"></span></div></div>
+            <div class="qd31-mini-row qd31-mini-row-hp"><span>HP {{actor.hpDisplay}}/{{actor.hpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.hpPercent}}%;"></span></div></div>
+            <div class="qd31-mini-row qd31-mini-row-fp"><span>FP {{actor.fpDisplay}}/{{actor.fpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.fpPercent}}%;"></span></div></div>
           </div>
         </div>
         <button type="button" class="qd31-square-button" data-action="remove-actor" data-actor-id="{{actor.id}}" title="Remove actor">×</button>
@@ -57,16 +56,24 @@
     </div>
 
     <section class="qd31-available-section">
-      <h4>Actors to Add</h4>
-      <input type="search" data-action="available-search" value="{{availableSearch}}" placeholder="Search characters + NPCs" />
-      <div class="qd31-available-list">
-      {{#each availableActors as |actor|}}
-        <div class="qd31-action-row" data-search-row data-search-text="{{actor.searchText}}">
-          <span>{{actor.name}} ({{actor.actorType}})</span>
-          <button type="button" class="qd31-square-button" data-action="add-actor" data-actor-id="{{actor.id}}">+</button>
+      <details class="qd31-available-collapsible" open>
+        <summary class="qd31-available-summary">Search Actors</summary>
+        <div class="qd31-available-body">
+          <input type="search" data-action="available-search" value="{{availableSearch}}" placeholder="Search" aria-label="Search actors" />
+          <div class="qd31-available-list">
+          {{#each availableActors as |actor|}}
+            <div class="qd31-action-row qd31-available-row" data-search-row="available" data-search-text="{{actor.searchText}}">
+              <img class="qd31-available-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+              <div class="qd31-available-meta">
+                <strong>{{actor.name}}</strong>
+                <small>{{actor.actorType}}</small>
+              </div>
+              <button type="button" class="qd31-square-button qd31-add-actor-button" data-action="add-actor" data-actor-id="{{actor.id}}" title="Add {{actor.name}}">+</button>
+            </div>
+          {{/each}}
+          </div>
         </div>
-      {{/each}}
-      </div>
+      </details>
     </section>
   </aside>
   {{/if}}

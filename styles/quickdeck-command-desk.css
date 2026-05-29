@@ -2538,3 +2538,816 @@
   touch-action: none;
   user-select: none;
 }
+
+/* ------------------------------------------------------------------------- */
+/* Active roster card layout override — user-directed first pass             */
+/* ------------------------------------------------------------------------- */
+/*
+ * Scope: LEFT PANEL ACTIVE ROSTER CARDS ONLY.
+ *
+ * Target layout:
+ *   [portrait] [Actor Name                                      X]
+ *              [HP 26/26]
+ *              [short red HP bar]
+ *              [FP 13/13]
+ *              [short blue FP bar]
+ *
+ * This deliberately does not touch:
+ * - available/search actor rows
+ * - center cockpit
+ * - right drawer
+ * - scrollbar JS
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 52px minmax(0, 1fr) !important;
+  grid-template-rows: auto !important;
+  align-items: start !important;
+  gap: 8px !important;
+  min-height: 72px !important;
+  padding: 7px 46px 7px 7px !important;
+  cursor: pointer;
+
+  /* Restore/keep the stone card surface. */
+  border: 1px solid rgba(105, 76, 35, 0.45) !important;
+  border-radius: 8px !important;
+  color: var(--qd-text) !important;
+  background-color: var(--qd-bg-card) !important;
+  background-image: var(--qd-card-bg) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, 420px 420px !important;
+  background-position: center center, 0 0 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 219, 138, 0.04),
+    inset 0 0 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card.is-active,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card.is-active {
+  border-color: rgba(255, 224, 145, 0.92) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 224, 145, 0.18),
+    0 0 14px rgba(230, 174, 65, 0.14),
+    inset 0 0 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card > img,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card > img {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  width: 52px !important;
+  height: 58px !important;
+  align-self: start !important;
+  border: 1px solid rgba(240, 205, 122, 0.64) !important;
+  border-radius: 6px !important;
+  object-fit: cover !important;
+  background: #050403 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-meta,
+.qd40-overlay .qd31-left-drawer .qd31-roster-meta {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  min-width: 0 !important;
+  display: grid !important;
+  align-content: start !important;
+  gap: 4px !important;
+  padding: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-meta strong,
+.qd40-overlay .qd31-left-drawer .qd31-roster-meta strong {
+  display: block !important;
+  max-width: calc(100% - 2px) !important;
+  overflow: hidden !important;
+  color: var(--qd-text-strong) !important;
+  font-size: 0.88rem !important;
+  font-weight: 900 !important;
+  line-height: 1.05 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Hide the visible "character" / "npc" type line for now.
+ * The upcoming HBS pass should remove it from markup entirely.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-meta > small,
+.qd40-overlay .qd31-left-drawer .qd31-roster-meta > small {
+  display: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-bars,
+.qd40-overlay .qd31-left-drawer .qd31-mini-bars {
+  display: grid !important;
+  gap: 4px !important;
+  width: 156px !important;
+  max-width: min(156px, calc(100% - 4px)) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row {
+  display: grid !important;
+  gap: 2px !important;
+  width: 156px !important;
+  max-width: 100% !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row span {
+  color: var(--qd-text-muted) !important;
+  font-size: 0.66rem !important;
+  font-weight: 800 !important;
+  line-height: 1 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-fill,
+.qd40-overlay .qd31-left-drawer .qd31-mini-fill {
+  width: 156px !important;
+  max-width: 100% !important;
+  height: 5px !important;
+  overflow: hidden !important;
+  border-radius: 999px !important;
+  background: rgba(5, 4, 3, 0.82) !important;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.78) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-fill span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-fill span {
+  display: block !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  border-radius: inherit !important;
+}
+
+/* Current template does not yet have HP/FP-specific classes, so use row order.
+ * The upcoming HBS pass can add qd31-mini-row-hp / qd31-mini-row-fp classes.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row:first-child .qd31-mini-fill span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row:first-child .qd31-mini-fill span,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row-hp .qd31-mini-fill span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row-hp .qd31-mini-fill span {
+  background: linear-gradient(90deg, #8f241f, #d2553f) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row:nth-child(2) .qd31-mini-fill span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row:nth-child(2) .qd31-mini-fill span,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-mini-row-fp .qd31-mini-fill span,
+.qd40-overlay .qd31-left-drawer .qd31-mini-row-fp .qd31-mini-fill span {
+  background: linear-gradient(90deg, #237b91, #5bc8dc) !important;
+}
+
+/* Remove button: inside card, top-right, aligned with actor name row.
+ * Keep it clear of the left-panel scrollbar lane by pulling it 10px farther
+ * left than the previous 10px edge gutter.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-square-button,
+.qd40-overlay .qd31-left-drawer .qd31-roster-card > .qd31-square-button {
+  position: absolute !important;
+  top: 7px !important;
+  right: 20px !important;
+  z-index: 2 !important;
+  width: 26px !important;
+  min-width: 26px !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+}
+
+
+
+/* ------------------------------------------------------------------------- */
+/* Left drawer available actors/search pass — portrait rows + collapsible     */
+/* ------------------------------------------------------------------------- */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section,
+.qd40-overlay .qd31-left-drawer .qd31-available-section {
+  margin-top: 8px !important;
+  padding: 0 2px 2px !important;
+  border-top: none !important;
+  background: transparent !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section h4,
+.qd40-overlay .qd31-left-drawer .qd31-available-section h4 {
+  display: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-collapsible,
+.qd40-overlay .qd31-left-drawer .qd31-available-collapsible {
+  display: block !important;
+  border: 1px solid rgba(111, 84, 42, 0.55) !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(180deg, rgba(38, 30, 23, 0.96), rgba(17, 13, 10, 0.98)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 225, 157, 0.05),
+    inset 0 0 18px rgba(0, 0, 0, 0.22) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-summary,
+.qd40-overlay .qd31-left-drawer .qd31-available-summary {
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  min-height: 34px !important;
+  padding: 8px 28px 8px 12px !important;
+  list-style: none !important;
+  cursor: pointer !important;
+  user-select: none !important;
+  color: #d8dde5 !important;
+  font-size: 0.74rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  background:
+    linear-gradient(180deg, rgba(68, 72, 78, 0.30), rgba(28, 30, 34, 0.16)),
+    linear-gradient(180deg, rgba(26, 21, 17, 0.96), rgba(18, 14, 11, 0.98)) !important;
+  border-bottom: 1px solid rgba(111, 84, 42, 0.45) !important;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.92),
+    0 0 6px rgba(130, 145, 160, 0.10) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-summary::-webkit-details-marker,
+.qd40-overlay .qd31-left-drawer .qd31-available-summary::-webkit-details-marker {
+  display: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-summary::after,
+.qd40-overlay .qd31-left-drawer .qd31-available-summary::after {
+  content: "▾";
+  position: absolute !important;
+  right: 10px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  font-size: 0.9rem !important;
+  color: rgba(223, 199, 144, 0.92) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-collapsible:not([open]) .qd31-available-summary::after,
+.qd40-overlay .qd31-left-drawer .qd31-available-collapsible:not([open]) .qd31-available-summary::after {
+  content: "▸";
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-body,
+.qd40-overlay .qd31-left-drawer .qd31-available-body {
+  padding: 8px 8px 8px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section input[type="search"],
+.qd40-overlay .qd31-left-drawer .qd31-available-section input[type="search"] {
+  display: block !important;
+  width: min(100%, 308px) !important;
+  max-width: calc(100% - 28px) !important;
+  margin: 0 auto 8px !important;
+  text-align: center !important;
+  padding: 7px 12px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-section input[type="search"]::placeholder,
+.qd40-overlay .qd31-left-drawer .qd31-available-section input[type="search"]::placeholder {
+  text-align: center !important;
+  letter-spacing: 0.08em !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-list {
+  display: grid !important;
+  gap: 6px !important;
+  padding-right: 24px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-row,
+.qd40-overlay .qd31-left-drawer .qd31-available-row {
+  display: grid !important;
+  grid-template-columns: 36px minmax(0, 1fr) 28px !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-height: 46px !important;
+  padding: 5px 8px 5px 5px !important;
+  border: 1px solid rgba(104, 78, 41, 0.40) !important;
+  border-radius: 8px !important;
+  background:
+    linear-gradient(180deg, rgba(52, 42, 31, 0.30), rgba(15, 11, 8, 0.12)),
+    linear-gradient(180deg, rgba(28, 21, 16, 0.94), rgba(19, 14, 11, 0.98)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 226, 158, 0.04),
+    inset 0 0 10px rgba(0, 0, 0, 0.18) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-portrait,
+.qd40-overlay .qd31-left-drawer .qd31-available-portrait {
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 6px !important;
+  border: 1px solid rgba(223, 193, 129, 0.55) !important;
+  object-fit: cover !important;
+  background: #090706 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-meta,
+.qd40-overlay .qd31-left-drawer .qd31-available-meta {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 1px !important;
+  align-content: center !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-meta strong,
+.qd40-overlay .qd31-left-drawer .qd31-available-meta strong {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: var(--qd-text-strong) !important;
+  font-size: 0.80rem !important;
+  font-weight: 800 !important;
+  line-height: 1.05 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-meta small,
+.qd40-overlay .qd31-left-drawer .qd31-available-meta small {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  color: rgba(210, 202, 190, 0.76) !important;
+  font-size: 0.60rem !important;
+  font-weight: 700 !important;
+  line-height: 1.05 !important;
+  text-transform: capitalize !important;
+  letter-spacing: 0.04em !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-add-actor-button,
+.qd40-overlay .qd31-left-drawer .qd31-add-actor-button {
+  justify-self: end !important;
+  align-self: center !important;
+  margin: 0 !important;
+  width: 26px !important;
+  min-width: 26px !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  padding: 0 !important;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Left drawer available actor list scrollbar height                         */
+/* ------------------------------------------------------------------------- */
+/*
+ * Gives the unselected / searchable actor list a real scroll area so the
+ * existing QuickDeck custom chain + runestone scrollbar can attach.
+ * JS already watches .qd31-available-list as a custom scroll candidate.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-collapsible[open] .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-collapsible[open] .qd31-available-list {
+  max-height: 220px !important;
+  min-height: 96px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 24px !important;
+  scrollbar-width: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-collapsible[open] .qd31-available-list::-webkit-scrollbar,
+.qd40-overlay .qd31-left-drawer .qd31-available-collapsible[open] .qd31-available-list::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Let the active roster keep the extra room when the search tray is collapsed. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-collapsible:not([open]) .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-collapsible:not([open]) .qd31-available-list {
+  max-height: 0 !important;
+  overflow: hidden !important;
+}
+
+cat >> styles/quickdeck-command-desk.css <<'CSS'
+
+/* ------------------------------------------------------------------------- */
+/* Left drawer available actor list scrollbar height                         */
+/* ------------------------------------------------------------------------- */
+/*
+ * Gives the unselected / searchable actor list a real scroll area so the
+ * existing QuickDeck custom chain + runestone scrollbar can attach.
+ * JS already watches .qd31-available-list as a custom scroll candidate.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-collapsible[open] .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-collapsible[open] .qd31-available-list {
+  max-height: 220px !important;
+  min-height: 96px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 24px !important;
+  scrollbar-width: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-collapsible[open] .qd31-available-list::-webkit-scrollbar,
+.qd40-overlay .qd31-left-drawer .qd31-available-collapsible[open] .qd31-available-list::-webkit-scrollbar {
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Let the active roster keep the extra room when the search tray is collapsed. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-collapsible:not([open]) .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-collapsible:not([open]) .qd31-available-list {
+  max-height: 0 !important;
+  overflow: hidden !important;
+}
+/* ------------------------------------------------------------------------- */
+/* Left drawer inactive actor rows — restore stone texture                    */
+/* ------------------------------------------------------------------------- */
+/*
+ * Restores the same dark stone texture language used by active roster cards
+ * to the inactive/searchable actor rows.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-row,
+.qd40-overlay .qd31-left-drawer .qd31-available-row {
+  border: 1px solid rgba(105, 76, 35, 0.45) !important;
+  border-radius: 8px !important;
+  color: var(--qd-text) !important;
+  background-color: var(--qd-bg-card) !important;
+  background-image: var(--qd-card-bg) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, 420px 420px !important;
+  background-position: center center, 0 0 !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 219, 138, 0.04),
+    inset 0 0 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-row:hover,
+.qd40-overlay .qd31-left-drawer .qd31-available-row:hover {
+  border-color: rgba(199, 154, 56, 0.66) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 224, 145, 0.10),
+    0 0 10px rgba(230, 174, 65, 0.10),
+    inset 0 0 18px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Left drawer header art plates                                             */
+/* ------------------------------------------------------------------------- */
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-drawer-header,
+.qd40-overlay .qd31-left-drawer .qd31-drawer-header {
+  min-height: 58px !important;
+  height: 58px !important;
+  padding: 0 56px 0 18px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background:
+    url("../assets/ui/dwarven/active_roster_header_400x58_cover.webp")
+    center center / 100% 100% no-repeat !important;
+  box-shadow: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-drawer-header h3,
+.qd40-overlay .qd31-left-drawer .qd31-drawer-header h3 {
+  position: relative !important;
+  z-index: 2 !important;
+  color: #d9dde2 !important;
+  font-family: var(--qd-font-title) !important;
+  font-size: 0.98rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.11em !important;
+  text-transform: uppercase !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 6px rgba(190, 205, 220, 0.28),
+    0 0 10px rgba(0, 0, 0, 0.95) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-drawer-header .qd31-square-button,
+.qd40-overlay .qd31-left-drawer .qd31-drawer-header .qd31-square-button {
+  position: relative !important;
+  z-index: 3 !important;
+  margin-right: 8px !important;
+}
+
+/* Search Actors collapsible header art */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-summary,
+.qd40-overlay .qd31-left-drawer .qd31-available-summary {
+  min-height: 34px !important;
+  height: 34px !important;
+  padding: 0 32px 0 14px !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background:
+    url("../assets/ui/dwarven/search_actors_header_383x34_cover.webp")
+    center center / 100% 100% no-repeat !important;
+  box-shadow: none !important;
+  color: #d9dde2 !important;
+  font-family: var(--qd-font-title) !important;
+  font-size: 0.72rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 5px rgba(190, 205, 220, 0.25),
+    0 0 9px rgba(0, 0, 0, 0.95) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-summary::after,
+.qd40-overlay .qd31-left-drawer .qd31-available-summary::after {
+  z-index: 2 !important;
+  right: 12px !important;
+  color: #d9dde2 !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 6px rgba(0, 0, 0, 0.9) !important;
+}
+
+/* ------------------------------------------------------------------------- */
+/* QuickDeck KhazadDum left header font pass                                 */
+/* ------------------------------------------------------------------------- */
+
+@font-face {
+  font-family: "QuickDeckKhazadDum";
+  src: url("../assets/Fonts/KhazadDum-0WXEr.ttf") format("truetype");
+  font-weight: 400 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Center ACTIVE ROSTER text and use KhazadDum. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-drawer-header,
+.qd40-overlay .qd31-left-drawer .qd31-drawer-header {
+  justify-content: center !important;
+  text-align: center !important;
+  padding-left: 56px !important;
+  padding-right: 56px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-drawer-header h3,
+.qd40-overlay .qd31-left-drawer .qd31-drawer-header h3 {
+  width: 100% !important;
+  text-align: center !important;
+  font-family: "QuickDeckKhazadDum", var(--qd-font-title), Georgia, serif !important;
+  font-size: 1.12rem !important;
+  line-height: 1 !important;
+  letter-spacing: 0.08em !important;
+  color: #d9dde2 !important;
+  text-transform: uppercase !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 6px rgba(205, 218, 230, 0.32),
+    0 0 11px rgba(0, 0, 0, 0.95) !important;
+}
+
+/* Keep the clear/delete button clickable while the title stays centered. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-drawer-header .qd31-square-button,
+.qd40-overlay .qd31-left-drawer .qd31-drawer-header .qd31-square-button {
+  position: absolute !important;
+  right: 14px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 3 !important;
+}
+
+/* Center Search Actors collapsible title and use KhazadDum. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-summary,
+.qd40-overlay .qd31-left-drawer .qd31-available-summary {
+  justify-content: center !important;
+  text-align: center !important;
+  padding-left: 34px !important;
+  padding-right: 34px !important;
+  font-family: "QuickDeckKhazadDum", var(--qd-font-title), Georgia, serif !important;
+  font-size: 0.86rem !important;
+  line-height: 1 !important;
+  letter-spacing: 0.08em !important;
+  color: #d9dde2 !important;
+  text-transform: uppercase !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 5px rgba(205, 218, 230, 0.30),
+    0 0 9px rgba(0, 0, 0, 0.95) !important;
+}
+
+/* Keep collapse arrow visible at far right. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-summary::after,
+.qd40-overlay .qd31-left-drawer .qd31-available-summary::after {
+  right: 12px !important;
+  z-index: 3 !important;
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* QuickDeck dwarven dead-space background texture                            */
+/* ------------------------------------------------------------------------- */
+
+:root,
+.gurps-quickdeck-app,
+.gurps-quickdeck,
+.qd40-overlay {
+  --qd-deadspace-bg: url("../assets/ui/dwarven/left-deadspace-bg.webp");
+  --qd-deadspace-bg-size: 320px 320px;
+}
+
+/* Main empty/dead-space surfaces. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer,
+.qd40-overlay .qd31-left-drawer,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit,
+.qd40-overlay .qd31-center-cockpit,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer,
+.qd40-overlay .qd31-right-drawer,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-drawer-body,
+.qd40-overlay .qd31-drawer-body,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-collapsible,
+.qd40-overlay .qd31-available-collapsible,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-body,
+.qd40-overlay .qd31-available-body,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-list,
+.qd40-overlay .qd31-available-list {
+  background-color: #171512 !important;
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.025) 0%,
+      rgba(0, 0, 0, 0.12) 100%
+    ),
+    var(--qd-deadspace-bg) !important;
+  background-repeat: repeat, repeat !important;
+  background-size: auto, var(--qd-deadspace-bg-size) !important;
+  background-position: left top, left top !important;
+}
+
+/* Keep actual cards/rows visibly above the dead-space texture. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roster-card,
+.qd40-overlay .qd31-roster-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-row,
+.qd40-overlay .qd31-available-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-action-row,
+.qd40-overlay .qd31-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-hero,
+.qd40-overlay .qd31-center-hero {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+/* Slightly darken card backs so the background reads as separate dead space. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roster-card,
+.qd40-overlay .qd31-roster-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-row,
+.qd40-overlay .qd31-available-row {
+  box-shadow:
+    0 0 0 1px rgba(224, 181, 83, 0.10),
+    inset 0 0 18px rgba(0, 0, 0, 0.28) !important;
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* QuickDeck dwarven dead-space tuning pass                                  */
+/* ------------------------------------------------------------------------- */
+
+:root,
+.gurps-quickdeck-app,
+.gurps-quickdeck,
+.qd40-overlay {
+  --qd-deadspace-bg: url("../assets/ui/dwarven/left-deadspace-bg.webp");
+  --qd-deadspace-bg-size: 360px 360px;
+}
+
+/*
+ * Broad dead-space fill.
+ * This catches the big black zones behind the left, center, and right panels.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd40-frame,
+.qd40-overlay .qd40-frame,
+#gurps-quickdeck-overlay.qd40-overlay .qd40-body,
+.qd40-overlay .qd40-body,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-panel-wrap,
+.qd40-overlay .qd31-left-panel-wrap,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-wrap,
+.qd40-overlay .qd31-center-wrap,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-panel-wrap,
+.qd40-overlay .qd31-right-panel-wrap,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer,
+.qd40-overlay .qd31-left-drawer,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit,
+.qd40-overlay .qd31-center-cockpit,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer,
+.qd40-overlay .qd31-right-drawer,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-drawer-body,
+.qd40-overlay .qd31-drawer-body {
+  background-color: #0f0e0c !important;
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.46) 0%,
+      rgba(0, 0, 0, 0.58) 100%
+    ),
+    var(--qd-deadspace-bg) !important;
+  background-repeat: repeat, repeat !important;
+  background-size: auto, var(--qd-deadspace-bg-size) !important;
+  background-position: left top, left top !important;
+}
+
+/*
+ * Active roster list should not reserve a huge dead slab when only a few
+ * actors are selected. This lets Search Actors move up naturally.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-roster-list,
+.qd40-overlay .qd31-left-drawer .qd31-roster-list {
+  flex: 0 1 auto !important;
+  min-height: 0 !important;
+  max-height: 258px !important;
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/*
+ * The Search Actors tray was clashing because the texture was too bright
+ * directly under the header/search/rows. Keep the texture, but bury it under
+ * a dark smoked overlay so the header art and inactive cards stand apart.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-collapsible,
+.qd40-overlay .qd31-left-drawer .qd31-available-collapsible,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-body,
+.qd40-overlay .qd31-left-drawer .qd31-available-body,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-list {
+  background-color: #0d0c0a !important;
+  background-image:
+    linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.66) 0%,
+      rgba(0, 0, 0, 0.72) 100%
+    ),
+    var(--qd-deadspace-bg) !important;
+  background-repeat: repeat, repeat !important;
+  background-size: auto, var(--qd-deadspace-bg-size) !important;
+  background-position: left top, left top !important;
+}
+
+/*
+ * Search body needs a little breathing room below the header, but not a bright
+ * concrete slab.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-body,
+.qd40-overlay .qd31-left-drawer .qd31-available-body {
+  padding-top: 10px !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.62) !important;
+  box-shadow:
+    inset 0 10px 18px rgba(0, 0, 0, 0.42),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.32) !important;
+}
+
+/*
+ * Keep inactive actor rows as cards above the darker tray.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-row,
+.qd40-overlay .qd31-left-drawer .qd31-available-row {
+  background-color: #171512 !important;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.22)),
+    var(--qd-card-bg) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, 420px 420px !important;
+  background-position: center center, 0 0 !important;
+  box-shadow:
+    0 0 0 1px rgba(224, 181, 83, 0.13),
+    inset 0 0 18px rgba(0, 0, 0, 0.32) !important;
+}
+
+/*
+ * Preserve scroll behavior while making the Search Actors list feel contained.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer .qd31-available-list,
+.qd40-overlay .qd31-left-drawer .qd31-available-list {
+  max-height: 242px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 24px !important;
+  border-radius: 8px !important;
+}
+
+/*
+ * Center cockpit dead-space should show texture softly, not pure black.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit,
+.qd40-overlay .qd31-center-cockpit {
+  box-shadow:
+    inset 0 0 80px rgba(0, 0, 0, 0.64),
+    inset 0 0 0 1px rgba(135, 94, 38, 0.18) !important;
+}
+
+/*
+ * Make hero/cards remain readable on top of the background.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-hero,
+.qd40-overlay .qd31-center-hero,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roster-card,
+.qd40-overlay .qd31-roster-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-action-row,
+.qd40-overlay .qd31-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-row,
+.qd40-overlay .qd31-available-row {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
