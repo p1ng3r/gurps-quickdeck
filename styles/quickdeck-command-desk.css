@@ -4177,43 +4177,90 @@ cat >> styles/quickdeck-command-desk.css <<'CSS'
 
 /* End QuickDeck reference popup z-index safety */
 
-/* QuickDeck right drawer skills buttons hard right pin */
+/* QuickDeck right drawer unified action button alignment */
 
 /*
- * Skills tab button placement:
- * Force only the skill row icon buttons to the right edge of the visual card.
- * The skill name/text stays left.
- * Target: about 20px from the card border, leaving room for scrollbar overlap.
+ * Unified right-drawer action button alignment.
+ *
+ * Combat:
+ * - Keep the two-line combat row layout.
+ * - Right-align the button rail safely away from scrollbar overlap.
+ *
+ * Skills / Spells:
+ * - Pin only the button group near the right edge of the row/card.
+ * - Leave action names/text on the left.
+ * - Keep cards compact.
+ *
+ * No template changes.
+ * No data-action changes.
+ * No GURPS/GGA logic changes.
  */
 
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer,
+.qd40-overlay .qd31-right-drawer {
+  --qd-right-rail-edge: 20px;
+  --qd-right-rail-reserve: 132px;
+}
+
+/* General right-drawer action controls: keep icon spacing consistent. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-controls,
+.qd40-overlay .qd31-right-drawer .qd31-action-controls {
+  gap: 6px !important;
+}
+
+/* Combat rows keep the existing bottom rail, but align it right and scrollbar-safe. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="combat"] .qd31-action-controls,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="combat"] .qd31-action-controls {
+  position: static !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding-right: var(--qd-right-rail-edge) !important;
+  box-sizing: border-box !important;
+}
+
+/* Skills and Spells rows get a pinned right-side button rail. */
 #gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"],
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"],
 .qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"],
-#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row:has(button[data-action="roll-skill"]),
-.qd40-overlay .qd31-right-drawer .qd31-action-row:has(button[data-action="roll-skill"]) {
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] {
   position: relative !important;
   display: block !important;
   min-height: 82px !important;
-  padding: 14px 132px 14px 18px !important;
+  padding: 14px var(--qd-right-rail-reserve) 14px 18px !important;
   overflow: hidden !important;
+  box-sizing: border-box !important;
 }
 
+/* Keep Skills/Spells text left and prevent it from running under the buttons. */
 #gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] .qd31-action-main,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] > div:first-child,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] .qd31-action-main,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] > div:first-child,
 .qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] .qd31-action-main,
-#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row:has(button[data-action="roll-skill"]) .qd31-action-main,
-.qd40-overlay .qd31-right-drawer .qd31-action-row:has(button[data-action="roll-skill"]) .qd31-action-main {
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] > div:first-child,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] .qd31-action-main,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] > div:first-child {
   display: block !important;
   width: auto !important;
-  max-width: calc(100% - 4px) !important;
+  max-width: 100% !important;
   min-width: 0 !important;
   overflow: hidden !important;
 }
 
+/* Pin Skills/Spells button groups 20px from the card edge. */
 #gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] .qd31-action-controls,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] .qd31-action-controls,
 .qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] .qd31-action-controls,
-#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row:has(button[data-action="roll-skill"]) .qd31-action-controls,
-.qd40-overlay .qd31-right-drawer .qd31-action-row:has(button[data-action="roll-skill"]) .qd31-action-controls {
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] .qd31-action-controls {
   position: absolute !important;
-  right: 20px !important;
+  right: var(--qd-right-rail-edge) !important;
   top: 50% !important;
   left: auto !important;
   bottom: auto !important;
@@ -4222,6 +4269,7 @@ cat >> styles/quickdeck-command-desk.css <<'CSS'
 
   display: inline-flex !important;
   flex-direction: row !important;
+  flex-wrap: nowrap !important;
   align-items: center !important;
   justify-content: flex-end !important;
   gap: 8px !important;
@@ -4233,5 +4281,5 @@ cat >> styles/quickdeck-command-desk.css <<'CSS'
   padding: 0 !important;
 }
 
-/* End QuickDeck right drawer skills buttons hard right pin */
+/* End QuickDeck right drawer unified action button alignment */
 
