@@ -2925,7 +2925,6 @@
   overflow: hidden !important;
 }
 
-cat >> styles/quickdeck-command-desk.css <<'CSS'
 
 /* ------------------------------------------------------------------------- */
 /* Left drawer available actor list scrollbar height                         */
@@ -3350,4 +3349,936 @@ cat >> styles/quickdeck-command-desk.css <<'CSS'
   position: relative !important;
   z-index: 1 !important;
 }
+
+
+/* ------------------------------------------------------------------------- */
+/* QuickDeck right panel spacing and link polish                              */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Scope:
+ * - Right drawer only.
+ * - Pull search/results upward under the Combat/Skills/Spells/Settings tabs.
+ * - Remove harsh black boxes around clickable skill/spell/info text.
+ * - Replace with subtle blue hover/focus treatment.
+ * - CSS only. No JS/HBS behavior changes.
+ */
+
+/* Make the right drawer stack content from the top instead of leaving a huge gap. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer,
+.qd40-overlay .qd31-right-drawer {
+  justify-content: flex-start !important;
+  align-content: flex-start !important;
+  gap: 8px !important;
+}
+
+/* Keep tab row tight and let the drawer body start directly below it. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-tabs,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-tabs,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-tabs,
+.qd40-overlay .qd31-right-drawer .qd31-tabs,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer [role="tablist"],
+.qd40-overlay .qd31-right-drawer [role="tablist"] {
+  margin-bottom: 6px !important;
+}
+
+/* Drawer body: remove vertical centering / excess top padding. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-body,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-body {
+  justify-content: flex-start !important;
+  align-content: flex-start !important;
+  align-items: stretch !important;
+  margin-top: 0 !important;
+  padding-top: 8px !important;
+  min-height: 0 !important;
+}
+
+/* Search/count row should sit near the top under the tabs. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-search-row,
+.qd40-overlay .qd31-right-drawer .qd31-search-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-search,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-search,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-search,
+.qd40-overlay .qd31-right-drawer .qd31-action-search {
+  margin-top: 0 !important;
+  margin-bottom: 10px !important;
+}
+
+/* If the search area is the first child, force it upward regardless of class drift. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-body > :first-child,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-body > :first-child {
+  margin-top: 0 !important;
+}
+
+/* Results/list container should not start halfway down. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-list,
+.qd40-overlay .qd31-right-drawer .qd31-action-list,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-results-list,
+.qd40-overlay .qd31-right-drawer .qd31-results-list,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-list,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-list {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Remove ugly black text boxes in right action rows                          */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * These are usually clickable labels/details/ref/info launchers.
+ * Keep them clickable, but stop drawing hard black rectangles behind text.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row span,
+.qd40-overlay .qd31-right-drawer .qd31-action-row span,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row strong,
+.qd40-overlay .qd31-right-drawer .qd31-action-row strong,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row small,
+.qd40-overlay .qd31-right-drawer .qd31-action-row small,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row a,
+.qd40-overlay .qd31-right-drawer .qd31-action-row a,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row button:not(.qd31-square-button):not(.qd31-icon-button):not(.qd31-center-fav-action-main):not(.qd31-center-fav-action-damage),
+.qd40-overlay .qd31-right-drawer .qd31-action-row button:not(.qd31-square-button):not(.qd31-icon-button):not(.qd31-center-fav-action-main):not(.qd31-center-fav-action-damage) {
+  background: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+}
+
+/* If metadata fields are their own dark chips, make them subtle text instead. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row [class*="type"],
+.qd40-overlay .qd31-right-drawer .qd31-action-row [class*="type"],
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row [class*="damage"],
+.qd40-overlay .qd31-right-drawer .qd31-action-row [class*="damage"],
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row [class*="college"],
+.qd40-overlay .qd31-right-drawer .qd31-action-row [class*="college"],
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row [class*="class"],
+.qd40-overlay .qd31-right-drawer .qd31-action-row [class*="class"] {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+/*
+ * Subtle blue hover/focus for clickable text areas.
+ * This gives the "it opens info" affordance without harsh black boxes.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row a:hover,
+.qd40-overlay .qd31-right-drawer .qd31-action-row a:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row button:not(.qd31-square-button):not(.qd31-icon-button):hover,
+.qd40-overlay .qd31-right-drawer .qd31-action-row button:not(.qd31-square-button):not(.qd31-icon-button):hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row [data-action]:not(.qd31-square-button):not(.qd31-icon-button):hover,
+.qd40-overlay .qd31-right-drawer .qd31-action-row [data-action]:not(.qd31-square-button):not(.qd31-icon-button):hover {
+  color: #d8f2ff !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 5px rgba(86, 184, 255, 0.30),
+    0 0 10px rgba(44, 126, 204, 0.18) !important;
+  outline: none !important;
+}
+
+/* Keyboard focus gets the same subtle blue cue. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row a:focus-visible,
+.qd40-overlay .qd31-right-drawer .qd31-action-row a:focus-visible,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row button:not(.qd31-square-button):not(.qd31-icon-button):focus-visible,
+.qd40-overlay .qd31-right-drawer .qd31-action-row button:not(.qd31-square-button):not(.qd31-icon-button):focus-visible,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row [data-action]:not(.qd31-square-button):not(.qd31-icon-button):focus-visible,
+.qd40-overlay .qd31-right-drawer .qd31-action-row [data-action]:not(.qd31-square-button):not(.qd31-icon-button):focus-visible {
+  outline: 1px solid rgba(86, 184, 255, 0.38) !important;
+  outline-offset: 2px !important;
+  color: #d8f2ff !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 5px rgba(86, 184, 255, 0.30),
+    0 0 10px rgba(44, 126, 204, 0.18) !important;
+}
+
+/*
+ * Keep the row itself as the visual card, not the text chips.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row,
+.qd40-overlay .qd31-right-drawer .qd31-action-row {
+  border-color: rgba(121, 88, 41, 0.42) !important;
+  background-color: #15130f !important;
+  background-image:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.028), rgba(0, 0, 0, 0.22)),
+    var(--qd-card-bg) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, 420px 420px !important;
+  background-position: center center, 0 0 !important;
+}
+
+/* Slightly more room for spell/skill text before the icon buttons. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row,
+.qd40-overlay .qd31-right-drawer .qd31-action-row {
+  gap: 7px !important;
+  padding-right: 8px !important;
+}
+
+
+/* ------------------------------------------------------------------------- */
+/* QuickDeck right drawer custom-scroll wrapper gap fix                       */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Fixes the giant vertical gap between the right drawer tabs and the active
+ * Combat/Skills/Spells body.
+ *
+ * Cause:
+ * The custom scrollbar manager wraps drawer bodies in .qd-custom-scroll-wrapper.
+ * Hidden drawer bodies can leave their wrappers in the flex column, creating
+ * spacer blocks before the active visible drawer body.
+ *
+ * CSS-only fix:
+ * Hide wrapper elements when their direct drawer body child is hidden.
+ */
+
+/* Hidden tab bodies should not leave their custom-scroll wrapper behind. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper:has(> .qd31-drawer-body[hidden]),
+.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper:has(> .qd31-drawer-body[hidden]) {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+/* The visible wrapped drawer body should sit directly under the tab row. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper:has(> .qd31-drawer-body:not([hidden])),
+.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper:has(> .qd31-drawer-body:not([hidden])) {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Keep the body itself tight to the top of that wrapper. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper > .qd31-drawer-body:not([hidden]),
+.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper > .qd31-drawer-body:not([hidden]) {
+  margin-top: 0 !important;
+  padding-top: 6px !important;
+  align-content: flex-start !important;
+  justify-content: stretch !important;
+}
+
+/* Tighten the tab-to-body seam. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-tabs,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-tabs {
+  margin-bottom: 4px !important;
+}
+
+/* The search row should be the first visible row, not floating in a large tray. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-body:not([hidden]) > .qd31-search-row:first-child,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-body:not([hidden]) > .qd31-search-row:first-child {
+  margin-top: 0 !important;
+  margin-bottom: 8px !important;
+}
+
+/* ------------------------------------------------------------------------- */
+/* QuickDeck right drawer todo polish                                         */
+/* ------------------------------------------------------------------------- */
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer,
+.qd40-overlay .qd31-right-drawer {
+  --qd-right-scroll-safe-lane: 22px;
+  --qd-right-control-nudge: 10px;
+  font-family: "QuickDeckKhazadDum", var(--qd-font-title), Georgia, serif !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer *,
+.qd40-overlay .qd31-right-drawer * {
+  font-family: "QuickDeckKhazadDum", var(--qd-font-title), Georgia, serif !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-tabs,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-tabs {
+  position: relative !important;
+  z-index: 2 !important;
+  padding: 6px !important;
+  margin: 0 0 6px 0 !important;
+  border: 1px solid rgba(190, 145, 64, 0.62) !important;
+  border-radius: 9px !important;
+  background-color: #171512 !important;
+  background-image:
+    linear-gradient(180deg, rgba(255, 232, 170, 0.08), rgba(0, 0, 0, 0.30)),
+    url("./assets/ui/dwarven/left-deadspace-bg.webp") !important;
+  background-repeat: repeat, repeat !important;
+  background-size: auto, 320px 320px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 234, 176, 0.08),
+    inset 0 -8px 16px rgba(0, 0, 0, 0.24),
+    0 1px 4px rgba(0, 0, 0, 0.34) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-tabs button,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-tabs button {
+  min-height: 30px !important;
+  padding: 4px 5px !important;
+  font-size: 0.82rem !important;
+  line-height: 1 !important;
+  letter-spacing: 0.045em !important;
+  color: #d9dde2 !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 5px rgba(205, 218, 230, 0.22),
+    0 0 9px rgba(0, 0, 0, 0.95) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-drawer-body,
+.qd40-overlay .qd31-right-drawer .qd31-drawer-body {
+  scrollbar-gutter: stable !important;
+  padding-right: var(--qd-right-scroll-safe-lane) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row,
+.qd40-overlay .qd31-right-drawer .qd31-action-row {
+  width: calc(100% - var(--qd-right-control-nudge)) !important;
+  margin-right: var(--qd-right-control-nudge) !important;
+  padding-right: 12px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-controls,
+.qd40-overlay .qd31-right-drawer .qd31-action-controls {
+  padding-right: var(--qd-right-control-nudge) !important;
+  justify-content: end !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-main,
+.qd40-overlay .qd31-right-drawer .qd31-action-main {
+  grid-row: 1 !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) repeat(3, auto) !important;
+  align-items: center !important;
+  gap: 5px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-meta-item,
+.qd40-overlay .qd31-right-drawer .qd31-action-meta-item {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 3px !important;
+  min-width: 46px !important;
+  max-width: 96px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+  padding: 1px 5px !important;
+  overflow: hidden !important;
+  color: rgba(224, 232, 238, 0.88) !important;
+  background: rgba(8, 10, 13, 0.34) !important;
+  border: 1px solid rgba(90, 120, 145, 0.28) !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+  font-size: 0.58rem !important;
+  line-height: 1 !important;
+  letter-spacing: 0.035em !important;
+  white-space: nowrap !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-meta-label,
+.qd40-overlay .qd31-right-drawer .qd31-action-meta-label {
+  color: rgba(240, 205, 122, 0.88) !important;
+  text-transform: uppercase !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-meta-label::after,
+.qd40-overlay .qd31-right-drawer .qd31-action-meta-label::after {
+  content: ":" !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-meta-value,
+.qd40-overlay .qd31-right-drawer .qd31-action-meta-value {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-reference-button,
+.qd40-overlay .qd31-right-drawer .qd31-reference-button {
+  background: transparent !important;
+  background-image: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-reference-button strong,
+.qd40-overlay .qd31-right-drawer .qd31-reference-button strong {
+  display: block !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 0.82rem !important;
+  letter-spacing: 0.04em !important;
+}
+
+/* End QuickDeck right drawer todo polish */
+
+/* ------------------------------------------------------------------------- */
+/* QuickDeck reference scroll popup                                           */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Reference popup scroll treatment.
+ * Uses:
+ * - assets/ui/dwarven/popups/reference-scroll-shell.webp
+ * - assets/ui/dwarven/popups/reference-wax-close.webp
+ * - assets/ui/dwarven/popups/reference-local-override-button.webp
+ *
+ * Scope:
+ * - QuickDeck Reference popup only.
+ * - No reference lookup/PDF/local override logic changes.
+ */
+
+.gurps-quickdeck-reference,
+.gurps-quickdeck-reference.window-app,
+.app.gurps-quickdeck-reference {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.gurps-quickdeck-reference .window-header {
+  display: none !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  border: 0 !important;
+  overflow: hidden !important;
+}
+
+.gurps-quickdeck-reference .window-content {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-shell {
+  position: relative !important;
+  width: 560px !important;
+  min-height: 720px !important;
+  max-height: min(780px, calc(100vh - 72px)) !important;
+  padding: 108px 62px 88px !important;
+  color: #35200f !important;
+  background-color: transparent !important;
+  background-image: url("../assets/ui/dwarven/popups/reference-scroll-shell.webp") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 100% 100% !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-shell::before,
+.gurps-quickdeck-reference .quickdeck-reference-shell::after {
+  content: none !important;
+  display: none !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-scroll-close {
+  position: absolute !important;
+  z-index: 10 !important;
+  top: 77px !important;
+  right: 54px !important;
+  width: 58px !important;
+  height: 58px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  color: transparent !important;
+  font-size: 0 !important;
+  background-color: transparent !important;
+  background-image: url("../assets/ui/dwarven/popups/reference-wax-close.webp") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: contain !important;
+  box-shadow:
+    0 4px 10px rgba(47, 9, 4, 0.30),
+    0 0 0 1px rgba(255, 196, 150, 0.10) !important;
+  cursor: pointer !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-scroll-close:hover,
+.gurps-quickdeck-reference .quickdeck-reference-scroll-close:focus-visible {
+  filter: brightness(1.10) saturate(1.08) !important;
+  transform: translateY(-1px) scale(1.025) !important;
+  outline: none !important;
+  box-shadow:
+    0 5px 12px rgba(47, 9, 4, 0.36),
+    0 0 12px rgba(166, 36, 22, 0.28) !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-panel,
+.gurps-quickdeck-reference .quickdeck-reference-header,
+.gurps-quickdeck-reference .quickdeck-reference-body {
+  position: relative !important;
+  z-index: 1 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-header {
+  margin: 0 0 10px !important;
+  padding: 0 8px 8px !important;
+  text-align: center !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-header h2 {
+  margin: 0 54px 8px !important;
+  color: #42260f !important;
+  font-family: "QuickDeckKhazadDum", "Book Antiqua", Georgia, serif !important;
+  font-size: 1.45rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.045em !important;
+  line-height: 1.05 !important;
+  text-shadow:
+    0 1px 0 rgba(255, 244, 199, 0.64),
+    0 0 6px rgba(102, 57, 18, 0.20) !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-meta {
+  color: #4a2b14 !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-meta dt {
+  color: #6d411a !important;
+  font-family: "QuickDeckKhazadDum", "Book Antiqua", Georgia, serif !important;
+  font-weight: 900 !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-meta dd,
+.gurps-quickdeck-reference .quickdeck-reference-muted,
+.gurps-quickdeck-reference .quickdeck-reference-empty {
+  color: #3b2412 !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-body {
+  max-height: min(520px, calc(100vh - 300px)) !important;
+  padding: 0 10px 4px !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-gutter: stable !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-sources {
+  margin: 0 0 10px !important;
+  padding: 8px 10px !important;
+  border: 1px solid rgba(97, 58, 23, 0.28) !important;
+  border-radius: 10px !important;
+  background:
+    linear-gradient(180deg, rgba(255, 246, 207, 0.28), rgba(139, 84, 30, 0.08)) !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-sources h3 {
+  margin: 0 0 5px !important;
+  color: #573111 !important;
+  font-family: "QuickDeckKhazadDum", "Book Antiqua", Georgia, serif !important;
+  font-size: 0.9rem !important;
+  letter-spacing: 0.05em !important;
+  text-transform: uppercase !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-sources p,
+.gurps-quickdeck-reference .quickdeck-reference-sources dd {
+  color: #332012 !important;
+  line-height: 1.35 !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-index-actions {
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 8px !important;
+  margin: 0 0 12px !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-index-button {
+  min-height: 36px !important;
+  border-radius: 9px !important;
+  color: #f8e6bd !important;
+  font-family: "QuickDeckKhazadDum", "Book Antiqua", Georgia, serif !important;
+  font-size: 0.78rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  text-shadow: 0 1px 0 #1f1107 !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button {
+  min-width: 240px !important;
+  min-height: 54px !important;
+  padding: 8px 28px 8px 58px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #3a220f !important;
+  background-color: transparent !important;
+  background-image: url("../assets/ui/dwarven/popups/reference-local-override-button.webp") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 100% 100% !important;
+  box-shadow: none !important;
+  text-shadow:
+    0 1px 0 rgba(255, 242, 202, 0.70),
+    0 0 4px rgba(88, 47, 14, 0.18) !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button:hover,
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button:focus-visible {
+  filter: brightness(1.06) saturate(1.04) !important;
+  transform: translateY(-1px) !important;
+  outline: none !important;
+}
+
+/* End QuickDeck reference scroll popup */
+
+/* QuickDeck reference popup button variants */
+
+.gurps-quickdeck-reference .quickdeck-reference-index-actions {
+  justify-content: center !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 10px !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button,
+.gurps-quickdeck-reference .quickdeck-reference-mapped-pdf-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: url("../assets/ui/dwarven/popups/reference-local-override-button.webp") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 100% 100% !important;
+  box-shadow: none !important;
+  color: #3a220f !important;
+  font-family: "QuickDeckKhazadDum", "Book Antiqua", Georgia, serif !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  text-align: center !important;
+  text-shadow:
+    0 1px 0 rgba(255, 242, 202, 0.70),
+    0 0 4px rgba(88, 47, 14, 0.18) !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button {
+  width: 300px !important;
+  min-width: 300px !important;
+  max-width: 300px !important;
+  min-height: 54px !important;
+  height: 54px !important;
+  padding: 8px 28px 8px 58px !important;
+  font-size: 0.78rem !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-mapped-pdf-button {
+  width: 235px !important;
+  min-width: 235px !important;
+  max-width: 235px !important;
+  min-height: 48px !important;
+  height: 48px !important;
+  padding: 6px 18px 6px 44px !important;
+  font-size: 0.68rem !important;
+  line-height: 1.05 !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button:hover,
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button:focus-visible,
+.gurps-quickdeck-reference .quickdeck-reference-mapped-pdf-button:hover,
+.gurps-quickdeck-reference .quickdeck-reference-mapped-pdf-button:focus-visible {
+  filter: brightness(1.06) saturate(1.04) !important;
+  transform: translateY(-1px) !important;
+  outline: none !important;
+}
+
+/* End QuickDeck reference popup button variants */
+
+/* QuickDeck reference popup final scroll tuning */
+
+/*
+ * Final tuning after live Foundry screenshot:
+ * - Move wax seal below the top scroll roll.
+ * - Make Add Local Override and Open PDF Page use the same compact art size.
+ * - Give the scroll shell a right-drag affordance without changing left-click behavior.
+ */
+
+.gurps-quickdeck-reference .quickdeck-reference-scroll-close {
+  top: 112px !important;
+  right: 62px !important;
+  width: 54px !important;
+  height: 54px !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-shell {
+  cursor: default !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-shell:active {
+  cursor: default !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button,
+.gurps-quickdeck-reference .quickdeck-reference-mapped-pdf-button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 255px !important;
+  min-width: 255px !important;
+  max-width: 255px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  max-height: 48px !important;
+  padding: 6px 18px 6px 46px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  color: #3a220f !important;
+  background-color: transparent !important;
+  background-image: url("../assets/ui/dwarven/popups/reference-local-override-button.webp") !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 100% 100% !important;
+  box-shadow: none !important;
+  font-family: "QuickDeckKhazadDum", "Book Antiqua", Georgia, serif !important;
+  font-size: 0.68rem !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.04em !important;
+  line-height: 1.05 !important;
+  text-align: center !important;
+  text-shadow:
+    0 1px 0 rgba(255, 242, 202, 0.70),
+    0 0 4px rgba(88, 47, 14, 0.18) !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button:hover,
+.gurps-quickdeck-reference .quickdeck-reference-local-override-button:focus-visible,
+.gurps-quickdeck-reference .quickdeck-reference-mapped-pdf-button:hover,
+.gurps-quickdeck-reference .quickdeck-reference-mapped-pdf-button:focus-visible {
+  filter: brightness(1.06) saturate(1.04) !important;
+  transform: translateY(-1px) !important;
+  outline: none !important;
+}
+
+/* End QuickDeck reference popup final scroll tuning */
+
+/* QuickDeck reference popup right-drag movement tuning */
+
+.gurps-quickdeck-reference .quickdeck-reference-shell {
+  user-select: auto !important;
+}
+
+.gurps-quickdeck-reference.is-reference-scroll-dragging,
+.gurps-quickdeck-reference.is-reference-scroll-dragging .quickdeck-reference-shell {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+
+.gurps-quickdeck-reference.is-reference-scroll-dragging * {
+  cursor: grabbing !important;
+}
+
+/* End QuickDeck reference popup right-drag movement tuning */\n\n/* QuickDeck reference popup drag feedback */
+
+.gurps-quickdeck-reference.is-reference-scroll-dragging,
+.gurps-quickdeck-reference.is-reference-scroll-dragging .quickdeck-reference-shell,
+.gurps-quickdeck-reference.is-reference-scroll-dragging * {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+
+/* End QuickDeck reference popup drag feedback */
+\n
+
+/* QuickDeck reference popup native drag handle */
+
+/*
+ * Keep the Foundry Application header alive as an invisible drag handle.
+ * Visually: no normal header.
+ * Functionally: left-click-drag the top scroll roll to move the popup.
+ */
+
+.gurps-quickdeck-reference.window-app {
+  overflow: visible !important;
+}
+
+.gurps-quickdeck-reference .window-header {
+  display: flex !important;
+  position: absolute !important;
+  z-index: 9 !important;
+  top: 38px !important;
+  left: 92px !important;
+  right: 132px !important;
+  height: 54px !important;
+  min-height: 54px !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  cursor: grab !important;
+  user-select: none !important;
+}
+
+.gurps-quickdeck-reference .window-header:active {
+  cursor: grabbing !important;
+}
+
+.gurps-quickdeck-reference .window-header .window-title,
+.gurps-quickdeck-reference .window-header .header-button,
+.gurps-quickdeck-reference .window-header a,
+.gurps-quickdeck-reference .window-header button {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+.gurps-quickdeck-reference .quickdeck-reference-scroll-close {
+  z-index: 12 !important;
+  top: 112px !important;
+}
+
+/* End QuickDeck reference popup native drag handle */
+
+/* QuickDeck reference popup z-index safety */
+
+/*
+ * Keep the Reference scroll above the QuickDeck overlay.
+ * QuickDeck overlay uses a fixed z-index layer; reference popups should always sit above it.
+ */
+
+.gurps-quickdeck-reference,
+.gurps-quickdeck-reference.window-app,
+.window-app.gurps-quickdeck-reference,
+.app.gurps-quickdeck-reference,
+.gurps-quickdeck-reference-scroll,
+.gurps-quickdeck-reference-scroll.window-app,
+.window-app.gurps-quickdeck-reference-scroll,
+.app.gurps-quickdeck-reference-scroll {
+  z-index: 10000 !important;
+}
+
+/* End QuickDeck reference popup z-index safety */
+
+/* QuickDeck right drawer unified action button alignment */
+
+/*
+ * Unified right-drawer action button alignment.
+ *
+ * Combat:
+ * - Keep the two-line combat row layout.
+ * - Right-align the button rail safely away from scrollbar overlap.
+ *
+ * Skills / Spells:
+ * - Pin only the button group near the right edge of the row/card.
+ * - Leave action names/text on the left.
+ * - Keep cards compact.
+ *
+ * No template changes.
+ * No data-action changes.
+ * No GURPS/GGA logic changes.
+ */
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer,
+.qd40-overlay .qd31-right-drawer {
+  --qd-right-rail-edge: 20px;
+  --qd-right-rail-reserve: 132px;
+}
+
+/* General right-drawer action controls: keep icon spacing consistent. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-controls,
+.qd40-overlay .qd31-right-drawer .qd31-action-controls {
+  gap: 6px !important;
+}
+
+/* Combat rows keep the existing bottom rail, but align it right and scrollbar-safe. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="combat"] .qd31-action-controls,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="combat"] .qd31-action-controls {
+  position: static !important;
+  transform: none !important;
+  display: flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding-right: var(--qd-right-rail-edge) !important;
+  box-sizing: border-box !important;
+}
+
+/* Skills and Spells rows get a pinned right-side button rail. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"],
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"],
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"],
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] {
+  position: relative !important;
+  display: block !important;
+  min-height: 82px !important;
+  padding: 14px var(--qd-right-rail-reserve) 14px 18px !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+}
+
+/* Keep Skills/Spells text left and prevent it from running under the buttons. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] .qd31-action-main,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] > div:first-child,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] .qd31-action-main,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] > div:first-child,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] .qd31-action-main,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] > div:first-child,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] .qd31-action-main,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] > div:first-child {
+  display: block !important;
+  width: auto !important;
+  max-width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Pin Skills/Spells button groups 20px from the card edge. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] .qd31-action-controls,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] .qd31-action-controls,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="skills"] .qd31-action-controls,
+.qd40-overlay .qd31-right-drawer .qd31-action-row[data-search-row="spells"] .qd31-action-controls {
+  position: absolute !important;
+  right: var(--qd-right-rail-edge) !important;
+  top: 50% !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: translateY(-50%) !important;
+  z-index: 5 !important;
+
+  display: inline-flex !important;
+  flex-direction: row !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+
+  width: auto !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* End QuickDeck right drawer unified action button alignment */
 

@@ -1,4 +1,11 @@
 <section class="quickdeck-reference-shell">
+  <button
+    type="button"
+    class="quickdeck-reference-scroll-close"
+    data-action="close-reference-scroll"
+    aria-label="Close reference"
+    title="Close reference"
+  ></button>
   <header class="quickdeck-reference-header quickdeck-reference-panel">
     <h2>{{title}}</h2>
     <dl class="quickdeck-reference-meta">
@@ -25,7 +32,7 @@
     <div class="quickdeck-reference-index-actions">
       <button
         type="button"
-        class="quickdeck-reference-index-button"
+        class="quickdeck-reference-index-button quickdeck-reference-local-override-button"
         data-action="open-reference-index-entry"
         data-prefill-name="{{prefillEntryName}}"
         data-prefill-type="{{prefillEntryType}}"
@@ -37,7 +44,7 @@
       {{#if hasMappedPdf}}
         <button
           type="button"
-          class="quickdeck-reference-index-button"
+          class="quickdeck-reference-index-button quickdeck-reference-mapped-pdf-button"
           data-action="open-mapped-pdf-page"
           data-pdf-key="{{pdfOpenKey}}"
           data-pdf-page="{{pdfOpenPage}}"
