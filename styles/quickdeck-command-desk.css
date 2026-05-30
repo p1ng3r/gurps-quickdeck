@@ -2925,7 +2925,6 @@
   overflow: hidden !important;
 }
 
-cat >> styles/quickdeck-command-desk.css <<'CSS'
 
 /* ------------------------------------------------------------------------- */
 /* Left drawer available actor list scrollbar height                         */
