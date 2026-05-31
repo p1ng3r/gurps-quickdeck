@@ -48,12 +48,11 @@ class QuickDeckCustomScrollbarManager {
     this.handleWindowResize = () => this.refreshAll();
     this.pendingHostRefresh = new Set();
     this.candidateSelectors = [
-      ".qd31-center-cockpit",
+      ".qd31-center-scroll-body",
       ".qd31-right-drawer .qd31-drawer-body",
       ".qd31-left-drawer .qd31-drawer-body",
       ".qd31-roster-list",
       ".qd31-available-list",
-      ".qd31-center-fav-list",
       ".qd31-pdf-map-list"
     ];
   }
@@ -188,7 +187,7 @@ class QuickDeckCustomScrollbarManager {
   }
 
   getHostThresholds(host) {
-    if (host?.classList?.contains("qd31-center-fav-list")) {
+    if (host?.classList?.contains("qd31-center-scroll-body")) {
       return {
         minHostHeight: 96,
         minTrackHeight: 64,

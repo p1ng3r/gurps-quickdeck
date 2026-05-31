@@ -81,7 +81,7 @@
 
   <div class="qd31-center-wrap qd31-panel-wrap">
   <section class="qd31-center-cockpit">
-    <header class="qd31-header"><h2>QuickDeck Cockpit</h2></header>
+    <header class="qd31-header qd31-center-art-header"><h2>The Anvil Desk</h2></header>
     {{#if activeActor}}
     <section class="qd31-actor-card">
       <header class="quickdeck-actor-header qd31-selected-actor-header">
@@ -138,8 +138,9 @@
           </div>
         </div>
 
-        <article class="qd31-center-move-tile">
-          <div class="qd31-center-move-title">👟 Move</div>
+        <article class="qd31-center-move-tile" aria-label="Move">
+          <div class="qd31-center-move-medallion" aria-hidden="true"></div>
+          <div class="qd31-center-move-title">Move</div>
           <div class="qd31-center-move-value">{{gurpsData.display.move}}</div>
         </article>
       </header>
@@ -155,6 +156,8 @@
 
       <div class="qd31-defense-grid"><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="dodge" data-value="{{gurpsData.display.dodge}}">Dodge <span>{{gurpsData.display.dodge}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="parry" data-value="{{gurpsData.display.parry}}">Parry <span>{{gurpsData.display.parry}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="block" data-value="{{gurpsData.display.block}}">Block <span>{{gurpsData.display.block}}</span></button></div>
 
+      {{!-- QD v0.11.0 Phase 1: one center scroll body; footer stays outside normal content flow. --}}
+      <div class="qd31-center-scroll-body" data-qd-custom-scroll-candidate="true">
       <section class="qd31-center-favorites">
         <div class="qd31-center-fav-section qd31-center-fav-combat">
           <button type="button" class="qd31-center-fav-header qd31-center-fav-toggle" data-action="toggle-center-favorite-section" data-section="combat">
@@ -240,8 +243,15 @@
           </div>
         </div>
       </section>
+      </div>
     </section>
     {{/if}}
+    <footer class="qd31-center-footer" aria-label="QuickDeck cockpit status">
+      <span class="qd31-center-footer-mark" aria-hidden="true">◆</span>
+      <span class="qd31-center-footer-text">COMMAND COCKPIT</span>
+      <span class="qd31-center-footer-state">{{#if activeActor}}ACTIVE ACTOR{{else}}READY{{/if}}</span>
+      <span class="qd31-center-footer-pins">PINS {{favoriteAttackCount}} · {{quickSkillsCount}} · {{favoriteSpellCount}}</span>
+    </footer>
   </section>
   </div>
 

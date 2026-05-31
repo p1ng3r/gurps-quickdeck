@@ -4282,3 +4282,627 @@
 
 /* End QuickDeck right drawer unified action button alignment */
 
+/* Center cockpit header, footer, move, and defense polish v3 */
+
+:root,
+.gurps-quickdeck-app,
+.gurps-quickdeck,
+#gurps-quickdeck-overlay.qd40-overlay,
+.qd40-overlay {
+  --qd-asset-center-header: url("../assets/ui/dwarven/center-cockpit/header-dwarven-faces-trimmed.webp");
+  --qd-asset-center-move-plaque: url("../assets/ui/dwarven/center-cockpit/move-plaque-square.webp");
+  --qd-asset-center-move-medallion: url("../assets/ui/dwarven/center-cockpit/move-medallion-round.webp");
+
+  --qd-center-header-height: 50px;
+  --qd-center-move-size: 88px;
+  --qd-center-move-medallion-size: 54px;
+  --qd-center-footer-height: 36px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit,
+.qd40-overlay .qd31-center-cockpit {
+  display: flex !important;
+  flex-direction: column !important;
+  background-color: var(--qd-bg-panel) !important;
+  background-image: var(--qd-panel-bg) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-size: 100% 100%, 420px 420px !important;
+  background-position: center center, 0 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header,
+.qd40-overlay .qd31-center-cockpit > .qd31-header {
+  position: relative !important;
+  isolation: isolate !important;
+  flex: 0 0 auto !important;
+  height: var(--qd-center-header-height) !important;
+  min-height: var(--qd-center-header-height) !important;
+  margin: 0 0 8px !important;
+  padding: 0 34px !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: var(--qd-asset-center-header) !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 100% 100% !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header::after,
+.qd40-overlay .qd31-center-cockpit > .qd31-header::before,
+.qd40-overlay .qd31-center-cockpit > .qd31-header::after {
+  content: none !important;
+  display: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header h2,
+.qd40-overlay .qd31-center-cockpit > .qd31-header h2 {
+  position: relative !important;
+  z-index: 2 !important;
+  margin: 0 !important;
+  padding: 0 10px !important;
+  color: #fff0c7 !important;
+  font-family: var(--qd-font-title) !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.14em !important;
+  text-align: center !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 2px 0 #120905, 0 0 6px rgba(0, 0, 0, 0.96), 0 0 10px rgba(240, 205, 122, 0.18) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-selected-actor-header,
+.qd40-overlay .qd31-selected-actor-header {
+  flex: 0 0 auto !important;
+  grid-template-columns: 56px minmax(0, 1fr) var(--qd-center-move-size) !important;
+  gap: 8px !important;
+  padding-right: 12px !important;
+  box-shadow: 0 0 0 1px rgba(224, 181, 83, 0.12), inset 0 0 18px rgba(0, 0, 0, 0.32), 0 10px 16px rgba(0, 0, 0, 0.30) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-vital-line,
+.qd40-overlay .qd31-center-vital-line,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-vital-bar,
+.qd40-overlay .qd31-center-vital-bar {
+  max-width: 232px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-tile,
+.qd40-overlay .qd31-center-move-tile {
+  position: relative !important;
+  isolation: isolate !important;
+  width: var(--qd-center-move-size) !important;
+  min-width: var(--qd-center-move-size) !important;
+  max-width: var(--qd-center-move-size) !important;
+  height: var(--qd-center-move-size) !important;
+  min-height: var(--qd-center-move-size) !important;
+  max-height: var(--qd-center-move-size) !important;
+  margin: 2px 4px 0 0 !important;
+  padding: 0 !important;
+  display: grid !important;
+  grid-template-rows: 35px 16px 1fr !important;
+  place-items: center !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  background-image: var(--qd-asset-center-move-plaque) !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 100% 100% !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-medallion,
+.qd40-overlay .qd31-center-move-medallion {
+  position: relative !important;
+  z-index: 3 !important;
+  width: var(--qd-center-move-medallion-size) !important;
+  height: var(--qd-center-move-medallion-size) !important;
+  margin-top: -13px !important;
+  background: transparent !important;
+  background-image: var(--qd-asset-center-move-medallion) !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: contain !important;
+  filter: drop-shadow(0 6px 7px rgba(0, 0, 0, 0.48));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-title,
+.qd40-overlay .qd31-center-move-title {
+  position: relative !important;
+  z-index: 4 !important;
+  margin: -6px 0 0 !important;
+  color: #f7dfaa !important;
+  font-family: var(--qd-font-title) !important;
+  font-size: 12px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 1px 0 #100804, 0 0 5px rgba(0, 0, 0, 0.92) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-value,
+.qd40-overlay .qd31-center-move-value {
+  position: relative !important;
+  z-index: 4 !important;
+  margin-top: 0 !important;
+  color: #fff2c9 !important;
+  font-family: var(--qd-font-title) !important;
+  font-size: 30px !important;
+  line-height: 1 !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.02em !important;
+  text-shadow: 0 2px 0 #130804, 0 0 7px rgba(0, 0, 0, 0.92) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-command-icon-row,
+.qd40-overlay .qd31-command-icon-row {
+  flex: 0 0 auto !important;
+  box-shadow: 0 0 0 1px rgba(224, 181, 83, 0.10), inset 0 0 18px rgba(0, 0, 0, 0.32), 0 8px 14px rgba(0, 0, 0, 0.24) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid,
+.qd40-overlay .qd31-defense-grid,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-favorites,
+.qd40-overlay .qd31-center-favorites {
+  flex: 0 0 auto !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-dial,
+.qd40-overlay .qd31-defense-dial {
+  box-shadow: 0 0 0 1px rgba(224, 181, 83, 0.10), inset 0 0 10px rgba(0, 0, 0, 0.22), 0 10px 16px rgba(0, 0, 0, 0.34) !important;
+  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.32));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-card,
+.qd40-overlay .qd31-center-fav-card {
+  box-shadow: 0 0 0 1px rgba(224, 181, 83, 0.10), inset 0 0 18px rgba(0, 0, 0, 0.30), 0 8px 14px rgba(0, 0, 0, 0.26) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer,
+.qd40-overlay .qd31-center-footer {
+  position: relative !important;
+  bottom: auto !important;
+  z-index: 2 !important;
+  flex: 0 0 auto !important;
+  margin-top: auto !important;
+  margin-bottom: -2px !important;
+  min-height: var(--qd-center-footer-height) !important;
+  height: var(--qd-center-footer-height) !important;
+  padding: 0 16px !important;
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) auto auto !important;
+  align-items: center !important;
+  gap: 10px !important;
+  border: 1px solid rgba(214, 166, 76, 0.82) !important;
+  border-radius: 8px !important;
+  background: linear-gradient(180deg, rgba(90, 54, 12, 0.18), rgba(0, 0, 0, 0.10)), linear-gradient(90deg, rgba(20, 12, 5, 0.98), rgba(61, 36, 10, 0.96) 50%, rgba(20, 12, 5, 0.98)) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 232, 170, 0.08), inset 0 -1px 0 rgba(0, 0, 0, 0.66), 0 -2px 0 rgba(0, 0, 0, 0.22), 0 8px 14px rgba(0, 0, 0, 0.22) !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-mark,
+.qd40-overlay .qd31-center-footer-mark,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-text,
+.qd40-overlay .qd31-center-footer-text,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-state,
+.qd40-overlay .qd31-center-footer-state,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-pins,
+.qd40-overlay .qd31-center-footer-pins {
+  color: #f3ddb1 !important;
+  font-family: var(--qd-font-ui) !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.10em !important;
+  text-transform: uppercase !important;
+  text-shadow: 0 1px 0 #120905, 0 0 5px rgba(0, 0, 0, 0.92) !important;
+  white-space: nowrap !important;
+}
+
+/* End center cockpit header, footer, move, and defense polish v3 */
+
+/* Center cockpit micro fix: unwarp header and transparent footer */
+
+/*
+ * Fixes:
+ * - Header art no longer stretches/warps.
+ * - Footer becomes text-only: transparent background, no pill, no border.
+ */
+
+/* Header: preserve image ratio by cropping instead of stretching. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header,
+.qd40-overlay .qd31-center-cockpit > .qd31-header {
+  height: 58px !important;
+  min-height: 58px !important;
+  margin: 0 0 6px !important;
+  padding: 0 44px !important;
+  background-size: 100% auto !important;
+  background-position: center center !important;
+  background-repeat: no-repeat !important;
+}
+
+/* Keep title readable on the cropped header art. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header h2,
+.qd40-overlay .qd31-center-cockpit > .qd31-header h2 {
+  font-size: 21px !important;
+  letter-spacing: 0.13em !important;
+}
+
+/* Footer: text only, no colored pill, no outline, no frame. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer,
+.qd40-overlay .qd31-center-footer {
+  position: relative !important;
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+  min-height: 24px !important;
+  height: 24px !important;
+  padding: 0 8px !important;
+
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Remove footer decorative diamonds / pseudo art. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer::after,
+.qd40-overlay .qd31-center-footer::before,
+.qd40-overlay .qd31-center-footer::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Hide the leading diamond mark so only useful text remains. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-mark,
+.qd40-overlay .qd31-center-footer-mark {
+  display: none !important;
+}
+
+/* Footer text-only styling. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-text,
+.qd40-overlay .qd31-center-footer-text,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-state,
+.qd40-overlay .qd31-center-footer-state,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-pins,
+.qd40-overlay .qd31-center-footer-pins {
+  color: rgba(246, 225, 177, 0.78) !important;
+  font-size: 9px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.105em !important;
+  text-transform: uppercase !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 5px rgba(0, 0, 0, 0.95) !important;
+  white-space: nowrap !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-text,
+.qd40-overlay .qd31-center-footer-text {
+  justify-self: start !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* End center cockpit micro fix: unwarp header and transparent footer */
+
+
+/* Center header title override: The Anvil Desk */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header h2,
+.qd40-overlay .qd31-center-cockpit > .qd31-header h2 {
+  font-family: "MountainKingRegular-woBYn", var(--qd-font-title), serif !important;
+  font-size: 24px !important;
+  line-height: 1 !important;
+  letter-spacing: 0.06em !important;
+  font-weight: 400 !important;
+  text-transform: none !important;
+  color: #f5dfb0 !important;
+  text-shadow:
+    0 2px 0 #120905,
+    0 0 6px rgba(0, 0, 0, 0.96),
+    0 0 10px rgba(240, 205, 122, 0.20) !important;
+}
+/* End center header title override: The Anvil Desk */
+
+/* Final center cockpit trimmed header and text footer fix */
+
+/* Use the tight-cropped dwarven-faces header art. Ratio is now close to the live slot. */
+:root,
+.gurps-quickdeck-app,
+.gurps-quickdeck,
+#gurps-quickdeck-overlay.qd40-overlay,
+.qd40-overlay {
+  --qd-asset-center-header: url("../assets/ui/dwarven/center-cockpit/header-dwarven-faces-trimmed.webp");
+  --qd-center-header-height: 70px;
+}
+
+/* Header art: no warp, no fake empty top space. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header,
+.qd40-overlay .qd31-center-cockpit > .qd31-header {
+  height: var(--qd-center-header-height) !important;
+  min-height: var(--qd-center-header-height) !important;
+  margin: -2px 0 6px !important;
+  padding: 0 42px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: var(--qd-asset-center-header) !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: 100% auto !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+}
+
+/* Keep generated pseudo-layers from older header attempts off. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header::after,
+.qd40-overlay .qd31-center-cockpit > .qd31-header::before,
+.qd40-overlay .qd31-center-cockpit > .qd31-header::after {
+  content: none !important;
+  display: none !important;
+}
+
+/* Title: dwarven font, live text, no all-caps command-console look. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header h2,
+.qd40-overlay .qd31-center-cockpit > .qd31-header h2 {
+  font-family: "MountainKingRegular-woBYn", var(--qd-font-title), serif !important;
+  font-size: 25px !important;
+  line-height: 1 !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.055em !important;
+  text-transform: none !important;
+  color: #f5dfb0 !important;
+  text-shadow:
+    0 2px 0 #120905,
+    0 0 6px rgba(0, 0, 0, 0.98),
+    0 0 10px rgba(240, 205, 122, 0.22) !important;
+}
+
+/* Footer: text only. No pill, no outline, no colored backing. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer,
+.qd40-overlay .qd31-center-footer {
+  position: relative !important;
+  bottom: auto !important;
+  margin-top: auto !important;
+  margin-bottom: 0 !important;
+  min-height: 24px !important;
+  height: 24px !important;
+  padding: 0 8px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+}
+
+/* Remove footer decorative mark and pseudo-elements. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer::after,
+.qd40-overlay .qd31-center-footer::before,
+.qd40-overlay .qd31-center-footer::after,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-mark,
+.qd40-overlay .qd31-center-footer-mark {
+  content: none !important;
+  display: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-text,
+.qd40-overlay .qd31-center-footer-text,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-state,
+.qd40-overlay .qd31-center-footer-state,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-pins,
+.qd40-overlay .qd31-center-footer-pins {
+  color: rgba(246, 225, 177, 0.78) !important;
+  font-family: var(--qd-font-ui) !important;
+  font-size: 9px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.105em !important;
+  text-transform: uppercase !important;
+  text-shadow:
+    0 1px 0 #000,
+    0 0 5px rgba(0, 0, 0, 0.95) !important;
+  white-space: nowrap !important;
+}
+
+/* End final center cockpit trimmed header and text footer fix */
+
+/* ------------------------------------------------------------------------- */
+/* QD v0.11.0 Phase 1 center layout patch                                    */
+/* ------------------------------------------------------------------------- */
+
+:root,
+.gurps-quickdeck-app,
+.gurps-quickdeck,
+#gurps-quickdeck-overlay.qd40-overlay,
+.qd40-overlay {
+  --qd-center-footer-height: 24px;
+  --qd-center-footer-gap: 8px;
+  --qd-center-scroll-bottom-pad: calc(var(--qd-center-footer-height) + 18px);
+}
+
+/* The center cockpit is the layout shell, not the scroll host. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit,
+.qd40-overlay .qd31-center-cockpit,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit.qd-custom-scroll-host,
+.qd40-overlay .qd31-center-cockpit.qd-custom-scroll-host {
+  position: relative !important;
+  display: flex !important;
+  flex-direction: column !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+  padding-bottom: calc(var(--qd-center-footer-height) + var(--qd-center-footer-gap) + 8px) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit > .qd31-header,
+.qd40-overlay .qd31-center-cockpit > .qd31-header {
+  position: relative !important;
+  z-index: 5 !important;
+  flex: 0 0 auto !important;
+}
+
+/* Actor/status, command row, and defense row stay fixed above the one scroll body. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-actor-card,
+.qd40-overlay .qd31-actor-card {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-selected-actor-header,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-command-icon-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid,
+.qd40-overlay .qd31-selected-actor-header,
+.qd40-overlay .qd31-command-icon-row,
+.qd40-overlay .qd31-defense-grid {
+  flex: 0 0 auto !important;
+}
+
+/* The new single center scroll body owns pinned/favorite action scrolling. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-scroll-body,
+.qd40-overlay .qd31-center-scroll-body {
+  position: relative !important;
+  z-index: 2 !important;
+  display: block !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  padding: 0 2px var(--qd-center-scroll-bottom-pad) 0 !important;
+  scrollbar-gutter: stable !important;
+}
+
+/* When the custom chain scrollbar manager wraps the new scroll body, the wrapper owns flex height. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-actor-card > .qd-custom-scroll-wrapper,
+.qd40-overlay .qd31-actor-card > .qd-custom-scroll-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-actor-card > .qd-custom-scroll-wrapper > .qd31-center-scroll-body,
+.qd40-overlay .qd31-actor-card > .qd-custom-scroll-wrapper > .qd31-center-scroll-body {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  height: 100% !important;
+}
+
+/* Combat / Skills / Spells remain normal content inside the one scroll body. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-favorites,
+.qd40-overlay .qd31-center-favorites {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 0 0 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-section,
+.qd40-overlay .qd31-center-fav-section {
+  flex: 0 0 auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-list,
+.qd40-overlay .qd31-center-fav-list {
+  display: grid !important;
+  flex: 0 0 auto !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+  overflow-x: visible !important;
+  overflow-y: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-list[hidden],
+.qd40-overlay .qd31-center-fav-list[hidden] {
+  display: none !important;
+}
+
+/* The footer is a pinned overlay at the bottom of the cockpit, outside content flow. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer,
+.qd40-overlay .qd31-center-footer {
+  position: absolute !important;
+  left: 8px !important;
+  right: 8px !important;
+  bottom: 6px !important;
+  z-index: 20 !important;
+  flex: 0 0 auto !important;
+  margin: 0 !important;
+  min-height: var(--qd-center-footer-height) !important;
+  height: var(--qd-center-footer-height) !important;
+  padding: 0 8px !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+  pointer-events: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer::after,
+.qd40-overlay .qd31-center-footer::before,
+.qd40-overlay .qd31-center-footer::after,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-mark,
+.qd40-overlay .qd31-center-footer-mark {
+  content: none !important;
+  display: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-text,
+.qd40-overlay .qd31-center-footer-text {
+  justify-self: start !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* End QD v0.11.0 Phase 1 center layout patch */
+
