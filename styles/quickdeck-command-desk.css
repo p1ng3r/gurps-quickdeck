@@ -5028,3 +5028,405 @@
 
 /* End QD v0.11.0 Phase 3C cockpit-first helper patch */
 
+/* ------------------------------------------------------------------------- */
+/* QD v0.11.0 Phase 4 center art layer wiring                                */
+/* ------------------------------------------------------------------------- */
+
+:root,
+.gurps-quickdeck-app,
+.gurps-quickdeck,
+#gurps-quickdeck-overlay.qd40-overlay,
+.qd40-overlay {
+  --qd-v011-center-header-art: url("../assets/ui/dwarven/v011/center/header-arch-plate.webp");
+  --qd-v011-move-medallion-art: url("../assets/ui/dwarven/v011/center/move-medallion-ring.webp");
+  --qd-v011-footer-rail-art: url("../assets/ui/dwarven/v011/center/footer-rail.webp");
+  --qd-v011-defense-row-art: url("../assets/ui/dwarven/v011/center/defense-row-backing.webp");
+}
+
+/*
+ * Header art layer.
+ * The live title remains HTML text. The generated art sits behind it and
+ * cannot block clicks.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-art-header,
+.qd40-overlay .qd31-center-art-header {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: visible !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-art-header::before,
+.qd40-overlay .qd31-center-art-header::before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 104% !important;
+  height: 150% !important;
+  transform: translate(-50%, -50%) !important;
+  background-image: var(--qd-v011-center-header-art) !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: contain !important;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.72)) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-art-header h2,
+.qd40-overlay .qd31-center-art-header h2 {
+  position: relative !important;
+  z-index: 2 !important;
+  color: #fff1c2 !important;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.9),
+    0 0 8px rgba(0, 0, 0, 0.95),
+    0 0 10px rgba(224, 151, 46, 0.35) !important;
+}
+
+/*
+ * Move medallion art layer.
+ * Use the new ring for the overhanging badge while keeping the live Move
+ * label/value as HTML.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-tile,
+.qd40-overlay .qd31-center-move-tile {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-medallion,
+.qd40-overlay .qd31-center-move-medallion {
+  position: absolute !important;
+  z-index: 0 !important;
+  pointer-events: none !important;
+  left: 50% !important;
+  top: -34px !important;
+  width: 72px !important;
+  height: 72px !important;
+  transform: translateX(-50%) !important;
+  background-image: var(--qd-v011-move-medallion-art) !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: contain !important;
+  filter: drop-shadow(0 5px 7px rgba(0, 0, 0, 0.7)) !important;
+  opacity: 0.98 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-title,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-value,
+.qd40-overlay .qd31-center-move-title,
+.qd40-overlay .qd31-center-move-value {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/*
+ * Defense row backing.
+ * The backing plate sits behind the three live defense buttons.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid,
+.qd40-overlay .qd31-defense-grid {
+  position: relative !important;
+  isolation: isolate !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid::before,
+.qd40-overlay .qd31-defense-grid::before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 108% !important;
+  height: 155% !important;
+  transform: translate(-50%, -50%) !important;
+  background-image: var(--qd-v011-defense-row-art) !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: contain !important;
+  opacity: 0.9 !important;
+  filter: drop-shadow(0 8px 10px rgba(0, 0, 0, 0.62)) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-dial,
+.qd40-overlay .qd31-defense-dial {
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+/*
+ * Footer rail art.
+ * Footer stays pinned from Phase 1. This only adds a decorative rail behind
+ * live footer text.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer,
+.qd40-overlay .qd31-center-footer {
+  isolation: isolate !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer::before,
+.qd40-overlay .qd31-center-footer::before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: -1 !important;
+  pointer-events: none !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: 112% !important;
+  height: 270% !important;
+  transform: translate(-50%, -50%) !important;
+  display: block !important;
+  background-image: var(--qd-v011-footer-rail-art) !important;
+  background-repeat: no-repeat !important;
+  background-position: center center !important;
+  background-size: contain !important;
+  opacity: 0.88 !important;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.6)) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer-text,
+.qd40-overlay .qd31-center-footer-text {
+  position: relative !important;
+  z-index: 2 !important;
+  color: rgba(255, 236, 190, 0.9) !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.95) !important;
+}
+
+/* End QD v0.11.0 Phase 4 center art layer wiring */
+
+/* ------------------------------------------------------------------------- */
+/* QD v0.11.0 Phase 4B center art tuning                                     */
+/* ------------------------------------------------------------------------- */
+
+/* Header is strong; keep it dominant but a little less cramped. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-art-header::before,
+.qd40-overlay .qd31-center-art-header::before {
+  width: 106% !important;
+  height: 142% !important;
+  top: 52% !important;
+  opacity: 0.96 !important;
+}
+
+/* Move ring should read as a mounted medallion, not a giant floating wheel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-medallion,
+.qd40-overlay .qd31-center-move-medallion {
+  top: -27px !important;
+  width: 62px !important;
+  height: 62px !important;
+  opacity: 0.92 !important;
+}
+
+/* Give the Move text/value more dominance over the art. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-title,
+.qd40-overlay .qd31-center-move-title {
+  margin-top: 2px !important;
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.92),
+    0 0 7px rgba(0, 0, 0, 0.9),
+    0 0 6px rgba(234, 176, 73, 0.35) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-value,
+.qd40-overlay .qd31-center-move-value {
+  text-shadow:
+    0 2px 0 rgba(0, 0, 0, 0.95),
+    0 0 9px rgba(0, 0, 0, 0.95),
+    0 0 8px rgba(234, 176, 73, 0.42) !important;
+}
+
+/*
+ * Defense backing is impressive but too heavy at full strength.
+ * Make it a backing plate, not the visual focus.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid,
+.qd40-overlay .qd31-defense-grid {
+  margin-top: 8px !important;
+  margin-bottom: 10px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid::before,
+.qd40-overlay .qd31-defense-grid::before {
+  width: 102% !important;
+  height: 132% !important;
+  top: 51% !important;
+  opacity: 0.72 !important;
+  filter:
+    drop-shadow(0 7px 8px rgba(0, 0, 0, 0.58))
+    brightness(0.88)
+    contrast(1.05) !important;
+}
+
+/* Let the live defense dials stay clearly on top of the backing art. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-dial,
+.qd40-overlay .qd31-defense-dial {
+  filter:
+    drop-shadow(0 4px 5px rgba(0, 0, 0, 0.72))
+    brightness(1.05) !important;
+}
+
+/* Footer rail is good; pull it slightly tighter so it feels like a bottom trim. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-footer::before,
+.qd40-overlay .qd31-center-footer::before {
+  width: 108% !important;
+  height: 225% !important;
+  opacity: 0.82 !important;
+}
+
+/* End QD v0.11.0 Phase 4B center art tuning */
+
+/* ------------------------------------------------------------------------- */
+/* QD v0.11.0 Phase 4C move and defense placement tuning                     */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Move badge:
+ * The generated medallion is now used as the actual visual target for the
+ * live MOVE label/value instead of floating above them.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-tile,
+.qd40-overlay .qd31-center-move-tile {
+  position: relative !important;
+  width: 88px !important;
+  height: 88px !important;
+  display: block !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-medallion,
+.qd40-overlay .qd31-center-move-medallion {
+  left: 50% !important;
+  top: -2px !important;
+  width: 88px !important;
+  height: 88px !important;
+  transform: translateX(-50%) !important;
+  opacity: 0.94 !important;
+  z-index: 1 !important;
+  filter:
+    drop-shadow(0 5px 7px rgba(0, 0, 0, 0.72))
+    brightness(0.92)
+    contrast(1.06) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-title,
+.qd40-overlay .qd31-center-move-title {
+  position: absolute !important;
+  z-index: 3 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 27px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  font-size: 15px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-value,
+.qd40-overlay .qd31-center-move-value {
+  position: absolute !important;
+  z-index: 3 !important;
+  left: 0 !important;
+  right: 0 !important;
+  top: 41px !important;
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: center !important;
+  line-height: 1 !important;
+  font-size: 36px !important;
+}
+
+/*
+ * Defense row:
+ * Center the live Dodge / Parry / Block dials inside the three grid cells so
+ * they land on the backing art's socket positions instead of hugging the left
+ * side of each cell.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid,
+.qd40-overlay .qd31-defense-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  justify-items: center !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-dial,
+.qd40-overlay .qd31-defense-dial {
+  justify-self: center !important;
+  align-self: center !important;
+}
+
+/* Nudge the backing plate slightly so its three circular sockets sit under the centered dials. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid::before,
+.qd40-overlay .qd31-defense-grid::before {
+  width: 106% !important;
+  height: 138% !important;
+  left: 50% !important;
+  top: 51% !important;
+  opacity: 0.68 !important;
+}
+
+/* End QD v0.11.0 Phase 4C move and defense placement tuning */
+
+/* ------------------------------------------------------------------------- */
+/* QD v0.11.0 Phase 4D move value vertical tune                              */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Pull the live MOVE label/value into the medallion face. Phase 4C fixed
+ * structure; this is a final optical alignment pass.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-title,
+.qd40-overlay .qd31-center-move-title {
+  top: 20px !important;
+  font-size: 14px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-value,
+.qd40-overlay .qd31-center-move-value {
+  top: 33px !important;
+  font-size: 34px !important;
+}
+
+/* End QD v0.11.0 Phase 4D move value vertical tune */
+
+/* ------------------------------------------------------------------------- */
+/* QD v0.11.0 Phase 4E defense socket alignment                              */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * The generated defense backing has three carved circular sockets that sit
+ * left of the mathematically centered grid positions. Shift the live defense
+ * medallions left into those sockets instead of centering them in the columns.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid,
+.qd40-overlay .qd31-defense-grid {
+  justify-items: start !important;
+  grid-template-columns: repeat(3, 118px) !important;
+  column-gap: 30px !important;
+  padding-left: 0 !important;
+}
+
+/* Keep the art backing in place; move only the live clickable medallions. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-dial,
+.qd40-overlay .qd31-defense-dial {
+  justify-self: start !important;
+  transform: translateX(-4px) !important;
+}
+
+/* Slightly pull the backing art right so socket rims sit under the shifted dials. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid::before,
+.qd40-overlay .qd31-defense-grid::before {
+  left: 49% !important;
+  width: 106% !important;
+  height: 138% !important;
+}
+
+/* End QD v0.11.0 Phase 4E defense socket alignment */
+
