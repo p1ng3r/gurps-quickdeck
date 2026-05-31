@@ -1,3 +1,4 @@
+import "./dev/quickdeck-art-tuner.js";
 import { REFERENCE_INDEX_SETTING_KEY } from "./reference-index-store.js";
 import { QuickDeckApp } from "./quickdeck-app.js";
 
