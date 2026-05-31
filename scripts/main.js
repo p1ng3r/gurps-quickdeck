@@ -1,6 +1,6 @@
 import { REFERENCE_INDEX_SETTING_KEY } from "./reference-index-store.js";
 import { QuickDeckApp } from "./quickdeck-app.js";
-import { initializeQuickDeckArtTuner } from "./dev/quickdeck-art-tuner.js";
+import { installQuickDeckArtTunerGlobals } from "./dev/quickdeck-art-tuner.js";
 
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
@@ -14,20 +14,9 @@ const SETTING_KEYS = {
   RESTORE_PILL_POSITION: "restorePillPosition",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings",
-  DEV_ART_TUNER: "enableDevArtTuner"
+  DEV_ART_TUNER_ENABLED: "devArtTunerEnabled"
 };
 let quickDeckApp = null;
-let quickDeckArtTuner = null;
-
-function ensureQuickDeckArtTuner() {
-  if (!quickDeckArtTuner) {
-    quickDeckArtTuner = initializeQuickDeckArtTuner({
-      getQuickDeckApp: () => quickDeckApp,
-      openQuickDeck
-    });
-  }
-  return quickDeckArtTuner;
-}
 function openQuickDeck() {
   if (!quickDeckApp) {
     quickDeckApp = new QuickDeckApp();
@@ -67,11 +56,12 @@ Hooks.once("ready", () => {
     },
     openArtTuner: () => {
       openQuickDeck();
-      return ensureQuickDeckArtTuner().open();
+      window.qdArtTunerOn?.();
     }
   };
 
-  if (game.settings.get(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER)) ensureQuickDeckArtTuner();
+  installQuickDeckArtTunerGlobals();
+  if (game.settings.get(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED)) window.qdArtTunerOn?.();
 });
 
 Hooks.once("init", () => {
@@ -171,28 +161,15 @@ Hooks.once("init", () => {
     default: {}
   });
 
-  game.settings.register(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER, {
-    name: "Enable Dev Art Tuner",
-    hint: "Client-only QuickDeck art placement target browser for development.",
+  game.settings.register(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED, {
+    name: "QuickDeck Dev Art Tuner Enabled",
+    hint: "Client-side toggle for the developer-only QuickDeck art/layout tuner controls.",
     scope: "client",
     config: false,
     type: Boolean,
     default: false
   });
 
-});
-
-Hooks.on("quickDeckOpenArtTuner", () => {
-  openQuickDeck();
-  ensureQuickDeckArtTuner().open();
-});
-
-Hooks.on("quickDeckArtTunerSettingChanged", (enabled) => {
-  if (enabled) {
-    ensureQuickDeckArtTuner().open();
-  } else {
-    quickDeckArtTuner?.close?.();
-  }
 });
 
 Hooks.on("renderActorDirectory", (app, html) => {
