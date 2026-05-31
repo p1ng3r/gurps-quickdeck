@@ -6,14 +6,19 @@ const SELECTED_BOX_ID = "qd-art-tuner-selected-box";
 const STORAGE_KEY = "gurpsQuickDeck.artTuner.v1";
 
 const PRESETS = [
-  { label: "Header art", selector: `${OVERLAY_SELECTOR} .qd31-center-art-header`, pseudo: "::before", baseWidth: "106%", baseHeight: "142%" },
-  { label: "Defense backing", selector: `${OVERLAY_SELECTOR} .qd31-defense-grid`, pseudo: "::before", baseWidth: "106%", baseHeight: "138%" },
-  { label: "Footer rail", selector: `${OVERLAY_SELECTOR} .qd31-center-footer`, pseudo: "::before", baseWidth: "108%", baseHeight: "225%" },
-  { label: "Move medallion", selector: `${OVERLAY_SELECTOR} .qd31-center-move-medallion` },
+  { label: "Move circle", selector: `${OVERLAY_SELECTOR} .qd31-center-move-medallion` },
+  { label: "Move tile", selector: `${OVERLAY_SELECTOR} .qd31-center-move-tile` },
   { label: "Move title", selector: `${OVERLAY_SELECTOR} .qd31-center-move-title` },
   { label: "Move value", selector: `${OVERLAY_SELECTOR} .qd31-center-move-value` },
+  { label: "Dodge dial", selector: `${OVERLAY_SELECTOR} .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(1)` },
+  { label: "Parry dial", selector: `${OVERLAY_SELECTOR} .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(2)` },
+  { label: "Block dial", selector: `${OVERLAY_SELECTOR} .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(3)` },
+  { label: "Defense dials group", selector: `${OVERLAY_SELECTOR} .qd31-defense-dial` },
   { label: "Defense dials", selector: `${OVERLAY_SELECTOR} .qd31-defense-dial` },
+  { label: "Defense backing", selector: `${OVERLAY_SELECTOR} .qd31-defense-grid`, pseudo: "::before", baseWidth: "106%", baseHeight: "138%" },
   { label: "Defense grid", selector: `${OVERLAY_SELECTOR} .qd31-defense-grid` },
+  { label: "Header art", selector: `${OVERLAY_SELECTOR} .qd31-center-art-header`, pseudo: "::before", baseWidth: "106%", baseHeight: "142%" },
+  { label: "Footer rail", selector: `${OVERLAY_SELECTOR} .qd31-center-footer`, pseudo: "::before", baseWidth: "108%", baseHeight: "225%" },
   { label: "Center cockpit", selector: `${OVERLAY_SELECTOR} .qd31-center-cockpit` },
   { label: "Actor card", selector: `${OVERLAY_SELECTOR} .qd31-actor-card` },
   { label: "Command row", selector: `${OVERLAY_SELECTOR} .qd31-command-icon-row` },
@@ -263,9 +268,7 @@ function onMouseDown(event) {
   const clicked = getOverlayElement(event.target);
   const target = event.ctrlKey ? clicked?.parentElement : clicked;
   if (!target || target === overlay.parentElement) return;
-  if (target !== document.documentElement && target !== document.body) {
-    if (event.ctrlKey || !isWithinCurrentSelection(target)) selectElement(target);
-  }
+  if (target !== document.documentElement && target !== document.body) selectElement(target);
   beginDrag(event, event.altKey ? "resize" : "move", "right-click");
 }
 
@@ -341,16 +344,6 @@ function commitEntryChange() {
 }
 
 
-function isWithinCurrentSelection(element) {
-  if (!state.selected || !(element instanceof Element)) return false;
-  try {
-    if (element.matches(state.selected.selector)) return true;
-    return Boolean(element.closest(state.selected.selector));
-  } catch (_error) {
-    return false;
-  }
-}
-
 function status() {
   const entry = getSelectedEntry();
   const liveStyle = document.getElementById(LIVE_STYLE_ID);
@@ -363,7 +356,8 @@ function status() {
     liveStyleExists: Boolean(liveStyle),
     liveCssTextLength: liveStyle?.textContent?.length || 0,
     entryCount: state.entries.size,
-    overlayExists: Boolean(document.querySelector(OVERLAY_SELECTOR))
+    overlayExists: Boolean(document.querySelector(OVERLAY_SELECTOR)),
+    selectedMatchCount: state.selected?.selector ? safeQuerySelectorAll(state.selected.selector).length : 0
   };
   console.log("QuickDeck Art Tuner status", details);
   return details;
@@ -380,10 +374,11 @@ function selectPreset(label) {
     console.warn(`QuickDeck Art Tuner: unknown preset "${label}".`);
     return false;
   }
-  state.selected = { ...preset, key: makeKey(preset.selector, preset.pseudo), fromPreset: true };
+  state.selected = { ...preset, key: makeKey(preset.selector, preset.pseudo), fromPreset: true, classSelector: getClassSelectorFromSelector(preset.selector) };
   ensureSelectedEntry();
   renderPanel();
   scheduleBoxUpdate();
+  status();
   return true;
 }
 
@@ -394,6 +389,7 @@ function selectElement(element) {
   ensureSelectedEntry();
   renderPanel();
   scheduleBoxUpdate();
+  status();
 }
 
 function selectParent() {
@@ -576,35 +572,71 @@ function getFirstSelectedElement() {
 function getOverlayElement(target) {
   const overlay = document.querySelector(OVERLAY_SELECTOR);
   if (!(target instanceof Element) || !overlay?.contains(target)) return null;
-  return target === overlay ? overlay : target.closest("[class]") || target;
+  return target;
 }
 
 function buildSelector(element) {
   const overlay = document.querySelector(OVERLAY_SELECTOR);
-  const qdClass = getDominantQuickDeckClass(element);
-  if (qdClass) {
-    const selector = `${OVERLAY_SELECTOR} .${cssEscape(qdClass)}`;
-    if (document.querySelectorAll(selector).length === 1) return selector;
-    return selectorForNth(element, selector);
+  if (!(element instanceof Element) || !overlay?.contains(element)) return OVERLAY_SELECTOR;
+  if (element === overlay) return OVERLAY_SELECTOR;
+
+  if (element.id) {
+    const idSelector = `${OVERLAY_SELECTOR} #${cssEscape(element.id)}`;
+    if (selectorMatchesOnlyElement(idSelector, element)) return idSelector;
   }
-  if (element.id && element.id !== "gurps-quickdeck-overlay") return `${OVERLAY_SELECTOR} #${cssEscape(element.id)}`;
-  const path = [];
-  let current = element;
-  while (current && current !== overlay) {
-    const tag = current.tagName.toLowerCase();
-    path.unshift(`${tag}:nth-of-type(${nthOfType(current)})`);
-    current = current.parentElement;
+
+  for (const className of getQuickDeckClasses(element)) {
+    const classSelector = `${OVERLAY_SELECTOR} .${cssEscape(className)}`;
+    if (selectorMatchesOnlyElement(classSelector, element)) return classSelector;
   }
-  return `${OVERLAY_SELECTOR} > ${path.join(" > ")}`;
+
+  const parent = element.parentElement;
+  if (parent && parent !== document.body && parent !== document.documentElement) {
+    const parentSelector = parent === overlay ? OVERLAY_SELECTOR : buildSelector(parent);
+    const directSelector = `${parentSelector} > ${tagSelector(element)}:nth-of-type(${nthOfType(element)})`;
+    if (selectorMatchesOnlyElement(directSelector, element)) return directSelector;
+  }
+
+  const pathSelector = buildPathSelector(element, overlay);
+  if (selectorMatchesOnlyElement(pathSelector, element)) return pathSelector;
+
+  const matches = safeQuerySelectorAll(pathSelector);
+  if (!matches.length) console.warn("QuickDeck Art Tuner: generated selector matched no elements.", pathSelector, element);
+  if (matches.length > 1) console.warn("QuickDeck Art Tuner: generated selector is not unique.", pathSelector, matches);
+  return pathSelector;
 }
 
-function selectorForNth(element, baseSelector) {
-  const matches = Array.from(document.querySelectorAll(baseSelector));
-  const index = matches.indexOf(element);
-  if (index < 0) return baseSelector;
-  const parent = element.parentElement;
-  const parentSelector = parent ? buildSelector(parent) : OVERLAY_SELECTOR;
-  return `${parentSelector} > ${element.tagName.toLowerCase()}:nth-of-type(${nthOfType(element)})`;
+function buildPathSelector(element, overlay) {
+  const segments = [];
+  let current = element;
+  while (current && current !== overlay) {
+    segments.unshift(`${tagSelector(current)}:nth-of-type(${nthOfType(current)})`);
+    const selector = `${OVERLAY_SELECTOR} > ${segments.join(" > ")}`;
+    if (selectorMatchesOnlyElement(selector, element)) return selector;
+    current = current.parentElement;
+  }
+  return `${OVERLAY_SELECTOR} > ${segments.join(" > ")}`;
+}
+
+function selectorMatchesOnlyElement(selector, element) {
+  const matches = safeQuerySelectorAll(selector);
+  return matches.length === 1 && matches[0] === element;
+}
+
+function safeQuerySelectorAll(selector) {
+  try {
+    return Array.from(document.querySelectorAll(selector));
+  } catch (error) {
+    console.warn("QuickDeck Art Tuner: invalid selector.", selector, error);
+    return [];
+  }
+}
+
+function tagSelector(element) {
+  const tag = element.tagName.toLowerCase();
+  const qdClasses = getQuickDeckClasses(element);
+  if (qdClasses.length) return `${tag}${qdClasses.map((className) => `.${cssEscape(className)}`).join("")}`;
+  return tag;
 }
 
 function nthOfType(element) {
@@ -617,7 +649,16 @@ function nthOfType(element) {
 }
 
 function getDominantQuickDeckClass(element) {
-  return Array.from(element.classList || []).find((className) => /^qd(?:31|40)-/.test(className)) || null;
+  return getQuickDeckClasses(element)[0] || null;
+}
+
+function getQuickDeckClasses(element) {
+  return Array.from(element.classList || []).filter((className) => /^qd(?:31|40)-/.test(className));
+}
+
+function getClassSelectorFromSelector(selector) {
+  const match = String(selector).match(/\.(qd(?:31|40)-[a-zA-Z0-9_-]+)/);
+  return match ? `${OVERLAY_SELECTOR} .${cssEscape(match[1])}` : null;
 }
 
 function labelForElement(element) {
