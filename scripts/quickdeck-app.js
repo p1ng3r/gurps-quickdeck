@@ -272,6 +272,54 @@ class QuickDeckCustomScrollbarManager {
   }
 }
 
+
+const focusQuickDeckCockpitFirst = (root) => {
+  const run = () => {
+    const overlay = root ?? document.querySelector("#gurps-quickdeck-overlay");
+    if (!overlay) return false;
+
+    const body = overlay.querySelector(".qd40-body");
+    const center = overlay.querySelector(".qd31-center-wrap");
+    if (!body || !center) return false;
+
+    const maxScrollLeft = Math.max(0, Number(body.scrollWidth) - Number(body.clientWidth));
+    if (maxScrollLeft <= 0) return false;
+
+    const bodyRect = body.getBoundingClientRect();
+    const centerRect = center.getBoundingClientRect();
+    const currentScrollLeft = Number(body.scrollLeft) || 0;
+    const bodyClientWidth = Number(body.clientWidth) || Math.round(bodyRect.width) || 0;
+    const centerWidth = Math.round(centerRect.width) || Number(center.offsetWidth) || 0;
+    const lanePadding = 8;
+
+    let desiredLeft;
+    if (centerWidth >= bodyClientWidth - (lanePadding * 2)) {
+      // Tiny viewport: the cockpit cannot fully fit, so align its left edge.
+      desiredLeft = currentScrollLeft + (centerRect.left - bodyRect.left) - lanePadding;
+    } else {
+      // Wider viewport: center the cockpit in the visible horizontal lane.
+      desiredLeft = currentScrollLeft
+        + (centerRect.left - bodyRect.left)
+        - Math.max(0, (bodyClientWidth - centerWidth) / 2);
+    }
+
+    const clampedLeft = Math.max(0, Math.min(maxScrollLeft, Math.round(desiredLeft)));
+    body.scrollLeft = clampedLeft;
+    overlay.classList.add("qd31-cockpit-first-scroll-applied");
+    return true;
+  };
+
+  requestAnimationFrame(() => {
+    run();
+    requestAnimationFrame(run);
+  });
+
+  for (const delay of [50, 150, 300, 600]) {
+    setTimeout(run, delay);
+  }
+};
+
+
 export class QuickDeckApp extends Application {
   constructor(options = {}) {
     super(options);
@@ -482,6 +530,7 @@ export class QuickDeckApp extends Application {
       const metrics = this.getQd31LayoutMetrics();
       this.applyQd31LayoutSizing(metrics);
       this.setOverlayPosition();
+      focusQuickDeckCockpitFirst(this._overlayRoot);
 
       if (this.rendered && this.position) {
         const height = Math.max(Number(this.position.height) || 0, Number(this._lastPosition?.height) || 0);
@@ -4149,6 +4198,7 @@ export class QuickDeckApp extends Application {
     this.setOverlayPosition();
     this.activateOverlayListeners(this._overlayRoot);
     this.setupQuickDeckCustomScrollbars(this._overlayRoot);
+    focusQuickDeckCockpitFirst(this._overlayRoot);
   }
 
   mountOverlay() {

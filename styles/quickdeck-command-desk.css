@@ -5013,3 +5013,18 @@
 
 /* End QD v0.11.0 Phase 2 responsive outer shell patch */
 
+/* ------------------------------------------------------------------------- */
+/* QD v0.11.0 Phase 3C cockpit-first helper patch                             */
+/* ------------------------------------------------------------------------- */
+
+/*
+ * JS scrolls the horizontal qd40 body lane so the center cockpit starts visible
+ * when the full three-panel desk is wider than the viewport.
+ */
+#gurps-quickdeck-overlay.qd40-overlay.qd31-cockpit-first-scroll-applied .qd31-center-wrap,
+.qd40-overlay.qd31-cockpit-first-scroll-applied .qd31-center-wrap {
+  scroll-margin-inline: var(--qd31-edge-tab-gutter, 40px);
+}
+
+/* End QD v0.11.0 Phase 3C cockpit-first helper patch */
+
