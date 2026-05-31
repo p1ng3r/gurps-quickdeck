@@ -5465,3 +5465,33 @@
 
 /* End QD v0.11.0 Phase 4E defense socket alignment */
 
+/* QD v0.11.0 Phase 6 tuner-exported center alignment START */
+
+/*
+ * Values exported from the QuickDeck Art Tuner after visual alignment.
+ * Only translate values are committed here.
+ * Width/height resize exports are intentionally excluded because tuner resize
+ * controls need a follow-up fix.
+ */
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(1),
+#gurps-quickdeck-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(1) {
+  translate: 79px 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(2),
+#gurps-quickdeck-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(2) {
+  translate: 33px 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(3),
+#gurps-quickdeck-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(3) {
+  translate: -10px 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-medallion,
+#gurps-quickdeck-overlay .qd31-center-move-medallion {
+  translate: 0px 14px !important;
+}
+
+/* QD v0.11.0 Phase 6 tuner-exported center alignment END */
