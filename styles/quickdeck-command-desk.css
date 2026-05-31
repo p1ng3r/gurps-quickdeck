@@ -4282,3 +4282,14 @@
 
 /* End QuickDeck right drawer unified action button alignment */
 
+/* QD v0.11.1 tuner placement pass START */
+
+#gurps-quickdeck-overlay .qd31-center-cockpit .qd31-header > h2:nth-of-type(1) {
+  translate: 0px -8px !important;
+}
+
+#gurps-quickdeck-overlay .qd31-center-fav-controls {
+  translate: -11px 0px !important;
+}
+
+/* QD v0.11.1 tuner placement pass END */
