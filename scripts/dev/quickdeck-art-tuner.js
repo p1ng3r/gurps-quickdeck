@@ -46,6 +46,7 @@ function installQuickDeckArtTunerGlobals() {
   window.qdArtTunerReset = resetAll;
   window.qdArtTunerCopyCss = copyCss;
   window.qdArtTunerSelectPreset = selectPreset;
+  window.qdArtTunerStatus = status;
 }
 
 function turnOn() {
@@ -61,6 +62,10 @@ function turnOn() {
   addListener(document, "mouseup", onMouseUp, true);
   addListener(document, "keydown", onKeyDown, true);
   addListener(document, "contextmenu", onContextMenu, true);
+  addListener(state.selectedBox, "pointerdown", onSelectedBoxPointerDown, true);
+  addListener(window, "pointermove", onPointerMove, true);
+  addListener(window, "pointerup", onPointerUp, true);
+  addListener(window, "pointercancel", onPointerUp, true);
   addListener(window, "resize", scheduleBoxUpdate);
   renderPanel();
   scheduleBoxUpdate();
@@ -105,11 +110,11 @@ function ensureChrome() {
     });
     document.body.appendChild(state.panel);
   }
-  state.hoverBox = state.hoverBox || makeBox(HOVER_BOX_ID, "#70d6ff", "rgba(112,214,255,0.10)");
-  state.selectedBox = state.selectedBox || makeBox(SELECTED_BOX_ID, "#ffd166", "rgba(255,209,102,0.14)");
+  state.hoverBox = state.hoverBox || makeBox(HOVER_BOX_ID, "#70d6ff", "rgba(112,214,255,0.10)", false);
+  state.selectedBox = state.selectedBox || makeBox(SELECTED_BOX_ID, "#ffd166", "rgba(255,209,102,0.14)", true);
 }
 
-function makeBox(id, borderColor, bgColor) {
+function makeBox(id, borderColor, bgColor, interactive) {
   let box = document.getElementById(id);
   if (!box) {
     box = document.createElement("div");
@@ -117,9 +122,24 @@ function makeBox(id, borderColor, bgColor) {
     document.body.appendChild(box);
   }
   Object.assign(box.style, {
-    position: "fixed", display: "none", zIndex: "99999", pointerEvents: "none", border: `2px dashed ${borderColor}`,
-    background: bgColor, boxSizing: "border-box", borderRadius: "3px"
+    position: "fixed", display: "none", zIndex: "99999", pointerEvents: interactive ? "auto" : "none",
+    border: `2px dashed ${borderColor}`, background: bgColor, boxSizing: "border-box", borderRadius: "3px",
+    cursor: interactive ? "move" : "default", touchAction: interactive ? "none" : "auto", userSelect: "none"
   });
+  if (interactive) {
+    box.title = "Drag to move; Alt+drag resize";
+    if (!box.querySelector(".qd-art-tuner-selected-handle")) {
+      const handle = document.createElement("div");
+      handle.className = "qd-art-tuner-selected-handle";
+      handle.textContent = "Drag to move · Alt+drag resize";
+      Object.assign(handle.style, {
+        position: "absolute", left: "0", top: "-22px", maxWidth: "240px", padding: "2px 6px",
+        color: "#1b1208", background: borderColor, borderRadius: "4px", font: "11px/1.3 sans-serif",
+        whiteSpace: "nowrap", pointerEvents: "none", boxShadow: "0 2px 8px rgba(0,0,0,0.35)"
+      });
+      box.appendChild(handle);
+    }
+  }
   return box;
 }
 
@@ -136,7 +156,13 @@ function renderPanel() {
     <div style="margin-bottom:8px;"><strong>Adjust:</strong> ${escapeHtml(values)}</div>
     <div class="qd-art-tuner-actions" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
       ${buttonHtml("copy", "Copy CSS")}${buttonHtml("reset-selected", "Reset selected")}${buttonHtml("reset-all", "Reset all")}
-      ${buttonHtml("off", "Off")}${buttonHtml("parent", "Parent")}${buttonHtml("same-class", "All same class")}
+      ${buttonHtml("off", "Off")}${buttonHtml("parent", "Parent")}${buttonHtml("same-class", "All same class")}${buttonHtml("status", "Status")}
+    </div>
+    <div style="font-weight:700;margin:8px 0 4px;">Reliable nudges</div>
+    <div class="qd-art-tuner-nudges" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-bottom:8px;">
+      ${nudgeButtonHtml("X -1", -1, 0, 0, 0)}${nudgeButtonHtml("X +1", 1, 0, 0, 0)}${nudgeButtonHtml("Y -1", 0, -1, 0, 0)}${nudgeButtonHtml("Y +1", 0, 1, 0, 0)}
+      ${nudgeButtonHtml("W -1", 0, 0, -1, 0)}${nudgeButtonHtml("W +1", 0, 0, 1, 0)}${nudgeButtonHtml("H -1", 0, 0, 0, -1)}${nudgeButtonHtml("H +1", 0, 0, 0, 1)}
+      ${nudgeButtonHtml("X -10", -10, 0, 0, 0)}${nudgeButtonHtml("X +10", 10, 0, 0, 0)}${nudgeButtonHtml("Y -10", 0, -10, 0, 0)}${nudgeButtonHtml("Y +10", 0, 10, 0, 0)}
     </div>
     <div style="font-weight:700;margin:8px 0 4px;">Presets</div>
     <div class="qd-art-tuner-presets" style="display:flex;flex-wrap:wrap;gap:5px;">
@@ -145,11 +171,16 @@ function renderPanel() {
     <div style="margin-top:8px;color:#b9a879;">Right-click selects/drags. Alt+right-drag resizes. Ctrl+right-click selects parent. Arrow keys nudge.</div>
   `;
   state.panel.querySelector(".qd-art-tuner-actions")?.addEventListener("click", onPanelAction);
+  state.panel.querySelector(".qd-art-tuner-nudges")?.addEventListener("click", onNudgeAction);
   state.panel.querySelector(".qd-art-tuner-presets")?.addEventListener("click", onPresetAction);
 }
 
 function buttonHtml(action, label, value = "") {
   return `<button type="button" data-action="${action}" data-value="${escapeAttr(value)}" style="cursor:pointer;border:1px solid #8c6a2e;background:#2f2215;color:#f7e4b3;border-radius:4px;padding:3px 6px;font:inherit;">${escapeHtml(label)}</button>`;
+}
+
+function nudgeButtonHtml(label, dx, dy, dw, dh) {
+  return `<button type="button" data-action="nudge" data-dx="${dx}" data-dy="${dy}" data-dw="${dw}" data-dh="${dh}" style="cursor:pointer;border:1px solid #8c6a2e;background:#352718;color:#f7e4b3;border-radius:4px;padding:3px 4px;font:inherit;">${escapeHtml(label)}</button>`;
 }
 
 function onPanelAction(event) {
@@ -163,6 +194,20 @@ function onPanelAction(event) {
   if (action === "off") turnOff();
   if (action === "parent") selectParent();
   if (action === "same-class") selectSameClass();
+  if (action === "status") status();
+}
+
+function onNudgeAction(event) {
+  const button = event.target.closest("button[data-action='nudge']");
+  if (!button) return;
+  event.preventDefault();
+  event.stopPropagation();
+  adjustSelected({
+    dx: numberFromDataset(button.dataset.dx),
+    dy: numberFromDataset(button.dataset.dy),
+    dw: numberFromDataset(button.dataset.dw),
+    dh: numberFromDataset(button.dataset.dh)
+  });
 }
 
 function onPresetAction(event) {
@@ -170,6 +215,29 @@ function onPresetAction(event) {
   if (!button) return;
   event.preventDefault();
   selectPreset(button.dataset.value);
+}
+
+function onSelectedBoxPointerDown(event) {
+  if (!state.active || event.button !== 0 || !state.selected) return;
+  event.preventDefault();
+  event.stopPropagation();
+  beginDrag(event, event.altKey ? "resize" : "move", "selected-box");
+  event.currentTarget?.setPointerCapture?.(event.pointerId);
+}
+
+function onPointerMove(event) {
+  if (!state.drag) return;
+  event.preventDefault();
+  event.stopPropagation();
+  updateDrag(event);
+}
+
+function onPointerUp(event) {
+  if (!state.drag) return;
+  event.preventDefault();
+  event.stopPropagation();
+  state.drag = null;
+  saveState();
 }
 
 function onMouseMove(event) {
@@ -198,9 +266,7 @@ function onMouseDown(event) {
   if (target !== document.documentElement && target !== document.body) {
     if (event.ctrlKey || !isWithinCurrentSelection(target)) selectElement(target);
   }
-  const entry = getSelectedEntry();
-  if (!entry) return;
-  state.drag = { startX: event.clientX, startY: event.clientY, mode: event.altKey ? "resize" : "move", start: { ...entry } };
+  beginDrag(event, event.altKey ? "resize" : "move", "right-click");
 }
 
 function onMouseUp(event) {
@@ -233,10 +299,24 @@ function onKeyDown(event) {
   const delta = deltas[event.key];
   if (!delta) return;
   event.preventDefault();
+  adjustSelected({ dx: delta[0], dy: delta[1] });
+}
+
+function beginDrag(event, mode, source) {
+  const entry = getSelectedEntry() || ensureSelectedEntry();
+  if (!entry) return;
+  state.drag = { startX: event.clientX, startY: event.clientY, mode, source, start: { ...entry } };
+}
+
+function adjustSelected({ dx = 0, dy = 0, dw = 0, dh = 0 }) {
   const entry = ensureSelectedEntry();
-  entry.x += delta[0];
-  entry.y += delta[1];
+  if (!entry) return false;
+  entry.x += dx;
+  entry.y += dy;
+  entry.w += dw;
+  entry.h += dh;
   commitEntryChange();
+  return true;
 }
 
 function updateDrag(event) {
@@ -269,6 +349,29 @@ function isWithinCurrentSelection(element) {
   } catch (_error) {
     return false;
   }
+}
+
+function status() {
+  const entry = getSelectedEntry();
+  const liveStyle = document.getElementById(LIVE_STYLE_ID);
+  const details = {
+    active: state.active,
+    selectedLabel: state.selected?.label || null,
+    selectedSelector: state.selected?.selector || null,
+    selectedPseudo: state.selected?.pseudo || "",
+    selectedEntry: entry ? { x: entry.x, y: entry.y, w: entry.w, h: entry.h } : null,
+    liveStyleExists: Boolean(liveStyle),
+    liveCssTextLength: liveStyle?.textContent?.length || 0,
+    entryCount: state.entries.size,
+    overlayExists: Boolean(document.querySelector(OVERLAY_SELECTOR))
+  };
+  console.log("QuickDeck Art Tuner status", details);
+  return details;
+}
+
+function numberFromDataset(value) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function selectPreset(label) {
