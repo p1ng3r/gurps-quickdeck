@@ -4906,3 +4906,110 @@
 
 /* End QD v0.11.0 Phase 1 center layout patch */
 
+/* ------------------------------------------------------------------------- */
+/* QD v0.11.0 Phase 2 responsive outer shell patch                            */
+/* ------------------------------------------------------------------------- */
+
+:root,
+.gurps-quickdeck-app,
+.gurps-quickdeck,
+#gurps-quickdeck-overlay.qd40-overlay,
+.qd40-overlay {
+  --qd31-frame-width: min(var(--qd31-natural-frame-width, 1284px), calc(100vw - 24px));
+  --qd31-natural-frame-width: calc(var(--qd31-shell-width, 1268px) + 96px);
+  --qd31-max-frame-width: calc(100vw - 24px);
+  --qd31-max-frame-height: calc(100vh - 12px);
+  --qd31-edge-tab-gutter: 40px;
+}
+
+/*
+ * The overlay itself must fit the Foundry viewport. The full three-panel desk
+ * can be wider than the viewport, but that width should scroll inside the
+ * frame instead of visually exploding outside the browser window.
+ */
+#gurps-quickdeck-overlay.qd40-overlay,
+.qd40-overlay {
+  width: min(var(--qd31-frame-width), var(--qd31-max-frame-width)) !important;
+  min-width: min(var(--qd31-center-width), var(--qd31-max-frame-width)) !important;
+  max-width: var(--qd31-max-frame-width) !important;
+  height: min(820px, var(--qd31-max-frame-height)) !important;
+  max-height: var(--qd31-max-frame-height) !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-frame,
+.qd40-overlay .qd40-frame {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/*
+ * qd40-body is now the viewport-safe horizontal scroll lane. Vertical scrolling
+ * remains owned by the real content scroll bodies: roster, center pinned area,
+ * right drawer body, and settings/PDF lists.
+ */
+#gurps-quickdeck-overlay.qd40-overlay .qd40-body,
+.qd40-overlay .qd40-body {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  height: calc(100% - 43px) !important;
+  min-height: 0 !important;
+  padding: 4px var(--qd31-edge-tab-gutter) 8px var(--qd31-edge-tab-gutter) !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scrollbar-gutter: stable !important;
+}
+
+/* Keep the full desk at its natural measured width inside the scroll lane. */
+#gurps-quickdeck-overlay.qd40-overlay .qd40-shell,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-shell,
+.qd40-overlay .qd40-shell,
+.qd40-overlay .qd31-shell {
+  width: var(--qd31-shell-width) !important;
+  min-width: var(--qd31-shell-width) !important;
+  max-width: var(--qd31-shell-width) !important;
+  flex: 0 0 var(--qd31-shell-width) !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow: visible !important;
+}
+
+/* Prevent older quickdeck.css qd40 fit-content rules from winning again. */
+#gurps-quickdeck-overlay.qd40-overlay.qd31-horizontal-scroll-needed .qd40-frame,
+.qd40-overlay.qd31-horizontal-scroll-needed .qd40-frame {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay.qd31-horizontal-scroll-needed .qd40-body,
+.qd40-overlay.qd31-horizontal-scroll-needed .qd40-body {
+  overflow-x: auto !important;
+}
+
+/* Keep collapse tabs inside the scrollable lane instead of clipped at viewport edges. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-panel-wrap > .qd31-left-edge-tab,
+.qd40-overlay .qd31-left-panel-wrap > .qd31-left-edge-tab {
+  left: -32px !important;
+  right: auto !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-panel-wrap > .qd31-right-edge-tab,
+.qd40-overlay .qd31-right-panel-wrap > .qd31-right-edge-tab {
+  right: -32px !important;
+  left: auto !important;
+}
+
+/* Center-only collapsed state remains compact and usable. */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-shell.qd31-left-collapsed.qd31-right-collapsed,
+.qd40-overlay .qd31-shell.qd31-left-collapsed.qd31-right-collapsed {
+  width: var(--qd31-shell-width) !important;
+  min-width: var(--qd31-shell-width) !important;
+  max-width: var(--qd31-shell-width) !important;
+}
+
+/* End QD v0.11.0 Phase 2 responsive outer shell patch */
+

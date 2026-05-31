@@ -319,6 +319,7 @@ export class QuickDeckApp extends Application {
     this._overlayRoot = null;
     this._overlayDragCleanup = null;
     this._overlayPosition = null;
+    this._overlayWindowResizeHandler = () => this.scheduleQd31WindowResize();
     this.isInfoPopoverOpen = false;
     this.centerFavoriteSections = {
       combat: true,
@@ -376,21 +377,30 @@ export class QuickDeckApp extends Application {
     const closedTabWidth = 0;
     const gap = 4;
     const shellPadding = 8;
-    const chromeAllowance = 24;
+    const chromeAllowance = 16;
+    const edgeTabGutter = 40;
+    const viewportPadding = 24;
+    const viewportWidth = Math.max(360, Number(window.innerWidth) || 1440);
+    const viewportHeight = Math.max(360, Number(window.innerHeight) || 900);
+    const maxFrameWidth = Math.max(360, viewportWidth - viewportPadding);
+    const maxFrameHeight = Math.max(360, viewportHeight - 12);
     const leftOpen = Boolean(this.isRosterDrawerOpen);
     const rightOpen = Boolean(this.isActionsDrawerOpen);
 
     let leftDrawerWidth = leftOpen ? drawerDefaultWidth : 0;
     let rightDrawerWidth = rightOpen ? drawerDefaultWidth : 0;
 
-    const baseShellWidth = shellPadding + centerWidth + (leftOpen ? gap : 0) + (rightOpen ? gap : 0) + (leftOpen ? leftDrawerWidth : 0) + (rightOpen ? rightDrawerWidth : 0);
-    const maxWindowWidth = Math.max(640, (window.innerWidth || (baseShellWidth + chromeAllowance)) - 24);
-    let targetWindowWidth = baseShellWidth + chromeAllowance;
+    const openGapWidth = (leftOpen ? gap : 0) + (rightOpen ? gap : 0);
+    const baseShellWidth = shellPadding + centerWidth + openGapWidth + leftDrawerWidth + rightDrawerWidth;
+    const maxShellWidthWithoutViewportScroll = Math.max(centerWidth + shellPadding, maxFrameWidth - chromeAllowance - (edgeTabGutter * 2));
 
-    if (targetWindowWidth > maxWindowWidth) {
-      const overflow = targetWindowWidth - maxWindowWidth;
-      const totalReducible = (leftOpen ? (drawerDefaultWidth - drawerMinWidth) : 0) + (rightOpen ? (drawerDefaultWidth - drawerMinWidth) : 0);
+    if (baseShellWidth > maxShellWidthWithoutViewportScroll) {
+      const overflow = baseShellWidth - maxShellWidthWithoutViewportScroll;
+      const totalReducible =
+        (leftOpen ? (drawerDefaultWidth - drawerMinWidth) : 0) +
+        (rightOpen ? (drawerDefaultWidth - drawerMinWidth) : 0);
       const reduction = Math.min(overflow, totalReducible);
+
       if (reduction > 0) {
         if (leftOpen && rightOpen) {
           const leftShare = Math.ceil(reduction / 2);
@@ -406,23 +416,83 @@ export class QuickDeckApp extends Application {
     }
 
     const shellWidth = shellPadding + centerWidth + (leftOpen ? gap + leftDrawerWidth : 0) + (rightOpen ? gap + rightDrawerWidth : 0);
-    targetWindowWidth = shellWidth + chromeAllowance;
+    const naturalFrameWidth = shellWidth + chromeAllowance + (edgeTabGutter * 2);
+    const targetWindowWidth = naturalFrameWidth;
+    const frameWidth = Math.min(naturalFrameWidth, maxFrameWidth);
+    const needsHorizontalScroll = naturalFrameWidth > maxFrameWidth;
 
-    return { centerWidth, leftDrawerWidth, rightDrawerWidth, closedTabWidth, gap, shellPadding, chromeAllowance, targetWindowWidth, shellWidth };
+    return {
+      centerWidth,
+      leftDrawerWidth,
+      rightDrawerWidth,
+      closedTabWidth,
+      gap,
+      shellPadding,
+      chromeAllowance,
+      edgeTabGutter,
+      viewportPadding,
+      viewportWidth,
+      viewportHeight,
+      maxFrameWidth,
+      maxFrameHeight,
+      targetWindowWidth,
+      naturalFrameWidth,
+      frameWidth,
+      shellWidth,
+      needsHorizontalScroll
+    };
   }
   getQd31TargetWindowWidth() {
     return this.getQd31LayoutMetrics().targetWindowWidth;
   }
-  applyQd31LayoutSizing(metrics) {
-    const root = this.element?.[0] ?? this.element;
-    if (!root) return;
-    const shell = root.querySelector?.(".qd31-shell");
-    if (!shell) return;
-    shell.style.setProperty("--qd31-center-width", `${metrics.centerWidth}px`);
-    shell.style.setProperty("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
-    shell.style.setProperty("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
+  applyQd31LayoutSizing(metrics = this.getQd31LayoutMetrics()) {
+    const applicationRoot = this.element?.[0] ?? this.element;
+    const roots = [this._overlayRoot, applicationRoot].filter(Boolean);
+
+    for (const root of roots) {
+      root.style?.setProperty?.("--qd31-center-width", `${metrics.centerWidth}px`);
+      root.style?.setProperty?.("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
+      root.style?.setProperty?.("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
+      root.style?.setProperty?.("--qd31-shell-width", `${metrics.shellWidth}px`);
+      root.style?.setProperty?.("--qd31-frame-width", `${metrics.frameWidth}px`);
+      root.style?.setProperty?.("--qd31-natural-frame-width", `${metrics.naturalFrameWidth}px`);
+      root.style?.setProperty?.("--qd31-max-frame-width", `${metrics.maxFrameWidth}px`);
+      root.style?.setProperty?.("--qd31-max-frame-height", `${metrics.maxFrameHeight}px`);
+      root.style?.setProperty?.("--qd31-edge-tab-gutter", `${metrics.edgeTabGutter}px`);
+      root.classList?.toggle?.("qd31-horizontal-scroll-needed", Boolean(metrics.needsHorizontalScroll));
+
+      const shell = root.querySelector?.(".qd31-shell");
+      if (shell?.style) {
+        shell.style.setProperty("--qd31-center-width", `${metrics.centerWidth}px`);
+        shell.style.setProperty("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
+        shell.style.setProperty("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
+        shell.style.setProperty("--qd31-shell-width", `${metrics.shellWidth}px`);
+        shell.style.setProperty("--qd31-frame-width", `${metrics.frameWidth}px`);
+        shell.style.setProperty("--qd31-natural-frame-width", `${metrics.naturalFrameWidth}px`);
+        shell.style.setProperty("--qd31-max-frame-width", `${metrics.maxFrameWidth}px`);
+        shell.style.setProperty("--qd31-edge-tab-gutter", `${metrics.edgeTabGutter}px`);
+      }
+    }
   }
-  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const metrics=this.getQd31LayoutMetrics(); const height=Math.max(Number(this.position.height)||0, Number(this._lastPosition?.height)||0); this.setPosition({left:this.position.left,top:this.position.top,height:height||this.position.height}); this.applyQd31LayoutSizing(metrics); }); }
+
+  scheduleQd31WindowResize() {
+    if (this._qd31ResizeRaf) return;
+    this._qd31ResizeRaf = requestAnimationFrame(() => {
+      this._qd31ResizeRaf = null;
+      const metrics = this.getQd31LayoutMetrics();
+      this.applyQd31LayoutSizing(metrics);
+      this.setOverlayPosition();
+
+      if (this.rendered && this.position) {
+        const height = Math.max(Number(this.position.height) || 0, Number(this._lastPosition?.height) || 0);
+        this.setPosition({
+          left: this.position.left,
+          top: this.position.top,
+          height: height || this.position.height
+        });
+      }
+    });
+  }
 
   close(options) {
     this.clearQd31InlineSizing();
@@ -430,17 +500,41 @@ export class QuickDeckApp extends Application {
   }
 
   clearQd31InlineSizing() {
-    const root = this.element?.[0] ?? this.element;
+    const applicationRoot = this.element?.[0] ?? this.element;
     const appElement = this.getApplicationHostElement();
-    const shell = root?.querySelector?.(".qd31-shell");
+    const roots = [this._overlayRoot, applicationRoot].filter(Boolean);
+
     appElement?.classList?.remove("qd31-window-active");
     if (appElement?.style) appElement.style.width = appElement.style.minWidth = appElement.style.maxWidth = "";
-    if (shell?.style) {
-      shell.style.width = ""; shell.style.minWidth = ""; shell.style.maxWidth = "";
-      shell.style.removeProperty("--qd31-center-width");
-      shell.style.removeProperty("--qd31-left-drawer-width");
-      shell.style.removeProperty("--qd31-right-drawer-width");
-      shell.style.removeProperty("--qd31-shell-width");
+
+    for (const root of roots) {
+      root.classList?.remove?.("qd31-horizontal-scroll-needed");
+      if (root?.style) {
+        root.style.removeProperty("--qd31-center-width");
+        root.style.removeProperty("--qd31-left-drawer-width");
+        root.style.removeProperty("--qd31-right-drawer-width");
+        root.style.removeProperty("--qd31-shell-width");
+        root.style.removeProperty("--qd31-frame-width");
+        root.style.removeProperty("--qd31-natural-frame-width");
+        root.style.removeProperty("--qd31-max-frame-width");
+        root.style.removeProperty("--qd31-max-frame-height");
+        root.style.removeProperty("--qd31-edge-tab-gutter");
+      }
+
+      const shell = root.querySelector?.(".qd31-shell");
+      if (shell?.style) {
+        shell.style.width = "";
+        shell.style.minWidth = "";
+        shell.style.maxWidth = "";
+        shell.style.removeProperty("--qd31-center-width");
+        shell.style.removeProperty("--qd31-left-drawer-width");
+        shell.style.removeProperty("--qd31-right-drawer-width");
+        shell.style.removeProperty("--qd31-shell-width");
+        shell.style.removeProperty("--qd31-frame-width");
+        shell.style.removeProperty("--qd31-natural-frame-width");
+        shell.style.removeProperty("--qd31-max-frame-width");
+        shell.style.removeProperty("--qd31-edge-tab-gutter");
+      }
     }
   }
 
@@ -4051,6 +4145,7 @@ export class QuickDeckApp extends Application {
     const html = await renderQuickDeckTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
     this.teardownQuickDeckCustomScrollbars();
     this._overlayRoot.innerHTML = html;
+    this.applyQd31LayoutSizing(this.getQd31LayoutMetrics());
     this.setOverlayPosition();
     this.activateOverlayListeners(this._overlayRoot);
     this.setupQuickDeckCustomScrollbars(this._overlayRoot);
@@ -4063,12 +4158,17 @@ export class QuickDeckApp extends Application {
     root.className = "qd40-overlay";
     document.body.appendChild(root);
     this._overlayRoot = root;
+    if (this._overlayWindowResizeHandler) {
+      window.removeEventListener("resize", this._overlayWindowResizeHandler);
+      window.addEventListener("resize", this._overlayWindowResizeHandler);
+    }
     return root;
   }
 
   unmountOverlay() {
     this.teardownQuickDeckCustomScrollbars();
     this.stopOverlayDrag();
+    if (this._overlayWindowResizeHandler) window.removeEventListener("resize", this._overlayWindowResizeHandler);
     this._overlayRoot?.remove();
     this._overlayRoot = null;
   }
