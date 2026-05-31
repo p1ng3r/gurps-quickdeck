@@ -306,6 +306,14 @@
           <h3>PDF Source Manager</h3>
           <small>User PDFs primary · built-in summaries fallback · no PDF parsing</small>
         </header>
+        <section class="qd31-source-priority-panel" aria-label="Dev art tuner">
+          <h4>Dev Art Tuner</h4>
+          <label><input type="checkbox" data-action="toggle-dev-art-tuner" {{#if isDevArtTunerEnabled}}checked{{/if}}> Enable Dev Art Tuner</label>
+          <div class="qd31-action-row">
+            <span>Client-side art placement helper for QuickDeck development.</span>
+            <button type="button" class="qd31-square-button" data-action="open-dev-art-tuner" {{#unless isDevArtTunerEnabled}}disabled{{/unless}}>Art</button>
+          </div>
+        </section>
         <section class="qd31-source-priority-panel" aria-label="Source priority">
           <h4>Source Priority</h4>
           <ol>

@@ -2,6 +2,7 @@ import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { PAGE_REF_KEY_NAMES, getPageRefKeyNameFromMap } from "./page-ref-key-names.js";
 import { normalizePdfMapKey, parsePageReferences, getMappedPdfFinalPage, buildPdfPageUrl } from "./pdf-page-ref-utils.js";
+import { installQuickDeckArtTunerGlobals } from "./dev/quickdeck-art-tuner.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
@@ -16,12 +17,15 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
-  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
+  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings",
+  DEV_ART_TUNER_ENABLED: "devArtTunerEnabled"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
+
+installQuickDeckArtTunerGlobals();
 
 const renderQuickDeckTemplate = async (path, data) => {
   const foundryRenderTemplate = foundry?.applications?.handlebars?.renderTemplate;
@@ -4481,8 +4485,18 @@ export class QuickDeckApp extends Application {
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
       pdfMapDraft: this.pdfMapDraft,
-      pdfPageRefMappings: this.getPdfPageRefMappingRows()
+      pdfPageRefMappings: this.getPdfPageRefMappingRows(),
+      isDevArtTunerEnabled: this.isDevArtTunerEnabled()
     };
+  }
+
+
+  isDevArtTunerEnabled() {
+    try {
+      return Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED));
+    } catch (error) {
+      return false;
+    }
   }
 
   activateListeners(html) {
@@ -4533,6 +4547,22 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='open-reference-index']").on("click", (event) => {
       event.preventDefault();
       this.openReferenceIndexManager();
+    });
+
+    html.find("[data-action='toggle-dev-art-tuner']").on("change", async (event) => {
+      const enabled = Boolean(event.currentTarget.checked);
+      await game.settings.set(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED, enabled);
+      if (!enabled) window.qdArtTunerOff?.();
+      this.render(false);
+    });
+
+    html.find("[data-action='open-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      if (!this.isDevArtTunerEnabled()) {
+        ui.notifications?.warn("QuickDeck: Enable Dev Art Tuner first.");
+        return;
+      }
+      window.qdArtTunerOn?.();
     });
 
     html.find("[data-action='remove-actor']").on("click", (event) => {

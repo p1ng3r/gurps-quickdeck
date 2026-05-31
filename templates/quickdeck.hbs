@@ -138,6 +138,7 @@
     </section>
     <section class="qd31-drawer-body" {{#unless isSettingsDrawerOpen}}hidden{{/unless}}>
       <div class="qd31-action-row"><span>QuickDeck settings and tools.</span><button type="button" class="qd31-square-button" data-action="open-reference-index">Refs</button></div>
+      <div class="qd31-action-row"><label><input type="checkbox" data-action="toggle-dev-art-tuner" {{#if isDevArtTunerEnabled}}checked{{/if}}> Enable Dev Art Tuner</label><button type="button" class="qd31-square-button" data-action="open-dev-art-tuner" {{#unless isDevArtTunerEnabled}}disabled{{/unless}}>Art</button></div>
     </section>
   </aside>
 

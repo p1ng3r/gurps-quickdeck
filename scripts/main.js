@@ -12,7 +12,8 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
-  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
+  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings",
+  DEV_ART_TUNER_ENABLED: "devArtTunerEnabled"
 };
 let quickDeckApp = null;
 function openQuickDeck() {
@@ -150,6 +151,15 @@ Hooks.once("init", () => {
     config: false,
     type: Object,
     default: {}
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED, {
+    name: "Enable Dev Art Tuner",
+    hint: "Client-side development-only QuickDeck art/layout tuning panel.",
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false
   });
 
 });
