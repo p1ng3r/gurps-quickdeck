@@ -164,26 +164,45 @@ Hooks.once("init", () => {
 
 });
 
-Hooks.on("renderActorDirectory", (app, html) => {
+function injectQuickDeckActorDirectoryButton(html) {
   const root = html?.[0] ?? html;
   if (!root) return;
 
-  const headerActions = root.querySelector(".header-actions");
+  /*
+   * Foundry v13/sidebar markup can vary by theme/system/module.
+   * The old hook only used .header-actions, so the launcher vanished if that
+   * exact container was not present. Try the normal action strip first, then
+   * fall back to the directory header itself.
+   */
+  const headerActions =
+    root.querySelector(".header-actions")
+    ?? root.querySelector(".directory-header .header-actions")
+    ?? root.querySelector(".directory-header")
+    ?? root.querySelector("header")
+    ?? root;
+
   if (!headerActions) return;
 
-  if (headerActions.querySelector(`[data-action='${MODULE_ID}-open']`)) return;
+  if (root.querySelector(`[data-action='${MODULE_ID}-open']`)) return;
 
   const button = document.createElement("button");
   button.type = "button";
   button.classList.add("quickdeck-open-button");
   button.dataset.action = `${MODULE_ID}-open`;
-  button.innerHTML = '<i class="fas fa-id-card"></i> QuickDeck';
+  button.title = "Open GURPS QuickDeck";
+  button.setAttribute("aria-label", "Open GURPS QuickDeck");
+  button.innerHTML = '<i class="fas fa-id-card"></i> QD Run';
   button.addEventListener("click", (event) => {
     event.preventDefault();
+    event.stopPropagation();
     openQuickDeck();
   });
 
   headerActions.appendChild(button);
+}
+
+Hooks.on("renderActorDirectory", (_app, html) => {
+  injectQuickDeckActorDirectoryButton(html);
 });
 
 Hooks.on("deleteActor", (actor) => {
