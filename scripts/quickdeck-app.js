@@ -16,7 +16,8 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
-  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
+  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings",
+  DEV_ART_TUNER: "enableDevArtTuner"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
@@ -4481,7 +4482,8 @@ export class QuickDeckApp extends Application {
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
       pdfMapDraft: this.pdfMapDraft,
-      pdfPageRefMappings: this.getPdfPageRefMappingRows()
+      pdfPageRefMappings: this.getPdfPageRefMappingRows(),
+      isDevArtTunerEnabled: Boolean(game.settings.get(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER))
     };
   }
 
@@ -4749,6 +4751,19 @@ export class QuickDeckApp extends Application {
     });
 
 
+
+    html.find("[data-action='toggle-dev-art-tuner']").on("change", async (event) => {
+      const enabled = Boolean(event.currentTarget.checked);
+      await game.settings.set(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER, enabled);
+      Hooks.callAll("quickDeckArtTunerSettingChanged", enabled);
+      this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='open-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      if (!game.settings.get(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER)) return;
+      Hooks.callAll("quickDeckOpenArtTuner");
+    });
 
     html.find("[data-action='toggle-drawer']").on("click", (event) => {
       event.preventDefault();

@@ -356,6 +356,11 @@
           <span>Built-in QuickDeck summaries are still used when no mapped PDF exists.</span>
           <button type="button" class="qd31-square-button" data-action="open-reference-index">Refs</button>
         </div>
+        <section class="qd31-source-priority-panel" aria-label="Dev art tuner">
+          <h4>Dev Art Tuner</h4>
+          <label><input type="checkbox" data-action="toggle-dev-art-tuner" {{#if isDevArtTunerEnabled}}checked{{/if}}> Enable Dev Art Tuner</label>
+          <button type="button" class="qd31-square-button" data-action="open-dev-art-tuner" {{#unless isDevArtTunerEnabled}}disabled{{/unless}}>Open tuner</button>
+        </section>
       </section>
     </section>
   </aside>
