@@ -2,6 +2,7 @@ import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { PAGE_REF_KEY_NAMES, getPageRefKeyNameFromMap } from "./page-ref-key-names.js";
 import { normalizePdfMapKey, parsePageReferences, getMappedPdfFinalPage, buildPdfPageUrl } from "./pdf-page-ref-utils.js";
+import { installQuickDeckArtTunerGlobals } from "./dev/quickdeck-art-tuner.js";
 
 const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
@@ -16,12 +17,15 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
+  DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
+
+installQuickDeckArtTunerGlobals();
 
 const renderQuickDeckTemplate = async (path, data) => {
   const foundryRenderTemplate = foundry?.applications?.handlebars?.renderTemplate;
@@ -3952,6 +3956,7 @@ export class QuickDeckApp extends Application {
     if (this.isMinimized) {
       this.cancelTokenDrop({ render: false });
       this.cancelTargetOpponentMode({ render: false, restore: false });
+      window.qdArtTunerOff?.();
     }
     this.persistMinimizedState();
     this.syncMinimizedPresentation();
@@ -3960,6 +3965,7 @@ export class QuickDeckApp extends Application {
   async minimize() {
     this.cancelTokenDrop({ render: false });
     this.cancelTargetOpponentMode({ render: false, restore: false });
+    window.qdArtTunerOff?.();
     if (!this.isMinimized) {
       this.isMinimized = true;
       this.persistMinimizedState();
@@ -3972,6 +3978,7 @@ export class QuickDeckApp extends Application {
     this.cancelTokenDrop({ render: false });
     this.teardownQuickDeckCustomScrollbars();
     this.cancelTargetOpponentMode({ render: false, restore: false });
+    window.qdArtTunerOff?.();
     this.unmountOverlay();
     this.showApplicationShellIfNeeded();
     this.removeFloatingRestoreIcon();
@@ -4629,9 +4636,48 @@ export class QuickDeckApp extends Application {
       uiBranchLabel: "v0.9.7.1 batch1-fit",
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
+      devArtTunerEnabled: this.isDevArtTunerEnabled(),
       pdfMapDraft: this.pdfMapDraft,
       pdfPageRefMappings: this.getPdfPageRefMappingRows()
     };
+  }
+
+  isDevArtTunerEnabled() {
+    try {
+      return Boolean(game?.settings?.get?.(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED));
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  async setDevArtTunerEnabled(enabled) {
+    await game?.settings?.set?.(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED, Boolean(enabled));
+    if (!enabled) window.qdArtTunerOff?.();
+    this.render(false, { focus: false });
+  }
+
+  openDevArtTuner() {
+    installQuickDeckArtTunerGlobals();
+    window.qdArtTunerOn?.();
+  }
+
+  closeDevArtTuner() {
+    window.qdArtTunerOff?.();
+  }
+
+  copyDevArtTunerCss() {
+    installQuickDeckArtTunerGlobals();
+    void window.qdArtTunerCopyCss?.();
+  }
+
+  resetDevArtTuner() {
+    installQuickDeckArtTunerGlobals();
+    window.qdArtTunerReset?.();
+  }
+
+  statusDevArtTuner() {
+    installQuickDeckArtTunerGlobals();
+    window.qdArtTunerStatus?.();
   }
 
   activateListeners(html) {
@@ -4682,6 +4728,35 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='open-reference-index']").on("click", (event) => {
       event.preventDefault();
       this.openReferenceIndexManager();
+    });
+
+    html.find("[data-action='toggle-dev-art-tuner-enabled']").on("change", async (event) => {
+      await this.setDevArtTunerEnabled(event.currentTarget.checked);
+    });
+
+    html.find("[data-action='open-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      this.openDevArtTuner();
+    });
+
+    html.find("[data-action='close-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      this.closeDevArtTuner();
+    });
+
+    html.find("[data-action='copy-dev-art-tuner-css']").on("click", (event) => {
+      event.preventDefault();
+      this.copyDevArtTunerCss();
+    });
+
+    html.find("[data-action='reset-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      this.resetDevArtTuner();
+    });
+
+    html.find("[data-action='status-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      this.statusDevArtTuner();
     });
 
     html.find("[data-action='remove-actor']").on("click", (event) => {

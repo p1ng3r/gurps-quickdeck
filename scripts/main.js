@@ -11,6 +11,7 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
+  DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
@@ -132,6 +133,15 @@ Hooks.once("init", () => {
     config: false,
     type: String,
     default: "null"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED, {
+    name: "QuickDeck Dev Art Tuner Enabled",
+    hint: "Client-side toggle for the developer-only QuickDeck art/layout tuner controls.",
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false
   });
 
 

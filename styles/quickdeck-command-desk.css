@@ -1269,6 +1269,40 @@
   font-size: 0.62rem;
 }
 
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-dev-art-tuner-toggle,
+.qd40-overlay .qd31-dev-art-tuner-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--qd-text);
+  font-size: 0.66rem;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-dev-art-tuner-controls,
+.qd40-overlay .qd31-dev-art-tuner-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 0 6px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-dev-art-tuner-controls .qd31-square-button,
+.qd40-overlay .qd31-dev-art-tuner-controls .qd31-square-button {
+  width: auto;
+  min-width: 48px;
+  padding-inline: 8px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-dev-art-tuner-note,
+.qd40-overlay .qd31-dev-art-tuner-note {
+  display: block;
+  padding: 0 8px 6px;
+  color: var(--qd-text-muted);
+  font-size: 0.6rem;
+  line-height: 1.3;
+}
+
 #gurps-quickdeck-overlay.qd40-overlay .qd31-source-priority-panel,
 .qd40-overlay .qd31-source-priority-panel {
   display: grid;
@@ -1507,6 +1541,7 @@
 .qd40-overlay .qd31-action-row,
 #gurps-quickdeck-overlay.qd40-overlay .qd31-pdf-map-row,
 .qd40-overlay .qd31-pdf-map-row,
+
 #gurps-quickdeck-overlay.qd40-overlay .qd31-source-priority-panel,
 .qd40-overlay .qd31-source-priority-panel {
   background-repeat: no-repeat, repeat !important;
@@ -5430,3 +5465,33 @@
 
 /* End QD v0.11.0 Phase 4E defense socket alignment */
 
+/* QD v0.11.0 Phase 6 tuner-exported center alignment START */
+
+/*
+ * Values exported from the QuickDeck Art Tuner after visual alignment.
+ * Only translate values are committed here.
+ * Width/height resize exports are intentionally excluded because tuner resize
+ * controls need a follow-up fix.
+ */
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(1),
+#gurps-quickdeck-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(1) {
+  translate: 79px 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(2),
+#gurps-quickdeck-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(2) {
+  translate: 33px 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(3),
+#gurps-quickdeck-overlay .qd31-defense-grid > button.qd31-defense-dial:nth-of-type(3) {
+  translate: -10px 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-move-medallion,
+#gurps-quickdeck-overlay .qd31-center-move-medallion {
+  translate: 0px 14px !important;
+}
+
+/* QD v0.11.0 Phase 6 tuner-exported center alignment END */
