@@ -313,6 +313,28 @@
     <section class="qd31-drawer-body" {{#unless isSettingsDrawerOpen}}hidden{{/unless}}>
       <section class="qd31-settings-panel">
         <header class="qd31-settings-header">
+          <h3>Dev Art Tuner</h3>
+          <small>Developer-only visual layout tool · temporary CSS only</small>
+        </header>
+        <div class="qd31-action-row qd31-dev-art-tuner-row">
+          <label class="qd31-dev-art-tuner-toggle">
+            <input type="checkbox" data-action="toggle-dev-art-tuner-enabled" {{#if devArtTunerEnabled}}checked{{/if}}>
+            <span>Enable Dev Art Tuner</span>
+          </label>
+        </div>
+        {{#if devArtTunerEnabled}}
+        <div class="qd31-action-controls qd31-dev-art-tuner-controls">
+          <button type="button" class="qd31-square-button" data-action="open-dev-art-tuner" title="Open Art Tuner">Open</button>
+          <button type="button" class="qd31-square-button" data-action="close-dev-art-tuner" title="Close Art Tuner">Close</button>
+          <button type="button" class="qd31-square-button" data-action="copy-dev-art-tuner-css" title="Copy Art Tuner CSS">Copy CSS</button>
+          <button type="button" class="qd31-square-button" data-action="reset-dev-art-tuner" title="Reset Art Tuner">Reset</button>
+          <button type="button" class="qd31-square-button" data-action="status-dev-art-tuner" title="Log Art Tuner Status">Status</button>
+        </div>
+        <small class="qd31-dev-art-tuner-note">Use Copy CSS to export manual overrides. Reset clears temporary tuner overrides.</small>
+        {{/if}}
+      </section>
+      <section class="qd31-settings-panel">
+        <header class="qd31-settings-header">
           <h3>PDF Source Manager</h3>
           <small>User PDFs primary · built-in summaries fallback · no PDF parsing</small>
         </header>

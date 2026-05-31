@@ -4,6 +4,7 @@ const PANEL_ID = "qd-art-tuner-panel";
 const HOVER_BOX_ID = "qd-art-tuner-hover-box";
 const SELECTED_BOX_ID = "qd-art-tuner-selected-box";
 const STORAGE_KEY = "gurpsQuickDeck.artTuner.v1";
+const TARGET_CATEGORIES = ["Center Panel", "Left Panel", "Right Panel", "Overlay / Shell", "Settings", "All"];
 
 const PRESETS = [
   { label: "Move circle", selector: `${OVERLAY_SELECTOR} .qd31-center-move-medallion` },
@@ -37,6 +38,10 @@ const state = {
   hoverElement: null,
   drag: null,
   entries: new Map(),
+  panelPosition: null,
+  panelDrag: null,
+  targetCategory: "Center Panel",
+  browserTargets: [],
   raf: null,
   listeners: []
 };
@@ -108,12 +113,13 @@ function ensureChrome() {
     state.panel = document.createElement("div");
     state.panel.id = PANEL_ID;
     Object.assign(state.panel.style, {
-      position: "fixed", top: "70px", right: "18px", zIndex: "100000", width: "310px",
-      maxHeight: "calc(100vh - 100px)", overflow: "auto", padding: "10px", color: "#f7e4b3",
+      position: "fixed", zIndex: "100000", width: "340px", maxHeight: "calc(100vh - 32px)",
+      overflow: "auto", padding: "0 10px 10px", color: "#f7e4b3",
       background: "rgba(20, 13, 8, 0.94)", border: "1px solid #d4a84b", borderRadius: "8px",
       boxShadow: "0 6px 24px rgba(0,0,0,0.55)", font: "12px/1.35 sans-serif", pointerEvents: "auto"
     });
     document.body.appendChild(state.panel);
+    positionPanel();
   }
   state.hoverBox = state.hoverBox || makeBox(HOVER_BOX_ID, "#70d6ff", "rgba(112,214,255,0.10)", false);
   state.selectedBox = state.selectedBox || makeBox(SELECTED_BOX_ID, "#ffd166", "rgba(255,209,102,0.14)", true);
@@ -154,29 +160,50 @@ function renderPanel() {
   const selectedLabel = state.selected?.label || "None";
   const selector = state.selected ? getTargetSelector(state.selected) : "—";
   const values = entry ? `x ${entry.x}px · y ${entry.y}px · w ${entry.w}px · h ${entry.h}px` : "x 0px · y 0px · w 0px · h 0px";
+  const browserTargets = scanTargets();
+  state.browserTargets = browserTargets;
+  const visibleTargets = browserTargets.filter((target) => state.targetCategory === "All" || target.category === state.targetCategory);
   state.panel.innerHTML = `
-    <div style="font-weight:700;margin-bottom:6px;">QuickDeck Art/Layout Tuner</div>
+    <div class="qd-art-tuner-header" style="position:sticky;top:0;z-index:1;margin:0 -10px 8px;padding:8px 10px;background:rgba(47,34,21,0.98);border-bottom:1px solid #8c6a2e;border-radius:8px 8px 0 0;cursor:move;user-select:none;display:flex;justify-content:space-between;gap:8px;align-items:center;">
+      <strong>QuickDeck Art/Layout Tuner</strong><span style="color:#b9a879;font-size:11px;">drag header</span>
+    </div>
     <div><strong>Selected:</strong> ${escapeHtml(selectedLabel)}</div>
     <div style="word-break:break-all;color:#dac48e;margin:4px 0;"><strong>Selector:</strong> ${escapeHtml(selector)}</div>
     <div style="margin-bottom:8px;"><strong>Adjust:</strong> ${escapeHtml(values)}</div>
     <div class="qd-art-tuner-actions" style="display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px;">
-      ${buttonHtml("copy", "Copy CSS")}${buttonHtml("reset-selected", "Reset selected")}${buttonHtml("reset-all", "Reset all")}
+      ${buttonHtml("copy", "Copy CSS")}${buttonHtml("copy-selected", "Copy selected")}${buttonHtml("reset-selected", "Reset selected")}${buttonHtml("reset-all", "Reset all")}
       ${buttonHtml("off", "Off")}${buttonHtml("parent", "Parent")}${buttonHtml("same-class", "All same class")}${buttonHtml("status", "Status")}
     </div>
-    <div style="font-weight:700;margin:8px 0 4px;">Reliable nudges</div>
+    <div style="font-weight:700;margin:8px 0 4px;">Move</div>
     <div class="qd-art-tuner-nudges" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-bottom:8px;">
-      ${nudgeButtonHtml("X -1", -1, 0, 0, 0)}${nudgeButtonHtml("X +1", 1, 0, 0, 0)}${nudgeButtonHtml("Y -1", 0, -1, 0, 0)}${nudgeButtonHtml("Y +1", 0, 1, 0, 0)}
-      ${nudgeButtonHtml("W -1", 0, 0, -1, 0)}${nudgeButtonHtml("W +1", 0, 0, 1, 0)}${nudgeButtonHtml("H -1", 0, 0, 0, -1)}${nudgeButtonHtml("H +1", 0, 0, 0, 1)}
-      ${nudgeButtonHtml("X -10", -10, 0, 0, 0)}${nudgeButtonHtml("X +10", 10, 0, 0, 0)}${nudgeButtonHtml("Y -10", 0, -10, 0, 0)}${nudgeButtonHtml("Y +10", 0, 10, 0, 0)}
+      ${nudgeButtonHtml("X -10", -10, 0, 0, 0)}${nudgeButtonHtml("X -1", -1, 0, 0, 0)}${nudgeButtonHtml("X +1", 1, 0, 0, 0)}${nudgeButtonHtml("X +10", 10, 0, 0, 0)}
+      ${nudgeButtonHtml("Y -10", 0, -10, 0, 0)}${nudgeButtonHtml("Y -1", 0, -1, 0, 0)}${nudgeButtonHtml("Y +1", 0, 1, 0, 0)}${nudgeButtonHtml("Y +10", 0, 10, 0, 0)}
+    </div>
+    <div style="font-weight:700;margin:8px 0 4px;">Resize</div>
+    <div class="qd-art-tuner-nudges" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-bottom:8px;">
+      ${nudgeButtonHtml("W -10", 0, 0, -10, 0)}${nudgeButtonHtml("W -1", 0, 0, -1, 0)}${nudgeButtonHtml("W +1", 0, 0, 1, 0)}${nudgeButtonHtml("W +10", 0, 0, 10, 0)}
+      ${nudgeButtonHtml("H -10", 0, 0, 0, -10)}${nudgeButtonHtml("H -1", 0, 0, 0, -1)}${nudgeButtonHtml("H +1", 0, 0, 0, 1)}${nudgeButtonHtml("H +10", 0, 0, 0, 10)}
+    </div>
+    <div style="font-weight:700;margin:8px 0 4px;">Target browser</div>
+    <label style="display:block;margin-bottom:5px;">Category
+      <select data-action="target-category" style="width:100%;background:#24180d;color:#f7e4b3;border:1px solid #8c6a2e;border-radius:4px;padding:3px;">
+        ${TARGET_CATEGORIES.map((category) => `<option value="${escapeAttr(category)}" ${category === state.targetCategory ? "selected" : ""}>${escapeHtml(category)}</option>`).join("")}
+      </select>
+    </label>
+    <div class="qd-art-tuner-targets" style="display:flex;flex-direction:column;gap:4px;max-height:170px;overflow:auto;margin-bottom:8px;">
+      ${visibleTargets.length ? visibleTargets.map((target) => targetButtonHtml(target)).join("") : `<small style="color:#b9a879;">No matching QuickDeck elements found in this category.</small>`}
     </div>
     <div style="font-weight:700;margin:8px 0 4px;">Presets</div>
     <div class="qd-art-tuner-presets" style="display:flex;flex-wrap:wrap;gap:5px;">
       ${PRESETS.map((preset) => buttonHtml("preset", preset.label, preset.label)).join("")}
     </div>
-    <div style="margin-top:8px;color:#b9a879;">Right-click selects/drags. Alt+right-drag resizes. Ctrl+right-click selects parent. Arrow keys nudge.</div>
+    <div style="margin-top:8px;color:#b9a879;">Right-click selects a specific element. Left-drag selected outline moves; Alt+drag resizes. Ctrl+right-click selects parent.</div>
   `;
+  state.panel.querySelector(".qd-art-tuner-header")?.addEventListener("pointerdown", onPanelHeaderPointerDown);
   state.panel.querySelector(".qd-art-tuner-actions")?.addEventListener("click", onPanelAction);
-  state.panel.querySelector(".qd-art-tuner-nudges")?.addEventListener("click", onNudgeAction);
+  for (const group of state.panel.querySelectorAll(".qd-art-tuner-nudges")) group.addEventListener("click", onNudgeAction);
+  state.panel.querySelector("[data-action='target-category']")?.addEventListener("change", onTargetCategoryChange);
+  state.panel.querySelector(".qd-art-tuner-targets")?.addEventListener("click", onTargetBrowserAction);
   state.panel.querySelector(".qd-art-tuner-presets")?.addEventListener("click", onPresetAction);
 }
 
@@ -188,12 +215,17 @@ function nudgeButtonHtml(label, dx, dy, dw, dh) {
   return `<button type="button" data-action="nudge" data-dx="${dx}" data-dy="${dy}" data-dw="${dw}" data-dh="${dh}" style="cursor:pointer;border:1px solid #8c6a2e;background:#352718;color:#f7e4b3;border-radius:4px;padding:3px 4px;font:inherit;">${escapeHtml(label)}</button>`;
 }
 
+function targetButtonHtml(target) {
+  return `<button type="button" data-action="select-target" data-index="${target.index}" title="${escapeAttr(target.selector)}" style="cursor:pointer;text-align:left;border:1px solid #5f4824;background:#24180d;color:#f7e4b3;border-radius:4px;padding:3px 5px;font:inherit;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escapeHtml(target.label)}</button>`;
+}
+
 function onPanelAction(event) {
   const button = event.target.closest("button[data-action]");
   if (!button) return;
   event.preventDefault();
   const action = button.dataset.action;
   if (action === "copy") void copyCss();
+  if (action === "copy-selected") void copySelectedInfo();
   if (action === "reset-selected") resetSelected();
   if (action === "reset-all") resetAll();
   if (action === "off") turnOff();
@@ -215,11 +247,40 @@ function onNudgeAction(event) {
   });
 }
 
+function onTargetCategoryChange(event) {
+  state.targetCategory = TARGET_CATEGORIES.includes(event.currentTarget.value) ? event.currentTarget.value : "All";
+  saveState();
+  renderPanel();
+}
+
+function onTargetBrowserAction(event) {
+  const button = event.target.closest("button[data-action='select-target']");
+  if (!button) return;
+  event.preventDefault();
+  const target = state.browserTargets[Number(button.dataset.index)];
+  if (target?.element?.isConnected) selectElement(target.element);
+}
+
 function onPresetAction(event) {
   const button = event.target.closest("button[data-action='preset']");
   if (!button) return;
   event.preventDefault();
   selectPreset(button.dataset.value);
+}
+
+function onPanelHeaderPointerDown(event) {
+  if (!state.active || event.button !== 0) return;
+  event.preventDefault();
+  event.stopPropagation();
+  const rect = state.panel.getBoundingClientRect();
+  state.panelDrag = { startX: event.clientX, startY: event.clientY, startLeft: rect.left, startTop: rect.top };
+}
+
+function updatePanelDrag(event) {
+  const drag = state.panelDrag;
+  if (!drag) return;
+  state.panelPosition = clampPanelPosition(drag.startLeft + event.clientX - drag.startX, drag.startTop + event.clientY - drag.startY);
+  positionPanel();
 }
 
 function onSelectedBoxPointerDown(event) {
@@ -231,6 +292,12 @@ function onSelectedBoxPointerDown(event) {
 }
 
 function onPointerMove(event) {
+  if (state.panelDrag) {
+    event.preventDefault();
+    event.stopPropagation();
+    updatePanelDrag(event);
+    return;
+  }
   if (!state.drag) return;
   event.preventDefault();
   event.stopPropagation();
@@ -238,10 +305,11 @@ function onPointerMove(event) {
 }
 
 function onPointerUp(event) {
-  if (!state.drag) return;
+  if (!state.drag && !state.panelDrag) return;
   event.preventDefault();
   event.stopPropagation();
   state.drag = null;
+  state.panelDrag = null;
   saveState();
 }
 
@@ -484,14 +552,33 @@ function scopeSelector(selector) {
 
 async function copyCss() {
   const css = buildCss({ exportOnly: true });
+  return copyText(css, "QuickDeck Art Tuner CSS copied to clipboard.");
+}
+
+async function copySelectedInfo() {
+  const entry = getSelectedEntry();
+  const selector = state.selected ? getTargetSelector(state.selected) : "";
+  const text = [
+    "QD art tuner selected target",
+    `label: ${state.selected?.label || "None"}`,
+    `selector: ${selector || "None"}`,
+    `x: ${entry?.x || 0}`,
+    `y: ${entry?.y || 0}`,
+    `w: ${entry?.w || 0}`,
+    `h: ${entry?.h || 0}`
+  ].join("\n");
+  return copyText(text, "QuickDeck Art Tuner selected target copied to clipboard.");
+}
+
+async function copyText(text, successMessage) {
   try {
-    await navigator.clipboard.writeText(css);
-    console.info("QuickDeck Art Tuner CSS copied to clipboard.\n", css);
-    return css;
+    await navigator.clipboard.writeText(text);
+    console.info(successMessage, "\n", text);
+    return text;
   } catch (error) {
-    console.warn("QuickDeck Art Tuner clipboard copy failed; CSS is printed below.", error, css);
-    showCssFallback(css);
-    return css;
+    console.warn("QuickDeck Art Tuner clipboard copy failed; text is printed below.", error, text);
+    showCssFallback(text);
+    return text;
   }
 }
 
@@ -517,6 +604,8 @@ function loadState() {
     if (!raw) return;
     const parsed = JSON.parse(raw);
     state.entries = new Map((parsed.entries || []).map((entry) => [makeKey(entry.selector, entry.pseudo), normalizeEntry(entry)]));
+    if (Number.isFinite(parsed.panelLeft) && Number.isFinite(parsed.panelTop)) state.panelPosition = { left: parsed.panelLeft, top: parsed.panelTop };
+    if (TARGET_CATEGORIES.includes(parsed.targetCategory)) state.targetCategory = parsed.targetCategory;
   } catch (error) {
     console.warn("QuickDeck Art Tuner: failed to load saved state.", error);
   }
@@ -524,7 +613,12 @@ function loadState() {
 
 function saveState() {
   const entries = Array.from(state.entries.values()).map(normalizeEntry);
-  window.localStorage?.setItem(STORAGE_KEY, JSON.stringify({ entries }));
+  window.localStorage?.setItem(STORAGE_KEY, JSON.stringify({
+    entries,
+    panelLeft: state.panelPosition?.left ?? null,
+    panelTop: state.panelPosition?.top ?? null,
+    targetCategory: state.targetCategory
+  }));
 }
 
 function normalizeEntry(entry) {
@@ -541,7 +635,67 @@ function normalizeEntry(entry) {
   };
 }
 
+function positionPanel() {
+  if (!state.panel) return;
+  if (!state.panelPosition) state.panelPosition = clampPanelPosition((window.innerWidth || 380) - 360, 70);
+  state.panelPosition = clampPanelPosition(state.panelPosition.left, state.panelPosition.top);
+  state.panel.style.left = `${state.panelPosition.left}px`;
+  state.panel.style.top = `${state.panelPosition.top}px`;
+  state.panel.style.right = "auto";
+}
+
+function clampPanelPosition(left, top) {
+  const width = state.panel?.offsetWidth || 340;
+  const height = state.panel?.offsetHeight || 520;
+  const maxLeft = Math.max(0, (window.innerWidth || width) - Math.min(width, window.innerWidth || width));
+  const maxTop = Math.max(0, (window.innerHeight || height) - Math.min(height, window.innerHeight || height));
+  return {
+    left: Math.min(Math.max(0, Math.round(Number(left) || 0)), maxLeft),
+    top: Math.min(Math.max(0, Math.round(Number(top) || 0)), maxTop)
+  };
+}
+
+function scanTargets() {
+  const overlay = document.querySelector(OVERLAY_SELECTOR);
+  if (!overlay) return [];
+  const candidates = new Set();
+  for (const element of overlay.querySelectorAll("[class], [data-action], button, input, select, textarea, a, label")) {
+    if (isScannableTarget(element)) candidates.add(element);
+  }
+  return Array.from(candidates).map((element, index) => ({
+    index,
+    element,
+    category: getTargetCategory(element),
+    selector: buildSelector(element),
+    label: getTargetBrowserLabel(element)
+  }));
+}
+
+function isScannableTarget(element) {
+  if (!(element instanceof Element)) return false;
+  if (getQuickDeckClasses(element).length) return true;
+  if (element.dataset?.action) return true;
+  return /^(button|input|select|textarea|a|label)$/i.test(element.tagName);
+}
+
+function getTargetCategory(element) {
+  if (element.closest(".qd31-settings-panel, [data-action^='pdf-map'], [data-action*='pdf'], [data-action*='dev-art-tuner']")) return "Settings";
+  if (element.closest(".qd31-center-wrap, .qd31-center-cockpit")) return "Center Panel";
+  if (element.closest(".qd31-left-panel-wrap, .qd31-left-drawer")) return "Left Panel";
+  if (element.closest(".qd31-right-panel-wrap, .qd31-right-drawer")) return "Right Panel";
+  return "Overlay / Shell";
+}
+
+function getTargetBrowserLabel(element) {
+  const qdClass = getDominantQuickDeckClass(element);
+  const action = element.dataset?.action ? `data-action=${element.dataset.action}` : "";
+  const text = String(element.textContent || element.getAttribute("aria-label") || element.title || "").replace(/\s+/g, " ").trim();
+  const primary = qdClass || action || element.tagName.toLowerCase();
+  return `${primary}${text ? ` — ${text.slice(0, 48)}` : ""}`;
+}
+
 function scheduleBoxUpdate() {
+  positionPanel();
   if (state.raf) return;
   state.raf = requestAnimationFrame(() => {
     state.raf = null;
