@@ -362,7 +362,8 @@ function buildCss({ exportOnly }) {
     if (![entry.x, entry.y, entry.w, entry.h].some((value) => Number(value) !== 0)) continue;
     const selector = `${scopeSelector(entry.selector)}${entry.pseudo || ""}`;
     const lines = [];
-    if (entry.x || entry.y) lines.push(`  transform: translate(${entry.x}px, ${entry.y}px) !important;`);
+    // Use independent translate so tuner nudges do not overwrite existing transform centering on art layers.
+    if (entry.x || entry.y) lines.push(`  translate: ${entry.x}px ${entry.y}px !important;`);
     if (entry.w) lines.push(`  width: ${formatSize(entry.baseWidth, entry.w)} !important;`);
     if (entry.h) lines.push(`  height: ${formatSize(entry.baseHeight, entry.h)} !important;`);
     if (!lines.length) continue;
