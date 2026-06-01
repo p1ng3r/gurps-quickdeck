@@ -27,11 +27,12 @@ const SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS = 30000;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
 const SECONDARY_ROLL_OPTIONS = [
   { key: "will", label: "Will", otf: "Will", valueType: "will" },
-  { key: "per", label: "Perception / Per", otf: "Per", valueType: "per" },
   { key: "fright-check", label: "Fright Check", otf: "Fright Check", valueType: "fright-check" },
-  { key: "dodge", label: "Dodge", defense: "dodge", valueType: "dodge" },
-  { key: "parry", label: "Parry", defense: "parry", valueType: "parry" },
-  { key: "block", label: "Block", defense: "block", valueType: "block" }
+  { key: "perception", label: "Perception", otf: "Per", valueType: "perception" },
+  { key: "vision", label: "Vision", otf: "Vision", valueType: "vision" },
+  { key: "hearing", label: "Hearing", otf: "Hearing", valueType: "hearing" },
+  { key: "taste-smell", label: "Taste/Smell", otf: "Taste/Smell", valueType: "taste-smell" },
+  { key: "touch", label: "Touch", otf: "Touch", valueType: "touch" }
 ];
 const DEFAULT_SECONDARY_ROLL_KEY = SECONDARY_ROLL_OPTIONS[0].key;
 
@@ -700,9 +701,8 @@ export class QuickDeckApp extends Application {
     return SECONDARY_ROLL_OPTIONS.find((option) => option.key === this.secondaryRollKey) ?? SECONDARY_ROLL_OPTIONS[0];
   }
 
-  getSecondaryAttributeValue(actor, option, derivedData = null) {
+  getSecondaryAttributeValue(actor, option) {
     if (!actor || !option) return null;
-    const data = derivedData ?? this.getDerivedActorData(actor, { includeAttacks: true, includeSkills: false, includeSpells: false });
 
     if (option.valueType === "will") {
       return this.getFirstDefinedValue(actor, [
@@ -716,8 +716,10 @@ export class QuickDeckApp extends Application {
       ]);
     }
 
-    if (option.valueType === "per") {
+    if (option.valueType === "perception") {
       return this.getFirstDefinedValue(actor, [
+        "system.currentper",
+        "system.currentperception",
         "system.Per.value",
         "system.PER.value",
         "system.per.value",
@@ -725,6 +727,8 @@ export class QuickDeckApp extends Application {
         "system.attributes.PER.value",
         "system.attributes.per.value",
         "system.perception.value",
+        "data.data.currentper",
+        "data.data.currentperception",
         "data.data.Per.value",
         "data.data.PER.value",
         "data.data.per.value",
@@ -734,19 +738,71 @@ export class QuickDeckApp extends Application {
       ]);
     }
 
-    if (option.valueType === "dodge") return data?.dodge ?? null;
-    if (option.valueType === "parry") return data?.bestParry ?? null;
-    if (option.valueType === "block") return data?.bestBlock ?? null;
+    if (option.valueType === "vision") {
+      return this.getFirstDefinedValue(actor, [
+        "system.currentvision",
+        "system.vision.value",
+        "system.senses.vision.value",
+        "data.data.currentvision",
+        "data.data.vision.value",
+        "data.data.senses.vision.value"
+      ]);
+    }
+
+    if (option.valueType === "hearing") {
+      return this.getFirstDefinedValue(actor, [
+        "system.currenthearing",
+        "system.hearing.value",
+        "system.senses.hearing.value",
+        "data.data.currenthearing",
+        "data.data.hearing.value",
+        "data.data.senses.hearing.value"
+      ]);
+    }
+
+    if (option.valueType === "taste-smell") {
+      return this.getFirstDefinedValue(actor, [
+        "system.currenttastesmell",
+        "system.currenttasteandsmell",
+        "system.tasteSmell.value",
+        "system.taste-smell.value",
+        "system.tasteandsmell.value",
+        "system.senses.tasteSmell.value",
+        "system.senses.taste-smell.value",
+        "system.senses.tasteandsmell.value",
+        "data.data.currenttastesmell",
+        "data.data.currenttasteandsmell",
+        "data.data.tasteSmell.value",
+        "data.data.taste-smell.value",
+        "data.data.tasteandsmell.value",
+        "data.data.senses.tasteSmell.value",
+        "data.data.senses.taste-smell.value",
+        "data.data.senses.tasteandsmell.value"
+      ]);
+    }
+
+    if (option.valueType === "touch") {
+      return this.getFirstDefinedValue(actor, [
+        "system.currenttouch",
+        "system.touch.value",
+        "system.senses.touch.value",
+        "data.data.currenttouch",
+        "data.data.touch.value",
+        "data.data.senses.touch.value"
+      ]);
+    }
+
     return null;
   }
 
   getSecondaryRollView(actor = this.getActiveActor(), derivedData = null) {
     const selectedKey = this.getSelectedSecondaryRollOption().key;
     const options = SECONDARY_ROLL_OPTIONS.map((option) => {
-      const value = this.getSecondaryAttributeValue(actor, option, derivedData);
+      const value = this.getSecondaryAttributeValue(actor, option);
       return {
         ...option,
         displayValue: this.toDisplayValue(value),
+        displayLabel: `${option.label} ${this.toDisplayValue(value)}`,
         selected: option.key === selectedKey
       };
     });
@@ -3098,22 +3154,6 @@ export class QuickDeckApp extends Application {
     const option = this.getSelectedSecondaryRollOption();
     if (!option) {
       ui.notifications?.warn("QuickDeck: Choose a secondary roll first.");
-      return;
-    }
-
-    if (option.defense) {
-      const derivedData = this.getDerivedActorData(actor, { includeAttacks: true, includeSkills: false, includeSpells: false });
-      const value = option.defense === "dodge"
-        ? derivedData.dodge
-        : option.defense === "parry"
-          ? derivedData.bestParry
-          : derivedData.bestBlock;
-      await this.triggerCombatRoll(actor.id, {
-        type: "defense",
-        defense: option.defense,
-        label: `Roll ${option.label}`,
-        value
-      });
       return;
     }
 

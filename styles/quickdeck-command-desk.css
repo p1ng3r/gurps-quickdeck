@@ -787,13 +787,14 @@
 #gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-chip,
 .qd40-overlay .qd31-secondary-roll-chip {
   display: inline-grid;
-  grid-template-columns: minmax(86px, 1fr) auto 26px;
+  grid-template-columns: max-content auto 22px;
   align-items: center;
-  gap: 4px;
-  max-width: 100%;
-  min-height: 26px;
-  margin: 0 0 3px;
-  padding: 2px;
+  gap: 3px;
+  width: fit-content;
+  max-width: max-content;
+  min-height: 22px;
+  margin: 0 0 2px;
+  padding: 1px;
   border: 1px solid rgba(159, 112, 47, 0.42);
   border-radius: 999px;
   background:
@@ -806,14 +807,16 @@
 
 #gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-select,
 .qd40-overlay .qd31-secondary-roll-select {
-  min-width: 0;
-  height: 22px;
-  padding: 0 3px 0 7px;
+  width: max-content;
+  min-width: 116px;
+  max-width: 130px;
+  height: 20px;
+  padding: 0 2px 0 6px;
   border: 0;
   border-radius: 999px;
-  color: #f3ddb0;
-  background: transparent;
-  font-size: 0.7rem;
+  color: #f7ead0;
+  background: #090705;
+  font-size: 0.68rem;
   font-weight: 900;
   text-shadow: 0 1px 2px #000;
 }
@@ -822,14 +825,14 @@
 .qd40-overlay .qd31-secondary-roll-value {
   display: inline-grid;
   place-items: center;
-  min-width: 24px;
-  height: 20px;
-  padding: 0 5px;
+  min-width: 22px;
+  height: 18px;
+  padding: 0 4px;
   border: 1px solid rgba(205, 160, 82, 0.42);
   border-radius: 999px;
   color: #ffe6a6;
   background: rgba(7, 5, 4, 0.82);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 900;
   line-height: 1;
   text-shadow: 0 1px 2px #000;
@@ -837,12 +840,18 @@
 
 #gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-button,
 .qd40-overlay .qd31-secondary-roll-button {
-  min-width: 26px;
-  width: 26px;
-  height: 22px;
+  min-width: 22px;
+  width: 22px;
+  height: 20px;
   padding: 0;
   border-radius: 999px;
-  font-size: 13px;
+  font-size: 12px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-select option,
+.qd40-overlay .qd31-secondary-roll-select option {
+  color: #f7ead0;
+  background: #090705;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd31-drawer-tabs,
