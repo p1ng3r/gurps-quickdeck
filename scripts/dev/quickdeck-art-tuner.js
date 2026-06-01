@@ -41,6 +41,7 @@ const state = {
   panelPosition: null,
   panelDrag: null,
   targetCategory: "Center Panel",
+  targetSearch: "",
   browserTargets: [],
   raf: null,
   listeners: []
@@ -162,10 +163,14 @@ function renderPanel() {
   const values = entry ? `x ${entry.x}px · y ${entry.y}px · w ${entry.w}px · h ${entry.h}px` : "x 0px · y 0px · w 0px · h 0px";
   const browserTargets = scanTargets();
   state.browserTargets = browserTargets;
-  const visibleTargets = browserTargets.filter((target) => state.targetCategory === "All" || target.category === state.targetCategory);
+  const visibleTargets = browserTargets.filter((target) => targetMatchesCategory(target) && targetMatchesSearch(target));
   state.panel.innerHTML = `
     <div class="qd-art-tuner-header" style="position:sticky;top:0;z-index:1;margin:0 -10px 8px;padding:8px 10px;background:rgba(47,34,21,0.98);border-bottom:1px solid #8c6a2e;border-radius:8px 8px 0 0;cursor:move;user-select:none;display:flex;justify-content:space-between;gap:8px;align-items:center;">
-      <strong>QuickDeck Art/Layout Tuner</strong><span style="color:#b9a879;font-size:11px;">drag header</span>
+      <strong>QuickDeck Art/Layout Tuner</strong>
+      <span style="display:flex;align-items:center;gap:6px;">
+        <span style="color:#b9a879;font-size:11px;">drag header</span>
+        <button type="button" data-action="off" title="Close tuner" aria-label="Close tuner" style="width:22px;height:22px;padding:0;border:1px solid #8c6a2e;border-radius:4px;background:#3a2411;color:#f7e4b3;font-weight:700;line-height:18px;">×</button>
+      </span>
     </div>
     <div><strong>Selected:</strong> ${escapeHtml(selectedLabel)}</div>
     <div style="word-break:break-all;color:#dac48e;margin:4px 0;"><strong>Selector:</strong> ${escapeHtml(selector)}</div>
@@ -185,6 +190,9 @@ function renderPanel() {
       ${nudgeButtonHtml("H -10", 0, 0, 0, -10)}${nudgeButtonHtml("H -1", 0, 0, 0, -1)}${nudgeButtonHtml("H +1", 0, 0, 0, 1)}${nudgeButtonHtml("H +10", 0, 0, 0, 10)}
     </div>
     <div style="font-weight:700;margin:8px 0 4px;">Target browser</div>
+    <label style="display:block;margin-bottom:5px;">Search
+      <input type="search" data-action="target-search" value="${escapeAttr(state.targetSearch || "")}" placeholder="class, text, selector, data-action..." style="width:100%;background:#24180d;color:#f7e4b3;border:1px solid #8c6a2e;border-radius:4px;padding:3px;">
+    </label>
     <label style="display:block;margin-bottom:5px;">Category
       <select data-action="target-category" style="width:100%;background:#24180d;color:#f7e4b3;border:1px solid #8c6a2e;border-radius:4px;padding:3px;">
         ${TARGET_CATEGORIES.map((category) => `<option value="${escapeAttr(category)}" ${category === state.targetCategory ? "selected" : ""}>${escapeHtml(category)}</option>`).join("")}
@@ -200,8 +208,10 @@ function renderPanel() {
     <div style="margin-top:8px;color:#b9a879;">Right-click selects a specific element. Left-drag selected outline moves; Alt+drag resizes. Ctrl+right-click selects parent.</div>
   `;
   state.panel.querySelector(".qd-art-tuner-header")?.addEventListener("pointerdown", onPanelHeaderPointerDown);
+  state.panel.querySelector(".qd-art-tuner-header")?.addEventListener("click", onPanelAction);
   state.panel.querySelector(".qd-art-tuner-actions")?.addEventListener("click", onPanelAction);
   for (const group of state.panel.querySelectorAll(".qd-art-tuner-nudges")) group.addEventListener("click", onNudgeAction);
+  state.panel.querySelector("[data-action='target-search']")?.addEventListener("input", onTargetSearchInput);
   state.panel.querySelector("[data-action='target-category']")?.addEventListener("change", onTargetCategoryChange);
   state.panel.querySelector(".qd-art-tuner-targets")?.addEventListener("click", onTargetBrowserAction);
   state.panel.querySelector(".qd-art-tuner-presets")?.addEventListener("click", onPresetAction);
@@ -247,6 +257,50 @@ function onNudgeAction(event) {
   });
 }
 
+function targetMatchesCategory(target) {
+  return state.targetCategory === "All" || target.category === state.targetCategory;
+}
+
+function targetMatchesSearch(target) {
+  const query = String(state.targetSearch || "").trim().toLowerCase();
+  if (!query) return true;
+
+  const parts = [
+    target.label,
+    target.selector,
+    target.category,
+    target.text,
+    target.classes,
+    target.dataAction
+  ];
+
+  try {
+    const element = document.querySelector(target.selector);
+    if (element) {
+      parts.push(element.className?.toString?.() || "");
+      parts.push(element.textContent?.replace(/\s+/g, " ").trim() || "");
+      parts.push(element.dataset?.action || "");
+      parts.push(Object.entries(element.dataset || {}).map(([key, value]) => `${key} ${value}`).join(" "));
+    }
+  } catch (_error) {
+    // Ignore bad selector while searching.
+  }
+
+  return parts.filter(Boolean).join(" ").toLowerCase().includes(query);
+}
+
+function onTargetSearchInput(event) {
+  state.targetSearch = event.target?.value || "";
+  renderPanel();
+  const input = state.panel?.querySelector("[data-action='target-search']");
+  input?.focus?.();
+  try {
+    input?.setSelectionRange?.(state.targetSearch.length, state.targetSearch.length);
+  } catch (_error) {
+    // Ignore browsers/input types that do not support setSelectionRange.
+  }
+}
+
 function onTargetCategoryChange(event) {
   state.targetCategory = TARGET_CATEGORIES.includes(event.currentTarget.value) ? event.currentTarget.value : "All";
   saveState();
@@ -269,6 +323,7 @@ function onPresetAction(event) {
 }
 
 function onPanelHeaderPointerDown(event) {
+  if (event.target?.closest?.("button,input,select,textarea")) return;
   if (!state.active || event.button !== 0) return;
   event.preventDefault();
   event.stopPropagation();
