@@ -522,32 +522,106 @@ function applyLiveCss() {
   style.textContent = css;
 }
 
+function getLiveResizeBase(entry) {
+  if (!entry?.selector) return { width: "", height: "" };
+
+  let element = null;
+  try {
+    element = document.querySelector(entry.selector);
+  } catch (error) {
+    console.warn("QuickDeck Art Tuner: invalid resize selector.", entry.selector, error);
+    return { width: "", height: "" };
+  }
+
+  if (!element) return { width: "", height: "" };
+
+  try {
+    if (entry.pseudo) {
+      const pseudoStyle = getComputedStyle(element, entry.pseudo);
+      return {
+        width: normalizeResizeBase(pseudoStyle.width),
+        height: normalizeResizeBase(pseudoStyle.height)
+      };
+    }
+
+    const rect = element.getBoundingClientRect();
+    return {
+      width: rect.width > 0 ? `${Math.round(rect.width)}px` : "",
+      height: rect.height > 0 ? `${Math.round(rect.height)}px` : ""
+    };
+  } catch (error) {
+    console.warn("QuickDeck Art Tuner: failed to read live resize base.", error);
+    return { width: "", height: "" };
+  }
+}
+
+function normalizeResizeBase(value) {
+  const text = String(value || "").trim();
+  if (!text || text === "auto" || text === "none") return "";
+  if (/^-?\d+(?:\.\d+)?px$/.test(text)) return `${Math.round(Number.parseFloat(text))}px`;
+  return text;
+}
+
 function buildCss({ exportOnly }) {
   const blocks = [];
   if (exportOnly) blocks.push("/* QD art tuner export */");
+
   for (const entry of state.entries.values()) {
     if (![entry.x, entry.y, entry.w, entry.h].some((value) => Number(value) !== 0)) continue;
+
     const selector = `${scopeSelector(entry.selector)}${entry.pseudo || ""}`;
     const lines = [];
-    // Use independent translate so tuner nudges do not overwrite existing transform centering on art layers.
-    if (entry.x || entry.y) lines.push(`  translate: ${entry.x}px ${entry.y}px !important;`);
-    if (entry.w) lines.push(`  width: ${formatSize(entry.baseWidth, entry.w)} !important;`);
-    if (entry.h) lines.push(`  height: ${formatSize(entry.baseHeight, entry.h)} !important;`);
+    const isPseudo = Boolean(entry.pseudo);
+
+    if (entry.x || entry.y) {
+      lines.push(`  translate: ${entry.x}px ${entry.y}px !important;`);
+    }
+
+    const liveBase = (entry.w || entry.h) ? getLiveResizeBase(entry) : { width: "", height: "" };
+    const baseWidth = entry.baseWidth || liveBase.width || "100%";
+    const baseHeight = entry.baseHeight || liveBase.height || "100%";
+
+    if (entry.w) {
+      const width = formatSize(baseWidth, entry.w);
+      lines.push(`  width: ${width} !important;`);
+      if (!isPseudo) {
+        lines.push(`  min-width: ${width} !important;`);
+        lines.push(`  max-width: ${width} !important;`);
+      }
+    }
+
+    if (entry.h) {
+      const height = formatSize(baseHeight, entry.h);
+      lines.push(`  height: ${height} !important;`);
+      if (!isPseudo) {
+        lines.push(`  min-height: ${height} !important;`);
+        lines.push(`  max-height: ${height} !important;`);
+      }
+    }
+
     if (!lines.length) continue;
     blocks.push(`${selector} {\n${lines.join("\n")}\n}`);
   }
+
   return `${blocks.join("\n\n")}\n`;
 }
 
 function formatSize(base, delta) {
-  if (base) return `calc(${base} + ${delta}px)`;
-  return `calc(100% + ${delta}px)`;
+  const safeBase = String(base || "").trim() || "100%";
+  const numericDelta = Number(delta) || 0;
+  const op = numericDelta < 0 ? "-" : "+";
+  return `calc(${safeBase} ${op} ${Math.abs(numericDelta)}px)`;
 }
 
 function scopeSelector(selector) {
   const trimmed = selector.trim();
-  if (trimmed.startsWith(OVERLAY_SELECTOR)) return trimmed;
-  return `${OVERLAY_SELECTOR} ${trimmed}`;
+  const strongOverlaySelector = `${OVERLAY_SELECTOR}.qd40-overlay`;
+
+  if (trimmed === OVERLAY_SELECTOR) return strongOverlaySelector;
+  if (trimmed.startsWith(`${OVERLAY_SELECTOR}.qd40-overlay`)) return trimmed;
+  if (trimmed.startsWith(`${OVERLAY_SELECTOR} `)) return trimmed.replace(OVERLAY_SELECTOR, strongOverlaySelector);
+  if (trimmed.startsWith(OVERLAY_SELECTOR)) return trimmed.replace(OVERLAY_SELECTOR, strongOverlaySelector);
+  return `${strongOverlaySelector} ${trimmed}`;
 }
 
 async function copyCss() {
