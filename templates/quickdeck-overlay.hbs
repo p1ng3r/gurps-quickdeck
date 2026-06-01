@@ -148,6 +148,15 @@
           >{{activeActor.name}}</h3>
           <p>{{activeActor.actorType}}</p>
           <div class="qd31-center-vitals">
+            <div class="qd31-secondary-roll-chip" aria-label="Secondary roll controls">
+              <select class="qd31-secondary-roll-select" data-action="secondary-roll-select" aria-label="Secondary roll target">
+                {{#each secondaryRollView.options as |option|}}
+                <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+                {{/each}}
+              </select>
+              <span class="qd31-secondary-roll-value">{{secondaryRollView.selectedValue}}</span>
+              <button type="button" class="qd31-square-button qd31-secondary-roll-button" data-action="roll-secondary-attribute" title="Roll selected secondary attribute" aria-label="Roll selected secondary attribute">🎲</button>
+            </div>
             <div class="qd31-center-vital-line qd31-center-hp-line">
               <div class="qd31-center-vital-main">
                 <span class="qd31-center-vital-label">❤️ HP</span>
@@ -200,15 +209,6 @@
         <button type="button" class="qd31-icon-button" data-action="open-actions-drawer" data-drawer="combat" title="Open Actions">⚔</button>
       </div>
 
-
-      <div class="qd31-secondary-roll-row" aria-label="Secondary roll controls">
-        <select class="qd31-secondary-roll-select" data-action="secondary-roll-select" aria-label="Secondary roll target">
-          {{#each secondaryRollOptions as |option|}}
-          <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
-          {{/each}}
-        </select>
-        <button type="button" class="qd31-square-button qd31-secondary-roll-button" data-action="roll-secondary-attribute" title="Roll selected secondary target">Roll</button>
-      </div>
 
       <div class="qd31-defense-grid"><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="dodge" data-value="{{gurpsData.display.dodge}}">Dodge <span>{{gurpsData.display.dodge}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="parry" data-value="{{gurpsData.display.parry}}">Parry <span>{{gurpsData.display.parry}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="block" data-value="{{gurpsData.display.block}}">Block <span>{{gurpsData.display.block}}</span></button></div>
 
