@@ -704,92 +704,81 @@ export class QuickDeckApp extends Application {
   getSecondaryAttributeValue(actor, option) {
     if (!actor || !option) return null;
 
-    if (option.valueType === "will") {
-      return this.getFirstDefinedValue(actor, [
-        "system.WILL.value",
-        "system.attributes.WILL.value",
-        "system.attributes.will.value",
-        "system.will.value",
-        "data.data.WILL.value",
-        "data.data.attributes.WILL.value",
-        "data.data.attributes.will.value"
-      ]);
-    }
+    const willValue = () => this.getFirstDefinedValue(actor, [
+      "system.attributes.WILL.value",
+      "system.attributes.WILL.import",
+      "system.WILL.value",
+      "system.attributes.will.value",
+      "system.attributes.will.import",
+      "system.will.value",
+      "data.data.attributes.WILL.value",
+      "data.data.attributes.WILL.import",
+      "data.data.WILL.value",
+      "data.data.attributes.will.value",
+      "data.data.attributes.will.import"
+    ]);
+    const perceptionValue = () => this.getFirstDefinedValue(actor, [
+      "system.attributes.PER.value",
+      "system.attributes.PER.import",
+      "system.currentper",
+      "system.currentperception",
+      "system.Per.value",
+      "system.PER.value",
+      "system.per.value",
+      "system.attributes.Per.value",
+      "system.attributes.Per.import",
+      "system.attributes.per.value",
+      "system.attributes.per.import",
+      "system.perception.value",
+      "data.data.attributes.PER.value",
+      "data.data.attributes.PER.import",
+      "data.data.currentper",
+      "data.data.currentperception",
+      "data.data.Per.value",
+      "data.data.PER.value",
+      "data.data.per.value",
+      "data.data.attributes.Per.value",
+      "data.data.attributes.Per.import",
+      "data.data.attributes.per.value",
+      "data.data.attributes.per.import"
+    ]);
 
-    if (option.valueType === "perception") {
+    if (option.valueType === "will") return willValue();
+    if (option.valueType === "perception") return perceptionValue();
+
+    if (option.valueType === "fright-check") {
       return this.getFirstDefinedValue(actor, [
-        "system.currentper",
-        "system.currentperception",
-        "system.Per.value",
-        "system.PER.value",
-        "system.per.value",
-        "system.attributes.Per.value",
-        "system.attributes.PER.value",
-        "system.attributes.per.value",
-        "system.perception.value",
-        "data.data.currentper",
-        "data.data.currentperception",
-        "data.data.Per.value",
-        "data.data.PER.value",
-        "data.data.per.value",
-        "data.data.attributes.Per.value",
-        "data.data.attributes.PER.value",
-        "data.data.attributes.per.value"
-      ]);
+        "system.frightcheck",
+        "data.data.frightcheck"
+      ]) ?? willValue();
     }
 
     if (option.valueType === "vision") {
       return this.getFirstDefinedValue(actor, [
-        "system.currentvision",
-        "system.vision.value",
-        "system.senses.vision.value",
-        "data.data.currentvision",
-        "data.data.vision.value",
-        "data.data.senses.vision.value"
-      ]);
+        "system.vision",
+        "data.data.vision"
+      ]) ?? perceptionValue();
     }
 
     if (option.valueType === "hearing") {
       return this.getFirstDefinedValue(actor, [
-        "system.currenthearing",
-        "system.hearing.value",
-        "system.senses.hearing.value",
-        "data.data.currenthearing",
-        "data.data.hearing.value",
-        "data.data.senses.hearing.value"
-      ]);
+        "system.hearing",
+        "data.data.hearing"
+      ]) ?? perceptionValue();
     }
 
     if (option.valueType === "taste-smell") {
       return this.getFirstDefinedValue(actor, [
-        "system.currenttastesmell",
-        "system.currenttasteandsmell",
-        "system.tasteSmell.value",
-        "system.taste-smell.value",
-        "system.tasteandsmell.value",
-        "system.senses.tasteSmell.value",
-        "system.senses.taste-smell.value",
-        "system.senses.tasteandsmell.value",
-        "data.data.currenttastesmell",
-        "data.data.currenttasteandsmell",
-        "data.data.tasteSmell.value",
-        "data.data.taste-smell.value",
-        "data.data.tasteandsmell.value",
-        "data.data.senses.tasteSmell.value",
-        "data.data.senses.taste-smell.value",
-        "data.data.senses.tasteandsmell.value"
-      ]);
+        "system.tastesmell",
+        "data.data.tastesmell"
+      ]) ?? perceptionValue();
     }
 
     if (option.valueType === "touch") {
       return this.getFirstDefinedValue(actor, [
-        "system.currenttouch",
-        "system.touch.value",
-        "system.senses.touch.value",
-        "data.data.currenttouch",
-        "data.data.touch.value",
-        "data.data.senses.touch.value"
-      ]);
+        "system.touch",
+        "data.data.touch"
+      ]) ?? perceptionValue();
     }
 
     return null;
