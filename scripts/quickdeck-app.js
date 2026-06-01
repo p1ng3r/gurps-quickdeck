@@ -25,6 +25,13 @@ const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS = 30000;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
+const PRIMARY_ROLL_OPTIONS = [
+  { key: "st", label: "ST", otf: "ST", valueType: "ST" },
+  { key: "dx", label: "DX", otf: "DX", valueType: "DX" },
+  { key: "iq", label: "IQ", otf: "IQ", valueType: "IQ" },
+  { key: "ht", label: "HT", otf: "HT", valueType: "HT" }
+];
+const DEFAULT_PRIMARY_ROLL_KEY = PRIMARY_ROLL_OPTIONS[0].key;
 const SECONDARY_ROLL_OPTIONS = [
   { key: "will", label: "Will", otf: "Will", valueType: "will" },
   { key: "fright-check", label: "Fright Check", otf: "Fright Check", valueType: "fright-check" },
@@ -376,6 +383,7 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusUntil = 0;
     this._lastNativeWindowIds = new Set();
     this._nativeWindowFocusLock = null;
+    this.primaryRollKey = DEFAULT_PRIMARY_ROLL_KEY;
     this.secondaryRollKey = DEFAULT_SECONDARY_ROLL_KEY;
     this._stateLoadedFromSettings = false;
     this.isRosterDrawerOpen = false;
@@ -697,6 +705,43 @@ export class QuickDeckApp extends Application {
   getActiveActor() {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
   }
+
+  getSelectedPrimaryRollOption() {
+    return PRIMARY_ROLL_OPTIONS.find((option) => option.key === this.primaryRollKey) ?? PRIMARY_ROLL_OPTIONS[0];
+  }
+
+  getPrimaryAttributeValue(actor, option) {
+    if (!actor || !option?.valueType) return null;
+
+    const attribute = option.valueType;
+    return this.getFirstDefinedValue(actor, [
+      `system.attributes.${attribute}.value`,
+      `system.attributes.${attribute}.import`,
+      `data.data.attributes.${attribute}.value`,
+      `data.data.attributes.${attribute}.import`
+    ]);
+  }
+
+  getPrimaryRollView(actor = this.getActiveActor()) {
+    const selectedKey = this.getSelectedPrimaryRollOption().key;
+    const options = PRIMARY_ROLL_OPTIONS.map((option) => {
+      const value = this.getPrimaryAttributeValue(actor, option);
+      const displayValue = this.toDisplayValue(value);
+      return {
+        ...option,
+        displayValue,
+        displayLabel: `${option.label} ${displayValue}`,
+        selected: option.key === selectedKey
+      };
+    });
+    const selected = options.find((option) => option.selected) ?? options[0];
+    return {
+      selectedKey: selected?.key ?? DEFAULT_PRIMARY_ROLL_KEY,
+      selectedValue: selected?.displayValue ?? "—",
+      options
+    };
+  }
+
   getSelectedSecondaryRollOption() {
     return SECONDARY_ROLL_OPTIONS.find((option) => option.key === this.secondaryRollKey) ?? SECONDARY_ROLL_OPTIONS[0];
   }
@@ -2794,7 +2839,7 @@ export class QuickDeckApp extends Application {
       previousQuickDeckZIndex: this.getWindowZIndex(this),
       previousQuickDeckInlineZIndex: quickDeckElement?.style?.zIndex ?? "",
       focusedWindowIds: new Set(),
-      persistWhileNativeOpen: String(reason ?? "").startsWith("secondary-"),
+      persistWhileNativeOpen: ["primary-", "secondary-"].some((prefix) => String(reason ?? "").startsWith(prefix)),
       maxUntil: Date.now() + SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS,
       hooks: [],
       timeoutId: null,
@@ -3132,6 +3177,30 @@ export class QuickDeckApp extends Application {
     this.render(false);
   }
 
+
+  async rollPrimaryAttribute(event = null) {
+    const actor = this.getActiveActor();
+    if (!actor?.id) {
+      ui.notifications?.warn("QuickDeck: No active actor selected for primary roll.");
+      return;
+    }
+
+    const option = this.getSelectedPrimaryRollOption();
+    if (!option) {
+      ui.notifications?.warn("QuickDeck: Choose a primary roll first.");
+      return;
+    }
+
+    const handled = await this.triggerNativeSheetRoll(actor, { name: option.label, otf: option.otf }, {
+      event,
+      focusReason: `primary-${option.key}`,
+      label: option.key,
+      scheduleChat: false
+    });
+    if (!handled) {
+      ui.notifications?.warn(`QuickDeck: Could not route ${option.label} through native GURPS rolling.`);
+    }
+  }
 
   async rollSecondaryAttribute(event = null) {
     const actor = this.getActiveActor();
@@ -4841,6 +4910,7 @@ export class QuickDeckApp extends Application {
       canRepeatLastAttack: Boolean(this.pendingAttackContext?.actorId),
       lastAttackName: this.pendingAttackContext?.attackName ?? "No attack selected",
       gurpsData,
+      primaryRollView: this.getPrimaryRollView(activeActor),
       secondaryRollView: this.getSecondaryRollView(activeActor, derivedData),
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
@@ -5277,6 +5347,22 @@ export class QuickDeckApp extends Application {
       if (event.key !== "Enter") return;
       event.preventDefault();
       event.currentTarget.blur();
+    });
+
+    html.find("[data-action='primary-roll-select']").on("change", (event) => {
+      const key = String(event.currentTarget.value || "");
+      if (!PRIMARY_ROLL_OPTIONS.some((option) => option.key === key)) return;
+      this.primaryRollKey = key;
+      const selectedOption = event.currentTarget.selectedOptions?.[0];
+      const valueDisplay = selectedOption?.dataset?.value ?? "—";
+      const chip = event.currentTarget.closest?.(".qd31-primary-roll-chip");
+      const valueElement = chip?.querySelector?.(".qd31-primary-roll-value");
+      if (valueElement) valueElement.textContent = valueDisplay;
+    });
+
+    html.find("[data-action='roll-primary-attribute']").on("click", async (event) => {
+      event.preventDefault();
+      await this.rollPrimaryAttribute(event);
     });
 
     html.find("[data-action='secondary-roll-select']").on("change", (event) => {

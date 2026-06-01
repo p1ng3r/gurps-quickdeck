@@ -784,6 +784,22 @@
 }
 
 
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roll-chip-row,
+.qd40-overlay .qd31-roll-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto 2px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roll-chip,
+.qd40-overlay .qd31-roll-chip,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-primary-roll-chip,
+.qd40-overlay .qd31-primary-roll-chip,
 #gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-chip,
 .qd40-overlay .qd31-secondary-roll-chip {
   display: inline-grid;
@@ -805,6 +821,10 @@
     0 1px 4px rgba(0, 0, 0, 0.28);
 }
 
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roll-select,
+.qd40-overlay .qd31-roll-select,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-primary-roll-select,
+.qd40-overlay .qd31-primary-roll-select,
 #gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-select,
 .qd40-overlay .qd31-secondary-roll-select {
   width: max-content;
@@ -821,6 +841,16 @@
   text-shadow: 0 1px 2px #000;
 }
 
+#gurps-quickdeck-overlay.qd40-overlay .qd31-primary-roll-select,
+.qd40-overlay .qd31-primary-roll-select {
+  min-width: 70px;
+  max-width: 82px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roll-value,
+.qd40-overlay .qd31-roll-value,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-primary-roll-value,
+.qd40-overlay .qd31-primary-roll-value,
 #gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-value,
 .qd40-overlay .qd31-secondary-roll-value {
   display: inline-grid;
@@ -838,6 +868,10 @@
   text-shadow: 0 1px 2px #000;
 }
 
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roll-button,
+.qd40-overlay .qd31-roll-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-primary-roll-button,
+.qd40-overlay .qd31-primary-roll-button,
 #gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-button,
 .qd40-overlay .qd31-secondary-roll-button {
   min-width: 22px;
@@ -848,6 +882,10 @@
   font-size: 12px;
 }
 
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roll-select option,
+.qd40-overlay .qd31-roll-select option,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-primary-roll-select option,
+.qd40-overlay .qd31-primary-roll-select option,
 #gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-select option,
 .qd40-overlay .qd31-secondary-roll-select option {
   color: #f7ead0;
