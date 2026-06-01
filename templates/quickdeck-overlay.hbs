@@ -148,14 +148,25 @@
           >{{activeActor.name}}</h3>
           <p>{{activeActor.actorType}}</p>
           <div class="qd31-center-vitals">
-            <div class="qd31-secondary-roll-chip" aria-label="Secondary roll controls">
-              <select class="qd31-secondary-roll-select" data-action="secondary-roll-select" aria-label="Secondary roll target">
-                {{#each secondaryRollView.options as |option|}}
-                <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
-                {{/each}}
-              </select>
-              <span class="qd31-secondary-roll-value">{{secondaryRollView.selectedValue}}</span>
-              <button type="button" class="qd31-square-button qd31-secondary-roll-button" data-action="roll-secondary-attribute" title="Roll selected secondary attribute" aria-label="Roll selected secondary attribute">🎲</button>
+            <div class="qd31-roll-chip-row" aria-label="Attribute roll controls">
+              <div class="qd31-roll-chip qd31-primary-roll-chip" aria-label="Primary roll controls">
+                <select class="qd31-roll-select qd31-primary-roll-select" data-action="primary-roll-select" aria-label="Primary roll target">
+                  {{#each primaryRollView.options as |option|}}
+                  <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
+                  {{/each}}
+                </select>
+                <span class="qd31-roll-value qd31-primary-roll-value">{{primaryRollView.selectedValue}}</span>
+                <button type="button" class="qd31-square-button qd31-roll-button qd31-primary-roll-button" data-action="roll-primary-attribute" title="Roll selected primary attribute" aria-label="Roll selected primary attribute">🎲</button>
+              </div>
+              <div class="qd31-roll-chip qd31-secondary-roll-chip" aria-label="Secondary roll controls">
+                <select class="qd31-roll-select qd31-secondary-roll-select" data-action="secondary-roll-select" aria-label="Secondary roll target">
+                  {{#each secondaryRollView.options as |option|}}
+                  <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
+                  {{/each}}
+                </select>
+                <span class="qd31-roll-value qd31-secondary-roll-value">{{secondaryRollView.selectedValue}}</span>
+                <button type="button" class="qd31-square-button qd31-roll-button qd31-secondary-roll-button" data-action="roll-secondary-attribute" title="Roll selected secondary attribute" aria-label="Roll selected secondary attribute">🎲</button>
+              </div>
             </div>
             <div class="qd31-center-vital-line qd31-center-hp-line">
               <div class="qd31-center-vital-main">
