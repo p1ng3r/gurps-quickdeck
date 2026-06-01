@@ -23,7 +23,18 @@ const SETTING_KEYS = {
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
+const SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS = 30000;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
+const SECONDARY_ROLL_OPTIONS = [
+  { key: "will", label: "Will", otf: "Will", valueType: "will" },
+  { key: "fright-check", label: "Fright Check", otf: "Fright Check", valueType: "fright-check" },
+  { key: "perception", label: "Perception", otf: "Per", valueType: "perception" },
+  { key: "vision", label: "Vision", otf: "Vision", valueType: "vision" },
+  { key: "hearing", label: "Hearing", otf: "Hearing", valueType: "hearing" },
+  { key: "taste-smell", label: "Taste/Smell", otf: "Taste/Smell", valueType: "taste-smell" },
+  { key: "touch", label: "Touch", otf: "Touch", valueType: "touch" }
+];
+const DEFAULT_SECONDARY_ROLL_KEY = SECONDARY_ROLL_OPTIONS[0].key;
 
 installQuickDeckArtTunerGlobals();
 
@@ -365,6 +376,7 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusUntil = 0;
     this._lastNativeWindowIds = new Set();
     this._nativeWindowFocusLock = null;
+    this.secondaryRollKey = DEFAULT_SECONDARY_ROLL_KEY;
     this._stateLoadedFromSettings = false;
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
@@ -685,6 +697,112 @@ export class QuickDeckApp extends Application {
   getActiveActor() {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
   }
+  getSelectedSecondaryRollOption() {
+    return SECONDARY_ROLL_OPTIONS.find((option) => option.key === this.secondaryRollKey) ?? SECONDARY_ROLL_OPTIONS[0];
+  }
+
+  getSecondaryAttributeValue(actor, option) {
+    if (!actor || !option) return null;
+
+    const willValue = () => this.getFirstDefinedValue(actor, [
+      "system.attributes.WILL.value",
+      "system.attributes.WILL.import",
+      "system.WILL.value",
+      "system.attributes.will.value",
+      "system.attributes.will.import",
+      "system.will.value",
+      "data.data.attributes.WILL.value",
+      "data.data.attributes.WILL.import",
+      "data.data.WILL.value",
+      "data.data.attributes.will.value",
+      "data.data.attributes.will.import"
+    ]);
+    const perceptionValue = () => this.getFirstDefinedValue(actor, [
+      "system.attributes.PER.value",
+      "system.attributes.PER.import",
+      "system.currentper",
+      "system.currentperception",
+      "system.Per.value",
+      "system.PER.value",
+      "system.per.value",
+      "system.attributes.Per.value",
+      "system.attributes.Per.import",
+      "system.attributes.per.value",
+      "system.attributes.per.import",
+      "system.perception.value",
+      "data.data.attributes.PER.value",
+      "data.data.attributes.PER.import",
+      "data.data.currentper",
+      "data.data.currentperception",
+      "data.data.Per.value",
+      "data.data.PER.value",
+      "data.data.per.value",
+      "data.data.attributes.Per.value",
+      "data.data.attributes.Per.import",
+      "data.data.attributes.per.value",
+      "data.data.attributes.per.import"
+    ]);
+
+    if (option.valueType === "will") return willValue();
+    if (option.valueType === "perception") return perceptionValue();
+
+    if (option.valueType === "fright-check") {
+      return this.getFirstDefinedValue(actor, [
+        "system.frightcheck",
+        "data.data.frightcheck"
+      ]) ?? willValue();
+    }
+
+    if (option.valueType === "vision") {
+      return this.getFirstDefinedValue(actor, [
+        "system.vision",
+        "data.data.vision"
+      ]) ?? perceptionValue();
+    }
+
+    if (option.valueType === "hearing") {
+      return this.getFirstDefinedValue(actor, [
+        "system.hearing",
+        "data.data.hearing"
+      ]) ?? perceptionValue();
+    }
+
+    if (option.valueType === "taste-smell") {
+      return this.getFirstDefinedValue(actor, [
+        "system.tastesmell",
+        "data.data.tastesmell"
+      ]) ?? perceptionValue();
+    }
+
+    if (option.valueType === "touch") {
+      return this.getFirstDefinedValue(actor, [
+        "system.touch",
+        "data.data.touch"
+      ]) ?? perceptionValue();
+    }
+
+    return null;
+  }
+
+  getSecondaryRollView(actor = this.getActiveActor(), derivedData = null) {
+    const selectedKey = this.getSelectedSecondaryRollOption().key;
+    const options = SECONDARY_ROLL_OPTIONS.map((option) => {
+      const value = this.getSecondaryAttributeValue(actor, option);
+      return {
+        ...option,
+        displayValue: this.toDisplayValue(value),
+        displayLabel: `${option.label} ${this.toDisplayValue(value)}`,
+        selected: option.key === selectedKey
+      };
+    });
+    const selected = options.find((option) => option.selected) ?? options[0];
+    return {
+      selectedKey: selected?.key ?? DEFAULT_SECONDARY_ROLL_KEY,
+      selectedValue: selected?.displayValue ?? "—",
+      options
+    };
+  }
+
 
   clampCenterRosterWindow(total = this.rosterActorIds.length) {
     const maxStartIndex = Math.max(0, total - 5);
@@ -2489,13 +2607,13 @@ export class QuickDeckApp extends Application {
     }
   }
 
-  async triggerNativeSheetRoll(actor, dataset, { event = null, targets = [], label = "roll" } = {}) {
+  async triggerNativeSheetRoll(actor, dataset, { event = null, targets = [], label = "roll", focusReason = null, scheduleChat = true } = {}) {
     const gurps = globalThis.GURPS ?? game.GURPS;
     if (!actor || !dataset?.otf) return false;
 
     if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
     const previousWindowIds = this.getNativeWindowIds();
-    this.startNativeWindowFocusLock(previousWindowIds, `native-sheet-${label}`);
+    this.startNativeWindowFocusLock(previousWindowIds, focusReason ?? `native-sheet-${label}`);
 
     if (dataset.key && typeof gurps?.handleRoll === "function") {
       try {
@@ -2506,7 +2624,7 @@ export class QuickDeckApp extends Application {
         console.warn(`gurps-quickdeck | Native GURPS ${label} handleRoll failed, falling back to OTF.`, error);
       } finally {
         this.scheduleNativeWindowFocus(previousWindowIds);
-        this.scheduleChatFocus();
+        if (scheduleChat) this.scheduleChatFocus();
       }
     }
 
@@ -2519,7 +2637,7 @@ export class QuickDeckApp extends Application {
       // Let the caller decide whether a non-native fallback is appropriate.
     } finally {
       this.scheduleNativeWindowFocus(previousWindowIds);
-      this.scheduleChatFocus();
+      if (scheduleChat) this.scheduleChatFocus();
     }
 
     return false;
@@ -2587,7 +2705,11 @@ export class QuickDeckApp extends Application {
 
   getQuickDeckWindowElement() {
     try {
-      return this.element?.[0] ?? this.element ?? document.getElementById(this.options?.id ?? this.id);
+      return this._overlayRoot
+        ?? document.getElementById("gurps-quickdeck-overlay")
+        ?? this.element?.[0]
+        ?? this.element
+        ?? document.getElementById(this.options?.id ?? this.id);
     } catch (_error) {
       return null;
     }
@@ -2661,7 +2783,7 @@ export class QuickDeckApp extends Application {
   }
 
   startNativeWindowFocusLock(previousWindowIds = new Set(), reason = "native-window") {
-    this.stopNativeWindowFocusLock();
+    this.stopNativeWindowFocusLock({ force: true });
 
     const previousIds = previousWindowIds instanceof Set ? previousWindowIds : new Set();
     const quickDeckElement = this.getQuickDeckWindowElement();
@@ -2672,6 +2794,8 @@ export class QuickDeckApp extends Application {
       previousQuickDeckZIndex: this.getWindowZIndex(this),
       previousQuickDeckInlineZIndex: quickDeckElement?.style?.zIndex ?? "",
       focusedWindowIds: new Set(),
+      persistWhileNativeOpen: String(reason ?? "").startsWith("secondary-"),
+      maxUntil: Date.now() + SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS,
       hooks: [],
       timeoutId: null,
       until
@@ -2694,9 +2818,33 @@ export class QuickDeckApp extends Application {
     return lock;
   }
 
-  stopNativeWindowFocusLock() {
+  hasFocusedNativeWindowsOpen(lock) {
+    if (!lock?.focusedWindowIds?.size) return false;
+    const openWindowIds = this.getNativeWindowIds();
+    for (const id of lock.focusedWindowIds) {
+      if (openWindowIds.has(String(id))) return true;
+    }
+    return false;
+  }
+
+  shouldExtendNativeWindowFocusLock(lock) {
+    return Boolean(
+      lock?.persistWhileNativeOpen &&
+      Date.now() < lock.maxUntil &&
+      this.hasFocusedNativeWindowsOpen(lock)
+    );
+  }
+
+  stopNativeWindowFocusLock({ force = false } = {}) {
     const lock = this._nativeWindowFocusLock;
     if (!lock) return;
+
+    if (!force && this.shouldExtendNativeWindowFocusLock(lock)) {
+      lock.until = Date.now() + NATIVE_WINDOW_FOCUS_GUARD_MS;
+      lock.timeoutId = globalThis.setTimeout?.(() => this.stopNativeWindowFocusLock(), NATIVE_WINDOW_FOCUS_GUARD_MS) ?? null;
+      this.bringNativeWindowsToFront(lock.previousWindowIds);
+      return;
+    }
 
     for (const [hookName, hookId, hookCallback] of lock.hooks ?? []) {
       try {
@@ -2720,6 +2868,9 @@ export class QuickDeckApp extends Application {
       }
     }
 
+    const quickDeckElement = this.getQuickDeckWindowElement();
+    if (quickDeckElement?.style) quickDeckElement.style.zIndex = lock.previousQuickDeckInlineZIndex ?? "";
+
     this._nativeWindowFocusLock = null;
   }
 
@@ -2730,6 +2881,8 @@ export class QuickDeckApp extends Application {
       for (const app of windows) {
         if (!this.isNativeWindowFocusCandidate(app, previousIds)) continue;
         this.focusNativeWindow(app);
+        const appId = this.getNativeWindowId(app);
+        this._nativeWindowFocusLock?.focusedWindowIds?.add?.(appId ?? app?.constructor?.name ?? "unknown");
       }
     } catch (_error) {
       // Native window focus is best-effort only.
@@ -2979,6 +3132,30 @@ export class QuickDeckApp extends Application {
     this.render(false);
   }
 
+
+  async rollSecondaryAttribute(event = null) {
+    const actor = this.getActiveActor();
+    if (!actor?.id) {
+      ui.notifications?.warn("QuickDeck: No active actor selected for secondary roll.");
+      return;
+    }
+
+    const option = this.getSelectedSecondaryRollOption();
+    if (!option) {
+      ui.notifications?.warn("QuickDeck: Choose a secondary roll first.");
+      return;
+    }
+
+    const handled = await this.triggerNativeSheetRoll(actor, { name: option.label, otf: option.otf }, {
+      event,
+      focusReason: `secondary-${option.key}`,
+      label: option.key,
+      scheduleChat: false
+    });
+    if (!handled) {
+      ui.notifications?.warn(`QuickDeck: Could not route ${option.label} through native GURPS rolling.`);
+    }
+  }
 
   async triggerCombatRoll(actorId, rollContext) {
     const actor = game.actors.get(actorId);
@@ -4060,7 +4237,7 @@ export class QuickDeckApp extends Application {
       this._actorSelectTimeout = null;
     }
     this.invalidateDerivedActorData();
-    this.stopNativeWindowFocusLock();
+    this.stopNativeWindowFocusLock({ force: true });
     return super.close(options);
   }
 
@@ -4664,6 +4841,7 @@ export class QuickDeckApp extends Application {
       canRepeatLastAttack: Boolean(this.pendingAttackContext?.actorId),
       lastAttackName: this.pendingAttackContext?.attackName ?? "No attack selected",
       gurpsData,
+      secondaryRollView: this.getSecondaryRollView(activeActor, derivedData),
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
@@ -5099,6 +5277,22 @@ export class QuickDeckApp extends Application {
       if (event.key !== "Enter") return;
       event.preventDefault();
       event.currentTarget.blur();
+    });
+
+    html.find("[data-action='secondary-roll-select']").on("change", (event) => {
+      const key = String(event.currentTarget.value || "");
+      if (!SECONDARY_ROLL_OPTIONS.some((option) => option.key === key)) return;
+      this.secondaryRollKey = key;
+      const selectedOption = event.currentTarget.selectedOptions?.[0];
+      const valueDisplay = selectedOption?.dataset?.value ?? "—";
+      const chip = event.currentTarget.closest?.(".qd31-secondary-roll-chip");
+      const valueElement = chip?.querySelector?.(".qd31-secondary-roll-value");
+      if (valueElement) valueElement.textContent = valueDisplay;
+    });
+
+    html.find("[data-action='roll-secondary-attribute']").on("click", async (event) => {
+      event.preventDefault();
+      await this.rollSecondaryAttribute(event);
     });
 
     html.find("[data-action='roll-defense']").on("click", async (event) => {

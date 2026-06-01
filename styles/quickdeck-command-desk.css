@@ -783,6 +783,77 @@
   margin: 6px 0;
 }
 
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-chip,
+.qd40-overlay .qd31-secondary-roll-chip {
+  display: inline-grid;
+  grid-template-columns: max-content auto 22px;
+  align-items: center;
+  gap: 3px;
+  width: fit-content;
+  max-width: max-content;
+  min-height: 22px;
+  margin: 0 0 2px;
+  padding: 1px;
+  border: 1px solid rgba(159, 112, 47, 0.42);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(56, 42, 27, 0.86), rgba(13, 10, 8, 0.94)),
+    rgba(18, 14, 10, 0.96);
+  box-shadow:
+    inset 0 0 0 1px rgba(238, 194, 103, 0.10),
+    0 1px 4px rgba(0, 0, 0, 0.28);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-select,
+.qd40-overlay .qd31-secondary-roll-select {
+  width: max-content;
+  min-width: 116px;
+  max-width: 130px;
+  height: 20px;
+  padding: 0 2px 0 6px;
+  border: 0;
+  border-radius: 999px;
+  color: #f7ead0;
+  background: #090705;
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-shadow: 0 1px 2px #000;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-value,
+.qd40-overlay .qd31-secondary-roll-value {
+  display: inline-grid;
+  place-items: center;
+  min-width: 22px;
+  height: 18px;
+  padding: 0 4px;
+  border: 1px solid rgba(205, 160, 82, 0.42);
+  border-radius: 999px;
+  color: #ffe6a6;
+  background: rgba(7, 5, 4, 0.82);
+  font-size: 0.68rem;
+  font-weight: 900;
+  line-height: 1;
+  text-shadow: 0 1px 2px #000;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-button,
+.qd40-overlay .qd31-secondary-roll-button {
+  min-width: 22px;
+  width: 22px;
+  height: 20px;
+  padding: 0;
+  border-radius: 999px;
+  font-size: 12px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-select option,
+.qd40-overlay .qd31-secondary-roll-select option {
+  color: #f7ead0;
+  background: #090705;
+}
+
 #gurps-quickdeck-overlay.qd40-overlay .qd31-drawer-tabs,
 .qd40-overlay .qd31-drawer-tabs {
   display: grid;

@@ -148,6 +148,15 @@
           >{{activeActor.name}}</h3>
           <p>{{activeActor.actorType}}</p>
           <div class="qd31-center-vitals">
+            <div class="qd31-secondary-roll-chip" aria-label="Secondary roll controls">
+              <select class="qd31-secondary-roll-select" data-action="secondary-roll-select" aria-label="Secondary roll target">
+                {{#each secondaryRollView.options as |option|}}
+                <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
+                {{/each}}
+              </select>
+              <span class="qd31-secondary-roll-value">{{secondaryRollView.selectedValue}}</span>
+              <button type="button" class="qd31-square-button qd31-secondary-roll-button" data-action="roll-secondary-attribute" title="Roll selected secondary attribute" aria-label="Roll selected secondary attribute">🎲</button>
+            </div>
             <div class="qd31-center-vital-line qd31-center-hp-line">
               <div class="qd31-center-vital-main">
                 <span class="qd31-center-vital-label">❤️ HP</span>
