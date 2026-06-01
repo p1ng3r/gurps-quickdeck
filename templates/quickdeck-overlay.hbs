@@ -82,6 +82,53 @@
   <div class="qd31-center-wrap qd31-panel-wrap">
   <section class="qd31-center-cockpit">
     <header class="qd31-header qd31-center-art-header"><h2>The Anvil Desk</h2></header>
+    <section class="qd31-center-roster {{#if centerRosterView.isMinimized}}is-minimized{{/if}}" aria-label="Center Active Roster carousel">
+      <header class="qd31-center-roster-header">
+        <button
+          type="button"
+          class="qd31-center-roster-title"
+          data-action="toggle-center-roster-minimized"
+          title="{{#if centerRosterView.isMinimized}}Expand Active Roster{{else}}Collapse Active Roster{{/if}}"
+        >
+          <span class="qd31-center-roster-gem" aria-hidden="true">◆</span>
+          <span>Active Roster</span>
+          <small>{{centerRosterView.total}}</small>
+        </button>
+        {{#unless centerRosterView.isMinimized}}
+        <div class="qd31-center-roster-controls">
+          {{#if centerRosterView.hasPaging}}
+          <button type="button" class="qd31-square-button qd31-center-roster-page" data-action="center-roster-prev" {{#unless centerRosterView.canPagePrev}}disabled{{/unless}} title="Previous roster actors">‹</button>
+          <button type="button" class="qd31-square-button qd31-center-roster-page" data-action="center-roster-next" {{#unless centerRosterView.canPageNext}}disabled{{/unless}} title="Next roster actors">›</button>
+          {{/if}}
+          <button type="button" class="qd31-square-button qd31-center-roster-collapse" data-action="toggle-center-roster-minimized" title="Collapse Active Roster">–</button>
+        </div>
+        {{/unless}}
+      </header>
+      {{#unless centerRosterView.isMinimized}}
+      <div class="qd31-center-roster-body">
+        {{#if centerRosterView.isEmpty}}
+        <div class="qd31-center-roster-empty">No roster actors yet. Add actors from the roster drawer.</div>
+        {{else}}
+        <div class="qd31-center-roster-track">
+          {{#each centerRosterView.actors as |actor|}}
+          <button
+            type="button"
+            class="qd31-center-roster-tile {{#if actor.isActive}}is-active{{/if}}"
+            data-action="center-roster-select"
+            data-actor-id="{{actor.id}}"
+            title="Select {{actor.name}} (double-click to open sheet)"
+          >
+            <span class="qd31-center-roster-portrait-frame">
+              <img src="{{actor.img}}" alt="{{actor.name}}" />
+            </span>
+            <span class="qd31-center-roster-name">{{actor.name}}</span>
+          </button>
+          {{/each}}
+        </div>
+        {{/if}}
+      </div>
+      {{/unless}}
+    </section>
     {{#if activeActor}}
     <section class="qd31-actor-card">
       <header class="quickdeck-actor-header qd31-selected-actor-header">
