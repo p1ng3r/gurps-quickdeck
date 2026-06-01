@@ -783,6 +783,35 @@
   margin: 6px 0;
 }
 
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-row,
+.qd40-overlay .qd31-secondary-roll-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  margin: 4px 0 2px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-select,
+.qd40-overlay .qd31-secondary-roll-select {
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px;
+  border: 1px solid rgba(205, 160, 82, 0.54);
+  border-radius: 8px;
+  color: #e5d6ae;
+  background: rgba(18, 14, 10, 0.96);
+  font-size: 0.76rem;
+  font-weight: 900;
+  text-shadow: 0 1px 2px #000;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-secondary-roll-button,
+.qd40-overlay .qd31-secondary-roll-button {
+  min-width: 52px;
+}
+
 #gurps-quickdeck-overlay.qd40-overlay .qd31-drawer-tabs,
 .qd40-overlay .qd31-drawer-tabs {
   display: grid;

@@ -24,6 +24,15 @@ const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
+const SECONDARY_ROLL_OPTIONS = [
+  { key: "will", label: "Will", otf: "Will" },
+  { key: "per", label: "Perception / Per", otf: "Per" },
+  { key: "fright-check", label: "Fright Check", otf: "Fright Check" },
+  { key: "dodge", label: "Dodge", defense: "dodge" },
+  { key: "parry", label: "Parry", defense: "parry" },
+  { key: "block", label: "Block", defense: "block" }
+];
+const DEFAULT_SECONDARY_ROLL_KEY = SECONDARY_ROLL_OPTIONS[0].key;
 
 installQuickDeckArtTunerGlobals();
 
@@ -365,6 +374,7 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusUntil = 0;
     this._lastNativeWindowIds = new Set();
     this._nativeWindowFocusLock = null;
+    this.secondaryRollKey = DEFAULT_SECONDARY_ROLL_KEY;
     this._stateLoadedFromSettings = false;
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
@@ -685,6 +695,18 @@ export class QuickDeckApp extends Application {
   getActiveActor() {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
   }
+  getSelectedSecondaryRollOption() {
+    return SECONDARY_ROLL_OPTIONS.find((option) => option.key === this.secondaryRollKey) ?? SECONDARY_ROLL_OPTIONS[0];
+  }
+
+  getSecondaryRollOptions() {
+    const selectedKey = this.getSelectedSecondaryRollOption().key;
+    return SECONDARY_ROLL_OPTIONS.map((option) => ({
+      ...option,
+      selected: option.key === selectedKey
+    }));
+  }
+
 
   clampCenterRosterWindow(total = this.rosterActorIds.length) {
     const maxStartIndex = Math.max(0, total - 5);
@@ -2980,6 +3002,44 @@ export class QuickDeckApp extends Application {
   }
 
 
+  async rollSecondaryAttribute(event = null) {
+    const actor = this.getActiveActor();
+    if (!actor?.id) {
+      ui.notifications?.warn("QuickDeck: No active actor selected for secondary roll.");
+      return;
+    }
+
+    const option = this.getSelectedSecondaryRollOption();
+    if (!option) {
+      ui.notifications?.warn("QuickDeck: Choose a secondary roll first.");
+      return;
+    }
+
+    if (option.defense) {
+      const derivedData = this.getDerivedActorData(actor, { includeAttacks: false, includeSkills: false, includeSpells: false });
+      const value = option.defense === "dodge"
+        ? derivedData.dodge
+        : option.defense === "parry"
+          ? derivedData.bestParry
+          : derivedData.bestBlock;
+      await this.triggerCombatRoll(actor.id, {
+        type: "defense",
+        defense: option.defense,
+        label: `Roll ${option.label}`,
+        value
+      });
+      return;
+    }
+
+    const handled = await this.runWithNativeWindowFocusGuard(
+      () => this.triggerNativeSheetRoll(actor, { name: option.label, otf: option.otf }, { event, label: option.key }),
+      `secondary-${option.key}`
+    );
+    if (!handled) {
+      ui.notifications?.warn(`QuickDeck: Could not route ${option.label} through native GURPS rolling.`);
+    }
+  }
+
   async triggerCombatRoll(actorId, rollContext) {
     const actor = game.actors.get(actorId);
     if (!actor) return;
@@ -4664,6 +4724,7 @@ export class QuickDeckApp extends Application {
       canRepeatLastAttack: Boolean(this.pendingAttackContext?.actorId),
       lastAttackName: this.pendingAttackContext?.attackName ?? "No attack selected",
       gurpsData,
+      secondaryRollOptions: this.getSecondaryRollOptions(),
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
@@ -5099,6 +5160,17 @@ export class QuickDeckApp extends Application {
       if (event.key !== "Enter") return;
       event.preventDefault();
       event.currentTarget.blur();
+    });
+
+    html.find("[data-action='secondary-roll-select']").on("change", (event) => {
+      const key = String(event.currentTarget.value || "");
+      if (!SECONDARY_ROLL_OPTIONS.some((option) => option.key === key)) return;
+      this.secondaryRollKey = key;
+    });
+
+    html.find("[data-action='roll-secondary-attribute']").on("click", async (event) => {
+      event.preventDefault();
+      await this.rollSecondaryAttribute(event);
     });
 
     html.find("[data-action='roll-defense']").on("click", async (event) => {

@@ -201,6 +201,15 @@
       </div>
 
 
+      <div class="qd31-secondary-roll-row" aria-label="Secondary roll controls">
+        <select class="qd31-secondary-roll-select" data-action="secondary-roll-select" aria-label="Secondary roll target">
+          {{#each secondaryRollOptions as |option|}}
+          <option value="{{option.key}}" {{#if option.selected}}selected{{/if}}>{{option.label}}</option>
+          {{/each}}
+        </select>
+        <button type="button" class="qd31-square-button qd31-secondary-roll-button" data-action="roll-secondary-attribute" title="Roll selected secondary target">Roll</button>
+      </div>
+
       <div class="qd31-defense-grid"><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="dodge" data-value="{{gurpsData.display.dodge}}">Dodge <span>{{gurpsData.display.dodge}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="parry" data-value="{{gurpsData.display.parry}}">Parry <span>{{gurpsData.display.parry}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="block" data-value="{{gurpsData.display.block}}">Block <span>{{gurpsData.display.block}}</span></button></div>
 
       {{!-- QD v0.11.0 Phase 1: one center scroll body; footer stays outside normal content flow. --}}
