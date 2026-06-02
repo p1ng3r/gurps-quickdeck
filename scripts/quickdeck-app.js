@@ -18,9 +18,12 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
+  UI_MODE: "uiMode",
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
+const VALID_UI_MODES = new Set(["ui1", "ui2"]);
+const DEFAULT_UI_MODE = "ui1";
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS = 30000;
@@ -395,6 +398,7 @@ export class QuickDeckApp extends Application {
     this._overlayPosition = null;
     this._overlayWindowResizeHandler = () => this.scheduleQd31WindowResize();
     this.isInfoPopoverOpen = false;
+    this.uiMode = DEFAULT_UI_MODE;
     this.centerFavoriteSections = {
       combat: true,
       skills: true,
@@ -1806,6 +1810,9 @@ export class QuickDeckApp extends Application {
       null
     );
     this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
+
+    const savedUiMode = String(game.settings.get(MODULE_ID, SETTING_KEYS.UI_MODE) || DEFAULT_UI_MODE);
+    this.uiMode = VALID_UI_MODES.has(savedUiMode) ? savedUiMode : DEFAULT_UI_MODE;
 
     this._stateLoadedFromSettings = true;
   }
@@ -4312,8 +4319,13 @@ export class QuickDeckApp extends Application {
 
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
-    this.hideApplicationShellForOverlay();
-    await this.renderOverlay();
+    if (this.isUi2Mode()) {
+      this.hideApplicationShellForOverlay();
+      await this.renderOverlay();
+    } else {
+      this.unmountOverlay();
+      this.showApplicationShellIfNeeded();
+    }
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
     this.bringReferenceAppToFrontSoon();
@@ -4515,6 +4527,11 @@ export class QuickDeckApp extends Application {
   }
 
   async renderOverlay() {
+    if (!this.isUi2Mode()) {
+      this.unmountOverlay();
+      this.showApplicationShellIfNeeded();
+      return;
+    }
     this.mountOverlay();
     if (!this._overlayRoot) return;
     const html = await renderQuickDeckTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
@@ -4915,6 +4932,9 @@ export class QuickDeckApp extends Application {
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
+      uiMode: this.uiMode,
+      isUi1Mode: this.uiMode === "ui1",
+      isUi2Mode: this.uiMode === "ui2",
       isRosterDrawerOpen: this.isRosterDrawerOpen,
       isActionsDrawerOpen: this.isActionsDrawerOpen,
       isCombatDrawerOpen: this.activeDrawer === "combat",
@@ -4957,14 +4977,27 @@ export class QuickDeckApp extends Application {
       indexedSpells,
       pinnedActions,
       hasPinnedActions: pinnedActions.length > 0,
-      uiBuildLabel: "QD v0.9.7.1 — batch1-fit",
-      uiBranchLabel: "v0.9.7.1 batch1-fit",
+      uiBuildLabel: this.uiMode === "ui2" ? "QD v0.14.3 — shell HTML" : "QD v0.9.7.1 — batch1-fit",
+      uiBranchLabel: this.uiMode === "ui2" ? "v0.14.3 shell HTML" : "v0.9.7.1 batch1-fit",
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
       devArtTunerEnabled: this.isDevArtTunerEnabled(),
       pdfMapDraft: this.pdfMapDraft,
       pdfPageRefMappings: this.getPdfPageRefMappingRows()
     };
+  }
+
+
+  isUi2Mode() {
+    return this.uiMode === "ui2";
+  }
+
+  async setUiMode(mode) {
+    const nextMode = VALID_UI_MODES.has(String(mode)) ? String(mode) : DEFAULT_UI_MODE;
+    this.uiMode = nextMode;
+    await game?.settings?.set?.(MODULE_ID, SETTING_KEYS.UI_MODE, nextMode);
+    if (nextMode !== "ui2") this.unmountOverlay();
+    this.render(false, { focus: false });
   }
 
   isDevArtTunerEnabled() {
@@ -5007,6 +5040,11 @@ export class QuickDeckApp extends Application {
 
   activateListeners(html) {
     super.activateListeners(html);
+
+    html.find("[data-action='set-ui-mode']").on("change", (event) => {
+      event.preventDefault();
+      void this.setUiMode(event.currentTarget.value);
+    });
 
     html.find("[data-action='add-actor']").on("click", (event) => {
       event.preventDefault();
