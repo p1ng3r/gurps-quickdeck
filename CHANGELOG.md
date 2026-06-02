@@ -1,3 +1,12 @@
+## [Unreleased] - v0.14.0-ui2-shell-foundation-local
+
+### Added
+- Added a client-persisted UI1/UI2 chrome switch while keeping UI1 as the default QuickDeck interface.
+- Added the first UI2 foundation shell with left drawer, center cockpit, right drawer, outside tabs, left/right open-state classes, and the `QD v0.14.0 — UI2 shell` developer badge.
+
+### Changed
+- Wired the UI2 stylesheet after the existing QuickDeck styles so the shell can be toggled without replacing UI1 behavior.
+
 ## [Unreleased] - v0.9.7.2 batch2-fit
 
 ### Changed

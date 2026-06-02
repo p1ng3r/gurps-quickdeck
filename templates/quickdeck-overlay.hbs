@@ -12,6 +12,10 @@
     </div>
 
     <div class="qd40-window-controls">
+      <div class="qd-ui-mode-switch" role="group" aria-label="QuickDeck UI mode">
+        <button class="qd-ui-mode-button {{#if isUi1Mode}}is-active{{/if}}" type="button" data-action="set-ui-mode" data-ui-mode="ui1" aria-pressed="{{#if isUi1Mode}}true{{else}}false{{/if}}">UI1</button>
+        <button class="qd-ui-mode-button {{#if isUi2Mode}}is-active{{/if}}" type="button" data-action="set-ui-mode" data-ui-mode="ui2" aria-pressed="{{#if isUi2Mode}}true{{else}}false{{/if}}">UI2</button>
+      </div>
       <button class="qd40-window-button" type="button" data-action="minimize-overlay" title="Minimize">−</button>
       <button class="qd40-window-button" type="button" data-action="close-overlay" title="Close">×</button>
     </div>
@@ -30,6 +34,81 @@
   {{/if}}
 
   <div class="qd40-body">
+  {{#if isUi2Mode}}
+  <section class="qd-ui2-shell {{#if isRosterDrawerOpen}}qd-ui2-left-open{{else}}qd-ui2-left-closed{{/if}} {{#if isActionsDrawerOpen}}qd-ui2-right-open{{else}}qd-ui2-right-closed{{/if}}" aria-label="QuickDeck UI2 foundation shell">
+    <button class="qd-ui2-outside-tab qd-ui2-left-tab" type="button" data-action="toggle-roster-drawer" aria-expanded="{{#if isRosterDrawerOpen}}true{{else}}false{{/if}}" title="Toggle left drawer">{{#if isRosterDrawerOpen}}‹ Roster{{else}}Roster ›{{/if}}</button>
+    <button class="qd-ui2-outside-tab qd-ui2-right-tab" type="button" data-action="toggle-actions-drawer" data-drawer="combat" aria-expanded="{{#if isActionsDrawerOpen}}true{{else}}false{{/if}}" title="Toggle right drawer">{{#if isActionsDrawerOpen}}Actions ›{{else}}‹ Actions{{/if}}</button>
+
+    <aside class="qd-ui2-drawer qd-ui2-left-drawer" aria-label="UI2 left drawer">
+      <header class="qd-ui2-region-header"><span>Left Drawer</span><strong>Roster</strong></header>
+      <div class="qd-ui2-drawer-body" data-drop-zone="roster">
+        {{#each rosterActors as |actor|}}
+        <button type="button" class="qd-ui2-roster-row {{#if actor.isActive}}is-active{{/if}}" data-action="open-actor" data-actor-id="{{actor.id}}">
+          <img src="{{actor.img}}" alt="{{actor.name}}" />
+          <span>{{actor.name}}</span>
+          <small>HP {{actor.hpDisplay}}/{{actor.hpMaxDisplay}} · FP {{actor.fpDisplay}}/{{actor.fpMaxDisplay}}</small>
+        </button>
+        {{else}}
+        <div class="qd-ui2-empty">Drop or add actors from UI1 to populate this roster foundation.</div>
+        {{/each}}
+      </div>
+    </aside>
+
+    <main class="qd-ui2-center-cockpit" aria-label="UI2 center cockpit">
+      <header class="qd-ui2-cockpit-header">
+        <div>
+          <span class="qd-ui2-dev-badge">{{ui2BuildLabel}}</span>
+          <h2>UI2 Cockpit</h2>
+        </div>
+        <span class="qd-ui2-mode-pill">{{uiModeLabel}}</span>
+      </header>
+      {{#if activeActor}}
+      <section class="qd-ui2-actor-card">
+        <img class="qd-ui2-portrait" src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+        <div>
+          <h3>{{activeActor.name}}</h3>
+          <p>{{activeActor.actorType}}</p>
+          <div class="qd-ui2-vitals">HP {{gurpsData.display.hp}} / {{gurpsData.display.hpMax}} · FP {{gurpsData.display.fp}} / {{gurpsData.display.fpMax}} · Move {{gurpsData.display.move}}</div>
+        </div>
+      </section>
+      <section class="qd-ui2-control-strip" aria-label="Existing safe controls">
+        <button type="button" class="qd-ui2-action-button" data-action="open-sheet" data-actor-id="{{activeActor.id}}">Open Sheet</button>
+        <button type="button" class="qd-ui2-action-button" data-action="target-action">Target</button>
+        <button type="button" class="qd-ui2-action-button" data-action="open-modifier-bucket" data-actor-id="{{activeActor.id}}">ModifierBucket</button>
+        <button type="button" class="qd-ui2-action-button" data-action="repeat-last-attack" {{#unless canRepeatLastAttack}}disabled{{/unless}}>Repeat</button>
+      </section>
+      {{else}}
+      <section class="qd-ui2-empty qd-ui2-center-empty">Select or add an actor in UI1 or the left drawer to preview the UI2 cockpit foundation.</section>
+      {{/if}}
+      <section class="qd-ui2-foundation-note">
+        <strong>Foundation pass only.</strong>
+        <span>Layout regions, outside tabs, and left/right open states are active; full action wiring stays in UI1 until a later pass.</span>
+      </section>
+    </main>
+
+    <aside class="qd-ui2-drawer qd-ui2-right-drawer" aria-label="UI2 right drawer">
+      <header class="qd-ui2-region-header"><span>Right Drawer</span><strong>Actions</strong></header>
+      <nav class="qd-ui2-drawer-tabs" aria-label="UI2 action drawer placeholders">
+        <button type="button" data-action="open-actions-drawer" data-drawer="combat">Combat</button>
+        <button type="button" data-action="open-actions-drawer" data-drawer="skills">Skills</button>
+        <button type="button" data-action="open-actions-drawer" data-drawer="spells">Spells</button>
+        <button type="button" data-action="open-actions-drawer" data-drawer="settings">Settings</button>
+      </nav>
+      <div class="qd-ui2-drawer-body">
+        {{#if hasPinnedActions}}
+        <h3>Pinned Actions</h3>
+        {{#each pinnedActions as |pin|}}
+        <button type="button" class="qd-ui2-pinned-action" data-action="{{pin.action}}" data-actor-id="{{pin.actorId}}" data-attack-index="{{pin.index}}" data-skill-index="{{pin.index}}" data-spell-index="{{pin.index}}">
+          <span>{{pin.badge}}</span>{{pin.label}}
+        </button>
+        {{/each}}
+        {{else}}
+        <div class="qd-ui2-empty">Pinned action surface placeholder.</div>
+        {{/if}}
+      </div>
+    </aside>
+  </section>
+  {{else}}
   <section class="qd40-shell qd31-shell {{#if isRosterDrawerOpen}}qd31-left-open{{else}}qd31-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd31-right-open{{else}}qd31-right-collapsed{{/if}}" data-active-drawer="{{activeDrawer}}">
     <div class="qd31-left-panel-wrap qd31-panel-wrap {{#if isRosterDrawerOpen}}is-open{{else}}is-collapsed{{/if}}">
     <button class="qd31-edge-tab qd31-left-edge-tab {{#unless isRosterDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}« Collapse{{else}}Roster ›{{/if}}</button>
@@ -461,5 +540,6 @@
   {{/if}}
   </div>
   </section>
+  {{/if}}
   </div>
 </div>
