@@ -3673,11 +3673,12 @@
  * Hidden drawer bodies can leave their wrappers in the flex column, creating
  * spacer blocks before the active visible drawer body.
  *
- * CSS-only fix:
- * Hide wrapper elements when their direct drawer body child is hidden.
+ * Wrapper-state fix:
+ * The scrollbar manager mirrors the wrapped host hidden state onto the wrapper
+ * so this stays compatible without using high-risk relational selectors.
  */
 
-/* Hidden tab bodies should not leave their custom-scroll wrapper behind. */
+/* Hidden tab body wrappers should not leave spacer gaps behind. */
 #gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper.qd-custom-scroll-wrapper-hidden-host,
 .qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper.qd-custom-scroll-wrapper-hidden-host {
   display: none !important;

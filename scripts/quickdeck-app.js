@@ -227,6 +227,7 @@ class QuickDeckCustomScrollbarManager {
     const entry = this.entries.get(host);
     if (!entry) return;
 
+    // Mirror host visibility onto the wrapper so CSS can avoid relational selectors.
     const isHiddenHost = Boolean(host.hidden);
     entry.wrapper?.classList?.toggle("qd-custom-scroll-wrapper-hidden-host", isHiddenHost);
     entry.wrapper?.classList?.toggle("qd-custom-scroll-wrapper-visible-host", !isHiddenHost);
