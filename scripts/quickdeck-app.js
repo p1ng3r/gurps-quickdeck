@@ -18,9 +18,12 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
+  UI_MODE: "uiMode",
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
+const VALID_UI_MODES = new Set(["ui1", "ui2"]);
+const DEFAULT_UI_MODE = "ui1";
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS = 30000;
@@ -391,6 +394,7 @@ export class QuickDeckApp extends Application {
     this.primaryRollKey = DEFAULT_PRIMARY_ROLL_KEY;
     this.secondaryRollKey = DEFAULT_SECONDARY_ROLL_KEY;
     this._stateLoadedFromSettings = false;
+    this.uiMode = DEFAULT_UI_MODE;
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
@@ -1811,6 +1815,9 @@ export class QuickDeckApp extends Application {
       null
     );
     this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
+
+    const savedUiMode = String(game.settings.get(MODULE_ID, SETTING_KEYS.UI_MODE) || DEFAULT_UI_MODE);
+    this.uiMode = VALID_UI_MODES.has(savedUiMode) ? savedUiMode : DEFAULT_UI_MODE;
 
     this._stateLoadedFromSettings = true;
   }
@@ -4920,6 +4927,9 @@ export class QuickDeckApp extends Application {
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
+      uiMode: this.uiMode,
+      isUi1Mode: this.isUi1Mode,
+      isUi2Mode: this.isUi2Mode,
       isRosterDrawerOpen: this.isRosterDrawerOpen,
       isActionsDrawerOpen: this.isActionsDrawerOpen,
       isCombatDrawerOpen: this.activeDrawer === "combat",
@@ -4970,6 +4980,25 @@ export class QuickDeckApp extends Application {
       pdfMapDraft: this.pdfMapDraft,
       pdfPageRefMappings: this.getPdfPageRefMappingRows()
     };
+  }
+
+
+  get isUi2Mode() {
+    return this.uiMode === "ui2";
+  }
+
+  get isUi1Mode() {
+    return !this.isUi2Mode;
+  }
+
+  async setUiMode(mode) {
+    const nextMode = VALID_UI_MODES.has(String(mode)) ? String(mode) : DEFAULT_UI_MODE;
+    this.uiMode = nextMode;
+    await game?.settings?.set?.(MODULE_ID, SETTING_KEYS.UI_MODE, nextMode);
+
+    if (this.rendered) this.render(false, { focus: false });
+    await this.renderOverlay();
+    this.syncMinimizedPresentation();
   }
 
   isDevArtTunerEnabled() {
