@@ -4996,7 +4996,7 @@ export class QuickDeckApp extends Application {
     this.uiMode = nextMode;
     await game?.settings?.set?.(MODULE_ID, SETTING_KEYS.UI_MODE, nextMode);
 
-    if (this.rendered) this.render(false, { focus: false });
+    if (this.rendered) this.render(true, { focus: false });
     await this.renderOverlay();
     this.syncMinimizedPresentation();
   }
@@ -5048,7 +5048,7 @@ export class QuickDeckApp extends Application {
       const nextMode = target.type === "checkbox"
         ? (target.checked ? "ui2" : "ui1")
         : target.value;
-      void this.setUiMode?.(nextMode);
+      void this.setUiMode(nextMode);
     });
 
     html.find("[data-action='add-actor']").on("click", (event) => {
