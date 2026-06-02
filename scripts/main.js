@@ -9,6 +9,7 @@ const SETTING_KEYS = {
   SPELL_FAVORITES: "spellFavoriteKeysByActor",
   PINNED_ACTIONS: "pinnedActionsByActor",
   DEFAULT_DRAWER: "defaultDrawer",
+  UI_MODE: "uiMode",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
@@ -115,6 +116,19 @@ Hooks.once("init", () => {
       spells: "Spells"
     },
     default: "none"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.UI_MODE, {
+    name: "QuickDeck UI Mode",
+    hint: "Client-side QuickDeck interface mode. UI2 is experimental.",
+    scope: "client",
+    config: false,
+    type: String,
+    choices: {
+      ui1: "UI1 / Current UI",
+      ui2: "UI2 / Experimental UI"
+    },
+    default: "ui1"
   });
 
   game.settings.register(MODULE_ID, SETTING_KEYS.MINIMIZED, {

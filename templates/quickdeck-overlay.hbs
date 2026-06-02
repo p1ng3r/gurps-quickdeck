@@ -124,6 +124,7 @@
           <button type="button" data-action="clear-targets" title="Clear Targets">Clear Targets</button>
           <button type="button" data-action="open-modifier-bucket" data-actor-id="{{activeActor.id}}" title="Modifier Bucket">ModifierBucket</button>
           <button type="button" data-action="open-actions-drawer" data-drawer="combat" title="Open Actions">Actions</button>
+          <button type="button" data-action="open-actions-drawer" data-drawer="settings" title="Open Settings">Settings</button>
         </div>
         {{else}}
         <section class="qd-ui2-empty-card" aria-label="No selected actor">Select an actor from the roster to populate the UI2 actor card.</section>
@@ -140,7 +141,19 @@
             <button type="button" data-action="toggle-drawer" data-drawer="spells">Spells</button>
             <button type="button" data-action="toggle-drawer" data-drawer="settings">Settings</button>
           </nav>
-          <div class="qd-ui2-drawer-note">UI2 actor-card preview uses existing QuickDeck action handlers. Full UI2 action drawer mapping remains unchanged for later passes.</div>
+          {{#if isSettingsDrawerOpen}}
+          <section class="qd-ui2-settings-panel" aria-label="UI mode settings">
+            <h4>UI Mode</h4>
+            <p>Current mode: {{#if uiModeView.isUi2}}UI2 / Experimental UI{{else}}UI1 / Current UI{{/if}}</p>
+            <div class="qd-ui2-mode-switch" role="group" aria-label="QuickDeck UI mode">
+              <button type="button" class="{{#if uiModeView.isUi1}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui1" aria-pressed="{{#if uiModeView.isUi1}}true{{else}}false{{/if}}">UI1 / Current UI</button>
+              <button type="button" class="{{#if uiModeView.isUi2}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui2" aria-pressed="{{#if uiModeView.isUi2}}true{{else}}false{{/if}}">UI2 / Experimental UI</button>
+            </div>
+            <small>Saved as a client preference and applied immediately.</small>
+          </section>
+          {{else}}
+          <div class="qd-ui2-drawer-note">UI2 actor-card preview uses existing QuickDeck action handlers. Open Settings here to return to UI1.</div>
+          {{/if}}
         </div>
         {{/if}}
       </aside>
@@ -496,6 +509,22 @@
       {{/each}}
     </section>
     <section class="qd31-drawer-body" {{#unless isSettingsDrawerOpen}}hidden{{/unless}}>
+      <section class="qd31-settings-panel qd31-ui-mode-settings-panel">
+        <header class="qd31-settings-header">
+          <h3>UI Mode</h3>
+          <small>Choose this client's QuickDeck interface. UI2 is experimental.</small>
+        </header>
+        <div class="qd31-action-row qd31-ui-mode-row" role="group" aria-label="QuickDeck UI mode">
+          <div class="qd31-action-main">
+            <strong>Current mode: {{#if uiModeView.isUi2}}UI2 / Experimental UI{{else}}UI1 / Current UI{{/if}}</strong>
+            <small>Saved as a client preference and applied immediately.</small>
+          </div>
+          <div class="qd31-action-controls qd31-ui-mode-controls">
+            <button type="button" class="qd31-square-button {{#if uiModeView.isUi1}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui1" aria-pressed="{{#if uiModeView.isUi1}}true{{else}}false{{/if}}">UI1 / Current UI</button>
+            <button type="button" class="qd31-square-button {{#if uiModeView.isUi2}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui2" aria-pressed="{{#if uiModeView.isUi2}}true{{else}}false{{/if}}">UI2 / Experimental UI</button>
+          </div>
+        </div>
+      </section>
       <section class="qd31-settings-panel">
         <header class="qd31-settings-header">
           <h3>Dev Art Tuner</h3>

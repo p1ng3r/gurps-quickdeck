@@ -1,3 +1,10 @@
+## [Unreleased] - v0.14.2 ui2-settings-toggle-local
+
+### Changed
+- Added a Settings-tab UI Mode switch that shows `UI1 / Current UI` and `UI2 / Experimental UI`, persists the client `uiMode` setting, and switches immediately between UI1 and UI2.
+- Added the same UI Mode control to the UI2 Settings drawer so users can return to UI1 after switching into the experimental shell.
+- Updated the visible UI2 dev badge to `QD v0.14.2 — settings toggle`.
+
 ## [Unreleased] - v0.14.1 ui2-actor-card-data-local
 
 ### Changed
