@@ -1,9 +1,9 @@
 ## [Unreleased] - v0.14.1 ui2-actor-card-data-local
 
 ### Changed
-- Replaced the UI2 placeholder center cockpit with a selected-actor card that maps existing QuickDeck/GURPS portrait, name, HP, FP, primary/secondary roll choices, Move, Dodge, Parry, and Block data while preserving existing roll/action handlers.
-- Kept Drop Token outside the actor card and left Open Sheet as a small external safe control.
-- Added compact UI2 actor-card CSS for the both-drawers-open layout and updated the visible UI2 badge to `QD v0.14.1 — actor card`.
+- Corrected the UI2 actor-card pass so the selected-actor mapping lives only inside the `{{#if isUi2Mode}}` UI2 shell and the legacy qd31 center cockpit remains intact.
+- Added `styles/quickdeck-ui2.css` for qd-ui2 actor-card styling, including compact behavior when both UI2 drawers are open.
+- Updated the UI2 build label to `QD v0.14.1 — actor card` via `ui2BuildLabel`.
 
 ## [Unreleased] - v0.9.7.2 batch2-fit
 

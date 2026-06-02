@@ -4,11 +4,10 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 ## What's New in v0.14.1 (UI2 Actor Card)
 
-- UI2 now maps the selected actor into the center actor card using existing QuickDeck/GURPS data: portrait, centered character name, HP/FP current/max meters, primary and secondary roll pills, and compact Move/Dodge/Parry/Block tiles.
-- UI2 keeps existing native action routing: primary and secondary roll buttons continue through existing GURPS roll handlers, and defense tiles use the existing defense handler.
-- Drop Token is kept outside the actor card, with Open Sheet available as a small safe control outside the card.
-- UI1 remains untouched and UI2 remains opt-in through the existing UI1/UI2 switch.
-- The UI2 dev badge now reads `QD v0.14.1 — actor card`.
+- UI2 now maps the selected actor into the `qd-ui2` actor card only when the UI2 shell is active, leaving the existing qd31/UI1 cockpit unchanged.
+- The UI2 actor card displays portrait, centered name, HP/FP current/max meters with centered black readouts, Primary/Secondary roll pills, and compact Move/Dodge/Parry/Block tiles using existing QuickDeck/GURPS data and handlers.
+- Drop Token stays outside the actor card, with Open Sheet kept as a small safe control outside the card.
+- The UI2 build badge now reads `QD v0.14.1 — actor card`.
 
 ## What's New in v0.7.0 (Draft)
 

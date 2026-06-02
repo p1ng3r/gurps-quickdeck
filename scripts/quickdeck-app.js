@@ -385,6 +385,7 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusLock = null;
     this.primaryRollKey = DEFAULT_PRIMARY_ROLL_KEY;
     this.secondaryRollKey = DEFAULT_SECONDARY_ROLL_KEY;
+    this.uiMode = options.uiMode ?? null;
     this._stateLoadedFromSettings = false;
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
@@ -704,6 +705,25 @@ export class QuickDeckApp extends Application {
 
   getActiveActor() {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
+  }
+
+  isUi2ModeActive() {
+    const explicitMode = String(this.uiMode ?? "").toLowerCase();
+    if (explicitMode === "ui2") return true;
+    if (explicitMode === "ui1") return false;
+
+    for (const settingKey of ["uiMode", "quickDeckUiMode", "uiVersion"]) {
+      try {
+        const settingValue = String(game?.settings?.get?.(MODULE_ID, settingKey) ?? "").toLowerCase();
+        if (settingValue === "ui2") return true;
+        if (settingValue === "ui1") return false;
+      } catch (_error) {
+        // The UI2 switch is registered by the UI2 shell branch. Missing keys
+        // simply mean the legacy qd31 shell should remain active.
+      }
+    }
+
+    return false;
   }
 
   getSelectedPrimaryRollOption() {
@@ -4957,8 +4977,10 @@ export class QuickDeckApp extends Application {
       indexedSpells,
       pinnedActions,
       hasPinnedActions: pinnedActions.length > 0,
-      uiBuildLabel: "QD v0.14.1 — actor card",
-      uiBranchLabel: "v0.14.1 actor-card",
+      uiBuildLabel: "QD v0.9.7.1 — batch1-fit",
+      uiBranchLabel: "v0.9.7.1 batch1-fit",
+      isUi2Mode: this.isUi2ModeActive(),
+      ui2BuildLabel: "QD v0.14.1 — actor card",
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
       devArtTunerEnabled: this.isDevArtTunerEnabled(),
