@@ -30,6 +30,7 @@
   {{/if}}
 
   <div class="qd40-body qd-ui2-body">
+    {{!-- UI2 v0.14.3 is intentionally placeholder-only. Actor card, roster, carousel, and action drawer mapping come in later passes. --}}
     <section
       class="qd40-shell qd-ui2-shell {{#if isRosterDrawerOpen}}qd-ui2-left-open{{else}}qd-ui2-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd-ui2-right-open{{else}}qd-ui2-right-collapsed{{/if}}"
       data-active-drawer="{{activeDrawer}}"
@@ -85,6 +86,13 @@
         <section class="qd-ui2-placeholder-card qd-ui2-settings-card">
           <h3>Settings</h3>
           <p>Settings placeholder.</p>
+          <label class="qd-ui2-mode-field">
+            <span>UI Mode</span>
+            <select data-action="set-ui-mode" aria-label="QuickDeck UI Mode">
+              <option value="ui1" {{#if isUi1Mode}}selected{{/if}}>UI1 / Current UI</option>
+              <option value="ui2" {{#if isUi2Mode}}selected{{/if}}>UI2 / Experimental UI</option>
+            </select>
+          </label>
         </section>
       </aside>
       {{/if}}

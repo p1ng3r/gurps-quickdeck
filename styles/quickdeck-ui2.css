@@ -184,3 +184,27 @@
 .qd40-overlay .qd-ui2-frame {
   height: auto;
 }
+
+.qd-ui2-mode-field {
+  display: grid;
+  gap: 6px;
+  margin-top: 12px;
+  color: var(--qd-text, #f4e6be);
+  font-family: var(--qd-font-ui, "Trebuchet MS", "Segoe UI", system-ui, sans-serif);
+}
+
+.qd-ui2-mode-field > span {
+  color: var(--qd-text-muted, rgba(238, 220, 176, 0.76));
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.qd-ui2-mode-field select {
+  width: 100%;
+  min-height: 32px;
+  color: var(--qd-text-strong, #fff0c7);
+  background: rgba(8, 7, 6, 0.92);
+  border: 1px solid var(--qd-border-soft, rgba(199, 154, 56, 0.44));
+  border-radius: 8px;
+}

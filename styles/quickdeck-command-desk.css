@@ -3678,8 +3678,8 @@
  */
 
 /* Hidden tab bodies should not leave their custom-scroll wrapper behind. */
-#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper:has(> .qd31-drawer-body[hidden]),
-.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper:has(> .qd31-drawer-body[hidden]) {
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper.qd-custom-scroll-wrapper-hidden-host,
+.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper.qd-custom-scroll-wrapper-hidden-host {
   display: none !important;
   width: 0 !important;
   height: 0 !important;
@@ -3692,8 +3692,8 @@
 }
 
 /* The visible wrapped drawer body should sit directly under the tab row. */
-#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper:has(> .qd31-drawer-body:not([hidden])),
-.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper:has(> .qd31-drawer-body:not([hidden])) {
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper.qd-custom-scroll-wrapper-visible-host,
+.qd40-overlay .qd31-right-drawer > .qd-custom-scroll-wrapper.qd-custom-scroll-wrapper-visible-host {
   display: flex !important;
   flex: 1 1 auto !important;
   width: 100% !important;

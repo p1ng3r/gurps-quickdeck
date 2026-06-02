@@ -227,6 +227,10 @@ class QuickDeckCustomScrollbarManager {
     const entry = this.entries.get(host);
     if (!entry) return;
 
+    const isHiddenHost = Boolean(host.hidden);
+    entry.wrapper?.classList?.toggle("qd-custom-scroll-wrapper-hidden-host", isHiddenHost);
+    entry.wrapper?.classList?.toggle("qd-custom-scroll-wrapper-visible-host", !isHiddenHost);
+
     const isUsable = this.isUsableScrollHost(host, entry);
     entry.rail.classList.toggle("is-active", isUsable);
     if (!isUsable) {
