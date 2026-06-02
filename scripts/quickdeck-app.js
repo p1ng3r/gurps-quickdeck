@@ -15,6 +15,7 @@ const SETTING_KEYS = {
   SPELL_FAVORITES: "spellFavoriteKeysByActor",
   PINNED_ACTIONS: "pinnedActionsByActor",
   DEFAULT_DRAWER: "defaultDrawer",
+  UI_MODE: "uiMode",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
@@ -385,6 +386,7 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusLock = null;
     this.primaryRollKey = DEFAULT_PRIMARY_ROLL_KEY;
     this.secondaryRollKey = DEFAULT_SECONDARY_ROLL_KEY;
+    this.uiMode = options.uiMode ?? null;
     this._stateLoadedFromSettings = false;
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
@@ -704,6 +706,48 @@ export class QuickDeckApp extends Application {
 
   getActiveActor() {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
+  }
+
+  isUi2ModeActive() {
+    const explicitMode = String(this.uiMode ?? "").toLowerCase();
+    if (explicitMode === "ui2") return true;
+    if (explicitMode === "ui1") return false;
+
+    for (const settingKey of [SETTING_KEYS.UI_MODE, "quickDeckUiMode", "uiVersion"]) {
+      try {
+        const settingValue = String(game?.settings?.get?.(MODULE_ID, settingKey) ?? "").toLowerCase();
+        if (settingValue === "ui2") return true;
+        if (settingValue === "ui1") return false;
+      } catch (_error) {
+        // The UI2 switch is registered by the UI2 shell branch. Missing keys
+        // simply mean the legacy qd31 shell should remain active.
+      }
+    }
+
+    return false;
+  }
+
+  getUiModeView() {
+    const isUi2Mode = this.isUi2ModeActive();
+    return {
+      mode: isUi2Mode ? "ui2" : "ui1",
+      isUi1: !isUi2Mode,
+      isUi2: isUi2Mode,
+      ui1Label: isUi2Mode ? "UI1 / Current UI" : "UI1 / Current UI",
+      ui2Label: isUi2Mode ? "UI2 / Experimental UI" : "UI2 / Experimental UI"
+    };
+  }
+
+  async setUiMode(mode) {
+    const normalizedMode = String(mode ?? "").toLowerCase() === "ui2" ? "ui2" : "ui1";
+    this.uiMode = normalizedMode;
+    try {
+      await game?.settings?.set?.(MODULE_ID, SETTING_KEYS.UI_MODE, normalizedMode);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to persist UI mode setting.", error);
+      ui.notifications?.warn("QuickDeck: Could not save UI mode for this client.");
+    }
+    this.render(false, { focus: false });
   }
 
   getSelectedPrimaryRollOption() {
@@ -4959,6 +5003,9 @@ export class QuickDeckApp extends Application {
       hasPinnedActions: pinnedActions.length > 0,
       uiBuildLabel: "QD v0.9.7.1 — batch1-fit",
       uiBranchLabel: "v0.9.7.1 batch1-fit",
+      isUi2Mode: this.isUi2ModeActive(),
+      uiModeView: this.getUiModeView(),
+      ui2BuildLabel: "QD v0.14.2 — settings toggle",
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
       devArtTunerEnabled: this.isDevArtTunerEnabled(),
@@ -5057,6 +5104,11 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='toggle-dev-art-tuner-enabled']").on("change", async (event) => {
       await this.setDevArtTunerEnabled(event.currentTarget.checked);
+    });
+
+    html.find("[data-action='set-ui-mode']").on("click", async (event) => {
+      event.preventDefault();
+      await this.setUiMode(event.currentTarget.dataset.uiMode);
     });
 
     html.find("[data-action='open-dev-art-tuner']").on("click", (event) => {

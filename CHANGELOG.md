@@ -1,3 +1,17 @@
+## [Unreleased] - v0.14.2 ui2-settings-toggle-local
+
+### Changed
+- Added a Settings-tab UI Mode switch that shows `UI1 / Current UI` and `UI2 / Experimental UI`, persists the client `uiMode` setting, and switches immediately between UI1 and UI2.
+- Added the same UI Mode control to the UI2 Settings drawer so users can return to UI1 after switching into the experimental shell.
+- Updated the visible UI2 dev badge to `QD v0.14.2 — settings toggle`.
+
+## [Unreleased] - v0.14.1 ui2-actor-card-data-local
+
+### Changed
+- Corrected the UI2 actor-card pass so the selected-actor mapping lives only inside the `{{#if isUi2Mode}}` UI2 shell and the legacy qd31 center cockpit remains intact.
+- Added `styles/quickdeck-ui2.css` for qd-ui2 actor-card styling, including compact behavior when both UI2 drawers are open.
+- Updated the UI2 build label to `QD v0.14.1 — actor card` via `ui2BuildLabel`.
+
 ## [Unreleased] - v0.9.7.2 batch2-fit
 
 ### Changed

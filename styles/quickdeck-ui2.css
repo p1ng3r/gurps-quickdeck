@@ -1,0 +1,466 @@
+/* UI2 shell and selected actor card. Kept separate from qd31/UI1 styles. */
+
+.qd40-overlay .qd-ui2-body {
+  padding: 8px;
+  min-width: 0;
+  color: #f5dfb0;
+}
+
+.qd40-overlay .qd-ui2-shell {
+  --qd-ui2-center-width: 430px;
+  --qd-ui2-drawer-width: 270px;
+  display: grid;
+  grid-template-columns: auto var(--qd-ui2-center-width) auto;
+  gap: 8px;
+  align-items: stretch;
+  width: max-content;
+  max-width: calc(100vw - 48px);
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open {
+  grid-template-columns: var(--qd-ui2-drawer-width) var(--qd-ui2-center-width) auto;
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-right-open {
+  grid-template-columns: auto var(--qd-ui2-center-width) var(--qd-ui2-drawer-width);
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
+  --qd-ui2-center-width: 370px;
+  --qd-ui2-drawer-width: 240px;
+}
+
+.qd40-overlay .qd-ui2-center,
+.qd40-overlay .qd-ui2-drawer-panel {
+  border: 1px solid rgba(210, 160, 75, 0.54);
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(188, 128, 42, 0.16), transparent 52%),
+    linear-gradient(180deg, rgba(34, 24, 16, 0.98), rgba(8, 7, 6, 0.98));
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.42), 0 10px 24px rgba(0, 0, 0, 0.42);
+}
+
+.qd40-overlay .qd-ui2-center {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px;
+}
+
+.qd40-overlay .qd-ui2-topbar,
+.qd40-overlay .qd-ui2-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.qd40-overlay .qd-ui2-title,
+.qd40-overlay .qd-ui2-drawer-header h3 {
+  margin: 0;
+  color: #ffe6a6;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.qd40-overlay .qd-ui2-build-badge {
+  padding: 3px 8px;
+  border: 1px solid rgba(230, 180, 82, 0.64);
+  border-radius: 999px;
+  color: #f8e5b8;
+  background: #050403;
+  font-size: 0.72rem;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.qd40-overlay .qd-ui2-actor-card {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid rgba(210, 160, 75, 0.58);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(184, 126, 42, 0.18), transparent 48%),
+    linear-gradient(180deg, rgba(38, 27, 17, 0.96), rgba(10, 7, 5, 0.98));
+}
+
+.qd40-overlay .qd-ui2-actor-card-header {
+  display: grid;
+  grid-template-columns: 76px minmax(0, 1fr) 76px;
+  align-items: center;
+  gap: 8px;
+}
+
+.qd40-overlay .qd-ui2-actor-card-header::after {
+  content: "";
+  width: 76px;
+}
+
+.qd40-overlay .qd-ui2-actor-portrait {
+  width: 76px;
+  height: 76px;
+  border: 1px solid rgba(240, 205, 122, 0.82);
+  border-radius: 10px;
+  object-fit: cover;
+  background: #050403;
+  box-shadow: 0 0 0 2px rgba(10, 7, 4, 0.8);
+  cursor: pointer;
+}
+
+.qd40-overlay .qd-ui2-actor-identity {
+  min-width: 0;
+  text-align: center;
+}
+
+.qd40-overlay .qd-ui2-actor-name {
+  margin: 0;
+  color: #ffe7ad;
+  font-size: 1.22rem;
+  line-height: 1.05;
+  text-align: center;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.qd40-overlay .qd-ui2-actor-identity p {
+  margin: 3px 0 0;
+  color: rgba(238, 206, 142, 0.72);
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.qd40-overlay .qd-ui2-vitals {
+  display: grid;
+  gap: 6px;
+}
+
+.qd40-overlay .qd-ui2-vital {
+  position: relative;
+  height: 24px;
+  overflow: hidden;
+  border: 1px solid rgba(210, 160, 75, 0.58);
+  border-radius: 999px;
+  background: #090604;
+}
+
+.qd40-overlay .qd-ui2-vital-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  max-width: 100%;
+  border-radius: inherit;
+}
+
+.qd40-overlay .qd-ui2-vital-hp .qd-ui2-vital-fill {
+  background: linear-gradient(90deg, #7d1c18, #d2553f);
+}
+
+.qd40-overlay .qd-ui2-vital-fp .qd-ui2-vital-fill {
+  background: linear-gradient(90deg, #1c6278, #5bc8dc);
+}
+
+.qd40-overlay .qd-ui2-vital-readout {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 96px;
+  height: 18px;
+  padding: 0 8px;
+  border: 1px solid rgba(240, 202, 124, 0.42);
+  border-radius: 999px;
+  color: #f8e5b8;
+  background: #000;
+  font-size: 0.72rem;
+  font-weight: 900;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+}
+
+.qd40-overlay .qd-ui2-vital-readout input {
+  width: 32px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  color: #f8e5b8;
+  background: transparent;
+  font: inherit;
+  text-align: center;
+  appearance: textfield;
+}
+
+.qd40-overlay .qd-ui2-vital-readout input::-webkit-outer-spin-button,
+.qd40-overlay .qd-ui2-vital-readout input::-webkit-inner-spin-button {
+  margin: 0;
+  appearance: none;
+}
+
+.qd40-overlay .qd-ui2-roll-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.qd40-overlay .qd-ui2-roll-pill {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 4px;
+  align-items: center;
+  min-width: 0;
+  padding: 3px;
+  border: 1px solid rgba(159, 112, 47, 0.48);
+  border-radius: 999px;
+  background: linear-gradient(180deg, rgba(56, 42, 27, 0.90), rgba(13, 10, 8, 0.96));
+}
+
+.qd40-overlay .qd-ui2-roll-pill select,
+.qd40-overlay .qd-ui2-roll-pill button,
+.qd40-overlay .qd-ui2-safe-controls button,
+.qd40-overlay .qd-ui2-edge-button,
+.qd40-overlay .qd-ui2-icon-button,
+.qd40-overlay .qd-ui2-drawer-tabs button {
+  min-width: 0;
+  border: 1px solid rgba(168, 120, 53, 0.74);
+  border-radius: 999px;
+  color: #f7e3b5;
+  background: linear-gradient(180deg, #6d451e, #3b2414);
+  font-weight: 900;
+}
+
+.qd40-overlay .qd-ui2-roll-pill select {
+  height: 22px;
+  padding: 0 5px;
+  color: #f7ead0;
+  background: #090705;
+  font-size: 0.68rem;
+}
+
+.qd40-overlay .qd-ui2-roll-pill button {
+  height: 22px;
+  padding: 0;
+  font-size: 0.64rem;
+  text-transform: uppercase;
+}
+
+.qd40-overlay .qd-ui2-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.qd40-overlay .qd-ui2-stat-tile {
+  display: grid;
+  place-items: center;
+  min-height: 50px;
+  padding: 5px 4px;
+  border: 1px solid rgba(205, 158, 76, 0.60);
+  border-radius: 9px;
+  color: #fff0c8;
+  background: radial-gradient(circle at 50% 16%, rgba(255, 222, 142, 0.12), transparent 58%), linear-gradient(180deg, rgba(41, 30, 18, 0.96), rgba(9, 7, 5, 0.96));
+  font-weight: 900;
+  text-align: center;
+}
+
+.qd40-overlay button.qd-ui2-stat-tile {
+  cursor: pointer;
+}
+
+.qd40-overlay .qd-ui2-stat-tile span {
+  color: #e6c880;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.qd40-overlay .qd-ui2-stat-tile strong {
+  color: #fff2c9;
+  font-size: 1.35rem;
+  line-height: 1;
+}
+
+.qd40-overlay .qd-ui2-safe-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+}
+
+.qd40-overlay .qd-ui2-safe-controls button {
+  min-height: 24px;
+  padding: 0 8px;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.qd40-overlay .qd-ui2-drawer {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 6px;
+  min-width: 34px;
+}
+
+.qd40-overlay .qd-ui2-edge-button {
+  min-height: 28px;
+  padding: 0 8px;
+}
+
+.qd40-overlay .qd-ui2-drawer-panel {
+  min-width: 0;
+  padding: 8px;
+  overflow: auto;
+}
+
+.qd40-overlay .qd-ui2-roster-list {
+  display: grid;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.qd40-overlay .qd-ui2-roster-card {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 24px;
+  gap: 6px;
+  align-items: center;
+  padding: 5px;
+  border: 1px solid rgba(190, 140, 66, 0.44);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.24);
+  cursor: pointer;
+}
+
+.qd40-overlay .qd-ui2-roster-card.is-active {
+  border-color: rgba(225, 66, 45, 0.86);
+}
+
+.qd40-overlay .qd-ui2-roster-card img {
+  width: 38px;
+  height: 38px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.qd40-overlay .qd-ui2-roster-meta {
+  min-width: 0;
+}
+
+.qd40-overlay .qd-ui2-roster-meta strong,
+.qd40-overlay .qd-ui2-roster-meta small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd40-overlay .qd-ui2-roster-meta small,
+.qd40-overlay .qd-ui2-drawer-note,
+.qd40-overlay .qd-ui2-empty-card {
+  color: rgba(238, 206, 142, 0.74);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.qd40-overlay .qd-ui2-drawer-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+.qd40-overlay .qd-ui2-empty-card {
+  padding: 18px;
+  border: 1px dashed rgba(210, 160, 75, 0.48);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card {
+  gap: 5px;
+  padding: 7px;
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card-header {
+  grid-template-columns: 56px minmax(0, 1fr) 56px;
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card-header::after {
+  width: 56px;
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-portrait {
+  width: 56px;
+  height: 56px;
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-name {
+  font-size: 1rem;
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-vital {
+  height: 21px;
+}
+
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-stat-tile {
+  min-height: 42px;
+}
+
+.qd40-overlay .qd-ui2-settings-panel {
+  display: grid;
+  gap: 8px;
+  padding: 8px;
+  border: 1px solid rgba(210, 160, 75, 0.40);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+.qd40-overlay .qd-ui2-settings-panel h4,
+.qd40-overlay .qd-ui2-settings-panel p {
+  margin: 0;
+}
+
+.qd40-overlay .qd-ui2-settings-panel h4 {
+  color: #ffe6a6;
+  font-size: 0.82rem;
+  font-weight: 900;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.qd40-overlay .qd-ui2-settings-panel p,
+.qd40-overlay .qd-ui2-settings-panel small {
+  color: rgba(238, 206, 142, 0.78);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.qd40-overlay .qd-ui2-mode-switch {
+  display: grid;
+  gap: 6px;
+}
+
+.qd40-overlay .qd-ui2-mode-switch button {
+  min-height: 28px;
+  padding: 0 9px;
+  border: 1px solid rgba(168, 120, 53, 0.74);
+  border-radius: 999px;
+  color: #f7e3b5;
+  background: linear-gradient(180deg, #6d451e, #3b2414);
+  font-size: 0.68rem;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.qd40-overlay .qd-ui2-mode-switch button.is-active {
+  border-color: rgba(238, 190, 94, 0.96);
+  color: #fff2c9;
+  background: linear-gradient(180deg, #8a5c28, #4b2c15);
+  box-shadow: 0 0 0 1px rgba(255, 220, 136, 0.16), 0 0 10px rgba(229, 178, 84, 0.26);
+}

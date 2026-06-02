@@ -22,13 +22,144 @@
   {{#if isInfoPopoverOpen}}
   <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck version information">
     <div class="qd40-info-title">GURPS QuickDeck</div>
-    <div class="qd40-info-row"><span>UI</span><strong>{{uiBuildLabel}}</strong></div>
+    <div class="qd40-info-row"><span>UI</span><strong>{{#if isUi2Mode}}{{ui2BuildLabel}}{{else}}{{uiBuildLabel}}{{/if}}</strong></div>
     <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
     <div class="qd40-info-row"><span>Mode</span><strong>qd40 chromeless command desk</strong></div>
     <div class="qd40-info-row"><span>Branch</span><strong>{{uiBranchLabel}}</strong></div>
   </div>
   {{/if}}
 
+  {{#if isUi2Mode}}
+  <div class="qd-ui2-body">
+    <section class="qd-ui2-shell {{#if isRosterDrawerOpen}}qd-ui2-left-open{{else}}qd-ui2-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd-ui2-right-open{{else}}qd-ui2-right-collapsed{{/if}}" data-active-drawer="{{activeDrawer}}">
+      <aside class="qd-ui2-drawer qd-ui2-roster-drawer" aria-label="UI2 roster controls">
+        <button type="button" class="qd-ui2-edge-button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}Roster «{{else}}Roster ›{{/if}}</button>
+        {{#if isRosterDrawerOpen}}
+        <div class="qd-ui2-drawer-panel">
+          <header class="qd-ui2-drawer-header">
+            <h3>Active Roster</h3>
+            <button type="button" class="qd-ui2-icon-button" data-action="clear-roster" title="Clear roster">🗑</button>
+          </header>
+          <div class="qd-ui2-roster-list" data-drop-zone="roster">
+            {{#each rosterActors as |actor|}}
+            <article class="qd-ui2-roster-card {{#if actor.isActive}}is-active{{/if}}" data-action="open-actor" data-actor-id="{{actor.id}}">
+              <img src="{{actor.img}}" alt="{{actor.name}}" />
+              <div class="qd-ui2-roster-meta">
+                <strong>{{actor.name}}</strong>
+                <small>HP {{actor.hpDisplay}}/{{actor.hpMaxDisplay}} · FP {{actor.fpDisplay}}/{{actor.fpMaxDisplay}}</small>
+              </div>
+              <button type="button" class="qd-ui2-icon-button" data-action="remove-actor" data-actor-id="{{actor.id}}" title="Remove actor">×</button>
+            </article>
+            {{/each}}
+          </div>
+        </div>
+        {{/if}}
+      </aside>
+
+      <main class="qd-ui2-center" aria-label="UI2 selected actor cockpit">
+        <header class="qd-ui2-topbar">
+          <span class="qd-ui2-title">GURPS QuickDeck</span>
+          <span class="qd-ui2-build-badge">{{ui2BuildLabel}}</span>
+        </header>
+
+        {{#if activeActor}}
+        <section class="qd-ui2-actor-card" aria-label="Selected actor card">
+          <header class="qd-ui2-actor-card-header">
+            <img class="qd-ui2-actor-portrait qd-ui2-actor-sheet-link" src="{{activeActor.img}}" alt="{{activeActor.name}}" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}" />
+            <div class="qd-ui2-actor-identity">
+              <h2 class="qd-ui2-actor-name qd-ui2-actor-sheet-link" data-action="open-active-actor-sheet" data-actor-id="{{activeActor.id}}">{{activeActor.name}}</h2>
+              {{#if activeActor.actorType}}<p>{{activeActor.actorType}}</p>{{/if}}
+            </div>
+          </header>
+
+          <div class="qd-ui2-vitals" aria-label="Selected actor resources">
+            <div class="qd-ui2-vital qd-ui2-vital-hp" role="meter" aria-label="HP {{gurpsData.display.hp}} / {{gurpsData.display.hpMax}}">
+              <span class="qd-ui2-vital-fill" style="width: {{gurpsData.hpPercent}}%;"></span>
+              <div class="qd-ui2-vital-readout">
+                <span>HP</span>
+                <input type="number" data-action="set-resource" data-actor-id="{{activeActor.id}}" data-resource="hp" value="{{gurpsData.display.hp}}" aria-label="Current HP" />
+                <strong>/ {{gurpsData.display.hpMax}}</strong>
+              </div>
+            </div>
+            <div class="qd-ui2-vital qd-ui2-vital-fp" role="meter" aria-label="FP {{gurpsData.display.fp}} / {{gurpsData.display.fpMax}}">
+              <span class="qd-ui2-vital-fill" style="width: {{gurpsData.fpPercent}}%;"></span>
+              <div class="qd-ui2-vital-readout">
+                <span>FP</span>
+                <input type="number" data-action="set-resource" data-actor-id="{{activeActor.id}}" data-resource="fp" value="{{gurpsData.display.fp}}" aria-label="Current FP" />
+                <strong>/ {{gurpsData.display.fpMax}}</strong>
+              </div>
+            </div>
+          </div>
+
+          <div class="qd-ui2-roll-row" aria-label="Attribute roll controls">
+            <div class="qd-ui2-roll-pill">
+              <select data-action="primary-roll-select" aria-label="Primary roll target">
+                {{#each primaryRollView.options as |option|}}
+                <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
+                {{/each}}
+              </select>
+              <button type="button" data-action="roll-primary-attribute" title="Roll selected primary attribute">Roll</button>
+            </div>
+            <div class="qd-ui2-roll-pill">
+              <select data-action="secondary-roll-select" aria-label="Secondary roll target">
+                {{#each secondaryRollView.options as |option|}}
+                <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
+                {{/each}}
+              </select>
+              <button type="button" data-action="roll-secondary-attribute" title="Roll selected secondary attribute">Roll</button>
+            </div>
+          </div>
+
+          <div class="qd-ui2-stat-grid" aria-label="Selected actor movement and defenses">
+            <article class="qd-ui2-stat-tile" aria-label="Move"><span>Move</span><strong>{{gurpsData.display.move}}</strong></article>
+            <button type="button" class="qd-ui2-stat-tile" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="dodge" data-value="{{gurpsData.display.dodge}}"><span>Dodge</span><strong>{{gurpsData.display.dodge}}</strong></button>
+            <button type="button" class="qd-ui2-stat-tile" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="parry" data-value="{{gurpsData.display.parry}}"><span>Parry</span><strong>{{gurpsData.display.parry}}</strong></button>
+            <button type="button" class="qd-ui2-stat-tile" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="block" data-value="{{gurpsData.display.block}}"><span>Block</span><strong>{{gurpsData.display.block}}</strong></button>
+          </div>
+        </section>
+
+        <div class="qd-ui2-safe-controls" aria-label="Selected actor safe controls">
+          <button type="button" data-action="open-sheet" data-actor-id="{{activeActor.id}}" title="Open Sheet">Sheet</button>
+          <button type="button" data-action="drop-token" data-actor-id="{{activeActor.id}}" title="Drop Token">Drop Token</button>
+          <button type="button" data-action="clear-targets" title="Clear Targets">Clear Targets</button>
+          <button type="button" data-action="open-modifier-bucket" data-actor-id="{{activeActor.id}}" title="Modifier Bucket">ModifierBucket</button>
+          <button type="button" data-action="open-actions-drawer" data-drawer="combat" title="Open Actions">Actions</button>
+          <button type="button" data-action="open-actions-drawer" data-drawer="settings" title="Open Settings">Settings</button>
+        </div>
+        {{else}}
+        <section class="qd-ui2-empty-card" aria-label="No selected actor">Select an actor from the roster to populate the UI2 actor card.</section>
+        {{/if}}
+      </main>
+
+      <aside class="qd-ui2-drawer qd-ui2-actions-drawer" aria-label="UI2 action drawer controls">
+        <button type="button" class="qd-ui2-edge-button" data-action="toggle-actions-drawer" data-drawer="combat" title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}">{{#if isActionsDrawerOpen}}Actions »{{else}}‹ Actions{{/if}}</button>
+        {{#if isActionsDrawerOpen}}
+        <div class="qd-ui2-drawer-panel">
+          <nav class="qd-ui2-drawer-tabs">
+            <button type="button" data-action="toggle-drawer" data-drawer="combat">Combat</button>
+            <button type="button" data-action="toggle-drawer" data-drawer="skills">Skills</button>
+            <button type="button" data-action="toggle-drawer" data-drawer="spells">Spells</button>
+            <button type="button" data-action="toggle-drawer" data-drawer="settings">Settings</button>
+          </nav>
+          {{#if isSettingsDrawerOpen}}
+          <section class="qd-ui2-settings-panel" aria-label="UI mode settings">
+            <h4>UI Mode</h4>
+            <p>Current mode: {{#if uiModeView.isUi2}}UI2 / Experimental UI{{else}}UI1 / Current UI{{/if}}</p>
+            <div class="qd-ui2-mode-switch" role="group" aria-label="QuickDeck UI mode">
+              <button type="button" class="{{#if uiModeView.isUi1}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui1" aria-pressed="{{#if uiModeView.isUi1}}true{{else}}false{{/if}}">UI1 / Current UI</button>
+              <button type="button" class="{{#if uiModeView.isUi2}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui2" aria-pressed="{{#if uiModeView.isUi2}}true{{else}}false{{/if}}">UI2 / Experimental UI</button>
+            </div>
+            <small>Saved as a client preference and applied immediately.</small>
+          </section>
+          {{else}}
+          <div class="qd-ui2-drawer-note">UI2 actor-card preview uses existing QuickDeck action handlers. Open Settings here to return to UI1.</div>
+          {{/if}}
+        </div>
+        {{/if}}
+      </aside>
+    </section>
+  </div>
+  {{else}}
   <div class="qd40-body">
   <section class="qd40-shell qd31-shell {{#if isRosterDrawerOpen}}qd31-left-open{{else}}qd31-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd31-right-open{{else}}qd31-right-collapsed{{/if}}" data-active-drawer="{{activeDrawer}}">
     <div class="qd31-left-panel-wrap qd31-panel-wrap {{#if isRosterDrawerOpen}}is-open{{else}}is-collapsed{{/if}}">
@@ -378,6 +509,22 @@
       {{/each}}
     </section>
     <section class="qd31-drawer-body" {{#unless isSettingsDrawerOpen}}hidden{{/unless}}>
+      <section class="qd31-settings-panel qd31-ui-mode-settings-panel">
+        <header class="qd31-settings-header">
+          <h3>UI Mode</h3>
+          <small>Choose this client's QuickDeck interface. UI2 is experimental.</small>
+        </header>
+        <div class="qd31-action-row qd31-ui-mode-row" role="group" aria-label="QuickDeck UI mode">
+          <div class="qd31-action-main">
+            <strong>Current mode: {{#if uiModeView.isUi2}}UI2 / Experimental UI{{else}}UI1 / Current UI{{/if}}</strong>
+            <small>Saved as a client preference and applied immediately.</small>
+          </div>
+          <div class="qd31-action-controls qd31-ui-mode-controls">
+            <button type="button" class="qd31-square-button {{#if uiModeView.isUi1}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui1" aria-pressed="{{#if uiModeView.isUi1}}true{{else}}false{{/if}}">UI1 / Current UI</button>
+            <button type="button" class="qd31-square-button {{#if uiModeView.isUi2}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui2" aria-pressed="{{#if uiModeView.isUi2}}true{{else}}false{{/if}}">UI2 / Experimental UI</button>
+          </div>
+        </div>
+      </section>
       <section class="qd31-settings-panel">
         <header class="qd31-settings-header">
           <h3>Dev Art Tuner</h3>
@@ -462,4 +609,5 @@
   </div>
   </section>
   </div>
+  {{/if}}
 </div>

@@ -5836,3 +5836,33 @@
   font-weight: 700;
   text-align: center;
 }
+
+/* QD v0.14.2 Settings UI mode switch */
+#gurps-quickdeck-overlay.qd40-overlay .qd31-ui-mode-row,
+.qd40-overlay .qd31-ui-mode-row {
+  align-items: center;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-ui-mode-controls,
+.qd40-overlay .qd31-ui-mode-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: flex-end;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-ui-mode-controls .qd31-square-button,
+.qd40-overlay .qd31-ui-mode-controls .qd31-square-button {
+  width: auto;
+  min-width: 112px;
+  padding: 0 10px;
+  white-space: nowrap;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-ui-mode-controls .qd31-square-button.is-active,
+.qd40-overlay .qd31-ui-mode-controls .qd31-square-button.is-active {
+  border-color: rgba(238, 190, 94, 0.96);
+  color: #fff2c9;
+  filter: brightness(1.08);
+}
+/* End QD v0.14.2 Settings UI mode switch */

@@ -137,6 +137,19 @@
       {{/each}}
     </section>
     <section class="qd31-drawer-body" {{#unless isSettingsDrawerOpen}}hidden{{/unless}}>
+      <section class="qd31-settings-panel qd31-ui-mode-settings-panel">
+        <header class="qd31-settings-header">
+          <h3>UI Mode</h3>
+          <small>Choose this client's QuickDeck interface. UI2 is experimental.</small>
+        </header>
+        <div class="qd31-action-row qd31-ui-mode-row" role="group" aria-label="QuickDeck UI mode">
+          <span>Current mode: {{#if uiModeView.isUi2}}UI2 / Experimental UI{{else}}UI1 / Current UI{{/if}}</span>
+          <div class="qd31-action-controls qd31-ui-mode-controls">
+            <button type="button" class="qd31-square-button {{#if uiModeView.isUi1}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui1" aria-pressed="{{#if uiModeView.isUi1}}true{{else}}false{{/if}}">UI1 / Current UI</button>
+            <button type="button" class="qd31-square-button {{#if uiModeView.isUi2}}is-active{{/if}}" data-action="set-ui-mode" data-ui-mode="ui2" aria-pressed="{{#if uiModeView.isUi2}}true{{else}}false{{/if}}">UI2 / Experimental UI</button>
+          </div>
+        </div>
+      </section>
       <div class="qd31-action-row"><span>QuickDeck settings and tools.</span><button type="button" class="qd31-square-button" data-action="open-reference-index">Refs</button></div>
     </section>
   </aside>

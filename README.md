@@ -2,6 +2,19 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.14.2 (UI2 Settings Toggle)
+
+- QuickDeck Settings now includes a visible UI Mode switch with `UI1 / Current UI` and `UI2 / Experimental UI` choices.
+- The switch persists the client `uiMode` setting and applies immediately, including a UI2 Settings drawer control that can switch back to UI1.
+- The UI2 build badge now reads `QD v0.14.2 — settings toggle`.
+
+## What's New in v0.14.1 (UI2 Actor Card)
+
+- UI2 now maps the selected actor into the `qd-ui2` actor card only when the UI2 shell is active, leaving the existing qd31/UI1 cockpit unchanged.
+- The UI2 actor card displays portrait, centered name, HP/FP current/max meters with centered black readouts, Primary/Secondary roll pills, and compact Move/Dodge/Parry/Block tiles using existing QuickDeck/GURPS data and handlers.
+- Drop Token stays outside the actor card, with Open Sheet kept as a small safe control outside the card.
+- The UI2 build badge now reads `QD v0.14.1 — actor card`.
+
 ## What's New in v0.7.0 (Draft)
 
 - The Command Desk art skin foundation is now wired after the existing QuickDeck stylesheet, making the v0.7 art assets available without replacing current behavior.
