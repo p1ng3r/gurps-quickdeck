@@ -13,7 +13,8 @@ const SETTING_KEYS = {
   RESTORE_PILL_POSITION: "restorePillPosition",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
-  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
+  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings",
+  UI_MODE: "uiMode"
 };
 let quickDeckApp = null;
 function openQuickDeck() {
@@ -160,6 +161,15 @@ Hooks.once("init", () => {
     config: false,
     type: Object,
     default: {}
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.UI_MODE, {
+    name: "QuickDeck UI Mode",
+    hint: "Client-side QuickDeck shell preference. UI1 is the existing default; UI2 is the v0.14.0 foundation shell.",
+    scope: "client",
+    config: false,
+    type: String,
+    default: "ui1"
   });
 
 });

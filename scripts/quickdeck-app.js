@@ -18,9 +18,12 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
-  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
+  PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings",
+  UI_MODE: "uiMode"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
+const VALID_UI_MODES = new Set(["ui1", "ui2"]);
+const DEFAULT_UI_MODE = "ui1";
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS = 30000;
@@ -395,6 +398,7 @@ export class QuickDeckApp extends Application {
     this._overlayPosition = null;
     this._overlayWindowResizeHandler = () => this.scheduleQd31WindowResize();
     this.isInfoPopoverOpen = false;
+    this.uiMode = DEFAULT_UI_MODE;
     this.centerFavoriteSections = {
       combat: true,
       skills: true,
@@ -1807,6 +1811,9 @@ export class QuickDeckApp extends Application {
     );
     this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
 
+    const savedUiMode = String(game.settings.get(MODULE_ID, SETTING_KEYS.UI_MODE) ?? DEFAULT_UI_MODE).toLowerCase();
+    this.uiMode = VALID_UI_MODES.has(savedUiMode) ? savedUiMode : DEFAULT_UI_MODE;
+
     this._stateLoadedFromSettings = true;
   }
 
@@ -1852,6 +1859,16 @@ export class QuickDeckApp extends Application {
   persistMinimizedState() {
     if (!game?.settings) return;
     game.settings.set(MODULE_ID, SETTING_KEYS.MINIMIZED, Boolean(this.isMinimized));
+  }
+
+  async setUiMode(mode) {
+    const normalizedMode = VALID_UI_MODES.has(String(mode).toLowerCase())
+      ? String(mode).toLowerCase()
+      : DEFAULT_UI_MODE;
+    if (this.uiMode === normalizedMode) return;
+    this.uiMode = normalizedMode;
+    if (game?.settings) await game.settings.set(MODULE_ID, SETTING_KEYS.UI_MODE, normalizedMode);
+    this.render(false, { focus: false });
   }
 
   normalizeRestorePillPosition(position) {
@@ -4961,6 +4978,11 @@ export class QuickDeckApp extends Application {
       uiBranchLabel: "v0.9.7.1 batch1-fit",
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
+      uiMode: this.uiMode,
+      isUi1Mode: this.uiMode === "ui1",
+      isUi2Mode: this.uiMode === "ui2",
+      uiModeLabel: this.uiMode === "ui2" ? "UI2" : "UI1",
+      ui2BuildLabel: "QD v0.14.0 — UI2 shell",
       devArtTunerEnabled: this.isDevArtTunerEnabled(),
       pdfMapDraft: this.pdfMapDraft,
       pdfPageRefMappings: this.getPdfPageRefMappingRows()
@@ -5326,6 +5348,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='close-actions-drawer'], [data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
     html.find("[data-action='toggle-actions-drawer']").on("click", (event) => { event.preventDefault(); this.toggleActionsDrawer(event.currentTarget.dataset.drawer); });
     html.find("[data-action='toggle-info-popover']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.isInfoPopoverOpen = !this.isInfoPopoverOpen; this.render(false); });
+    html.find("[data-action='set-ui-mode']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.setUiMode(event.currentTarget.dataset.uiMode); });
     html.find("[data-action='minimize-overlay']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.toggleMinimizedState(); });
     html.find("[data-action='close-overlay']").on("click", async (event) => { event.preventDefault(); event.stopPropagation(); await this.close(); });
 

@@ -1,0 +1,288 @@
+/* QuickDeck UI2 foundation shell (v0.14.0). */
+#gurps-quickdeck-overlay .qd-ui-mode-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  margin-right: 8px;
+  padding: 2px;
+  border: 1px solid rgba(219, 177, 91, 0.58);
+  border-radius: 999px;
+  background: rgba(15, 11, 8, 0.72);
+  box-shadow: inset 0 0 10px rgba(255, 217, 140, 0.12);
+}
+
+#gurps-quickdeck-overlay .qd-ui-mode-button {
+  min-width: 42px;
+  height: 24px;
+  border: 0;
+  border-radius: 999px;
+  color: #f6dfad;
+  background: transparent;
+  font: 700 11px/1 var(--font-primary, serif);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+#gurps-quickdeck-overlay .qd-ui-mode-button:hover,
+#gurps-quickdeck-overlay .qd-ui-mode-button:focus-visible {
+  color: #fff5d7;
+  background: rgba(184, 131, 48, 0.28);
+  outline: 1px solid rgba(255, 228, 163, 0.72);
+  outline-offset: 1px;
+}
+
+#gurps-quickdeck-overlay .qd-ui-mode-button.is-active {
+  color: #1e1408;
+  background: linear-gradient(180deg, #ffe19c 0%, #c5842d 100%);
+  box-shadow: 0 0 10px rgba(255, 214, 128, 0.26);
+}
+
+#gurps-quickdeck-overlay .qd-ui2-shell {
+  --qd-ui2-center-min: 420px;
+  --qd-ui2-drawer-width: clamp(240px, 24vw, 340px);
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px;
+  width: min(calc(100vw - 120px), 720px);
+  max-width: calc(100vw - 120px);
+  min-width: min(420px, calc(100vw - 120px));
+  min-height: min(680px, calc(100vh - 96px));
+  margin: 0 auto;
+  padding: 12px;
+  border: 1px solid rgba(218, 171, 87, 0.55);
+  border-radius: 18px;
+  color: #f6e4bd;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(179, 119, 42, 0.26), transparent 34%),
+    linear-gradient(145deg, rgba(34, 24, 17, 0.98), rgba(13, 12, 13, 0.98));
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.58), inset 0 0 40px rgba(255, 209, 117, 0.08);
+}
+
+#gurps-quickdeck-overlay .qd-ui2-shell.qd-ui2-left-open {
+  grid-template-columns: var(--qd-ui2-drawer-width) minmax(var(--qd-ui2-center-min), 1fr);
+  width: min(calc(100vw - 120px), 1040px);
+}
+
+#gurps-quickdeck-overlay .qd-ui2-shell.qd-ui2-right-open {
+  grid-template-columns: minmax(var(--qd-ui2-center-min), 1fr) var(--qd-ui2-drawer-width);
+  width: min(calc(100vw - 120px), 1040px);
+}
+
+#gurps-quickdeck-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
+  grid-template-columns: var(--qd-ui2-drawer-width) minmax(var(--qd-ui2-center-min), 1fr) var(--qd-ui2-drawer-width);
+  width: min(calc(100vw - 120px), 1240px);
+}
+
+#gurps-quickdeck-overlay .qd-ui2-drawer,
+#gurps-quickdeck-overlay .qd-ui2-center-cockpit {
+  min-width: 0;
+  border: 1px solid rgba(205, 153, 75, 0.36);
+  border-radius: 14px;
+  background: rgba(24, 18, 14, 0.82);
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.32);
+}
+
+#gurps-quickdeck-overlay .qd-ui2-drawer {
+  display: none;
+  overflow: hidden;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-left-open .qd-ui2-left-drawer,
+#gurps-quickdeck-overlay .qd-ui2-right-open .qd-ui2-right-drawer {
+  display: flex;
+  flex-direction: column;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-left-open .qd-ui2-left-drawer { grid-column: 1; }
+#gurps-quickdeck-overlay .qd-ui2-left-open:not(.qd-ui2-right-open) .qd-ui2-center-cockpit { grid-column: 2; }
+#gurps-quickdeck-overlay .qd-ui2-right-open:not(.qd-ui2-left-open) .qd-ui2-center-cockpit { grid-column: 1; }
+#gurps-quickdeck-overlay .qd-ui2-right-open .qd-ui2-right-drawer { grid-column: -2; }
+#gurps-quickdeck-overlay .qd-ui2-left-open.qd-ui2-right-open .qd-ui2-center-cockpit { grid-column: 2; }
+
+#gurps-quickdeck-overlay .qd-ui2-center-cockpit {
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-region-header,
+#gurps-quickdeck-overlay .qd-ui2-cockpit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-bottom: 1px solid rgba(205, 153, 75, 0.26);
+}
+
+#gurps-quickdeck-overlay .qd-ui2-cockpit-header {
+  padding: 0 0 12px;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-cockpit-header h2,
+#gurps-quickdeck-overlay .qd-ui2-actor-card h3 {
+  margin: 0;
+  color: #ffe4a8;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-dev-badge,
+#gurps-quickdeck-overlay .qd-ui2-mode-pill {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  border: 1px solid rgba(255, 220, 145, 0.56);
+  border-radius: 999px;
+  padding: 3px 9px;
+  color: #1f1509;
+  background: linear-gradient(180deg, #ffe4a8 0%, #c3893c 100%);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-outside-tab {
+  position: absolute;
+  top: 96px;
+  z-index: 4;
+  min-height: 92px;
+  width: 34px;
+  border: 1px solid rgba(230, 180, 91, 0.68);
+  color: #ffe3a6;
+  background: linear-gradient(180deg, rgba(88, 49, 21, 0.96), rgba(27, 19, 13, 0.96));
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.46);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  cursor: pointer;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-left-tab {
+  left: -40px;
+  border-radius: 12px 0 0 12px;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-right-tab {
+  right: -40px;
+  border-radius: 0 12px 12px 0;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-outside-tab:hover,
+#gurps-quickdeck-overlay .qd-ui2-outside-tab:focus-visible {
+  color: #fff7da;
+  outline: 1px solid rgba(255, 230, 168, 0.82);
+  outline-offset: 2px;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-drawer-body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+  padding: 12px;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-roster-row,
+#gurps-quickdeck-overlay .qd-ui2-pinned-action,
+#gurps-quickdeck-overlay .qd-ui2-action-button,
+#gurps-quickdeck-overlay .qd-ui2-drawer-tabs button {
+  border: 1px solid rgba(212, 157, 80, 0.36);
+  border-radius: 10px;
+  color: #f8dfad;
+  background: rgba(55, 36, 21, 0.72);
+  cursor: pointer;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-roster-row {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 3px 10px;
+  padding: 8px;
+  text-align: left;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-roster-row img {
+  grid-row: span 2;
+  width: 42px;
+  height: 42px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-roster-row small {
+  color: #c9af80;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-roster-row.is-active {
+  border-color: rgba(255, 224, 153, 0.82);
+  background: rgba(107, 68, 27, 0.78);
+}
+
+#gurps-quickdeck-overlay .qd-ui2-actor-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px;
+  border: 1px solid rgba(214, 166, 85, 0.32);
+  border-radius: 14px;
+  background: rgba(12, 10, 9, 0.42);
+}
+
+#gurps-quickdeck-overlay .qd-ui2-portrait {
+  width: 78px;
+  height: 78px;
+  border: 2px solid rgba(255, 222, 145, 0.52);
+  border-radius: 16px;
+  object-fit: cover;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-vitals,
+#gurps-quickdeck-overlay .qd-ui2-foundation-note,
+#gurps-quickdeck-overlay .qd-ui2-empty {
+  color: #d9c39a;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-control-strip,
+#gurps-quickdeck-overlay .qd-ui2-drawer-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-control-strip button,
+#gurps-quickdeck-overlay .qd-ui2-drawer-tabs button,
+#gurps-quickdeck-overlay .qd-ui2-pinned-action {
+  padding: 8px 10px;
+}
+
+#gurps-quickdeck-overlay .qd-ui2-foundation-note,
+#gurps-quickdeck-overlay .qd-ui2-center-empty {
+  margin-top: auto;
+  padding: 12px;
+  border: 1px dashed rgba(255, 221, 151, 0.32);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.22);
+}
+
+@media (max-width: 900px) {
+  #gurps-quickdeck-overlay .qd-ui2-shell,
+  #gurps-quickdeck-overlay .qd-ui2-shell.qd-ui2-left-open,
+  #gurps-quickdeck-overlay .qd-ui2-shell.qd-ui2-right-open,
+  #gurps-quickdeck-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(calc(100vw - 96px), 620px);
+  }
+
+  #gurps-quickdeck-overlay .qd-ui2-left-open .qd-ui2-left-drawer,
+  #gurps-quickdeck-overlay .qd-ui2-right-open .qd-ui2-right-drawer,
+  #gurps-quickdeck-overlay .qd-ui2-center-cockpit {
+    grid-column: 1;
+  }
+
+  #gurps-quickdeck-overlay .qd-ui2-left-drawer { grid-row: 1; }
+  #gurps-quickdeck-overlay .qd-ui2-center-cockpit { grid-row: 2; }
+  #gurps-quickdeck-overlay .qd-ui2-right-drawer { grid-row: 3; }
+}

@@ -2,6 +2,12 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
+## What's New in v0.14.0 (Draft)
+
+- QuickDeck now preserves the existing interface as **UI1** and adds a visible **UI1/UI2** switch in the QuickDeck chrome.
+- UI2 is a foundation shell only: left drawer region, center cockpit region, right drawer region, outside left/right tabs, drawer-open state classes, and the visible `QD v0.14.0 — UI2 shell` developer badge.
+- The selected UI mode is saved as a client setting when available, so a refreshed Foundry session can restore the chosen UI mode while UI1 remains the default.
+
 ## What's New in v0.7.0 (Draft)
 
 - The Command Desk art skin foundation is now wired after the existing QuickDeck stylesheet, making the v0.7 art assets available without replacing current behavior.
