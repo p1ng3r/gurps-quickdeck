@@ -1,3 +1,10 @@
+## [Unreleased] - v0.14.2 ui-mode-settings-only-local
+
+### Changed
+- Adds a client-scoped `uiMode` setting that defaults to `ui1`, keeping UI1 as the fresh-client default while allowing users to opt into UI2.
+- Adds UI Mode controls to the QuickDeck Settings drawer with UI1 / Current UI and UI2 / Experimental UI actions, including a visible return path from UI2.
+- Gates chromeless UI2 overlay rendering behind the selected UI Mode instead of forcing UI2 whenever QuickDeck renders.
+
 ## [Unreleased] - v0.9.7.2 batch2-fit
 
 ### Changed
