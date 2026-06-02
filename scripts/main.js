@@ -12,10 +12,20 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
+  UI_MODE: "uiMode",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 let quickDeckApp = null;
+function getQuickDeckUiMode() {
+  try {
+    const mode = game?.settings?.get?.(MODULE_ID, SETTING_KEYS.UI_MODE);
+    return mode === "ui2" ? "ui2" : "ui1";
+  } catch (_error) {
+    return "ui1";
+  }
+}
+
 function openQuickDeck() {
   if (!quickDeckApp) {
     quickDeckApp = new QuickDeckApp();
@@ -29,7 +39,7 @@ function openQuickDeck() {
   if (existingOverlay && existingOverlay !== quickDeckApp._overlayRoot) existingOverlay.remove();
 
   quickDeckApp.render(true);
-  void quickDeckApp.renderOverlay?.();
+  if (getQuickDeckUiMode() === "ui1") quickDeckApp.unmountOverlay?.();
   quickDeckApp.syncMinimizedPresentation?.();
 
   return quickDeckApp;
@@ -144,7 +154,18 @@ Hooks.once("init", () => {
     default: false
   });
 
-
+  game.settings.register(MODULE_ID, SETTING_KEYS.UI_MODE, {
+    name: "QuickDeck UI Mode",
+    hint: "Client-side UI mode. UI1 remains the default; UI2 is experimental.",
+    scope: "client",
+    config: false,
+    type: String,
+    choices: {
+      ui1: "UI1 / Current UI",
+      ui2: "UI2 / Experimental UI"
+    },
+    default: "ui1"
+  });
 
   game.settings.register(MODULE_ID, SETTING_KEYS.REFERENCE_INDEX, {
     name: "QuickDeck Local Overrides Metadata",

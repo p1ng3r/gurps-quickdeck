@@ -4,6 +4,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 ## What's New in v0.7.0 (Draft)
 
+- UI1 remains the default QuickDeck client mode, with a client-persisted UI Mode switch in the Settings drawer for opting into UI2 / Experimental UI and switching back.
 - The Command Desk art skin foundation is now wired after the existing QuickDeck stylesheet, making the v0.7 art assets available without replacing current behavior.
 
 ## What's New in v0.6.0 (Release Candidate)
@@ -97,6 +98,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
   - If a native GURPS method is not available, visible 3d6 fallback chat roll is used.
 - Lightweight client settings/state:
   - Optional default drawer on open (`none`, `combat`, `skills`, `quick-skills`, `spells`).
+  - Client-scoped UI Mode (`ui1` by default, optional `ui2`) controlled from the QuickDeck Settings drawer.
   - Client-scoped JSON metadata store for manual Local Override entries (no PDF parsing/extraction).
   - Local Overrides manager can filter rows by name/type/book key/displayed page/notes without re-rendering on each keystroke.
   - Local Overrides manager can export current metadata JSON directly to clipboard.
@@ -129,7 +131,8 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 6. Click **Minimize** to collapse QuickDeck into a compact top-screen **QD QuickDeck** restore pill.
 7. **Left-click** the floating restore pill to reopen QuickDeck.
 8. **Right-click and drag** the floating restore pill to move it; release to save position.
-9. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, Combat Favorites, Spell Favorites, minimized state, and restore pill position restore per client.
+9. Use **Settings → UI Mode** to keep **UI1 / Current UI** or opt into **UI2 / Experimental UI**; the choice persists per client and can be switched back from the Settings drawer.
+10. Close/reopen QuickDeck or refresh Foundry—roster, Quick Skills, Combat Favorites, Spell Favorites, UI Mode, minimized state, and restore pill position restore per client.
 
 ## Branch Workflow
 

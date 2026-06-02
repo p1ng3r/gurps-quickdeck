@@ -18,6 +18,7 @@ const SETTING_KEYS = {
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
+  UI_MODE: "uiMode",
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
@@ -4312,8 +4313,13 @@ export class QuickDeckApp extends Application {
 
   async _render(force = false, options = {}) {
     const result = await super._render(force, options);
-    this.hideApplicationShellForOverlay();
-    await this.renderOverlay();
+    if (this.getUiMode() === "ui2") {
+      this.hideApplicationShellForOverlay();
+      await this.renderOverlay();
+    } else {
+      this.unmountOverlay();
+      this.showApplicationShellIfNeeded();
+    }
     this.syncHeaderMinimizeButton();
     this.syncMinimizedPresentation();
     this.bringReferenceAppToFrontSoon();
@@ -4923,6 +4929,9 @@ export class QuickDeckApp extends Application {
       isSpellsDrawerOpen: this.activeDrawer === "spells",
       isSettingsDrawerOpen: this.activeDrawer === "settings",
       isDebugMode: DEBUG,
+      uiMode: this.getUiMode(),
+      isUi1Mode: this.getUiMode() === "ui1",
+      isUi2Mode: this.getUiMode() === "ui2",
       attackCount: attacks.length,
       visibleAttackCount: filteredAttacks.length,
       combatSearchCount: filteredAttacks.length,
@@ -4965,6 +4974,25 @@ export class QuickDeckApp extends Application {
       pdfMapDraft: this.pdfMapDraft,
       pdfPageRefMappings: this.getPdfPageRefMappingRows()
     };
+  }
+
+  getUiMode() {
+    try {
+      const mode = game?.settings?.get?.(MODULE_ID, SETTING_KEYS.UI_MODE);
+      return mode === "ui2" ? "ui2" : "ui1";
+    } catch (_error) {
+      return "ui1";
+    }
+  }
+
+  async setUiMode(mode) {
+    const normalizedMode = mode === "ui2" ? "ui2" : "ui1";
+    await game?.settings?.set?.(MODULE_ID, SETTING_KEYS.UI_MODE, normalizedMode);
+    if (normalizedMode === "ui1") {
+      this.unmountOverlay();
+      this.showApplicationShellIfNeeded();
+    }
+    this.render(false, { focus: false });
   }
 
   isDevArtTunerEnabled() {
@@ -5053,6 +5081,11 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='open-reference-index']").on("click", (event) => {
       event.preventDefault();
       this.openReferenceIndexManager();
+    });
+
+    html.find("[data-action='set-ui-mode']").on("click", async (event) => {
+      event.preventDefault();
+      await this.setUiMode(event.currentTarget.dataset.uiMode);
     });
 
     html.find("[data-action='toggle-dev-art-tuner-enabled']").on("change", async (event) => {

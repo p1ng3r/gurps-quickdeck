@@ -378,6 +378,20 @@
       {{/each}}
     </section>
     <section class="qd31-drawer-body" {{#unless isSettingsDrawerOpen}}hidden{{/unless}}>
+      <section class="qd31-settings-panel" aria-label="QuickDeck UI Mode">
+        <header class="qd31-settings-header">
+          <h3>UI Mode</h3>
+          <small>UI1 is the default current UI. UI2 is experimental and persists per client.</small>
+        </header>
+        <div class="qd31-action-row">
+          <span>UI1 / Current UI</span>
+          <button type="button" class="qd31-square-button" data-action="set-ui-mode" data-ui-mode="ui1" {{#if isUi1Mode}}disabled{{/if}}>{{#if isUi1Mode}}Active{{else}}Switch{{/if}}</button>
+        </div>
+        <div class="qd31-action-row">
+          <span>UI2 / Experimental UI</span>
+          <button type="button" class="qd31-square-button" data-action="set-ui-mode" data-ui-mode="ui2" {{#if isUi2Mode}}disabled{{/if}}>{{#if isUi2Mode}}Active{{else}}Switch{{/if}}</button>
+        </div>
+      </section>
       <section class="qd31-settings-panel">
         <header class="qd31-settings-header">
           <h3>Dev Art Tuner</h3>
