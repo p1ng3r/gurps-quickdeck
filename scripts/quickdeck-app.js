@@ -5013,6 +5013,15 @@ export class QuickDeckApp extends Application {
   activateListeners(html) {
     super.activateListeners(html);
 
+    html.find("[data-action='set-ui-mode']").on("change", (event) => {
+      event.preventDefault();
+      const target = event.currentTarget;
+      const nextMode = target.type === "checkbox"
+        ? (target.checked ? "ui2" : "ui1")
+        : target.value;
+      void this.setUiMode?.(nextMode);
+    });
+
     html.find("[data-action='add-actor']").on("click", (event) => {
       event.preventDefault();
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;

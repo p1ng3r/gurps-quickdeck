@@ -97,11 +97,8 @@
           <h3>Settings</h3>
           <p>Settings placeholder.</p>
           <label class="qd-ui2-mode-field">
-            <span>UI Mode</span>
-            <select data-action="set-ui-mode" aria-label="QuickDeck UI Mode">
-              <option value="ui1" {{#if isUi1Mode}}selected{{/if}}>UI1 / Current UI</option>
-              <option value="ui2" {{#if isUi2Mode}}selected{{/if}}>UI2 / Experimental UI</option>
-            </select>
+            <input type="checkbox" data-action="set-ui-mode" {{#if isUi2Mode}}checked{{/if}}>
+            <span>Enable UI2 Experimental Shell</span>
           </label>
         </section>
       </aside>
@@ -472,6 +469,12 @@
           <h3>Dev Art Tuner</h3>
           <small>Developer-only visual layout tool · temporary CSS only</small>
         </header>
+        <div class="qd31-action-row qd31-dev-art-tuner-row">
+          <label class="qd31-dev-art-tuner-toggle">
+            <input type="checkbox" data-action="set-ui-mode" {{#if isUi2Mode}}checked{{/if}}>
+            <span>Enable UI2 Experimental Shell</span>
+          </label>
+        </div>
         <div class="qd31-action-row qd31-dev-art-tuner-row">
           <label class="qd31-dev-art-tuner-toggle">
             <input type="checkbox" data-action="toggle-dev-art-tuner-enabled" {{#if devArtTunerEnabled}}checked{{/if}}>
