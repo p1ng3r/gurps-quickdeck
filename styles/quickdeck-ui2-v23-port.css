@@ -76,7 +76,6 @@
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open,
 .qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open {
   --qd-ui2-center-w: var(--qd-ui2-center-one);
   width: calc(var(--qd-ui2-center-w) + var(--qd-ui2-right-w)) !important;
