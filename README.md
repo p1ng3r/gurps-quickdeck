@@ -4,7 +4,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 ## What's New in v0.7.0 (Draft)
 
-- Added an experimental UI2 shell HTML alignment pass with UI1 still the default, a Settings → UI Mode switch, outside-edge drawer tabs, dynamic center widths, and placeholder-only UI2 drawer/cockpit content.
+- Replaced the UI2 center cockpit placeholder with a selected-actor card showing portrait, identity, HP/FP, Move, Dodge, Parry, Block, and existing Open Sheet / Drop Token actions while leaving UI1 and UI2 drawers unchanged.
 - The Command Desk art skin foundation is now wired after the existing QuickDeck stylesheet, making the v0.7 art assets available without replacing current behavior.
 
 ## What's New in v0.6.0 (Release Candidate)

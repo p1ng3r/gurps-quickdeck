@@ -32,15 +32,13 @@
   <div class="qd40-body {{#if isUi2Mode}}qd-ui2-body{{/if}}">
   {{#if isUi2Mode}}
     {{!--
-    UI2 v0.14.3 placeholder shell.
+    UI2 v0.14.4 actor card foundation.
+    This pass replaces only the center placeholder; roster/action drawers remain shell placeholders.
     Future passes:
-    - actor card
-    - roster
     - carousel
-    - actions drawer
+    - action drawer mapping
     - art integration
     --}}
-    {{!-- UI2 v0.14.3 is intentionally placeholder-only. Actor card, roster, carousel, and action drawer mapping come in later passes. --}}
     <section
       class="qd40-shell qd-ui2-shell {{#if isRosterDrawerOpen}}qd-ui2-left-open{{else}}qd-ui2-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd-ui2-right-open{{else}}qd-ui2-right-collapsed{{/if}}"
       data-active-drawer="{{activeDrawer}}"

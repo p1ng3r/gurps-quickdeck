@@ -1,3 +1,9 @@
+## [Unreleased] - v0.14.4-ui2-actor-card-foundation-local
+
+### Changed
+- Replaces only the UI2 center cockpit placeholder with a selected-actor card showing portrait, name, type, HP/FP, Move, Dodge, Parry, Block, and existing Open Sheet / Drop Token actions.
+- Keeps UI1 as the default and preserves the existing UI2 checkbox toggle, shell structure, roster drawer placeholders, and action drawer placeholders.
+
 ## [Unreleased] - v0.14.3-ui2-shell-html-alignment-local
 
 ### Changed
