@@ -530,3 +530,49 @@
 .qd40-overlay .qd-ui2-carousel-card {
   margin-top: 0 !important;
 }
+
+/* QuickDeck UI2 v23 empty-space trim v0.15.5 */
+
+/* Trim the large unused lower stone field in center-focused states. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open),
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) {
+  --qd-ui2-body-h: min(510px, calc(100vh - 148px));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open {
+  --qd-ui2-body-h: min(560px, calc(100vh - 140px));
+}
+
+/* Keep three-panel mode roomy enough for real drawer content, but reduce a little waste. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
+  --qd-ui2-body-h: min(610px, calc(100vh - 128px));
+}
+
+/* Pull the command console upward less aggressively in shorter center states. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-center-cockpit {
+  padding-top: 16px !important;
+  gap: 7px !important;
+}
+
+/* Tighter actor/card stack relationship. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  margin-bottom: 6px !important;
+}
+
+/* Center-only should feel like one compact command unit. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card {
+  max-width: 680px !important;
+}
+
+/* Carousel should tuck under the card rather than float in its own field. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-card,
+.qd40-overlay .qd-ui2-carousel-card {
+  margin-top: -2px !important;
+}
