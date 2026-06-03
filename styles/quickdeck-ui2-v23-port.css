@@ -576,3 +576,262 @@
 .qd40-overlay .qd-ui2-carousel-card {
   margin-top: -2px !important;
 }
+
+/* QuickDeck UI2 center reshape and help-dev polish v0.15.6 */
+
+/* The ? popover now doubles as Help / Dev. Keep it compact and readable. */
+#gurps-quickdeck-overlay.qd40-overlay .qd40-info-popover,
+.qd40-overlay .qd40-info-popover {
+  min-width: 245px !important;
+  max-width: 320px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-info-divider,
+.qd40-overlay .qd40-info-divider {
+  height: 1px !important;
+  margin: 7px 0 !important;
+  background: linear-gradient(90deg, transparent, rgba(225, 179, 84, 0.58), transparent) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-info-dev-field,
+.qd40-overlay .qd40-info-dev-field {
+  display: grid !important;
+  grid-template-columns: auto minmax(0, 1fr) !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  padding: 7px 8px !important;
+  color: #f6e4bd !important;
+  background: rgba(7, 6, 5, 0.58) !important;
+  border: 1px solid rgba(218, 170, 78, 0.34) !important;
+  border-radius: 8px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-info-dev-field input,
+.qd40-overlay .qd40-info-dev-field input {
+  margin: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-info-dev-field span,
+.qd40-overlay .qd40-info-dev-field span {
+  display: grid !important;
+  gap: 2px !important;
+  min-width: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-info-dev-field strong,
+.qd40-overlay .qd40-info-dev-field strong {
+  font-size: 11px !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-info-dev-field small,
+.qd40-overlay .qd40-info-dev-field small {
+  color: rgba(232, 209, 162, 0.74) !important;
+  font-size: 10px !important;
+}
+
+/* Center cockpit should read as a single command console, not a card floating on a slab. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-center-cockpit {
+  isolation: isolate !important;
+  padding-top: 14px !important;
+  gap: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit::before,
+.qd40-overlay .qd-ui2-center-cockpit::before {
+  content: "" !important;
+  position: absolute !important;
+  z-index: 0 !important;
+  top: 10px !important;
+  left: 50% !important;
+  width: min(calc(var(--qd-ui2-center-w) - 26px), 650px) !important;
+  height: 246px !important;
+  transform: translateX(-50%) !important;
+  pointer-events: none !important;
+  border: 1px solid rgba(218, 170, 78, 0.20) !important;
+  border-radius: 18px !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(226, 178, 83, 0.13), transparent 42%),
+    linear-gradient(180deg, rgba(54, 36, 20, 0.54), rgba(9, 8, 7, 0.42)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 221, 143, 0.06),
+    inset 0 0 38px rgba(0, 0, 0, 0.48),
+    0 10px 28px rgba(0, 0, 0, 0.28) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-center-cockpit::before,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-center-cockpit::before {
+  width: min(calc(var(--qd-ui2-center-w) - 18px), 474px) !important;
+  height: 246px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-card,
+.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-carousel-card {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  max-width: min(calc(var(--qd-ui2-center-w) - 34px), 610px) !important;
+  min-height: 162px !important;
+  padding: 8px !important;
+  margin-bottom: 4px !important;
+  grid-template-columns: 106px minmax(0, 1fr) !important;
+  gap: 6px 9px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card {
+  max-width: 610px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open) .qd-ui2-actor-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open) .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open .qd-ui2-actor-card {
+  max-width: 590px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card {
+  max-width: 454px !important;
+  grid-template-columns: 98px minmax(0, 1fr) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-portrait-ring {
+  width: 106px !important;
+  max-width: 106px !important;
+  padding: 6px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-portrait-ring {
+  width: 98px !important;
+  max-width: 98px !important;
+  padding: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-name,
+.qd40-overlay .qd-ui2-actor-name {
+  font-size: clamp(20px, 2.2vw, 27px) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-stack,
+.qd40-overlay .qd-ui2-vital-stack {
+  gap: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-meter,
+.qd40-overlay .qd-ui2-vital-meter {
+  height: 23px !important;
+  min-height: 23px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-row,
+.qd40-overlay .qd-ui2-roll-row {
+  gap: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-pill,
+.qd40-overlay .qd-ui2-roll-pill {
+  min-height: 28px !important;
+  height: 28px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-select,
+.qd40-overlay .qd-ui2-roll-select,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-button,
+.qd40-overlay .qd-ui2-roll-button {
+  height: 24px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-button,
+.qd40-overlay .qd-ui2-roll-button {
+  width: 24px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-grid,
+.qd40-overlay .qd-ui2-stat-grid {
+  grid-template-columns: repeat(4, 54px) !important;
+  gap: 7px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-tile,
+.qd40-overlay .qd-ui2-stat-tile {
+  width: 54px !important;
+  height: 54px !important;
+  min-height: 54px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-card,
+.qd40-overlay .qd-ui2-carousel-card {
+  max-width: min(calc(var(--qd-ui2-center-w) - 52px), 540px) !important;
+  height: 46px !important;
+  min-height: 46px !important;
+  margin-top: -4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-track,
+.qd40-overlay .qd-ui2-carousel-track {
+  height: 38px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button,
+.qd40-overlay .qd-ui2-carousel-portrait-button {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+}
+
+/* QuickDeck UI2 center reshape follow-up v0.15.6b */
+
+/* Let the new console plate breathe a little more in center-only mode. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-center-cockpit::before,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-center-cockpit::before {
+  width: min(calc(var(--qd-ui2-center-w) - 40px), 680px) !important;
+  height: 260px !important;
+}
+
+/* Center-only actor card: less banner-like, but not too cramped. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card {
+  max-width: 640px !important;
+  min-height: 168px !important;
+}
+
+/* One-drawer mode needs a bit more width than three-panel so controls do not feel squeezed. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open) .qd-ui2-actor-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open) .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open .qd-ui2-actor-card {
+  max-width: 620px !important;
+}
+
+/* Three-panel should keep the compact cockpit values from the reshape pass. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card {
+  max-width: 454px !important;
+}
+
+/* Slightly restore portrait size outside cramped three-panel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-collapsed .qd-ui2-portrait-ring,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-collapsed:not(.qd-ui2-right-open) .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-collapsed .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-collapsed:not(.qd-ui2-right-open) .qd-ui2-portrait-ring {
+  width: 112px !important;
+  max-width: 112px !important;
+}
+
+/* Bring carousel visually into the same control deck without feeling jammed. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-card,
+.qd40-overlay .qd-ui2-carousel-card {
+  margin-top: -2px !important;
+  max-width: min(calc(var(--qd-ui2-center-w) - 56px), 560px) !important;
+}
