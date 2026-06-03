@@ -240,20 +240,154 @@
       {{#if isActionsDrawerOpen}}
       <aside class="qd-ui2-drawer qd-ui2-right-drawer" aria-label="UI2 action drawer">
         <header class="qd-ui2-panel-header">
-          <p class="qd-ui2-kicker">Action Shell</p>
-          <h2>Drawers</h2>
+          <p class="qd-ui2-kicker">QD v0.14.9 — right drawer</p>
+          <h2>Actions</h2>
         </header>
-        <section class="qd-ui2-placeholder-card"><h3>Combat</h3><p>Combat placeholder.</p></section>
-        <section class="qd-ui2-placeholder-card"><h3>Skills</h3><p>Skills placeholder.</p></section>
-        <section class="qd-ui2-placeholder-card"><h3>Spells</h3><p>Spells placeholder.</p></section>
-        <section class="qd-ui2-placeholder-card qd-ui2-settings-card">
-          <h3>Settings</h3>
-          <p>Settings placeholder.</p>
-          <label class="qd-ui2-mode-field">
-            <input type="checkbox" data-action="set-ui-mode" {{#if isUi2Mode}}checked{{/if}}>
-            <span>Enable UI2 Experimental Shell</span>
-          </label>
-        </section>
+
+        <nav class="qd-ui2-drawer-tabs" aria-label="UI2 action drawer sections">
+          <button type="button" class="qd-ui2-drawer-tab {{#if isCombatDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="combat">Combat</button>
+          <button type="button" class="qd-ui2-drawer-tab {{#if isSkillsDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="skills">Skills</button>
+          <button type="button" class="qd-ui2-drawer-tab {{#if isSpellsDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="spells">Spells</button>
+          <button type="button" class="qd-ui2-drawer-tab {{#if isSettingsDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="settings">Settings</button>
+        </nav>
+
+        <div class="qd-ui2-drawer-scroll" data-qd-custom-scroll-candidate="true">
+          <section class="qd-ui2-drawer-section qd-ui2-combat-section" aria-label="Combat actions">
+            <header class="qd-ui2-section-header">
+              <h3>Combat</h3>
+              <span data-search-status="combat">{{combatSearchStatusText}}</span>
+            </header>
+            <div class="qd-ui2-search-row">
+              <input type="search" data-action="combat-search" value="{{combatSearch}}" placeholder="Search attacks" aria-label="Search attacks" />
+              <button type="button" class="qd-ui2-search-clear" data-action="clear-combat-search" {{#unless combatSearchHasQuery}}hidden{{/unless}} title="Clear combat search">Clear</button>
+            </div>
+            <div class="qd-ui2-search-empty" data-search-empty="combat" {{#unless combatSearchShowEmpty}}hidden{{/unless}}>No matching attacks.</div>
+            {{#if activeActor}}
+              {{#each indexedAttacks as |attack|}}
+              <article class="qd-ui2-action-row {{#if attack.isFavoriteAttack}}is-favorite{{/if}}" data-search-row="combat" data-search-text="{{attack.searchText}}">
+                <div class="qd-ui2-action-main">
+                  <button type="button" class="qd-ui2-reference-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" {{#unless attack.reference}}disabled{{/unless}} title="Open attack reference">{{attack.name}}</button>
+                  <div class="qd-ui2-action-meta">
+                    {{#if attack.type}}<span>Type: {{attack.type}}</span>{{/if}}
+                    {{#if attack.mode}}<span>Mode: {{attack.mode}}</span>{{/if}}
+                    {{#if attack.damageDisplay}}<span>Damage: {{attack.damageDisplay}}</span>{{else if attack.damage}}<span>Damage: {{attack.damage}}</span>{{/if}}
+                  </div>
+                </div>
+                <div class="qd-ui2-action-controls">
+                  <button type="button" class="qd-ui2-action-button" data-action="target-opponent" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Target Opponent">🎯</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
+                  <button type="button" class="qd-ui2-action-button {{#if attack.isFavoriteAttack}}is-active{{/if}}" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="{{attack.favoriteToggleLabel}}">📌</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll">⚔</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">💥</button>
+                  {{#if attack.reference}}<button type="button" class="qd-ui2-action-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" title="Reference">ℹ</button>{{/if}}
+                </div>
+              </article>
+              {{else}}
+              <p class="qd-ui2-empty-note">No attacks found for this actor.</p>
+              {{/each}}
+            {{else}}
+              <p class="qd-ui2-empty-note">Select an actor to show combat actions.</p>
+            {{/if}}
+          </section>
+
+          <section class="qd-ui2-drawer-section qd-ui2-skills-section" aria-label="Skill actions">
+            <header class="qd-ui2-section-header">
+              <h3>Skills</h3>
+              <span data-search-status="skills">{{skillsSearchStatusText}}</span>
+            </header>
+            <div class="qd-ui2-search-row">
+              <input type="search" data-action="skills-search" value="{{skillsSearch}}" placeholder="Search skills" aria-label="Search skills" />
+              <button type="button" class="qd-ui2-search-clear" data-action="clear-skills-search" {{#unless skillsSearchHasQuery}}hidden{{/unless}} title="Clear skills search">Clear</button>
+            </div>
+            <div class="qd-ui2-search-empty" data-search-empty="skills" {{#unless skillsSearchShowEmpty}}hidden{{/unless}}>No matching skills.</div>
+            {{#if activeActor}}
+              {{#each indexedSkills as |skill|}}
+              <article class="qd-ui2-action-row {{#if skill.isQuickSkillSelected}}is-favorite{{/if}}" data-search-row="skills" data-search-text="{{skill.searchText}}">
+                <div class="qd-ui2-action-main">
+                  <button type="button" class="qd-ui2-reference-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Open skill reference">{{skill.name}}</button>
+                  <div class="qd-ui2-action-meta">
+                    {{#if skill.relativeLevelDisplay}}<span>Level: {{skill.relativeLevelDisplay}}</span>{{else}}<span>Level: {{skill.levelDisplay}}</span>{{/if}}
+                    {{#if skill.specialization}}<span>Spec: {{skill.specialization}}</span>{{/if}}
+                  </div>
+                </div>
+                <div class="qd-ui2-action-controls">
+                  <button type="button" class="qd-ui2-action-button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill">🎲</button>
+                  <button type="button" class="qd-ui2-action-button {{#if skill.isQuickSkillSelected}}is-active{{/if}}" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="{{skill.quickSkillToggleLabel}}">📌</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>
+                </div>
+              </article>
+              {{else}}
+              <p class="qd-ui2-empty-note">No skills found for this actor.</p>
+              {{/each}}
+            {{else}}
+              <p class="qd-ui2-empty-note">Select an actor to show skills.</p>
+            {{/if}}
+          </section>
+
+          <section class="qd-ui2-drawer-section qd-ui2-spells-section" aria-label="Spell actions">
+            <header class="qd-ui2-section-header">
+              <h3>Spells</h3>
+              <span data-search-status="spells">{{spellsSearchStatusText}}</span>
+            </header>
+            <div class="qd-ui2-search-row">
+              <input type="search" data-action="spells-search" value="{{spellsSearch}}" placeholder="Search spells" aria-label="Search spells" />
+              <button type="button" class="qd-ui2-search-clear" data-action="clear-spells-search" {{#unless spellsSearchHasQuery}}hidden{{/unless}} title="Clear spells search">Clear</button>
+            </div>
+            <div class="qd-ui2-search-empty" data-search-empty="spells" {{#unless spellsSearchShowEmpty}}hidden{{/unless}}>No matching spells.</div>
+            {{#if activeActor}}
+              {{#each indexedSpells as |spell|}}
+              <article class="qd-ui2-action-row {{#if spell.isFavoriteSpell}}is-favorite{{/if}}" data-search-row="spells" data-search-text="{{spell.searchText}}">
+                <div class="qd-ui2-action-main">
+                  <button type="button" class="qd-ui2-reference-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Open spell reference">{{spell.name}}</button>
+                  <div class="qd-ui2-action-meta">
+                    {{#if spell.class}}<span>Class: {{spell.class}}</span>{{/if}}
+                    {{#if spell.college}}<span>College: {{spell.college}}</span>{{/if}}
+                  </div>
+                </div>
+                <div class="qd-ui2-action-controls">
+                  <button type="button" class="qd-ui2-action-button" data-action="target-action" title="Target">🎯</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
+                  <button type="button" class="qd-ui2-action-button {{#if spell.isFavoriteSpell}}is-active{{/if}}" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="{{spell.favoriteToggleLabel}}">📌</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell">✨</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>
+                </div>
+              </article>
+              {{else}}
+              <p class="qd-ui2-empty-note">No spells found for this actor.</p>
+              {{/each}}
+            {{else}}
+              <p class="qd-ui2-empty-note">Select an actor to show spells.</p>
+            {{/if}}
+          </section>
+
+          <section class="qd-ui2-drawer-section qd-ui2-settings-section" aria-label="Settings">
+            <header class="qd-ui2-section-header">
+              <h3>Settings</h3>
+              <span>UI mode and dev tools</span>
+            </header>
+            <div class="qd-ui2-settings-stack">
+              <label class="qd-ui2-mode-field">
+                <input type="checkbox" data-action="set-ui-mode" {{#if isUi2Mode}}checked{{/if}}>
+                <span>Enable UI2 Experimental Shell</span>
+              </label>
+              <label class="qd-ui2-mode-field">
+                <input type="checkbox" data-action="toggle-dev-art-tuner-enabled" {{#if devArtTunerEnabled}}checked{{/if}}>
+                <span>Enable Dev Art Tuner</span>
+              </label>
+              {{#if devArtTunerEnabled}}
+              <div class="qd-ui2-settings-actions">
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="open-dev-art-tuner" title="Open Art Tuner">Open</button>
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="close-dev-art-tuner" title="Close Art Tuner">Close</button>
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="copy-dev-art-tuner-css" title="Copy Art Tuner CSS">Copy CSS</button>
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="reset-dev-art-tuner" title="Reset Art Tuner">Reset</button>
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="status-dev-art-tuner" title="Log Art Tuner Status">Status</button>
+              </div>
+              <p class="qd-ui2-empty-note">Developer-only visual layout tool · temporary CSS only.</p>
+              {{/if}}
+              <p class="qd-ui2-empty-note">Additional QuickDeck settings remain available in UI1 while UI2 mapping continues.</p>
+            </div>
+          </section>
+        </div>
       </aside>
       {{/if}}
 

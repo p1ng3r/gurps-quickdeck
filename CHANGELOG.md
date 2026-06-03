@@ -1,3 +1,9 @@
+## [Unreleased] - v0.14.9-ui2-right-drawer-mapping-local
+
+### Changed
+- Replaces the UI2 right drawer placeholder with a first mapping foundation for existing Combat, Skills, Spells, and Settings content using existing QuickDeck data/actions where possible.
+- Preserves the v0.14.8 carousel, v0.14.7 inactive roster, v0.14.6 active roster, v0.14.5 center actor card, UI1 default behavior, and leaves final art integration for later passes.
+
 ## [Unreleased] - v0.14.8-ui2-carousel-foundation-local
 
 ### Changed
