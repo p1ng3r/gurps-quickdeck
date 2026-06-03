@@ -1,3 +1,9 @@
+## [Unreleased] - v0.15.0-ui2-foundation-fit-polish-local
+
+### Changed
+- Performs a surgical UI2 foundation fit and readability pass after the actor card, rosters, carousel, and right drawer mapping foundations.
+- Improves compact layout, internal scrolling, row truncation, and drawer readability while preserving UI1 behavior, existing handlers, and all UI2 foundation features.
+
 ## [Unreleased] - v0.14.9-ui2-right-drawer-mapping-local
 
 ### Changed
