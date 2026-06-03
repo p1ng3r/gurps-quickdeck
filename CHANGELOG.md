@@ -1,3 +1,8 @@
+## [Unreleased] - v0.14.6-ui2-active-roster-after-v145-local
+
+### Changed
+- Replaces the UI2 left drawer Active Characters placeholder with real roster rows that reuse existing roster data plus open/remove actions while preserving the v0.14.5 center actor card and keeping Inactive Characters placeholder-only.
+
 ## [Unreleased] - v0.14.5-ui2-actor-card-v23-alignment-local
 
 ### Changed
