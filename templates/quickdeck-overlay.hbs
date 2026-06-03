@@ -75,13 +75,69 @@
 
       <main class="qd-ui2-center-cockpit" aria-label="UI2 center cockpit">
         <header class="qd-ui2-panel-header qd-ui2-center-header">
-          <p class="qd-ui2-kicker">QD v0.14.3 — shell HTML</p>
-          <h1>UI2 Center Cockpit</h1>
+          <p class="qd-ui2-kicker qd-ui2-dev-badge">QD v0.14.5 — v23 card</p>
         </header>
-        <section class="qd-ui2-placeholder-card qd-ui2-center-placeholder">
-          <h2>UI2 Center Cockpit placeholder</h2>
-          <p>Shell-only layout pass. Actor cards, carousel content, art integration, and action wiring land later.</p>
+
+        {{#if activeActor}}
+        <section class="qd-ui2-actor-card" aria-label="Selected actor card">
+          <div class="qd-ui2-portrait-ring">
+            <img class="qd-ui2-actor-portrait" src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+          </div>
+
+          <div class="qd-ui2-actor-title-block">
+            <h1 class="qd-ui2-actor-name">{{activeActor.name}}</h1>
+            {{#if activeActor.actorType}}<p class="qd-ui2-actor-type">{{activeActor.actorType}}</p>{{/if}}
+          </div>
+
+          <div class="qd-ui2-vital-stack" aria-label="HP and FP meters">
+            <div class="qd-ui2-vital-meter qd-ui2-hp-meter" aria-label="HP {{gurpsData.display.hp}} / {{gurpsData.display.hpMax}}">
+              <span class="qd-ui2-vital-fill" style="width: {{gurpsData.hpPercent}}%;"></span>
+              <span class="qd-ui2-vital-label">HP</span>
+              <span class="qd-ui2-vital-readout">{{gurpsData.display.hp}} / {{gurpsData.display.hpMax}}</span>
+            </div>
+            <div class="qd-ui2-vital-meter qd-ui2-fp-meter" aria-label="FP {{gurpsData.display.fp}} / {{gurpsData.display.fpMax}}">
+              <span class="qd-ui2-vital-fill" style="width: {{gurpsData.fpPercent}}%;"></span>
+              <span class="qd-ui2-vital-label">FP</span>
+              <span class="qd-ui2-vital-readout">{{gurpsData.display.fp}} / {{gurpsData.display.fpMax}}</span>
+            </div>
+          </div>
+
+          <div class="qd-ui2-instrument-deck" aria-label="Actor roll and defense instruments">
+            <div class="qd-ui2-roll-row" aria-label="Attribute roll controls">
+              <div class="qd-ui2-roll-pill qd31-primary-roll-chip" aria-label="Primary roll controls">
+                <select class="qd-ui2-roll-select" data-action="primary-roll-select" aria-label="Primary roll target">
+                  {{#each primaryRollView.options as |option|}}
+                  <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
+                  {{/each}}
+                </select>
+                <span class="qd-ui2-roll-value qd31-primary-roll-value">{{primaryRollView.selectedValue}}</span>
+                <button type="button" class="qd-ui2-roll-button" data-action="roll-primary-attribute" title="Roll selected primary attribute" aria-label="Roll selected primary attribute">🎲</button>
+              </div>
+              <div class="qd-ui2-roll-pill qd31-secondary-roll-chip" aria-label="Secondary roll controls">
+                <select class="qd-ui2-roll-select" data-action="secondary-roll-select" aria-label="Secondary roll target">
+                  {{#each secondaryRollView.options as |option|}}
+                  <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
+                  {{/each}}
+                </select>
+                <span class="qd-ui2-roll-value qd31-secondary-roll-value">{{secondaryRollView.selectedValue}}</span>
+                <button type="button" class="qd-ui2-roll-button" data-action="roll-secondary-attribute" title="Roll selected secondary attribute" aria-label="Roll selected secondary attribute">🎲</button>
+              </div>
+            </div>
+
+            <div class="qd-ui2-stat-grid" aria-label="Move and defense values">
+              <article class="qd-ui2-stat-tile" aria-label="Move"><span>Move</span><strong>{{gurpsData.display.move}}</strong></article>
+              <button class="qd-ui2-stat-tile qd-ui2-stat-button" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="dodge" data-value="{{gurpsData.display.dodge}}"><span>Dodge</span><strong>{{gurpsData.display.dodge}}</strong></button>
+              <button class="qd-ui2-stat-tile qd-ui2-stat-button" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="parry" data-value="{{gurpsData.display.parry}}"><span>Parry</span><strong>{{gurpsData.display.parry}}</strong></button>
+              <button class="qd-ui2-stat-tile qd-ui2-stat-button" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="block" data-value="{{gurpsData.display.block}}"><span>Block</span><strong>{{gurpsData.display.block}}</strong></button>
+            </div>
+          </div>
         </section>
+        {{else}}
+        <section class="qd-ui2-placeholder-card qd-ui2-center-placeholder">
+          <h2>No Actor Selected</h2>
+          <p>Add or select an actor from the existing roster workflow to populate the v23 card.</p>
+        </section>
+        {{/if}}
       </main>
 
       {{#if isActionsDrawerOpen}}
