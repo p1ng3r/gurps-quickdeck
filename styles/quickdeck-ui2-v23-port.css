@@ -433,4 +433,100 @@
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button,
-.qd40-overlay .qd-ui2-action-button { min-width: 28px !important; min-height: 28px !important; padding: 4px 7px !important; }\n
+.qd40-overlay .qd-ui2-action-button { min-width: 28px !important; min-height: 28px !important; padding: 4px 7px !important; }
+
+/* QuickDeck UI2 v23 port tune v0.15.4 */
+
+/* Shorter center-only shell; drawer states keep more working height. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open),
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) {
+  --qd-ui2-body-h: min(580px, calc(100vh - 132px));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open {
+  --qd-ui2-body-h: min(610px, calc(100vh - 128px));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
+  --qd-ui2-body-h: min(640px, calc(100vh - 122px));
+}
+
+/* Keep actor card from stretching too wide in wider states. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card {
+  max-width: 700px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open) .qd-ui2-actor-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open) .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open .qd-ui2-actor-card {
+  max-width: 640px !important;
+}
+
+/* Lift center content so it reads as a console, not a floor panel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-center-cockpit {
+  justify-content: flex-start !important;
+  padding-top: 22px !important;
+}
+
+/* Slightly smaller Foundry side tabs. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
+.qd40-overlay .qd-ui2-shell {
+  --qd-ui2-tab-w: 46px;
+  --qd-ui2-tab-h: 138px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-edge-tab,
+.qd40-overlay .qd-ui2-edge-tab {
+  font-size: 10px !important;
+  letter-spacing: 0.04em !important;
+  padding: 8px 3px !important;
+}
+
+/* Left drawer headings less dominant. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-card h3,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-header h3,
+.qd40-overlay .qd-ui2-active-roster-card h3,
+.qd40-overlay .qd-ui2-inactive-roster-header h3 {
+  font-size: 18px !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0.035em !important;
+}
+
+/* Nudge left drawer balance and inner padding. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer,
+.qd40-overlay .qd-ui2-left-drawer {
+  grid-template-rows: minmax(0, 0.92fr) minmax(0, 1.08fr) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-card,
+.qd40-overlay .qd-ui2-active-roster-card,
+.qd40-overlay .qd-ui2-inactive-roster-card {
+  padding: 9px !important;
+}
+
+/* Cleaner right drawer tab rhythm. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-drawer-tabs {
+  gap: 5px !important;
+  margin-bottom: 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab,
+.qd40-overlay .qd-ui2-drawer-tab {
+  min-height: 28px !important;
+  padding: 4px 7px !important;
+  font-size: 10px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-card,
+.qd40-overlay .qd-ui2-carousel-card {
+  margin-top: 0 !important;
+}
