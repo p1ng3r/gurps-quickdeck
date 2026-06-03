@@ -1,8 +1,8 @@
-## [Unreleased] - v0.14.3-ui2-shell-html-alignment-local
+## [Unreleased] - v0.14.5-ui2-actor-card-v23-alignment-local
 
 ### Changed
-- Adds the UI2 shell HTML alignment pass with center-only, one-drawer, and both-drawer state classes while keeping UI1 as the default mode.
-- Adds shell-only UI2 placeholders for character, cockpit, action, and settings regions with the visible `QD v0.14.3 — shell HTML` badge.
+- Refines the UI2 center actor card toward the v23 handoff with the visible `QD v0.14.5 — v23 card` badge, character portrait, centered identity, overlay HP/FP meters, compact primary/secondary roll controls, and Move/Dodge/Parry/Block tiles.
+- Keeps UI1, the UI2 shell architecture, drawer behavior, and existing GURPS/GGA roll handling intact while leaving roster/carousel, right-drawer mapping, and final art asset integration for later passes.
 
 ## [Unreleased] - v0.9.7.2 batch2-fit
 
