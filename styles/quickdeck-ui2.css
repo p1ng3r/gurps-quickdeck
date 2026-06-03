@@ -693,6 +693,119 @@ button.qd-ui2-stat-tile {
   line-height: 1;
 }
 
+
+/* UI2 v0.14.8 carousel foundation — center selector strip only. */
+.qd-ui2-carousel-card {
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr) 34px;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  margin-top: 12px;
+  padding: 8px;
+  background: linear-gradient(180deg, rgba(30, 23, 16, 0.9), rgba(6, 5, 4, 0.92));
+  border: 1px solid rgba(240, 205, 122, 0.34);
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.68), 0 10px 24px rgba(0, 0, 0, 0.32);
+}
+
+.qd-ui2-carousel-track {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(240, 205, 122, 0.56) rgba(5, 4, 3, 0.72);
+}
+
+.qd-ui2-carousel-track::-webkit-scrollbar { height: 6px; }
+.qd-ui2-carousel-track::-webkit-scrollbar-track { background: rgba(5, 4, 3, 0.72); }
+.qd-ui2-carousel-track::-webkit-scrollbar-thumb {
+  background: rgba(240, 205, 122, 0.56);
+  border-radius: 999px;
+}
+
+.qd-ui2-carousel-arrow,
+.qd-ui2-carousel-portrait-button {
+  color: var(--qd-text-strong, #fff0c7);
+  background: rgba(5, 4, 3, 0.82);
+  border: 1px solid rgba(240, 205, 122, 0.38);
+  cursor: pointer;
+}
+
+.qd-ui2-carousel-arrow {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 46px;
+  padding: 0;
+  border-radius: 12px;
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.qd-ui2-carousel-portrait-button {
+  position: relative;
+  flex: 0 0 auto;
+  width: 52px;
+  height: 52px;
+  padding: 3px;
+  overflow: hidden;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.72);
+}
+
+.qd-ui2-carousel-portrait-button.is-active {
+  border-color: rgba(255, 237, 176, 0.94);
+  background: linear-gradient(145deg, #f0cd7a, #6f431d 58%, #fff0bd);
+  box-shadow: 0 0 0 2px rgba(240, 205, 122, 0.34), 0 0 18px rgba(240, 205, 122, 0.3);
+}
+
+.qd-ui2-carousel-portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 999px;
+  background: #050403;
+}
+
+.qd-ui2-carousel-arrow:hover,
+.qd-ui2-carousel-arrow:focus-visible,
+.qd-ui2-carousel-portrait-button:hover,
+.qd-ui2-carousel-portrait-button:focus-visible {
+  border-color: rgba(255, 237, 176, 0.88);
+  color: #fff7d7;
+  outline: none;
+}
+
+.qd-ui2-carousel-arrow:focus-visible,
+.qd-ui2-carousel-portrait-button:focus-visible,
+.qd-ui2-carousel-track:focus-visible {
+  outline: 2px solid rgba(255, 237, 176, 0.78);
+  outline-offset: 2px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-carousel-card {
+  grid-template-columns: 30px minmax(0, 1fr) 30px;
+  gap: 6px;
+  padding: 6px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-carousel-arrow {
+  width: 30px;
+  height: 42px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-carousel-portrait-button {
+  width: 46px;
+  height: 46px;
+}
+
 .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card {
   grid-template-columns: minmax(116px, 150px) minmax(0, 1fr);
   gap: 10px 12px;

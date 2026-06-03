@@ -1,3 +1,9 @@
+## [Unreleased] - v0.14.8-ui2-carousel-foundation-local
+
+### Changed
+- Adds a compact UI2 center carousel foundation using active roster actors as portrait selectors while preserving the v0.14.5 center actor card.
+- Preserves the v0.14.6 Active Characters list, v0.14.7 Inactive Characters search/add foundation, UI1 default behavior, and leaves right drawer mapping/final art integration for later passes.
+
 ## [Unreleased] - v0.14.7-ui2-inactive-roster-foundation-local
 
 ### Changed

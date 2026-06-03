@@ -199,6 +199,42 @@
           <p>Open the roster drawer to add/select a character.</p>
         </section>
         {{/if}}
+
+        {{#if hasRosterActors}}
+        <section class="qd-ui2-carousel-card" aria-label="Active actor selector carousel">
+          <button
+            type="button"
+            class="qd-ui2-carousel-arrow qd-ui2-carousel-arrow-left"
+            data-action="ui2-carousel-scroll"
+            data-carousel-direction="prev"
+            title="Scroll active actors left"
+            aria-label="Scroll active actors left"
+          >‹</button>
+          <div class="qd-ui2-carousel-track" data-ui2-carousel-track tabindex="0" aria-label="Active roster actor portraits">
+            {{#each rosterActors as |actor|}}
+            <button
+              type="button"
+              class="qd-ui2-carousel-portrait-button {{#if actor.isActive}}is-active{{/if}}"
+              data-action="open-actor"
+              data-actor-id="{{actor.id}}"
+              title="Select {{actor.name}}"
+              aria-label="Select {{actor.name}}"
+              aria-current="{{#if actor.isActive}}true{{else}}false{{/if}}"
+            >
+              <img class="qd-ui2-carousel-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+            </button>
+            {{/each}}
+          </div>
+          <button
+            type="button"
+            class="qd-ui2-carousel-arrow qd-ui2-carousel-arrow-right"
+            data-action="ui2-carousel-scroll"
+            data-carousel-direction="next"
+            title="Scroll active actors right"
+            aria-label="Scroll active actors right"
+          >›</button>
+        </section>
+        {{/if}}
       </main>
 
       {{#if isActionsDrawerOpen}}
