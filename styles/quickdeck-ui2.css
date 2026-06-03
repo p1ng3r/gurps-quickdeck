@@ -842,3 +842,206 @@ button.qd-ui2-stat-tile {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* UI2 v0.14.9 right drawer mapping foundation. */
+.qd-ui2-right-drawer {
+  overflow: hidden;
+}
+
+.qd-ui2-drawer-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.qd-ui2-drawer-tab {
+  min-width: 0;
+  padding: 8px 6px;
+  color: var(--qd-text, #f4e6be);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background: rgba(2, 2, 2, 0.36);
+  border: 1px solid rgba(199, 154, 56, 0.3);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.qd-ui2-drawer-tab:hover,
+.qd-ui2-drawer-tab:focus-visible,
+.qd-ui2-drawer-tab.is-active,
+.qd-ui2-shell[data-active-drawer=""] .qd-ui2-drawer-tab[data-drawer="combat"] {
+  color: var(--qd-text-strong, #fff0c7);
+  background: rgba(130, 83, 29, 0.55);
+  border-color: rgba(240, 205, 122, 0.62);
+  box-shadow: 0 0 14px rgba(240, 205, 122, 0.16);
+}
+
+.qd-ui2-drawer-scroll {
+  display: grid;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.qd-ui2-drawer-section {
+  display: none;
+  gap: 10px;
+}
+
+.qd-ui2-shell[data-active-drawer=""] .qd-ui2-combat-section,
+.qd-ui2-shell[data-active-drawer="combat"] .qd-ui2-combat-section,
+.qd-ui2-shell[data-active-drawer="skills"] .qd-ui2-skills-section,
+.qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-spells-section,
+.qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-settings-section {
+  display: grid;
+}
+
+.qd-ui2-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px;
+  background: rgba(2, 2, 2, 0.32);
+  border: 1px solid rgba(199, 154, 56, 0.28);
+  border-radius: 14px;
+}
+
+.qd-ui2-section-header h3 {
+  margin: 0;
+  color: var(--qd-text-strong, #fff0c7);
+  font-family: var(--qd-font-title, Georgia, serif);
+  font-size: 18px;
+}
+
+.qd-ui2-section-header span {
+  color: var(--qd-text-muted, #cbbd98);
+  font-size: 11px;
+  text-align: right;
+}
+
+.qd-ui2-search-row {
+  display: flex;
+  gap: 6px;
+}
+
+.qd-ui2-search-row input[type="search"] {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 8px 10px;
+  color: var(--qd-text, #f4e6be);
+  background: rgba(0, 0, 0, 0.42);
+  border: 1px solid rgba(240, 205, 122, 0.3);
+  border-radius: 10px;
+}
+
+.qd-ui2-search-clear {
+  flex: 0 0 auto;
+  padding: 8px 10px;
+  color: var(--qd-text-strong, #fff0c7);
+  background: rgba(85, 45, 22, 0.62);
+  border: 1px solid rgba(240, 205, 122, 0.38);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.qd-ui2-search-empty,
+.qd-ui2-empty-note {
+  margin: 0;
+  padding: 10px 12px;
+  color: var(--qd-text-muted, #cbbd98);
+  background: rgba(2, 2, 2, 0.25);
+  border: 1px dashed rgba(199, 154, 56, 0.25);
+  border-radius: 12px;
+}
+
+.qd-ui2-action-row {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  background: rgba(2, 2, 2, 0.32);
+  border: 1px solid rgba(199, 154, 56, 0.24);
+  border-radius: 14px;
+}
+
+.qd-ui2-action-row.is-favorite {
+  border-color: rgba(240, 205, 122, 0.52);
+  box-shadow: inset 3px 0 0 rgba(240, 205, 122, 0.64);
+}
+
+.qd-ui2-action-main {
+  display: grid;
+  gap: 5px;
+}
+
+.qd-ui2-reference-button {
+  padding: 0;
+  color: var(--qd-text-strong, #fff0c7);
+  font-weight: 800;
+  text-align: left;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+}
+
+.qd-ui2-reference-button:disabled {
+  cursor: default;
+  opacity: 0.86;
+}
+
+.qd-ui2-action-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 8px;
+  color: var(--qd-text-muted, #cbbd98);
+  font-size: 11px;
+  line-height: 1.25;
+}
+
+.qd-ui2-action-controls,
+.qd-ui2-settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.qd-ui2-action-button {
+  min-width: 30px;
+  min-height: 28px;
+  padding: 5px 8px;
+  color: var(--qd-text-strong, #fff0c7);
+  font-weight: 800;
+  background: rgba(17, 13, 10, 0.88);
+  border: 1px solid rgba(199, 154, 56, 0.34);
+  border-radius: 9px;
+  cursor: pointer;
+}
+
+.qd-ui2-action-button:hover,
+.qd-ui2-action-button:focus-visible,
+.qd-ui2-action-button.is-active {
+  background: rgba(130, 83, 29, 0.62);
+  border-color: rgba(240, 205, 122, 0.62);
+}
+
+.qd-ui2-text-button {
+  min-width: 0;
+}
+
+.qd-ui2-settings-stack {
+  display: grid;
+  gap: 10px;
+}
+
+.qd-ui2-mode-field {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  color: var(--qd-text, #f4e6be);
+  background: rgba(2, 2, 2, 0.32);
+  border: 1px solid rgba(199, 154, 56, 0.24);
+  border-radius: 12px;
+}
