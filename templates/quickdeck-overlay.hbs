@@ -62,9 +62,36 @@
           <p class="qd-ui2-kicker">Roster Shell</p>
           <h2>Characters</h2>
         </header>
-        <section class="qd-ui2-placeholder-card">
+        <section class="qd-ui2-active-roster-card" aria-label="Active Characters">
           <h3>Active Characters</h3>
-          <p>Placeholder for the active-character roster panel.</p>
+          {{#if hasRosterActors}}
+          <div class="qd-ui2-active-roster-list" data-drop-zone="roster">
+            {{#each rosterActors as |actor|}}
+            <article
+              class="qd-ui2-active-roster-row {{#if actor.isActive}}is-active{{/if}}"
+              data-action="open-actor"
+              data-actor-id="{{actor.id}}"
+              title="Select {{actor.name}}"
+            >
+              <img class="qd-ui2-active-roster-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+              <div class="qd-ui2-active-roster-meta">
+                <strong>{{actor.name}}</strong>
+                {{#if actor.actorType}}<small>{{actor.actorType}}</small>{{/if}}
+              </div>
+              <button
+                type="button"
+                class="qd-ui2-active-roster-remove"
+                data-action="remove-actor"
+                data-actor-id="{{actor.id}}"
+                title="Remove {{actor.name}}"
+                aria-label="Remove {{actor.name}}"
+              >×</button>
+            </article>
+            {{/each}}
+          </div>
+          {{else}}
+          <p>No active characters yet. Drop actors here or add them from UI1.</p>
+          {{/if}}
         </section>
         <section class="qd-ui2-placeholder-card qd-ui2-muted-card">
           <h3>Inactive Characters</h3>
