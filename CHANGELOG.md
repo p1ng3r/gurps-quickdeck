@@ -1,3 +1,9 @@
+## [Unreleased] - v0.15.2-ui2-v23-state-layout-port-local
+
+### Changed
+- Ports the v23 UI2 prototype’s state-based shell layout math into the Foundry UI2 CSS so center-only, one-drawer, and three-panel modes use distinct intended widths.
+- Preserves existing UI2 behavior, handlers, actor card, active/inactive rosters, carousel, right drawer mapping, and UI1 while avoiding final art integration.
+
 ## [Unreleased] - v0.14.9-ui2-right-drawer-mapping-local
 
 ### Changed
