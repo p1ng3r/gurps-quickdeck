@@ -1,3 +1,9 @@
+## [Unreleased] - v0.15.1-ui2-screenshot-layout-triage-local
+
+### Changed
+- Applies a screenshot-driven UI2 layout triage pass to reduce oversized panels, fix broken drawer headings, improve compact scrolling, and rebalance the center card, carousel, left roster, and right action drawer.
+- Preserves UI1 behavior, existing UI2 handlers, the actor card, active/inactive rosters, carousel, and right drawer mapping while avoiding final art integration.
+
 ## [Unreleased] - v0.14.9-ui2-right-drawer-mapping-local
 
 ### Changed
