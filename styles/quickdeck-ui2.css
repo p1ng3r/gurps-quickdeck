@@ -1,4 +1,4 @@
-/* QuickDeck UI2 shell alignment pass — v0.14.3 shell HTML. */
+/* QuickDeck UI2 shell alignment plus active roster foundation — v0.14.6. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-body,
 .qd40-overlay .qd-ui2-body {
   overflow: visible !important;
@@ -183,4 +183,117 @@
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-frame,
 .qd40-overlay .qd-ui2-frame {
   height: auto;
+}
+
+.qd-ui2-active-roster-card {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px;
+  color: var(--qd-text, #f4e6be);
+  background: rgba(2, 2, 2, 0.32);
+  border: 1px solid rgba(199, 154, 56, 0.28);
+  border-radius: 14px;
+}
+
+.qd-ui2-active-roster-card h3 {
+  margin: 0;
+  color: var(--qd-text-strong, #fff0c7);
+  font-family: var(--qd-font-title, Georgia, serif);
+}
+
+.qd-ui2-active-roster-list {
+  display: grid;
+  gap: 8px;
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.qd-ui2-active-roster-row {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 30px;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 7px;
+  color: var(--qd-text, #f4e6be);
+  background: linear-gradient(135deg, rgba(32, 25, 18, 0.92), rgba(9, 8, 7, 0.92));
+  border: 1px solid rgba(199, 154, 56, 0.28);
+  border-radius: 12px;
+  cursor: pointer;
+  transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+}
+
+.qd-ui2-active-roster-row:hover,
+.qd-ui2-active-roster-row:focus-within {
+  border-color: rgba(240, 205, 122, 0.68);
+  box-shadow: 0 0 0 1px rgba(240, 205, 122, 0.18), 0 10px 24px rgba(0, 0, 0, 0.32);
+}
+
+.qd-ui2-active-roster-row.is-active {
+  border-color: rgba(240, 205, 122, 0.92);
+  background: linear-gradient(135deg, rgba(72, 48, 18, 0.92), rgba(18, 13, 8, 0.96));
+  box-shadow: inset 0 0 0 1px rgba(255, 236, 174, 0.18), 0 0 18px rgba(240, 205, 122, 0.18);
+}
+
+.qd-ui2-active-roster-portrait {
+  width: 44px;
+  height: 44px;
+  object-fit: cover;
+  border: 1px solid rgba(240, 205, 122, 0.48);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.qd-ui2-active-roster-meta {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.qd-ui2-active-roster-meta strong,
+.qd-ui2-active-roster-meta small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-active-roster-meta strong {
+  color: var(--qd-text-strong, #fff0c7);
+  font-size: 14px;
+  line-height: 1.15;
+}
+
+.qd-ui2-active-roster-meta small {
+  color: rgba(244, 230, 190, 0.72);
+  font-size: 11px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.qd-ui2-active-roster-remove {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: var(--qd-text-strong, #fff0c7);
+  background: rgba(42, 12, 10, 0.86);
+  border: 1px solid rgba(240, 205, 122, 0.42);
+  border-radius: 9px;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.qd-ui2-active-roster-remove:hover,
+.qd-ui2-active-roster-remove:focus-visible {
+  border-color: rgba(255, 218, 139, 0.9);
+  background: rgba(84, 20, 15, 0.94);
+  outline: none;
+}
+
+.qd-ui2-active-roster-empty {
+  margin: 0;
+  color: rgba(244, 230, 190, 0.72);
 }

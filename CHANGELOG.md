@@ -1,3 +1,8 @@
+## [Unreleased] - v0.14.6-ui2-active-roster-foundation-local
+
+### Changed
+- Replaces the UI2 left drawer Active Characters placeholder with real roster rows using existing roster actor data and open/remove actions while leaving Inactive Characters placeholder-only.
+
 ## [Unreleased] - v0.14.3-ui2-shell-html-alignment-local
 
 ### Changed

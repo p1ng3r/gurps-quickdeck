@@ -32,15 +32,13 @@
   <div class="qd40-body {{#if isUi2Mode}}qd-ui2-body{{/if}}">
   {{#if isUi2Mode}}
     {{!--
-    UI2 v0.14.3 placeholder shell.
+    UI2 v0.14.6 active roster foundation.
     Future passes:
-    - actor card
-    - roster
     - carousel
-    - actions drawer
+    - inactive roster
+    - action drawer mapping
     - art integration
     --}}
-    {{!-- UI2 v0.14.3 is intentionally placeholder-only. Actor card, roster, carousel, and action drawer mapping come in later passes. --}}
     <section
       class="qd40-shell qd-ui2-shell {{#if isRosterDrawerOpen}}qd-ui2-left-open{{else}}qd-ui2-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd-ui2-right-open{{else}}qd-ui2-right-collapsed{{/if}}"
       data-active-drawer="{{activeDrawer}}"
@@ -62,9 +60,36 @@
           <p class="qd-ui2-kicker">Roster Shell</p>
           <h2>Characters</h2>
         </header>
-        <section class="qd-ui2-placeholder-card">
+        <section class="qd-ui2-active-roster-card" aria-label="Active Characters">
           <h3>Active Characters</h3>
-          <p>Placeholder for the active-character roster panel.</p>
+          {{#if hasRosterActors}}
+          <div class="qd-ui2-active-roster-list" data-drop-zone="roster">
+            {{#each rosterActors as |actor|}}
+            <article
+              class="qd-ui2-active-roster-row {{#if actor.isActive}}is-active{{/if}}"
+              data-action="open-actor"
+              data-actor-id="{{actor.id}}"
+              title="Select {{actor.name}}"
+            >
+              <img class="qd-ui2-active-roster-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+              <div class="qd-ui2-active-roster-meta">
+                <strong>{{actor.name}}</strong>
+                {{#if actor.actorType}}<small>{{actor.actorType}}</small>{{/if}}
+              </div>
+              <button
+                type="button"
+                class="qd-ui2-active-roster-remove"
+                data-action="remove-actor"
+                data-actor-id="{{actor.id}}"
+                title="Remove {{actor.name}}"
+                aria-label="Remove {{actor.name}}"
+              >×</button>
+            </article>
+            {{/each}}
+          </div>
+          {{else}}
+          <p class="qd-ui2-active-roster-empty">No active characters yet.</p>
+          {{/if}}
         </section>
         <section class="qd-ui2-placeholder-card qd-ui2-muted-card">
           <h3>Inactive Characters</h3>

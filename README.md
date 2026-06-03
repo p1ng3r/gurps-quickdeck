@@ -4,7 +4,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 ## What's New in v0.7.0 (Draft)
 
-- Added an experimental UI2 shell HTML alignment pass with UI1 still the default, a Settings → UI Mode switch, outside-edge drawer tabs, dynamic center widths, and placeholder-only UI2 drawer/cockpit content.
+- Added an experimental UI2 shell HTML alignment pass with UI1 still the default, a Settings → UI Mode switch, outside-edge drawer tabs, dynamic center widths, and real Active Characters rows in the UI2 left drawer while inactive characters remain placeholder-only.
 - The Command Desk art skin foundation is now wired after the existing QuickDeck stylesheet, making the v0.7 art assets available without replacing current behavior.
 
 ## What's New in v0.6.0 (Release Candidate)
