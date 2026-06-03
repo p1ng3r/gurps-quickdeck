@@ -184,3 +184,292 @@
 .qd40-overlay .qd-ui2-frame {
   height: auto;
 }
+
+/* UI2 v0.14.5 actor card alignment pass — center card only. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-dev-badge,
+.qd40-overlay .qd-ui2-dev-badge {
+  grid-area: badge;
+  justify-self: center;
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 4px 12px;
+  color: #1b1207;
+  background: linear-gradient(180deg, #f8d98a, #b9812d);
+  border: 1px solid rgba(255, 237, 176, 0.82);
+  border-radius: 999px;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.72), inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  text-shadow: none;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(168px, 0.72fr) minmax(0, 1.28fr);
+  grid-template-areas:
+    "badge badge"
+    "portrait title"
+    "portrait vitals"
+    "portrait instruments";
+  gap: 14px 18px;
+  align-items: center;
+  width: 100%;
+  min-height: 0;
+  margin-top: 14px;
+  padding: clamp(16px, 2.4vw, 26px);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 28% 24%, rgba(217, 166, 63, 0.16), transparent 34%),
+    linear-gradient(160deg, rgba(36, 28, 18, 0.96), rgba(8, 7, 6, 0.98));
+  border: 1px solid rgba(240, 205, 122, 0.55);
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.78), 0 18px 42px rgba(0, 0, 0, 0.48);
+}
+
+.qd-ui2-portrait-ring {
+  grid-area: portrait;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 230px);
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  padding: 10px;
+  background:
+    radial-gradient(circle, rgba(0, 0, 0, 0.34) 58%, transparent 60%),
+    linear-gradient(145deg, #e0b65a, #5f3918 52%, #f0cd7a);
+  border: 1px solid rgba(255, 238, 177, 0.54);
+  border-radius: 999px;
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.58), inset 0 0 0 3px rgba(10, 8, 6, 0.74);
+}
+
+.qd-ui2-actor-portrait {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 2px solid rgba(16, 11, 7, 0.9);
+  border-radius: 999px;
+  background: #050403;
+}
+
+.qd-ui2-actor-title-block {
+  grid-area: title;
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.qd-ui2-actor-name {
+  margin: 0;
+  color: var(--qd-text-strong, #fff0c7);
+  font-family: var(--qd-font-title, Georgia, serif);
+  font-size: clamp(28px, 3.4vw, 42px);
+  line-height: 1;
+  letter-spacing: 0.035em;
+  text-shadow: 0 3px 0 #000, 0 0 18px rgba(240, 205, 122, 0.22);
+}
+
+.qd-ui2-actor-type {
+  margin: 0;
+  color: rgba(244, 230, 190, 0.78);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.qd-ui2-vital-stack {
+  grid-area: vitals;
+  display: grid;
+  gap: 8px;
+}
+
+.qd-ui2-vital-meter {
+  position: relative;
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  align-items: center;
+  min-height: 34px;
+  overflow: hidden;
+  background: rgba(7, 6, 5, 0.88);
+  border: 1px solid rgba(209, 162, 70, 0.42);
+  border-radius: 999px;
+  box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.78);
+}
+
+.qd-ui2-vital-fill {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 0;
+  min-width: 0;
+  transition: width 180ms ease;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.qd-ui2-hp-meter .qd-ui2-vital-fill { background: linear-gradient(90deg, #6e1713, #c13b2f); }
+.qd-ui2-fp-meter .qd-ui2-vital-fill { background: linear-gradient(90deg, #1c4769, #4fa1d2); }
+
+.qd-ui2-vital-label,
+.qd-ui2-vital-readout {
+  position: relative;
+  z-index: 1;
+  color: #050403;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+.qd-ui2-vital-label {
+  padding-left: 14px;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+}
+
+.qd-ui2-vital-readout {
+  justify-self: center;
+  padding-right: 44px;
+  color: #000;
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.qd-ui2-instrument-deck {
+  grid-area: instruments;
+  display: grid;
+  gap: 10px;
+}
+
+.qd-ui2-roll-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.qd-ui2-roll-pill {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 34px;
+  align-items: center;
+  min-height: 38px;
+  padding: 4px;
+  background: rgba(2, 2, 2, 0.46);
+  border: 1px solid rgba(240, 205, 122, 0.36);
+  border-radius: 999px;
+}
+
+.qd-ui2-roll-select {
+  min-width: 0;
+  height: 30px;
+  padding: 0 8px 0 12px;
+  color: var(--qd-text-strong, #fff0c7);
+  background: transparent;
+  border: 0;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.qd-ui2-roll-select:focus-visible,
+.qd-ui2-roll-button:focus-visible,
+.qd-ui2-stat-button:focus-visible {
+  outline: 2px solid rgba(255, 237, 176, 0.92);
+  outline-offset: 2px;
+}
+
+.qd-ui2-roll-value {
+  min-width: 26px;
+  color: var(--qd-brass-bright, #f0cd7a);
+  font-size: 14px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.qd-ui2-roll-button {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: #201104;
+  background: linear-gradient(180deg, #f0cd7a, #9d6828);
+  border: 1px solid rgba(255, 237, 176, 0.58);
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.qd-ui2-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.qd-ui2-stat-tile {
+  display: grid;
+  gap: 2px;
+  min-height: 58px;
+  padding: 8px 6px;
+  place-items: center;
+  color: var(--qd-text-strong, #fff0c7);
+  background: linear-gradient(180deg, rgba(35, 28, 20, 0.94), rgba(7, 6, 5, 0.96));
+  border: 1px solid rgba(199, 154, 56, 0.38);
+  border-radius: 14px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.68);
+}
+
+button.qd-ui2-stat-tile {
+  width: 100%;
+  font: inherit;
+  cursor: pointer;
+}
+
+.qd-ui2-stat-tile span {
+  color: rgba(244, 230, 190, 0.76);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.qd-ui2-stat-tile strong {
+  color: #fff2ca;
+  font-size: 22px;
+  line-height: 1;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card {
+  grid-template-columns: minmax(116px, 150px) minmax(0, 1fr);
+  gap: 10px 12px;
+  padding: 14px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-row,
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-stat-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-stat-tile {
+  min-height: 48px;
+}
+
+@media (max-width: 920px) {
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+  .qd40-overlay .qd-ui2-actor-card {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "badge"
+      "portrait"
+      "title"
+      "vitals"
+      "instruments";
+  }
+
+  .qd-ui2-portrait-ring {
+    width: min(54%, 170px);
+  }
+
+  .qd-ui2-roll-row,
+  .qd-ui2-stat-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
