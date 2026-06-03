@@ -5193,6 +5193,17 @@ export class QuickDeckApp extends Application {
       this.render(false, { focus: false });
     });
 
+    html.find("[data-action='ui2-carousel-scroll']").on("click", (event) => {
+      event.preventDefault();
+      const direction = event.currentTarget.dataset.carouselDirection === "prev" ? -1 : 1;
+      const card = event.currentTarget.closest(".qd-ui2-carousel-card");
+      const track = card?.querySelector?.("[data-ui2-carousel-track]");
+      if (!track) return;
+
+      const scrollAmount = Math.max(96, Math.floor(track.clientWidth * 0.75));
+      track.scrollBy({ left: direction * scrollAmount, behavior: "smooth" });
+    });
+
     html.find("[data-action='toggle-center-roster-minimized']").on("click", (event) => {
       event.preventDefault();
       this.isCenterRosterMinimized = !this.isCenterRosterMinimized;
