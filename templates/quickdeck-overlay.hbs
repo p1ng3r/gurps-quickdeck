@@ -74,14 +74,48 @@
       {{/if}}
 
       <main class="qd-ui2-center-cockpit" aria-label="UI2 center cockpit">
-        <header class="qd-ui2-panel-header qd-ui2-center-header">
-          <p class="qd-ui2-kicker">QD v0.14.3 — shell HTML</p>
-          <h1>UI2 Center Cockpit</h1>
-        </header>
-        <section class="qd-ui2-placeholder-card qd-ui2-center-placeholder">
-          <h2>UI2 Center Cockpit placeholder</h2>
-          <p>Shell-only layout pass. Actor cards, carousel content, art integration, and action wiring land later.</p>
+        {{#if activeActor}}
+        <article class="qd-ui2-actor-card" aria-label="Selected actor card">
+          <header class="qd-ui2-panel-header qd-ui2-center-header">
+            <p class="qd-ui2-kicker qd-ui2-dev-badge">QD v0.14.4 — actor card</p>
+            <h1>{{activeActor.name}}</h1>
+            <p class="qd-ui2-actor-type">{{#if activeActor.actorType}}{{activeActor.actorType}}{{else}}Actor{{/if}}</p>
+          </header>
+
+          <div class="qd-ui2-portrait-frame">
+            <img src="{{activeActor.img}}" alt="{{activeActor.name}} portrait" />
+          </div>
+
+          <section class="qd-ui2-resource-grid" aria-label="Actor resources">
+            <div class="qd-ui2-resource-tile qd-ui2-hp-tile">
+              <span class="qd-ui2-stat-label">HP</span>
+              <strong>{{gurpsData.display.hp}} <span>/ {{gurpsData.display.hpMax}}</span></strong>
+            </div>
+            <div class="qd-ui2-resource-tile qd-ui2-fp-tile">
+              <span class="qd-ui2-stat-label">FP</span>
+              <strong>{{gurpsData.display.fp}} <span>/ {{gurpsData.display.fpMax}}</span></strong>
+            </div>
+          </section>
+
+          <section class="qd-ui2-stat-grid" aria-label="Actor combat stats">
+            <div class="qd-ui2-stat-tile"><span class="qd-ui2-stat-label">Move</span><strong>{{gurpsData.display.move}}</strong></div>
+            <div class="qd-ui2-stat-tile"><span class="qd-ui2-stat-label">Dodge</span><strong>{{gurpsData.display.dodge}}</strong></div>
+            <div class="qd-ui2-stat-tile"><span class="qd-ui2-stat-label">Parry</span><strong>{{gurpsData.display.parry}}</strong></div>
+            <div class="qd-ui2-stat-tile"><span class="qd-ui2-stat-label">Block</span><strong>{{gurpsData.display.block}}</strong></div>
+          </section>
+
+          <footer class="qd-ui2-actor-actions" aria-label="Actor actions">
+            <button type="button" class="qd-ui2-action-button" data-action="open-sheet" data-actor-id="{{activeActor.id}}">Open Sheet</button>
+            <button type="button" class="qd-ui2-action-button qd-ui2-drop-token-button {{#if isTokenDropArmedForActive}}is-armed{{/if}}" data-action="drop-token" data-actor-id="{{activeActor.id}}">Drop Token</button>
+          </footer>
+        </article>
+        {{else}}
+        <section class="qd-ui2-empty-state" aria-label="No selected actor">
+          <p class="qd-ui2-kicker qd-ui2-dev-badge">QD v0.14.4 — actor card</p>
+          <h1>No actor selected</h1>
+          <p>Open the roster drawer to add/select a character.</p>
         </section>
+        {{/if}}
       </main>
 
       {{#if isActionsDrawerOpen}}
