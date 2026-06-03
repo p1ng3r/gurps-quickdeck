@@ -2179,8 +2179,10 @@ export class QuickDeckApp extends Application {
       "[data-search-row='available']",
       this.availableSearch
     );
+    const hasQuery = Boolean(this.normalizeSearchText(this.availableSearch));
     this.updateCountText(html, "available-visible", visible);
     this.updateCountText(html, "available-total", total);
+    this.updateSearchUiState(html, "available", visible, "inactive characters", hasQuery);
   }
 
   applyCombatFilter(html) {
@@ -4680,6 +4682,7 @@ export class QuickDeckApp extends Application {
       .map((id) => game.actors.get(id))
       .filter((actor) => actor && actor.id);
 
+    const availableSearchNormalized = this.normalizeSearchText(this.availableSearch);
     const availableActors = allActors
       .map((actor) => ({
         id: actor.id,
@@ -4694,7 +4697,13 @@ export class QuickDeckApp extends Application {
         if (!actor.actorType) return true;
         const type = actor.actorType.toLowerCase();
         return type === "character" || type === "npc";
-      });
+      })
+      .map((actor) => ({
+        ...actor,
+        isAvailableSearchMatch:
+          !availableSearchNormalized ||
+          this.normalizeSearchText(actor.searchText).includes(availableSearchNormalized)
+      }));
 
     const rosterActorViews = rosterActors.map((actor) => {
       const hp = this.getResourceSummary(actor, "HP");
@@ -4750,6 +4759,8 @@ export class QuickDeckApp extends Application {
     const spellsSearch = this.spellsSearch;
     const spells = derivedData.spells;
 
+    const visibleAvailableCount = this.getVisibleCountBySearchText(availableActors, this.availableSearch);
+    const availableSearchHasQuery = Boolean(this.normalizeSearchText(this.availableSearch));
     const activeActorId = activeActor?.id ?? null;
     const favoriteAttackSelection = this.getFavoriteAttackSelection(activeActorId);
     const modifierBucketStatus = this.getModifierBucketStatus();
@@ -4900,7 +4911,9 @@ export class QuickDeckApp extends Application {
       quickSkillsSearch,
       spellsSearch,
       availableActors,
-      visibleAvailableCount: this.getVisibleCountBySearchText(availableActors, this.availableSearch),
+      visibleAvailableCount,
+      availableSearchStatusText: this.formatSearchStatus(visibleAvailableCount, "inactive characters", availableSearchHasQuery),
+      availableSearchShowEmpty: availableSearchHasQuery && visibleAvailableCount === 0,
       rosterCount: rosterActors.length,
       availableCount: availableActors.length,
       rosterActors: rosterActorViews,

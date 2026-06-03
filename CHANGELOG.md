@@ -1,3 +1,9 @@
+## [Unreleased] - v0.14.7-ui2-inactive-roster-foundation-local
+
+### Changed
+- Replaces the UI2 left drawer Inactive Characters placeholder with a searchable inactive/available actor list and Add controls using existing QuickDeck actor/roster behavior where possible.
+- Preserves the v0.14.6 Active Characters rows, v0.14.5 center actor card, UI1 default behavior, and leaves carousel/right drawer mapping/final art integration for later passes.
+
 ## [Unreleased] - v0.14.6-ui2-active-roster-after-v145-local
 
 ### Changed

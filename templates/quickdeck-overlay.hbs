@@ -93,9 +93,46 @@
           <p>No active characters yet. Drop actors here or add them from UI1.</p>
           {{/if}}
         </section>
-        <section class="qd-ui2-placeholder-card qd-ui2-muted-card">
-          <h3>Inactive Characters</h3>
-          <p>Placeholder for available or inactive character entries.</p>
+        <section class="qd-ui2-inactive-roster-card" aria-label="Inactive Characters">
+          <header class="qd-ui2-inactive-roster-header">
+            <div>
+              <h3>Inactive Characters</h3>
+              <p>Add available actors to the active roster.</p>
+            </div>
+            <span class="qd-ui2-inactive-roster-count" data-search-status="available">{{availableSearchStatusText}}</span>
+          </header>
+          <input
+            class="qd-ui2-inactive-roster-search"
+            type="search"
+            data-action="available-search"
+            value="{{availableSearch}}"
+            placeholder="Search inactive characters"
+            aria-label="Search inactive characters"
+          />
+          {{#if hasAvailableActors}}
+          <div class="qd-ui2-inactive-roster-list">
+            {{#each availableActors as |actor|}}
+            <article class="qd-ui2-inactive-roster-row" data-search-row="available" data-search-text="{{actor.searchText}}" {{#unless actor.isAvailableSearchMatch}}hidden{{/unless}}>
+              <img class="qd-ui2-inactive-roster-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+              <div class="qd-ui2-inactive-roster-meta">
+                <strong>{{actor.name}}</strong>
+                {{#if actor.actorType}}<small>{{actor.actorType}}</small>{{/if}}
+              </div>
+              <button
+                type="button"
+                class="qd-ui2-inactive-roster-add"
+                data-action="add-actor"
+                data-actor-id="{{actor.id}}"
+                title="Add {{actor.name}}"
+                aria-label="Add {{actor.name}}"
+              >Add</button>
+            </article>
+            {{/each}}
+          </div>
+          <p class="qd-ui2-inactive-roster-empty" data-search-empty="available" {{#unless availableSearchShowEmpty}}hidden{{/unless}}>No inactive characters match your search.</p>
+          {{else}}
+          <p class="qd-ui2-inactive-roster-empty">No inactive characters available.</p>
+          {{/if}}
         </section>
       </aside>
       {{/if}}
