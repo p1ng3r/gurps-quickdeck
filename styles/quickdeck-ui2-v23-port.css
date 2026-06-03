@@ -835,3 +835,230 @@
   margin-top: -2px !important;
   max-width: min(calc(var(--qd-ui2-center-w) - 56px), 560px) !important;
 }
+
+/* QuickDeck UI2 right drawer polish v0.15.7 */
+
+/* Right drawer should read as a command panel, not a plain list. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer,
+.qd40-overlay .qd-ui2-right-drawer {
+  gap: 8px !important;
+}
+
+/* Stronger segmented-control feeling for Combat / Skills / Spells / Settings. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-drawer-tabs {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 4px !important;
+  padding: 5px !important;
+  margin: 0 0 6px !important;
+  background:
+    linear-gradient(180deg, rgba(13, 10, 7, 0.78), rgba(43, 28, 15, 0.68)) !important;
+  border: 1px solid rgba(210, 161, 73, 0.28) !important;
+  border-radius: 12px !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 226, 150, 0.05),
+    inset 0 0 18px rgba(0, 0, 0, 0.38) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab,
+.qd40-overlay .qd-ui2-drawer-tab {
+  min-height: 30px !important;
+  padding: 5px 6px !important;
+  color: rgba(239, 214, 164, 0.78) !important;
+  background:
+    linear-gradient(180deg, rgba(68, 44, 22, 0.72), rgba(24, 17, 11, 0.82)) !important;
+  border: 1px solid rgba(194, 142, 58, 0.24) !important;
+  border-radius: 9px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.055em !important;
+  text-transform: uppercase !important;
+  box-shadow: inset 0 1px 0 rgba(255, 234, 170, 0.08) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab:hover,
+.qd40-overlay .qd-ui2-drawer-tab:hover {
+  color: #fff0c7 !important;
+  border-color: rgba(226, 176, 82, 0.52) !important;
+  filter: brightness(1.08) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab.is-active,
+.qd40-overlay .qd-ui2-drawer-tab.is-active {
+  color: #1e1308 !important;
+  background:
+    linear-gradient(180deg, #efc46e, #a66b22 58%, #6d3d12) !important;
+  border-color: rgba(255, 223, 139, 0.72) !important;
+  text-shadow: 0 1px 0 rgba(255, 234, 170, 0.45) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 245, 191, 0.45),
+    0 0 14px rgba(214, 148, 45, 0.24) !important;
+}
+
+/* Section headers: compact but readable. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-section-header,
+.qd40-overlay .qd-ui2-section-header {
+  min-height: 30px !important;
+  padding: 5px 8px !important;
+  margin-bottom: 6px !important;
+  background:
+    linear-gradient(90deg, rgba(88, 54, 22, 0.62), rgba(16, 12, 9, 0.24)) !important;
+  border: 1px solid rgba(202, 150, 63, 0.22) !important;
+  border-radius: 10px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-section-header h3,
+.qd40-overlay .qd-ui2-section-header h3 {
+  font-size: 13px !important;
+  letter-spacing: 0.07em !important;
+  text-transform: uppercase !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-section-header span,
+.qd40-overlay .qd-ui2-section-header span {
+  font-size: 10px !important;
+  color: rgba(235, 212, 165, 0.72) !important;
+}
+
+/* Search field should look built into the panel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-search-row {
+  gap: 6px !important;
+  margin-bottom: 7px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-search-row input,
+.qd40-overlay .qd-ui2-search-row input {
+  min-height: 30px !important;
+  padding: 5px 9px !important;
+  color: #f3dfb2 !important;
+  background:
+    linear-gradient(180deg, rgba(9, 8, 7, 0.9), rgba(26, 18, 11, 0.84)) !important;
+  border: 1px solid rgba(203, 150, 58, 0.35) !important;
+  border-radius: 9px !important;
+  box-shadow:
+    inset 0 1px 5px rgba(0, 0, 0, 0.52),
+    0 1px 0 rgba(255, 224, 145, 0.06) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-search-clear,
+.qd40-overlay .qd-ui2-search-clear {
+  min-height: 30px !important;
+  padding: 5px 8px !important;
+  border-radius: 9px !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.04em !important;
+  text-transform: uppercase !important;
+}
+
+/* Action rows: denser, premium, easier to scan. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-action-row {
+  min-height: 46px !important;
+  gap: 7px !important;
+  padding: 7px !important;
+  margin-bottom: 6px !important;
+  background:
+    linear-gradient(180deg, rgba(49, 32, 18, 0.74), rgba(13, 10, 8, 0.88)) !important;
+  border: 1px solid rgba(191, 139, 55, 0.22) !important;
+  border-radius: 11px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 225, 153, 0.06),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.22) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-action-row:hover {
+  border-color: rgba(224, 171, 75, 0.46) !important;
+  background:
+    linear-gradient(180deg, rgba(64, 41, 22, 0.82), rgba(18, 13, 9, 0.92)) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-action-main {
+  gap: 3px !important;
+  min-width: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-reference-button {
+  min-height: 22px !important;
+  padding: 2px 5px !important;
+  color: #f8e8bf !important;
+  font-size: 13px !important;
+  font-weight: 800 !important;
+  text-align: left !important;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button:not(:disabled):hover,
+.qd40-overlay .qd-ui2-reference-button:not(:disabled):hover {
+  color: #ffd979 !important;
+  text-decoration: underline !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-action-meta {
+  gap: 4px !important;
+  color: rgba(232, 206, 155, 0.62) !important;
+  font-size: 10px !important;
+  line-height: 1.2 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-meta span,
+.qd40-overlay .qd-ui2-action-meta span {
+  max-width: 100% !important;
+  padding: 1px 4px !important;
+  background: rgba(0, 0, 0, 0.16) !important;
+  border: 1px solid rgba(210, 159, 70, 0.12) !important;
+  border-radius: 5px !important;
+}
+
+/* Action buttons should read as a consistent bronze tool cluster. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-action-controls {
+  gap: 4px !important;
+  align-items: center !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-action-button {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  padding: 0 !important;
+  color: #f5deb0 !important;
+  background:
+    linear-gradient(180deg, rgba(81, 52, 24, 0.92), rgba(24, 17, 10, 0.94)) !important;
+  border: 1px solid rgba(204, 153, 65, 0.34) !important;
+  border-radius: 8px !important;
+  box-shadow: inset 0 1px 0 rgba(255, 225, 148, 0.12) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:hover,
+.qd40-overlay .qd-ui2-action-button:hover {
+  color: #fff1c9 !important;
+  border-color: rgba(236, 187, 86, 0.62) !important;
+  filter: brightness(1.12) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button.is-active,
+.qd40-overlay .qd-ui2-action-button.is-active {
+  color: #1b1107 !important;
+  background: linear-gradient(180deg, #f0c86f, #a86920) !important;
+  border-color: rgba(255, 225, 140, 0.78) !important;
+}
+
+/* Settings panel is player-facing now; keep it clean. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-settings-section .qd-ui2-empty-note,
+.qd40-overlay .qd-ui2-settings-section .qd-ui2-empty-note {
+  padding: 8px !important;
+  color: rgba(236, 212, 166, 0.72) !important;
+  background: rgba(9, 8, 7, 0.34) !important;
+  border: 1px solid rgba(203, 150, 58, 0.18) !important;
+  border-radius: 9px !important;
+}
