@@ -1,0 +1,186 @@
+/* QuickDeck UI2 shell alignment pass — v0.14.3 shell HTML. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-body,
+.qd40-overlay .qd-ui2-body {
+  overflow: visible !important;
+  width: fit-content !important;
+  max-width: calc(100vw - 48px);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
+.qd40-overlay .qd-ui2-shell {
+  --qd-ui2-drawer-width: clamp(300px, 24vw, 340px);
+  --qd-ui2-center-wide: clamp(660px, 56vw, 820px);
+  --qd-ui2-center-medium: clamp(560px, 44vw, 680px);
+  --qd-ui2-center-compact: clamp(460px, 34vw, 500px);
+  --qd-ui2-tab-width: 44px;
+  --qd-ui2-tab-gap: 8px;
+  --qd-ui2-panel-gap: 10px;
+  --qd-ui2-center-width: var(--qd-ui2-center-wide);
+
+  position: relative;
+  display: flex !important;
+  align-items: stretch !important;
+  gap: var(--qd-ui2-panel-gap) !important;
+  width: fit-content !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 96px);
+  height: min(760px, calc(100vh - 120px));
+  min-height: 520px;
+  padding: 0 !important;
+  overflow: visible !important;
+  color: var(--qd-text, #f4e6be);
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-collapsed,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-collapsed.qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-collapsed,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-collapsed.qd-ui2-right-open {
+  --qd-ui2-center-width: var(--qd-ui2-center-medium);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
+  --qd-ui2-center-width: var(--qd-ui2-center-compact);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer,
+.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-drawer {
+  min-width: 0;
+  min-height: 0;
+  background-color: rgba(11, 9, 7, 0.96);
+  background-image: var(--qd-panel-bg, linear-gradient(180deg, #17130f, #070605));
+  border: 1px solid rgba(240, 205, 122, 0.45);
+  border-radius: 18px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.56), inset 0 0 0 1px rgba(0, 0, 0, 0.72);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-center-cockpit {
+  flex: 0 0 var(--qd-ui2-center-width) !important;
+  width: var(--qd-ui2-center-width) !important;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 22px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer,
+.qd40-overlay .qd-ui2-drawer {
+  flex: 0 0 var(--qd-ui2-drawer-width) !important;
+  width: var(--qd-ui2-drawer-width) !important;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px;
+}
+
+.qd-ui2-panel-header {
+  display: grid;
+  gap: 4px;
+  text-align: center;
+}
+
+.qd-ui2-panel-header h1,
+.qd-ui2-panel-header h2 {
+  margin: 0;
+  color: var(--qd-text-strong, #fff0c7);
+  font-family: var(--qd-font-title, Georgia, serif);
+  letter-spacing: 0.04em;
+  text-shadow: 0 2px 0 #000, 0 0 18px rgba(240, 205, 122, 0.18);
+}
+
+.qd-ui2-panel-header h1 { font-size: 30px; }
+.qd-ui2-panel-header h2 { font-size: 22px; }
+
+.qd-ui2-kicker {
+  margin: 0;
+  color: var(--qd-brass-bright, #f0cd7a);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.qd-ui2-placeholder-card {
+  padding: 16px;
+  color: var(--qd-text, #f4e6be);
+  background: rgba(2, 2, 2, 0.32);
+  border: 1px solid rgba(199, 154, 56, 0.28);
+  border-radius: 14px;
+}
+
+.qd-ui2-placeholder-card h2,
+.qd-ui2-placeholder-card h3 {
+  margin: 0 0 8px;
+  color: var(--qd-text-strong, #fff0c7);
+  font-family: var(--qd-font-title, Georgia, serif);
+}
+
+.qd-ui2-placeholder-card p { margin: 0; }
+.qd-ui2-muted-card { opacity: 0.82; }
+
+.qd-ui2-center-placeholder {
+  margin-top: 18px;
+  min-height: 280px;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-edge-tab,
+.qd40-overlay .qd-ui2-edge-tab {
+  position: absolute;
+  z-index: 5;
+  top: 50%;
+  width: var(--qd-ui2-tab-width);
+  min-width: var(--qd-ui2-tab-width);
+  height: 164px;
+  padding: 10px 4px;
+  transform: translateY(-50%);
+  color: var(--qd-text-strong, #fff0c7);
+  background-color: rgba(8, 7, 6, 0.96);
+  border: 1px solid rgba(240, 205, 122, 0.55);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.52);
+  font-family: var(--qd-font-ui, "Trebuchet MS", "Segoe UI", system-ui, sans-serif);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.qd-ui2-edge-tab span {
+  display: inline-block;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-tab,
+.qd40-overlay .qd-ui2-left-tab {
+  left: calc(-1 * (var(--qd-ui2-tab-width) + var(--qd-ui2-tab-gap)));
+  border-radius: 14px 0 0 14px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-tab,
+.qd40-overlay .qd-ui2-right-tab {
+  right: calc(-1 * (var(--qd-ui2-tab-width) + var(--qd-ui2-tab-gap)));
+  border-radius: 0 14px 14px 0;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-edge-tab:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-edge-tab:focus-visible,
+.qd40-overlay .qd-ui2-edge-tab:hover,
+.qd40-overlay .qd-ui2-edge-tab:focus-visible {
+  border-color: rgba(240, 205, 122, 0.86);
+  color: #fff6d8;
+  outline: none;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-frame,
+.qd40-overlay .qd-ui2-frame {
+  height: auto;
+}

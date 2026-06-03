@@ -29,7 +29,93 @@
   </div>
   {{/if}}
 
-  <div class="qd40-body">
+  <div class="qd40-body {{#if isUi2Mode}}qd-ui2-body{{/if}}">
+  {{#if isUi2Mode}}
+    {{!--
+    UI2 v0.14.3 placeholder shell.
+    Future passes:
+    - actor card
+    - roster
+    - carousel
+    - actions drawer
+    - art integration
+    --}}
+    {{!-- UI2 v0.14.3 is intentionally placeholder-only. Actor card, roster, carousel, and action drawer mapping come in later passes. --}}
+    <section
+      class="qd40-shell qd-ui2-shell {{#if isRosterDrawerOpen}}qd-ui2-left-open{{else}}qd-ui2-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd-ui2-right-open{{else}}qd-ui2-right-collapsed{{/if}}"
+      data-active-drawer="{{activeDrawer}}"
+      aria-label="QuickDeck UI2 shell"
+    >
+      <button
+        class="qd-ui2-edge-tab qd-ui2-left-tab"
+        type="button"
+        data-action="toggle-roster-drawer"
+        title="{{#if isRosterDrawerOpen}}Collapse Active Characters drawer{{else}}Open Active Characters drawer{{/if}}"
+        aria-expanded="{{#if isRosterDrawerOpen}}true{{else}}false{{/if}}"
+      >
+        <span>{{#if isRosterDrawerOpen}}‹ Close{{else}}Active ›{{/if}}</span>
+      </button>
+
+      {{#if isRosterDrawerOpen}}
+      <aside class="qd-ui2-drawer qd-ui2-left-drawer" aria-label="UI2 character drawer">
+        <header class="qd-ui2-panel-header">
+          <p class="qd-ui2-kicker">Roster Shell</p>
+          <h2>Characters</h2>
+        </header>
+        <section class="qd-ui2-placeholder-card">
+          <h3>Active Characters</h3>
+          <p>Placeholder for the active-character roster panel.</p>
+        </section>
+        <section class="qd-ui2-placeholder-card qd-ui2-muted-card">
+          <h3>Inactive Characters</h3>
+          <p>Placeholder for available or inactive character entries.</p>
+        </section>
+      </aside>
+      {{/if}}
+
+      <main class="qd-ui2-center-cockpit" aria-label="UI2 center cockpit">
+        <header class="qd-ui2-panel-header qd-ui2-center-header">
+          <p class="qd-ui2-kicker">QD v0.14.3 — shell HTML</p>
+          <h1>UI2 Center Cockpit</h1>
+        </header>
+        <section class="qd-ui2-placeholder-card qd-ui2-center-placeholder">
+          <h2>UI2 Center Cockpit placeholder</h2>
+          <p>Shell-only layout pass. Actor cards, carousel content, art integration, and action wiring land later.</p>
+        </section>
+      </main>
+
+      {{#if isActionsDrawerOpen}}
+      <aside class="qd-ui2-drawer qd-ui2-right-drawer" aria-label="UI2 action drawer">
+        <header class="qd-ui2-panel-header">
+          <p class="qd-ui2-kicker">Action Shell</p>
+          <h2>Drawers</h2>
+        </header>
+        <section class="qd-ui2-placeholder-card"><h3>Combat</h3><p>Combat placeholder.</p></section>
+        <section class="qd-ui2-placeholder-card"><h3>Skills</h3><p>Skills placeholder.</p></section>
+        <section class="qd-ui2-placeholder-card"><h3>Spells</h3><p>Spells placeholder.</p></section>
+        <section class="qd-ui2-placeholder-card qd-ui2-settings-card">
+          <h3>Settings</h3>
+          <p>Settings placeholder.</p>
+          <label class="qd-ui2-mode-field">
+            <input type="checkbox" data-action="set-ui-mode" {{#if isUi2Mode}}checked{{/if}}>
+            <span>Enable UI2 Experimental Shell</span>
+          </label>
+        </section>
+      </aside>
+      {{/if}}
+
+      <button
+        class="qd-ui2-edge-tab qd-ui2-right-tab"
+        type="button"
+        data-action="toggle-actions-drawer"
+        data-drawer="combat"
+        title="{{#if isActionsDrawerOpen}}Collapse action drawer{{else}}Open action drawer{{/if}}"
+        aria-expanded="{{#if isActionsDrawerOpen}}true{{else}}false{{/if}}"
+      >
+        <span>{{#if isActionsDrawerOpen}}Close ›{{else}}‹ Actions{{/if}}</span>
+      </button>
+    </section>
+  {{else}}
   <section class="qd40-shell qd31-shell {{#if isRosterDrawerOpen}}qd31-left-open{{else}}qd31-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd31-right-open{{else}}qd31-right-collapsed{{/if}}" data-active-drawer="{{activeDrawer}}">
     <div class="qd31-left-panel-wrap qd31-panel-wrap {{#if isRosterDrawerOpen}}is-open{{else}}is-collapsed{{/if}}">
     <button class="qd31-edge-tab qd31-left-edge-tab {{#unless isRosterDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}« Collapse{{else}}Roster ›{{/if}}</button>
@@ -385,6 +471,12 @@
         </header>
         <div class="qd31-action-row qd31-dev-art-tuner-row">
           <label class="qd31-dev-art-tuner-toggle">
+            <input type="checkbox" data-action="set-ui-mode" {{#if isUi2Mode}}checked{{/if}}>
+            <span>Enable UI2 Experimental Shell</span>
+          </label>
+        </div>
+        <div class="qd31-action-row qd31-dev-art-tuner-row">
+          <label class="qd31-dev-art-tuner-toggle">
             <input type="checkbox" data-action="toggle-dev-art-tuner-enabled" {{#if devArtTunerEnabled}}checked{{/if}}>
             <span>Enable Dev Art Tuner</span>
           </label>
@@ -461,5 +553,6 @@
   {{/if}}
   </div>
   </section>
+  {{/if}}
   </div>
 </div>

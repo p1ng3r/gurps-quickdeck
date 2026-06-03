@@ -1,3 +1,9 @@
+## [Unreleased] - v0.14.3-ui2-shell-html-alignment-local
+
+### Changed
+- Adds the UI2 shell HTML alignment pass with center-only, one-drawer, and both-drawer state classes while keeping UI1 as the default mode.
+- Adds shell-only UI2 placeholders for character, cockpit, action, and settings regions with the visible `QD v0.14.3 — shell HTML` badge.
+
 ## [Unreleased] - v0.9.7.2 batch2-fit
 
 ### Changed
