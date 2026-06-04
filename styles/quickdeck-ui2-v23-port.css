@@ -2531,3 +2531,14 @@
   line-height: 1 !important;
   font-weight: 900 !important;
 }
+
+
+/* QuickDeck UI2 remove stray center header p target */
+#gurps-quickdeck-overlay .qd40-shell > main:nth-of-type(1) > section:nth-of-type(2) > header:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(1) {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
