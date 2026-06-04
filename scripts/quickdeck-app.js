@@ -4727,6 +4727,7 @@ export class QuickDeckApp extends Application {
       };
     });
     const centerRosterView = this.getCenterRosterView(rosterActorViews);
+    const ui2CarouselActors = this.getUi2CarouselActors(rosterActorViews);
 
     const activeActor = this.getActiveActor();
     const shouldHydrateDerivedData = Boolean(activeActor);
@@ -4917,6 +4918,7 @@ export class QuickDeckApp extends Application {
       rosterCount: rosterActors.length,
       availableCount: availableActors.length,
       rosterActors: rosterActorViews,
+      ui2CarouselActors,
       centerRosterView,
       activeActor: activeActor
         ? {
@@ -5050,6 +5052,43 @@ export class QuickDeckApp extends Application {
   statusDevArtTuner() {
     installQuickDeckArtTunerGlobals();
     window.qdArtTunerStatus?.();
+  }
+
+
+  normalizeUi2CarouselIndex(index, count) {
+    const actorCount = Number(count) || 0;
+    if (actorCount <= 0) return 0;
+    return ((Number(index) % actorCount) + actorCount) % actorCount;
+  }
+
+  getUi2CarouselActors(rosterActors) {
+    const actors = Array.isArray(rosterActors) ? rosterActors : [];
+    const actorCount = actors.length;
+    this.ui2CarouselActorCount = actorCount;
+
+    if (actorCount <= 5) {
+      this.ui2CarouselStartIndex = 0;
+      return actors;
+    }
+
+    const start = this.normalizeUi2CarouselIndex(this.ui2CarouselStartIndex ?? 0, actorCount);
+    this.ui2CarouselStartIndex = start;
+
+    return Array.from({ length: 5 }, (_unused, offset) => actors[(start + offset) % actorCount]);
+  }
+
+  shiftUi2Carousel(direction) {
+    const actorCount = Number(this.ui2CarouselActorCount) || 0;
+    if (actorCount <= 5) {
+      this.ui2CarouselStartIndex = 0;
+      return;
+    }
+
+    const step = direction < 0 ? -1 : 1;
+    this.ui2CarouselStartIndex = this.normalizeUi2CarouselIndex(
+      (this.ui2CarouselStartIndex ?? 0) + step,
+      actorCount
+    );
   }
 
   activateListeners(html) {
@@ -5196,12 +5235,8 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='ui2-carousel-scroll']").on("click", (event) => {
       event.preventDefault();
       const direction = event.currentTarget.dataset.carouselDirection === "prev" ? -1 : 1;
-      const card = event.currentTarget.closest(".qd-ui2-carousel-card");
-      const track = card?.querySelector?.("[data-ui2-carousel-track]");
-      if (!track) return;
-
-      const scrollAmount = Math.max(96, Math.floor(track.clientWidth * 0.75));
-      track.scrollBy({ left: direction * scrollAmount, behavior: "smooth" });
+      this.shiftUi2Carousel(direction);
+      this.render(false, { focus: false });
     });
 
     html.find("[data-action='toggle-center-roster-minimized']").on("click", (event) => {
