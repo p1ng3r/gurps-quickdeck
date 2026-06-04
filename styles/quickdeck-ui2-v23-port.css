@@ -2032,3 +2032,94 @@
   border-color: rgba(240, 190, 91, 0.72) !important;
   filter: brightness(1.1) !important;
 }\n
+
+/* QuickDeck UI2 combat carousel and mass drop v0.15.9 */
+
+/* Combat tracker current turn is distinct from QuickDeck selected actor. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button.is-current-turn,
+.qd40-overlay .qd-ui2-carousel-portrait-button.is-current-turn {
+  border-color: rgba(122, 225, 255, 0.95) !important;
+  box-shadow:
+    0 0 0 1px rgba(158, 237, 255, 0.44),
+    0 0 14px rgba(78, 199, 255, 0.58) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-turn-marker,
+.qd40-overlay .qd-ui2-carousel-turn-marker {
+  position: absolute !important;
+  right: -2px !important;
+  top: -4px !important;
+  z-index: 65 !important;
+  color: #8fefff !important;
+  font-size: 10px !important;
+  line-height: 1 !important;
+  text-shadow:
+    0 0 3px #001217,
+    0 0 8px rgba(88, 211, 255, 0.9) !important;
+  pointer-events: none !important;
+}
+
+/* Stack single-drop and visible-carousel-drop controls under the portrait. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-mass-drop-token-button,
+.qd40-overlay .qd-ui2-mass-drop-token-button {
+  font-size: 9px !important;
+  letter-spacing: 0.025em !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-mass-drop-token-button:hover,
+.qd40-overlay .qd-ui2-mass-drop-token-button:hover {
+  border-color: rgba(129, 219, 255, 0.72) !important;
+}
+/* QuickDeck UI2 mass drop reticle and preferences v0.15.9c */
+
+.qd-ui2-mass-drop-reticle {
+  position: fixed !important;
+  left: 0;
+  top: 0;
+  z-index: 2147483000 !important;
+  width: 74px;
+  height: 74px;
+  translate: -50% -50%;
+  pointer-events: none !important;
+  display: grid;
+  place-items: center;
+  color: #b7efff;
+  font-family: "Modesto Condensed", "Cinzel", serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.95), 0 0 12px rgba(78, 199, 255, 0.9);
+}
+
+.qd-ui2-mass-drop-reticle-ring {
+  position: absolute;
+  inset: 8px;
+  border: 2px solid rgba(132, 228, 255, 0.92);
+  border-radius: 999px;
+  box-shadow: inset 0 0 14px rgba(69, 193, 255, 0.28), 0 0 16px rgba(69, 193, 255, 0.5);
+}
+
+.qd-ui2-mass-drop-reticle-ring::before,
+.qd-ui2-mass-drop-reticle-ring::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  background: rgba(170, 241, 255, 0.92);
+  box-shadow: 0 0 8px rgba(69, 193, 255, 0.9);
+  translate: -50% -50%;
+}
+
+.qd-ui2-mass-drop-reticle-ring::before { width: 54px; height: 2px; }
+.qd-ui2-mass-drop-reticle-ring::after { width: 2px; height: 54px; }
+
+.qd-ui2-mass-drop-reticle-label {
+  position: absolute;
+  top: calc(100% - 7px);
+  padding: 2px 7px;
+  border: 1px solid rgba(132, 228, 255, 0.54);
+  border-radius: 999px;
+  background: rgba(4, 12, 18, 0.86);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}

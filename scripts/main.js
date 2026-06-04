@@ -11,6 +11,8 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
+  TOKEN_DROP_AUTO_MINIMIZE: "tokenDropAutoMinimize",
+  TOKEN_DROP_AUTO_RESTORE: "tokenDropAutoRestore",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
   UI_MODE: "uiMode",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
@@ -125,6 +127,24 @@ Hooks.once("init", () => {
     config: false,
     type: Boolean,
     default: false
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_MINIMIZE, {
+    name: "QuickDeck Token Drop: Auto-Minimize",
+    hint: "Minimize QuickDeck while placing tokens from Drop Carousel.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_RESTORE, {
+    name: "QuickDeck Token Drop: Auto-Restore",
+    hint: "Restore QuickDeck after Drop Carousel token placement completes or is cancelled.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true
   });
 
   game.settings.register(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, {
