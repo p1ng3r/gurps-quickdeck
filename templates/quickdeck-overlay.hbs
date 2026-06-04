@@ -166,6 +166,14 @@
               title="Drop Token"
               aria-label="Drop Token for {{activeActor.name}}"
             >♟ Drop Token</button>
+            <button
+              type="button"
+              class="qd-ui2-drop-token-button qd-ui2-mass-drop-token-button"
+              data-action="drop-ui2-carousel-tokens"
+              data-actor-ids="{{ui2CarouselActorIdsCsv}}"
+              title="Drop tokens for visible carousel actors"
+              aria-label="Drop tokens for visible carousel actors"
+            >♟ Drop Carousel</button>
           </div>
 
           <div class="qd-ui2-actor-title-block">
@@ -186,7 +194,7 @@
                 {{#each ui2CarouselActors as |actor|}}
                 <button
                   type="button"
-                  class="qd-ui2-carousel-portrait-button {{#if actor.isActive}}is-active{{/if}}"
+                  class="qd-ui2-carousel-portrait-button {{#if actor.isActive}}is-active{{/if}} {{#if actor.isCurrentTurn}}is-current-turn{{/if}} {{#if actor.isInCombat}}is-in-combat{{/if}}"
                   data-action="open-actor"
                   data-actor-id="{{actor.id}}"
                   title="Select {{actor.name}}"
@@ -194,6 +202,7 @@
                   aria-current="{{#if actor.isActive}}true{{else}}false{{/if}}"
                 >
                   <img class="qd-ui2-carousel-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+                  {{#if actor.isCurrentTurn}}<span class="qd-ui2-carousel-turn-marker" aria-hidden="true">◆</span>{{/if}}
                 </button>
                 {{/each}}
               </div>
@@ -511,6 +520,14 @@
               <label class="qd-ui2-mode-field">
                 <input type="checkbox" data-action="set-ui-mode" {{#if isUi2Mode}}checked{{/if}}>
                 <span>Enable UI2 Experimental Shell</span>
+              </label>
+              <label class="qd-ui2-mode-field">
+                <input type="checkbox" data-action="set-token-drop-auto-minimize" {{#if tokenDropAutoMinimizeEnabled}}checked{{/if}}>
+                <span>Minimize QuickDeck during Drop Carousel placement</span>
+              </label>
+              <label class="qd-ui2-mode-field">
+                <input type="checkbox" data-action="set-token-drop-auto-restore" {{#if tokenDropAutoRestoreEnabled}}checked{{/if}}>
+                <span>Restore QuickDeck after Drop Carousel placement</span>
               </label>
               {{#if devArtTunerEnabled}}
               <div class="qd-ui2-settings-actions">

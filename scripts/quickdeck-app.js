@@ -17,6 +17,8 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
+  TOKEN_DROP_AUTO_MINIMIZE: "tokenDropAutoMinimize",
+  TOKEN_DROP_AUTO_RESTORE: "tokenDropAutoRestore",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
   UI_MODE: "uiMode",
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
@@ -375,6 +377,10 @@ export class QuickDeckApp extends Application {
     this._tokenDropReticleElement = null;
     this._tokenDropCursorTarget = null;
     this._tokenDropPreviousCursor = null;
+    this.pendingUi2CarouselTokenDropActorIds = null;
+    this._pendingUi2CarouselTokenDropCleanup = null;
+    this._ui2CarouselTokenDropWasMinimized = null;
+    this._ui2CarouselTokenDropShouldRestore = true;
     this.pendingTargetOpponentAttackIndex = null;
     this._pendingTargetOpponentCleanup = null;
     this._targetOpponentSceneId = null;
@@ -4727,7 +4733,9 @@ export class QuickDeckApp extends Application {
       };
     });
     const centerRosterView = this.getCenterRosterView(rosterActorViews);
-    const ui2CarouselActors = this.getUi2CarouselActors(rosterActorViews);
+    const ui2CarouselSourceActors = this.getUi2CombatOrderedRosterActors(rosterActorViews);
+    const ui2CarouselActors = this.getUi2CarouselActors(ui2CarouselSourceActors);
+    const ui2CarouselActorIdsCsv = ui2CarouselActors.map((actor) => actor.id).filter(Boolean).join(",");
 
     const activeActor = this.getActiveActor();
     const shouldHydrateDerivedData = Boolean(activeActor);
@@ -4919,6 +4927,9 @@ export class QuickDeckApp extends Application {
       availableCount: availableActors.length,
       rosterActors: rosterActorViews,
       ui2CarouselActors,
+      ui2CarouselActorIdsCsv,
+      tokenDropAutoMinimizeEnabled: this.getTokenDropAutoMinimizeEnabled(),
+      tokenDropAutoRestoreEnabled: this.getTokenDropAutoRestoreEnabled(),
       centerRosterView,
       activeActor: activeActor
         ? {
@@ -5061,6 +5072,412 @@ export class QuickDeckApp extends Application {
     return ((Number(index) % actorCount) + actorCount) % actorCount;
   }
 
+
+
+  getTokenDropAutoMinimizeEnabled() {
+    try {
+      return game.settings.get(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_MINIMIZE) !== false;
+    } catch (_error) {
+      return true;
+    }
+  }
+
+  async setTokenDropAutoMinimizeEnabled(enabled) {
+    try {
+      await game.settings.set(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_MINIMIZE, Boolean(enabled));
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to save token drop auto-minimize setting.", error);
+    }
+  }
+
+  getTokenDropAutoRestoreEnabled() {
+    try {
+      return game.settings.get(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_RESTORE) !== false;
+    } catch (_error) {
+      return true;
+    }
+  }
+
+  async setTokenDropAutoRestoreEnabled(enabled) {
+    try {
+      await game.settings.set(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_RESTORE, Boolean(enabled));
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to save token drop auto-restore setting.", error);
+    }
+  }
+
+  ensureUi2CarouselDropReticle(count) {
+    let reticle = this._ui2CarouselTokenDropReticleElement;
+    if (reticle && document.body.contains(reticle)) return reticle;
+
+    reticle = document.createElement("div");
+    reticle.className = "qd-ui2-mass-drop-reticle";
+    reticle.innerHTML = `<span class="qd-ui2-mass-drop-reticle-ring"></span><span class="qd-ui2-mass-drop-reticle-label">Drop ${Number(count) || ""}</span>`;
+    document.body.appendChild(reticle);
+    this._ui2CarouselTokenDropReticleElement = reticle;
+    return reticle;
+  }
+
+  updateUi2CarouselDropReticle(event, count) {
+    const reticle = this.ensureUi2CarouselDropReticle(count);
+    const clientX = Number(event?.clientX ?? 0);
+    const clientY = Number(event?.clientY ?? 0);
+    reticle.style.left = `${Math.round(clientX)}px`;
+    reticle.style.top = `${Math.round(clientY)}px`;
+    const label = reticle.querySelector(".qd-ui2-mass-drop-reticle-label");
+    if (label) label.textContent = `Drop ${Number(count) || ""}`;
+  }
+
+  removeUi2CarouselDropReticle() {
+    const reticle = this._ui2CarouselTokenDropReticleElement;
+    if (reticle) reticle.remove();
+    this._ui2CarouselTokenDropReticleElement = null;
+  }
+
+  getUi2CombatOrderedRosterActors(rosterActors) {
+    const actors = Array.isArray(rosterActors) ? rosterActors : [];
+    const combat = game?.combat;
+    const combatants = Array.from(combat?.combatants ?? []);
+    if (!combat || !combatants.length || !actors.length) return actors;
+
+    const actorById = new Map(actors.map((actor) => [actor.id, actor]));
+    const ordered = [];
+    const seen = new Set();
+    const currentCombatantId = combat.combatant?.id ?? combat.current?.combatantId ?? null;
+
+    for (const combatant of combatants) {
+      const actorId = combatant?.actorId ?? combatant?.actor?.id ?? null;
+      if (!actorId || seen.has(actorId)) continue;
+      const actorView = actorById.get(actorId);
+      if (!actorView) continue;
+
+      seen.add(actorId);
+      ordered.push({
+        ...actorView,
+        isInCombat: true,
+        isCurrentTurn: actorView.isCurrentTurn || Boolean(combatant?.id && combatant.id === currentCombatantId),
+        combatInitiative: combatant?.initiative ?? null,
+        combatOrderIndex: ordered.length
+      });
+    }
+
+    for (const actorView of actors) {
+      if (!actorView?.id || seen.has(actorView.id)) continue;
+      ordered.push({
+        ...actorView,
+        isInCombat: false,
+        combatOrderIndex: null
+      });
+    }
+
+    return ordered.length ? ordered : actors;
+  }
+
+  getUi2CarouselTokenDropOrigin(count) {
+    const scene = canvas?.scene ?? game?.scenes?.active ?? null;
+    const gridSize = Number(canvas?.grid?.size ?? scene?.grid?.size ?? scene?.grid?.distance ?? 100) || 100;
+    const sceneWidth = Number(scene?.dimensions?.width ?? scene?.width ?? gridSize * Math.max(1, count));
+    const sceneHeight = Number(scene?.dimensions?.height ?? scene?.height ?? gridSize * Math.max(1, count));
+    const centerX = Math.round(sceneWidth / 2);
+    const centerY = Math.round(sceneHeight / 2);
+    return { centerX, centerY, gridSize };
+  }
+
+  async buildTokenDropDataForActor(actor, x, y) {
+    if (!actor?.id) return null;
+
+    try {
+      if (typeof actor.getTokenDocument === "function") {
+        const tokenDocument = await actor.getTokenDocument({ x, y });
+        const tokenData = typeof tokenDocument?.toObject === "function" ? tokenDocument.toObject() : tokenDocument;
+        return {
+          ...tokenData,
+          actorId: tokenData?.actorId ?? actor.id,
+          x,
+          y
+        };
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to build token document from actor.getTokenDocument.", { actor, error });
+    }
+
+    const prototypeToken =
+      typeof actor.prototypeToken?.toObject === "function"
+        ? actor.prototypeToken.toObject()
+        : actor.prototypeToken ?? {};
+
+    return {
+      ...prototypeToken,
+      actorId: actor.id,
+      name: prototypeToken.name ?? actor.name,
+      img: prototypeToken.texture?.src ? undefined : actor.img,
+      x,
+      y
+    };
+  }
+
+
+  getCanvasCoordinatesFromClientEvent(event) {
+    const clientX = Number(event?.clientX ?? event?.data?.originalEvent?.clientX);
+    const clientY = Number(event?.clientY ?? event?.data?.originalEvent?.clientY);
+
+    if (Number.isFinite(clientX) && Number.isFinite(clientY)) {
+      if (typeof canvas?.canvasCoordinatesFromClient === "function") {
+        const point = canvas.canvasCoordinatesFromClient({ x: clientX, y: clientY });
+        return { x: Math.round(point.x), y: Math.round(point.y) };
+      }
+
+      const view = canvas?.app?.view;
+      const rect = view?.getBoundingClientRect?.();
+      if (rect && canvas?.stage?.worldTransform && globalThis.PIXI?.Point) {
+        const point = new PIXI.Point(clientX - rect.left, clientY - rect.top);
+        const world = canvas.stage.worldTransform.applyInverse(point);
+        return { x: Math.round(world.x), y: Math.round(world.y) };
+      }
+    }
+
+    const offsetX = Number(event?.offsetX ?? event?.data?.global?.x);
+    const offsetY = Number(event?.offsetY ?? event?.data?.global?.y);
+    return {
+      x: Math.round(Number.isFinite(offsetX) ? offsetX : 0),
+      y: Math.round(Number.isFinite(offsetY) ? offsetY : 0)
+    };
+  }
+
+  getUi2CarouselTokenPositions(centerX, centerY, count) {
+    const scene = canvas?.scene ?? game?.scenes?.active ?? null;
+    const gridSize = Number(canvas?.grid?.size ?? scene?.grid?.size ?? scene?.grid?.distance ?? 100) || 100;
+    const spacing = Math.max(gridSize, Math.round(gridSize * 1.25));
+    const startX = Math.round(Number(centerX) - ((count - 1) * spacing) / 2);
+    const y = Math.round(Number(centerY));
+
+    return Array.from({ length: count }, (_unused, index) => ({
+      x: Math.round(startX + index * spacing),
+      y
+    }));
+  }
+
+  restoreAfterUi2CarouselTokenDrop() {
+    const shouldRestore =
+      this._ui2CarouselTokenDropShouldRestore !== false &&
+      (this._ui2CarouselTokenDropWasMinimized === false ||
+        this._ui2CarouselTokenDropWasMinimized === null);
+
+    this._ui2CarouselTokenDropWasMinimized = null;
+
+    if (shouldRestore) {
+      this.isMinimized = false;
+      this.persistMinimizedState();
+      this.render(false, { focus: false });
+    }
+  }
+
+  stopUi2CarouselTokenDrop({ restore = true } = {}) {
+    if (typeof this._pendingUi2CarouselTokenDropCleanup === "function") {
+      this._pendingUi2CarouselTokenDropCleanup();
+    }
+
+    this._pendingUi2CarouselTokenDropCleanup = null;
+    this.pendingUi2CarouselTokenDropActorIds = null;
+
+    if (restore) this.restoreAfterUi2CarouselTokenDrop();
+  }
+
+  async startUi2CarouselTokenDrop(actorIds) {
+    const ids = Array.from(new Set((Array.isArray(actorIds) ? actorIds : [])
+      .map((id) => String(id ?? "").trim())
+      .filter((id) => id && game.actors.has(id))));
+
+    if (!ids.length) {
+      ui.notifications?.warn("QuickDeck: No carousel actors are available to drop.");
+      return;
+    }
+
+    if (!canvas?.ready || !canvas?.scene || !canvas?.app?.view) {
+      ui.notifications?.warn("QuickDeck: Open an active scene before dropping carousel tokens.");
+      return;
+    }
+
+    this.stopUi2CarouselTokenDrop({ restore: false });
+    this.cancelTokenDrop?.({ render: false });
+
+    this.pendingUi2CarouselTokenDropActorIds = ids;
+    this._ui2CarouselTokenDropWasMinimized = Boolean(this.isMinimized);
+    this._ui2CarouselTokenDropShouldRestore = this.getTokenDropAutoRestoreEnabled();
+
+    if (this.getTokenDropAutoMinimizeEnabled() && !this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState();
+      this.render(false, { focus: false });
+    }
+
+    ui.notifications?.info(`QuickDeck: Click the scene to drop ${ids.length} carousel token${ids.length === 1 ? "" : "s"}. Press Escape or right-click to cancel.`);
+
+    const view = canvas.app.view;
+    const previousCursor = view.style.cursor;
+    view.style.cursor = "crosshair";
+    this.ensureUi2CarouselDropReticle(ids.length);
+
+    const cleanupListeners = [];
+    let finished = false;
+
+    const cleanup = () => {
+      view.style.cursor = previousCursor;
+      this.removeUi2CarouselDropReticle();
+      for (const [target, type, handler, options] of cleanupListeners) {
+        target.removeEventListener(type, handler, options);
+      }
+    };
+
+    const finish = ({ restore = true } = {}) => {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      this._pendingUi2CarouselTokenDropCleanup = null;
+      this.pendingUi2CarouselTokenDropActorIds = null;
+      if (restore) this.restoreAfterUi2CarouselTokenDrop();
+    };
+
+    const onPointerDown = async (event) => {
+      if (event.button && event.button !== 0) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const pendingIds = Array.from(this.pendingUi2CarouselTokenDropActorIds ?? ids);
+      const point = this.getCanvasCoordinatesFromClientEvent(event);
+      finish({ restore: false });
+
+      await this.dropUi2CarouselTokensAt(pendingIds, point.x, point.y);
+      this.restoreAfterUi2CarouselTokenDrop();
+    };
+
+    const onContextMenu = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      ui.notifications?.info("QuickDeck: Carousel token drop cancelled.");
+      finish({ restore: true });
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      ui.notifications?.info("QuickDeck: Carousel token drop cancelled.");
+      finish({ restore: true });
+    };
+
+    cleanupListeners.push([view, "pointerdown", onPointerDown, true]);
+    cleanupListeners.push([view, "contextmenu", onContextMenu, true]);
+    cleanupListeners.push([window, "keydown", onKeyDown, true]);
+
+    view.addEventListener("pointerdown", onPointerDown, true);
+    view.addEventListener("contextmenu", onContextMenu, true);
+    window.addEventListener("keydown", onKeyDown, true);
+
+    this._pendingUi2CarouselTokenDropCleanup = cleanup;
+  }
+
+  async dropUi2CarouselTokensAt(actorIds, centerX, centerY) {
+    const ids = Array.from(new Set((Array.isArray(actorIds) ? actorIds : [])
+      .map((id) => String(id ?? "").trim())
+      .filter((id) => id && game.actors.has(id))));
+
+    if (!ids.length) {
+      ui.notifications?.warn("QuickDeck: No carousel actors are available to drop.");
+      return;
+    }
+
+    const scene = canvas?.scene ?? game?.scenes?.active ?? null;
+    if (!scene || !canvas?.ready) {
+      ui.notifications?.warn("QuickDeck: Open an active scene before dropping carousel tokens.");
+      return;
+    }
+
+    const positions = this.getUi2CarouselTokenPositions(centerX, centerY, ids.length);
+    const tokenData = [];
+
+    for (let index = 0; index < ids.length; index += 1) {
+      const actor = game.actors.get(ids[index]);
+      if (!actor) continue;
+
+      const position = positions[index] ?? { x: centerX, y: centerY };
+      const built = await this.buildTokenDropDataForActor(actor, position.x, position.y);
+      if (built) tokenData.push(built);
+    }
+
+    if (!tokenData.length) {
+      ui.notifications?.warn("QuickDeck: Could not build any carousel tokens.");
+      return;
+    }
+
+    try {
+      if (typeof TokenDocument?.createDocuments === "function") {
+        await TokenDocument.createDocuments(tokenData, { parent: scene });
+      } else if (typeof scene.createEmbeddedDocuments === "function") {
+        await scene.createEmbeddedDocuments("Token", tokenData);
+      } else {
+        throw new Error("No supported Token creation API found.");
+      }
+
+      ui.notifications?.info(`QuickDeck: Dropped ${tokenData.length} carousel token${tokenData.length === 1 ? "" : "s"}.`);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to mass-drop carousel tokens.", error);
+      ui.notifications?.warn("QuickDeck: Could not drop carousel tokens.");
+    }
+  }
+
+  async dropUi2CarouselTokens(actorIds) {
+    const ids = Array.from(new Set((Array.isArray(actorIds) ? actorIds : [])
+      .map((id) => String(id ?? "").trim())
+      .filter((id) => id && game.actors.has(id))));
+
+    if (!ids.length) {
+      ui.notifications?.warn("QuickDeck: No carousel actors are available to drop.");
+      return;
+    }
+
+    const scene = canvas?.scene ?? game?.scenes?.active ?? null;
+    if (!scene || !canvas?.ready) {
+      ui.notifications?.warn("QuickDeck: Open an active scene before dropping carousel tokens.");
+      return;
+    }
+
+    const { centerX, centerY, gridSize } = this.getUi2CarouselTokenDropOrigin(ids.length);
+    const spacing = Math.max(gridSize, Math.round(gridSize * 1.25));
+    const startX = Math.round(centerX - ((ids.length - 1) * spacing) / 2);
+    const y = Math.round(centerY);
+    const tokenData = [];
+
+    for (let index = 0; index < ids.length; index += 1) {
+      const actor = game.actors.get(ids[index]);
+      if (!actor) continue;
+
+      const x = Math.round(startX + index * spacing);
+      const built = await this.buildTokenDropDataForActor(actor, x, y);
+      if (built) tokenData.push(built);
+    }
+
+    if (!tokenData.length) {
+      ui.notifications?.warn("QuickDeck: Could not build any carousel tokens.");
+      return;
+    }
+
+    try {
+      if (typeof TokenDocument?.createDocuments === "function") {
+        await TokenDocument.createDocuments(tokenData, { parent: scene });
+      } else if (typeof scene.createEmbeddedDocuments === "function") {
+        await scene.createEmbeddedDocuments("Token", tokenData);
+      } else {
+        throw new Error("No supported Token creation API found.");
+      }
+
+      ui.notifications?.info(`QuickDeck: Dropped ${tokenData.length} carousel token${tokenData.length === 1 ? "" : "s"}.`);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to mass-drop carousel tokens.", error);
+      ui.notifications?.warn("QuickDeck: Could not drop carousel tokens.");
+    }
+  }
+
   getUi2CarouselActors(rosterActors) {
     const actors = Array.isArray(rosterActors) ? rosterActors : [];
     const actorCount = actors.length;
@@ -5150,6 +5567,16 @@ export class QuickDeckApp extends Application {
       this.openReferenceIndexManager();
     });
 
+    html.find("[data-action='set-token-drop-auto-minimize']").on("change", async (event) => {
+      await this.setTokenDropAutoMinimizeEnabled(Boolean(event.currentTarget.checked));
+      this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='set-token-drop-auto-restore']").on("change", async (event) => {
+      await this.setTokenDropAutoRestoreEnabled(Boolean(event.currentTarget.checked));
+      this.render(false, { focus: false });
+    });
+
     html.find("[data-action='toggle-dev-art-tuner-enabled']").on("change", async (event) => {
       await this.setDevArtTunerEnabled(event.currentTarget.checked);
     });
@@ -5230,6 +5657,16 @@ export class QuickDeckApp extends Application {
       event.preventDefault();
       this.pageCenterRoster("next");
       this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='drop-ui2-carousel-tokens']").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorIds = String(event.currentTarget.dataset.actorIds || "")
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean);
+      await this.startUi2CarouselTokenDrop(actorIds);
     });
 
     html.find("[data-action='ui2-carousel-scroll']").on("click", (event) => {
