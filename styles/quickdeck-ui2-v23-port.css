@@ -1062,3 +1062,973 @@
   border: 1px solid rgba(203, 150, 58, 0.18) !important;
   border-radius: 9px !important;
 }
+
+/* QuickDeck UI2 center quick slots restore v0.15.8 */
+
+/* Re-open enough vertical room for the restored Quick Slots deck. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open),
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) {
+  --qd-ui2-body-h: min(660px, calc(100vh - 116px));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open {
+  --qd-ui2-body-h: min(690px, calc(100vh - 108px));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
+  --qd-ui2-body-h: min(700px, calc(100vh - 104px));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-center-cockpit {
+  gap: 7px !important;
+  padding-top: 12px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit::before,
+.qd40-overlay .qd-ui2-center-cockpit::before {
+  height: min(520px, calc(var(--qd-ui2-body-h) - 44px)) !important;
+}
+
+/* Quick Slots command deck. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slots-card,
+.qd40-overlay .qd-ui2-quick-slots-card {
+  position: relative !important;
+  z-index: 1 !important;
+  width: min(calc(var(--qd-ui2-center-w) - 38px), 640px) !important;
+  max-height: min(300px, calc(var(--qd-ui2-body-h) - 300px)) !important;
+  min-height: 138px !important;
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  gap: 6px !important;
+  padding: 8px !important;
+  color: #f3dfb2 !important;
+  background:
+    linear-gradient(180deg, rgba(48, 31, 17, 0.72), rgba(9, 8, 7, 0.86)) !important;
+  border: 1px solid rgba(215, 166, 76, 0.26) !important;
+  border-radius: 14px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 229, 156, 0.08),
+    inset 0 -18px 24px rgba(0, 0, 0, 0.22),
+    0 8px 18px rgba(0, 0, 0, 0.22) !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-quick-slots-card,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-quick-slots-card {
+  width: min(calc(var(--qd-ui2-center-w) - 18px), 454px) !important;
+  max-height: min(292px, calc(var(--qd-ui2-body-h) - 292px)) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slots-header,
+.qd40-overlay .qd-ui2-quick-slots-header {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: end !important;
+  gap: 8px !important;
+  padding: 4px 6px 6px !important;
+  border-bottom: 1px solid rgba(214, 163, 73, 0.20) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slots-header h2,
+.qd40-overlay .qd-ui2-quick-slots-header h2 {
+  margin: 0 !important;
+  color: #f4d48b !important;
+  font-size: 15px !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slots-header p,
+.qd40-overlay .qd-ui2-quick-slots-header p,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slots-header span,
+.qd40-overlay .qd-ui2-quick-slots-header span {
+  margin: 0 !important;
+  color: rgba(235, 211, 162, 0.68) !important;
+  font-size: 10px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slots-sections,
+.qd40-overlay .qd-ui2-quick-slots-sections {
+  min-height: 0 !important;
+  overflow: auto !important;
+  display: grid !important;
+  gap: 6px !important;
+  padding-right: 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-section,
+.qd40-overlay .qd-ui2-quick-slot-section {
+  display: grid !important;
+  gap: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-toggle,
+.qd40-overlay .qd-ui2-quick-slot-toggle {
+  width: 100% !important;
+  min-height: 28px !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  padding: 4px 8px !important;
+  color: #f5ddb0 !important;
+  background:
+    linear-gradient(180deg, rgba(86, 54, 23, 0.86), rgba(24, 17, 10, 0.88)) !important;
+  border: 1px solid rgba(205, 153, 64, 0.30) !important;
+  border-radius: 9px !important;
+  font-size: 11px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.055em !important;
+  text-transform: uppercase !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-toggle small,
+.qd40-overlay .qd-ui2-quick-slot-toggle small {
+  display: inline-grid !important;
+  place-items: center !important;
+  min-width: 21px !important;
+  height: 20px !important;
+  color: #1d1207 !important;
+  background: linear-gradient(180deg, #e8bd68, #9f671f) !important;
+  border-radius: 999px !important;
+  font-size: 10px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-list,
+.qd40-overlay .qd-ui2-quick-slot-list {
+  display: grid !important;
+  gap: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-card,
+.qd40-overlay .qd-ui2-quick-slot-card {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  gap: 7px !important;
+  align-items: center !important;
+  min-height: 42px !important;
+  padding: 6px !important;
+  background:
+    linear-gradient(180deg, rgba(35, 23, 13, 0.78), rgba(8, 7, 6, 0.88)) !important;
+  border: 1px solid rgba(190, 140, 58, 0.22) !important;
+  border-radius: 9px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-main,
+.qd40-overlay .qd-ui2-quick-slot-main {
+  min-width: 0 !important;
+  display: grid !important;
+  gap: 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-main strong,
+.qd40-overlay .qd-ui2-quick-slot-main strong {
+  overflow: hidden !important;
+  color: #fae8bd !important;
+  font-size: 12px !important;
+  line-height: 1.1 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-detail,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-variant,
+.qd40-overlay .qd-ui2-quick-slot-detail,
+.qd40-overlay .qd-ui2-quick-slot-variant {
+  overflow: hidden !important;
+  color: rgba(235, 208, 157, 0.63) !important;
+  font-size: 10px !important;
+  line-height: 1.15 !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-controls,
+.qd40-overlay .qd-ui2-quick-slot-controls {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  justify-content: flex-end !important;
+  gap: 4px !important;
+  max-width: 240px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-quick-slot-controls,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-quick-slot-controls {
+  max-width: 178px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-icon,
+.qd40-overlay .qd-ui2-quick-slot-button,
+.qd40-overlay .qd-ui2-quick-slot-icon {
+  min-height: 25px !important;
+  padding: 3px 7px !important;
+  color: #f4ddb2 !important;
+  background: linear-gradient(180deg, rgba(84, 53, 24, 0.92), rgba(23, 16, 9, 0.94)) !important;
+  border: 1px solid rgba(205, 153, 65, 0.34) !important;
+  border-radius: 7px !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-icon,
+.qd40-overlay .qd-ui2-quick-slot-icon {
+  width: 25px !important;
+  min-width: 25px !important;
+  padding: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-button.is-primary,
+.qd40-overlay .qd-ui2-quick-slot-button.is-primary {
+  color: #1d1207 !important;
+  background: linear-gradient(180deg, #f0c66d, #a4691f) !important;
+  border-color: rgba(255, 225, 142, 0.66) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-button.is-unpin,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-icon.is-unpin,
+.qd40-overlay .qd-ui2-quick-slot-button.is-unpin,
+.qd40-overlay .qd-ui2-quick-slot-icon.is-unpin {
+  color: rgba(255, 236, 196, 0.82) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-empty,
+.qd40-overlay .qd-ui2-quick-slot-empty {
+  padding: 8px !important;
+  color: rgba(235, 210, 164, 0.66) !important;
+  background: rgba(0, 0, 0, 0.24) !important;
+  border: 1px dashed rgba(211, 159, 70, 0.22) !important;
+  border-radius: 8px !important;
+  font-size: 11px !important;
+  text-align: center !important;
+}
+
+/* The carousel now sits below Quick Slots, so keep it compact. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-card,
+.qd40-overlay .qd-ui2-carousel-card {
+  height: 42px !important;
+  min-height: 42px !important;
+  margin-top: 0 !important;
+}
+
+/* QuickDeck UI2 quick slots plate cleanup v0.15.8b */
+
+/* The restored Quick Slots deck is now the center console surface.
+   Disable the old v0.15.6 pseudo-window plate so it does not appear behind it. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit::before,
+.qd40-overlay .qd-ui2-center-cockpit::before {
+  display: none !important;
+  content: none !important;
+}
+
+/* Tighten the restored stack now that the extra background plate is gone. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-center-cockpit {
+  gap: 6px !important;
+  padding-top: 10px !important;
+}
+
+/* Make Quick Slots the visual center console instead of a second floating panel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slots-card,
+.qd40-overlay .qd-ui2-quick-slots-card {
+  margin-top: 0 !important;
+  border-color: rgba(226, 178, 82, 0.34) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 229, 156, 0.10),
+    inset 0 -18px 24px rgba(0, 0, 0, 0.24),
+    0 6px 14px rgba(0, 0, 0, 0.18) !important;
+}
+
+/* QuickDeck UI2 five-slot carousel polish v0.15.8c */
+
+/* Show a compact five-portrait carousel while preserving scrollable overflow. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-card,
+.qd40-overlay .qd-ui2-carousel-card {
+  width: auto !important;
+  max-width: 286px !important;
+  min-width: 286px !important;
+  height: 48px !important;
+  min-height: 48px !important;
+  display: grid !important;
+  grid-template-columns: 28px 1fr 28px !important;
+  align-items: center !important;
+  gap: 5px !important;
+  padding: 5px !important;
+  margin-top: 0 !important;
+}
+
+/* Track viewport: five 34px portraits + four 5px gaps = 190px. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-track,
+.qd40-overlay .qd-ui2-carousel-track {
+  width: 190px !important;
+  max-width: 190px !important;
+  min-width: 190px !important;
+  height: 38px !important;
+  display: flex !important;
+  gap: 5px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory !important;
+  scroll-behavior: smooth !important;
+  scrollbar-width: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-track::-webkit-scrollbar,
+.qd40-overlay .qd-ui2-carousel-track::-webkit-scrollbar {
+  display: none !important;
+}
+
+/* Fixed portrait size so exactly five are visible at once. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button,
+.qd40-overlay .qd-ui2-carousel-portrait-button {
+  width: 34px !important;
+  height: 34px !important;
+  min-width: 34px !important;
+  flex: 0 0 34px !important;
+  scroll-snap-align: center !important;
+  opacity: 0.72 !important;
+  transform: scale(0.92) !important;
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease !important;
+}
+
+/* Active actor gets the visual priority. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button.is-active,
+.qd40-overlay .qd-ui2-carousel-portrait-button.is-active {
+  opacity: 1 !important;
+  transform: scale(1.06) !important;
+  border-color: rgba(255, 218, 116, 0.9) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 236, 168, 0.35),
+    0 0 12px rgba(227, 166, 58, 0.52) !important;
+}
+
+/* Compact arrow buttons for stepping through the full roster. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-arrow,
+.qd40-overlay .qd-ui2-carousel-arrow {
+  width: 28px !important;
+  height: 34px !important;
+  min-width: 28px !important;
+  padding: 0 !important;
+  border-radius: 9px !important;
+  font-size: 24px !important;
+  line-height: 1 !important;
+}
+
+/* QuickDeck UI2 actor-card name and carousel relocation v0.15.8d */
+
+/* Actor name now owns the upper band of the card; actor type is intentionally hidden/removed. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  grid-template-columns: 112px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "portrait title"
+    "portrait vitals"
+    "portrait instruments" !important;
+  align-items: start !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-portrait-ring {
+  grid-area: portrait !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-title-block,
+.qd40-overlay .qd-ui2-actor-title-block {
+  grid-area: title !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  padding-top: 1px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-name,
+.qd40-overlay .qd-ui2-actor-name {
+  margin: 0 !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Kill actor type everywhere in the UI2 card even if future template data tries to render it. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card .qd-ui2-actor-type,
+.qd40-overlay .qd-ui2-actor-card .qd-ui2-actor-type {
+  display: none !important;
+}
+
+/* The carousel is now a compact five-slot selector inside the actor card title band. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-card-carousel {
+  width: 246px !important;
+  min-width: 246px !important;
+  max-width: 246px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  display: grid !important;
+  grid-template-columns: 24px 1fr 24px !important;
+  gap: 4px !important;
+  padding: 4px !important;
+  margin: 0 !important;
+  align-self: center !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track {
+  width: 170px !important;
+  max-width: 170px !important;
+  min-width: 170px !important;
+  height: 34px !important;
+  gap: 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button {
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  flex-basis: 30px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-arrow,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-arrow {
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 32px !important;
+  font-size: 20px !important;
+}
+
+/* Put the remaining actor instruments into explicit areas. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-stack,
+.qd40-overlay .qd-ui2-vital-stack {
+  grid-area: vitals !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-instrument-deck,
+.qd40-overlay .qd-ui2-instrument-deck {
+  grid-area: instruments !important;
+}
+
+/* In cramped three-panel mode, let the carousel sit below the name instead of crushing it. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-title-block,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-title-block {
+  grid-template-columns: 1fr !important;
+  gap: 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel {
+  justify-self: start !important;
+  width: 220px !important;
+  min-width: 220px !important;
+  max-width: 220px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel .qd-ui2-carousel-track,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel .qd-ui2-carousel-track {
+  width: 148px !important;
+  min-width: 148px !important;
+  max-width: 148px !important;
+}
+
+/* QuickDeck UI2 actor-card exact stat-row layout v0.15.8g */
+
+/*
+  Desired card grid:
+  [ Name above portrait ] [ Carousel             ]
+  [ Portrait            ] [ HP meter             ]
+  [ Portrait            ] [ FP meter             ]
+  [ Portrait            ] [ Stat / secondary row ]
+  [ Portrait            ] [ Rolls / Defense      ]
+
+  Template currently groups secondary stats + rolls/defense inside .qd-ui2-instrument-deck,
+  so this keeps instruments as the lower-right command stack.
+*/
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  grid-template-columns: 112px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "title carousel"
+    "portrait vitals"
+    "portrait instruments"
+    "portrait instruments" !important;
+  align-items: start !important;
+  gap: 6px 10px !important;
+}
+
+/* Left top cell: name above portrait. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-title-block,
+.qd40-overlay .qd-ui2-actor-title-block {
+  grid-area: title !important;
+  display: block !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  align-self: center !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-name,
+.qd40-overlay .qd-ui2-actor-name {
+  display: block !important;
+  width: 112px !important;
+  max-width: 112px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  font-size: clamp(17px, 1.75vw, 22px) !important;
+  line-height: 1.05 !important;
+}
+
+/* Left body: portrait remains under the name. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-portrait-ring {
+  grid-area: portrait !important;
+  justify-self: center !important;
+  align-self: start !important;
+}
+
+/* Top-right: carousel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-card-carousel {
+  grid-area: carousel !important;
+  justify-self: start !important;
+  align-self: center !important;
+  width: 246px !important;
+  min-width: 246px !important;
+  max-width: 246px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+}
+
+/* Right middle: HP/FP. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-stack,
+.qd40-overlay .qd-ui2-vital-stack {
+  grid-area: vitals !important;
+  align-self: start !important;
+  gap: 5px !important;
+}
+
+/* Right lower: secondary stats + rolls/defense command stack. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-instrument-deck,
+.qd40-overlay .qd-ui2-instrument-deck {
+  grid-area: instruments !important;
+  align-self: start !important;
+  gap: 6px !important;
+}
+
+/* Actor type/"Character" never appears in the UI2 actor card. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card .qd-ui2-actor-type,
+.qd40-overlay .qd-ui2-actor-card .qd-ui2-actor-type {
+  display: none !important;
+}
+
+/* Three-panel mode preserves the same structure with a tighter portrait column. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card {
+  grid-template-columns: 98px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "title carousel"
+    "portrait vitals"
+    "portrait instruments"
+    "portrait instruments" !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-name,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-name {
+  width: 98px !important;
+  max-width: 98px !important;
+  font-size: 16px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel {
+  width: 220px !important;
+  min-width: 220px !important;
+  max-width: 220px !important;
+}\n\n/* QuickDeck UI2 carousel beside name correction v0.15.8h */
+
+/*
+  Correct structure after moving carousel out of title block:
+  [ Name above portrait ] [ Carousel             ]
+  [ Portrait            ] [ HP meter             ]
+  [ Portrait            ] [ FP meter             ]
+  [ Portrait            ] [ Stat / secondary row ]
+  [ Portrait            ] [ Rolls / Defense      ]
+*/
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  grid-template-columns: 112px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "title carousel"
+    "portrait vitals"
+    "portrait instruments"
+    "portrait instruments" !important;
+  align-items: start !important;
+  gap: 6px 10px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-title-block,
+.qd40-overlay .qd-ui2-actor-title-block {
+  grid-area: title !important;
+  display: block !important;
+  min-width: 0 !important;
+  padding: 0 !important;
+  align-self: center !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-name,
+.qd40-overlay .qd-ui2-actor-name {
+  display: block !important;
+  width: 112px !important;
+  max-width: 112px !important;
+  margin: 0 !important;
+  overflow: hidden !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  text-overflow: ellipsis !important;
+  font-size: clamp(17px, 1.75vw, 22px) !important;
+  line-height: 1.05 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-card-carousel {
+  grid-area: carousel !important;
+  justify-self: start !important;
+  align-self: center !important;
+  width: 246px !important;
+  min-width: 246px !important;
+  max-width: 246px !important;
+  height: 42px !important;
+  min-height: 42px !important;
+  margin: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-portrait-ring {
+  grid-area: portrait !important;
+  justify-self: center !important;
+  align-self: start !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-stack,
+.qd40-overlay .qd-ui2-vital-stack {
+  grid-area: vitals !important;
+  align-self: start !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-instrument-deck,
+.qd40-overlay .qd-ui2-instrument-deck {
+  grid-area: instruments !important;
+  align-self: start !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card {
+  grid-template-columns: 98px minmax(0, 1fr) !important;
+  grid-template-areas:
+    "title carousel"
+    "portrait vitals"
+    "portrait instruments"
+    "portrait instruments" !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-name,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-name {
+  width: 98px !important;
+  max-width: 98px !important;
+  font-size: 16px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel {
+  width: 220px !important;
+  min-width: 220px !important;
+  max-width: 220px !important;
+}\n\n\n/* QuickDeck UI2 three-panel carousel nudge v0.15.8i */
+
+/* Art Tuner equivalent:
+   #gurps-quickdeck-overlay.qd40-overlay .qd40-shell > main:nth-of-type(1) > section:nth-of-type(1) > section:nth-of-type(1) {
+     translate: 110px 0px !important;
+   }
+
+   Use stable semantic UI2 classes instead of nth-of-type.
+   Applies only when left + right panels are open.
+*/
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel {
+  translate: 110px 0 !important;
+}\n
+
+/* QuickDeck UI2 true circular carousel v0.15.8j */
+
+/* True carousel is render-driven by ui2CarouselActors.
+   The track is only a five-slot viewport, never a browser scroll strip. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track {
+  overflow: hidden !important;
+  scroll-snap-type: none !important;
+  scroll-behavior: auto !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button {
+  flex: 0 0 30px !important;
+  scroll-snap-align: none !important;
+}\n\n/* QuickDeck UI2 carousel portrait hover zoom v0.15.8k */
+
+/* Let hovered carousel portraits grow outside the five-slot rail. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-card-carousel,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track {
+  overflow: visible !important;
+}
+
+/* Smooth base state for the circular carousel portraits. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button {
+  position: relative !important;
+  z-index: 1 !important;
+  transform-origin: center center !important;
+  transition:
+    transform 120ms ease,
+    opacity 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    z-index 120ms ease !important;
+}
+
+/* Hover/focus zoom: roughly double size without changing layout flow. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:focus-visible,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:hover,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:focus-visible {
+  z-index: 50 !important;
+  opacity: 1 !important;
+  transform: scale(2) !important;
+  border-color: rgba(255, 224, 128, 0.95) !important;
+  box-shadow:
+    0 0 0 1px rgba(255, 245, 184, 0.52),
+    0 0 18px rgba(232, 174, 64, 0.75),
+    0 10px 24px rgba(0, 0, 0, 0.48) !important;
+}
+
+/* Active + hover should still look active while enlarged. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button.is-active:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button.is-active:focus-visible,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button.is-active:hover,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button.is-active:focus-visible {
+  transform: scale(2.08) !important;
+}\n
+
+/* QuickDeck UI2 editable HP/FP vitals v0.15.8n */
+
+/* UI2 HP/FP bars now mirror UI1: the current value is an editable set-resource input. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-control,
+.qd40-overlay .qd-ui2-vital-control {
+  cursor: text !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-readout,
+.qd40-overlay .qd-ui2-vital-readout {
+  position: relative !important;
+  z-index: 2 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input,
+.qd40-overlay .qd-ui2-vital-input {
+  width: 46px !important;
+  min-width: 46px !important;
+  height: 20px !important;
+  padding: 1px 4px !important;
+  color: #fff1c9 !important;
+  text-align: right !important;
+  font: inherit !important;
+  font-weight: 850 !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+  border: 1px solid rgba(255, 226, 150, 0.24) !important;
+  border-radius: 6px !important;
+  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.42) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input:hover,
+.qd40-overlay .qd-ui2-vital-input:hover {
+  border-color: rgba(255, 226, 150, 0.46) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input:focus,
+.qd40-overlay .qd-ui2-vital-input:focus {
+  outline: none !important;
+  color: #ffffff !important;
+  border-color: rgba(255, 224, 128, 0.88) !important;
+  box-shadow:
+    inset 0 1px 4px rgba(0, 0, 0, 0.48),
+    0 0 0 1px rgba(255, 224, 128, 0.22),
+    0 0 10px rgba(230, 169, 56, 0.32) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-max,
+.qd40-overlay .qd-ui2-vital-max {
+  color: rgba(255, 239, 199, 0.82) !important;
+  font-weight: 800 !important;
+}
+
+/* Hide number spinners so the value reads like the UI1 cockpit input. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input::-webkit-outer-spin-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input::-webkit-inner-spin-button,
+.qd40-overlay .qd-ui2-vital-input::-webkit-outer-spin-button,
+.qd40-overlay .qd-ui2-vital-input::-webkit-inner-spin-button {
+  margin: 0 !important;
+  -webkit-appearance: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input[type="number"],
+.qd40-overlay .qd-ui2-vital-input[type="number"] {
+  -moz-appearance: textfield !important;
+}\n\n/* QuickDeck UI2 invisible HP/FP input chrome v0.15.8o */
+
+/* Keep HP/FP editable, but remove the inner input-pill look. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input,
+.qd40-overlay .qd-ui2-vital-input {
+  width: 38px !important;
+  min-width: 38px !important;
+  height: auto !important;
+  padding: 0 !important;
+  color: inherit !important;
+  text-align: right !important;
+  font: inherit !important;
+  font-weight: 850 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input:hover,
+.qd40-overlay .qd-ui2-vital-input:hover {
+  background: rgba(255, 226, 150, 0.08) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input:focus,
+.qd40-overlay .qd-ui2-vital-input:focus {
+  outline: 1px solid rgba(255, 224, 128, 0.55) !important;
+  outline-offset: 1px !important;
+  color: #ffffff !important;
+  background: rgba(0, 0, 0, 0.18) !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+/* Keep the slash/max visually part of the same readout. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-max,
+.qd40-overlay .qd-ui2-vital-max {
+  margin-left: 1px !important;
+}\n\n\n/* QuickDeck UI2 remove inner HP/FP readout pill v0.15.8p */
+
+/* Remove the black inner capsule around HP/FP values.
+   The editable input remains, but visually blends into the main HP/FP bar. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-readout,
+.qd40-overlay .qd-ui2-vital-readout {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  color: #fff1c9 !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input,
+.qd40-overlay .qd-ui2-vital-input {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: auto !important;
+  padding: 0 !important;
+  color: #fff1c9 !important;
+  text-align: right !important;
+  font: inherit !important;
+  font-weight: 850 !important;
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input:hover,
+.qd40-overlay .qd-ui2-vital-input:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input:focus,
+.qd40-overlay .qd-ui2-vital-input:focus {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: #ffffff !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-max,
+.qd40-overlay .qd-ui2-vital-max {
+  color: #fff1c9 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
+}\n\n\n/* QuickDeck UI2 drop token button restore v0.15.8q */
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-stack,
+.qd40-overlay .qd-ui2-portrait-stack {
+  grid-area: portrait !important;
+  display: grid !important;
+  justify-items: center !important;
+  gap: 6px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-stack .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-portrait-stack .qd-ui2-portrait-ring {
+  grid-area: auto !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drop-token-button,
+.qd40-overlay .qd-ui2-drop-token-button {
+  min-height: 26px !important;
+  width: min(112px, 100%) !important;
+  padding: 4px 7px !important;
+  color: #f6dfb0 !important;
+  background:
+    linear-gradient(180deg, rgba(83, 53, 24, 0.92), rgba(20, 14, 9, 0.96)) !important;
+  border: 1px solid rgba(213, 162, 72, 0.42) !important;
+  border-radius: 9px !important;
+  font-size: 10px !important;
+  font-weight: 850 !important;
+  letter-spacing: 0.035em !important;
+  text-transform: uppercase !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 157, 0.12),
+    0 3px 8px rgba(0, 0, 0, 0.28) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drop-token-button:hover,
+.qd40-overlay .qd-ui2-drop-token-button:hover {
+  color: #fff1c9 !important;
+  border-color: rgba(240, 190, 91, 0.72) !important;
+  filter: brightness(1.1) !important;
+}\n
