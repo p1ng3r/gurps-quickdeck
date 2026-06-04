@@ -19,6 +19,7 @@ const SETTING_KEYS = {
   RESTORE_PILL_POSITION: "restorePillPosition",
   TOKEN_DROP_AUTO_MINIMIZE: "tokenDropAutoMinimize",
   TOKEN_DROP_AUTO_RESTORE: "tokenDropAutoRestore",
+  DAMAGE_PICK_AUTO_MINIMIZE: "damagePickAutoMinimize",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
   UI_MODE: "uiMode",
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
@@ -381,6 +382,13 @@ export class QuickDeckApp extends Application {
     this._pendingUi2CarouselTokenDropCleanup = null;
     this._ui2CarouselTokenDropWasMinimized = null;
     this._ui2CarouselTokenDropShouldRestore = true;
+    this.pendingDamageContext = null;
+    this.qdPendingDamageContext = null;
+    this._qdPendingDamagePopupElement = null;
+    this._qdPendingDamagePickTargetCleanup = null;
+    this._qdPendingDamagePickTargetReticleElement = null;
+    this._qdPendingDamagePickTargetWasMinimized = null;
+    this._qdPendingDamagePopupDrag = null;
     this.pendingTargetOpponentAttackIndex = null;
     this._pendingTargetOpponentCleanup = null;
     this._targetOpponentSceneId = null;
@@ -3337,7 +3345,7 @@ export class QuickDeckApp extends Application {
     return `[${parsed.formula}${suffix}]`;
   }
 
-  async rollParsedDamageFormula(actor, attack, parsed) {
+  async rollParsedDamageFormula(actor, attack, parsed, attackIndex = null) {
     if (!actor || !parsed?.formula) return false;
     const attackName = attack?.name ?? "Attack";
     if (parsed.isDerived) {
@@ -3346,6 +3354,8 @@ export class QuickDeckApp extends Application {
       if (derivedOtf && typeof gurps?.executeOTF === "function") {
         try {
           await gurps.executeOTF(derivedOtf, false, actor);
+          this.rememberPendingDamageContext(actor, attack, attackIndex, { rawDamage: parsed.original ?? parsed.formula, dice: parsed.formula, damageType: parsed.damageType ?? null, damage: 0 });
+          this.render(false, { focus: false });
           return true;
         } catch (error) {
           console.warn("gurps-quickdeck | Derived damage OTF failed.", { derivedOtf, error });
@@ -3364,10 +3374,151 @@ export class QuickDeckApp extends Application {
         speaker: ChatMessage.getSpeaker({ actor }),
         flavor: `QuickDeck Damage (${attackName}${damageLabel})`
       });
+      this.rememberPendingDamageContext(actor, attack, attackIndex, { rawDamage: parsed.original ?? parsed.formula, dice: parsed.formula, damageType: parsed.damageType ?? null, damage: roll.total });
+      this.render(false, { focus: false });
       return true;
     } catch (error) {
       console.warn("gurps-quickdeck | Damage formula fallback roll failed.", { parsed, error });
       return false;
+    }
+  }
+
+
+  getPendingDamageView() {
+    const context = this.pendingDamageContext;
+    if (!context?.attackerActorId) {
+      return {
+        hasDamage: false,
+        title: "No damage queued",
+        subtitle: "Roll damage, then apply it to a targeted defender.",
+        buttonLabel: "Apply Last Damage"
+      };
+    }
+
+    const attacker = game.actors.get(context.attackerActorId);
+    const damageText = Number(context.damage) > 0 ? `${context.damage} ${context.damageType ?? ""}`.trim() : context.rawDamage || context.dice || "Damage";
+    const attackName = context.attackName || "Damage";
+
+    return {
+      hasDamage: true,
+      attackerName: attacker?.name ?? context.attackerName ?? "Unknown attacker",
+      attackName,
+      title: `${attackName} · ${damageText}`,
+      subtitle: `From ${attacker?.name ?? context.attackerName ?? "Unknown"}${context.dice ? ` · ${context.dice}` : ""}`,
+      damage: context.damage,
+      damageType: context.damageType,
+      dice: context.dice,
+      rawDamage: context.rawDamage,
+      buttonLabel: "Apply Last Damage"
+    };
+  }
+
+  rememberPendingDamageContext(actor, attack, attackIndex, data = {}) {
+    if (!actor?.id || !attack) return;
+
+    const rawDamage = String(data.rawDamage ?? this.getAttackDamageFormula(attack) ?? attack.damageDisplay ?? attack.damage ?? "").trim();
+    const parsedParts = this.parseQuickDeckDamageParts?.(attack, data) ?? {};
+    const damageType = String(data.damageType ?? parsedParts.damageType ?? "cr").trim() || "cr";
+    const dice = String(data.dice ?? parsedParts.dice ?? rawDamage ?? "1d").trim() || "1d";
+    const damage = Number(data.damage ?? parsedParts.damage ?? 0) || 0;
+    const armorDivisor = Number(data.armorDivisor ?? parsedParts.armorDivisor ?? 1) || 1;
+
+    this.pendingDamageContext = {
+      attackerActorId: actor.id,
+      attackerName: actor.name,
+      attackIndex: Number.isFinite(Number(attackIndex)) ? Number(attackIndex) : null,
+      attackName: String(attack.name ?? attack.displayName ?? "Damage"),
+      dice,
+      damage,
+      damageType,
+      armorDivisor,
+      rawDamage,
+      hitlocation: "Random",
+      queuedAt: Date.now()
+    };
+  }
+
+  clearPendingDamageContext({ render = true } = {}) {
+    this.pendingDamageContext = null;
+    if (render) this.render(false, { focus: false });
+  }
+
+  getQuickDeckApplyDamageTargetActor() {
+    const targeted = Array.from(game.user?.targets ?? []).find((token) => token?.actor);
+    if (targeted?.actor) return targeted.actor;
+
+    const controlled = canvas?.tokens?.controlled?.find((token) => token?.actor);
+    if (controlled?.actor) return controlled.actor;
+
+    return null;
+  }
+
+  parseQuickDeckDamageParts(attack, overrides = {}) {
+    const raw = String(
+      overrides.rawDamage
+      ?? attack?.damageDisplay
+      ?? attack?.damage
+      ?? attack?.damageFormula
+      ?? attack?.dam
+      ?? attack?.damageText
+      ?? ""
+    ).trim();
+
+    const lower = raw.toLowerCase();
+    const typeMatch = lower.match(/\b(pi\+\+|pi\+|pi-|pi|cr|cut|imp|burn|cor|tox|fat)\b/);
+    const damageType = String(overrides.damageType ?? attack?.damageType ?? attack?.typeDamage ?? typeMatch?.[1] ?? "cr").trim() || "cr";
+
+    const diceMatch = raw.match(/(?:sw|swing|thr|thrust|\d+d(?:\d+)?(?:[+-]\d+)?)/i);
+    const dice = String(overrides.dice ?? attack?.dice ?? attack?.damageFormula ?? diceMatch?.[0] ?? raw ?? "1d").trim() || "1d";
+
+    const flatMatch = raw.match(/(?:^|\s)(\d+)(?:\s|$)/);
+    const damage = Number(overrides.damage ?? attack?.basicDamage ?? attack?.damageValue ?? flatMatch?.[1] ?? 0) || 0;
+
+    const divisorMatch = raw.match(/\((\d+(?:\.\d+)?)\)/);
+    const armorDivisor = Number(overrides.armorDivisor ?? attack?.armorDivisor ?? divisorMatch?.[1] ?? 1) || 1;
+
+    return { raw, dice, damage, damageType, armorDivisor };
+  }
+
+  openPendingDamageDialog() {
+    const context = this.pendingDamageContext;
+    if (!context?.attackerActorId) {
+      ui.notifications?.warn("QuickDeck: No pending damage. Roll damage first.");
+      return;
+    }
+
+    const attackerActor = game.actors.get(context.attackerActorId);
+    const defenderActor = this.getQuickDeckApplyDamageTargetActor();
+
+    if (!attackerActor) {
+      ui.notifications?.warn("QuickDeck: Pending damage attacker is unavailable.");
+      return;
+    }
+
+    if (!defenderActor) {
+      ui.notifications?.warn("QuickDeck: Target a defender token, or select one token on the canvas, before applying damage.");
+      return;
+    }
+
+    if (typeof defenderActor.handleDamageDrop !== "function") {
+      ui.notifications?.warn("QuickDeck: This defender actor does not expose native GURPS handleDamageDrop.");
+      return;
+    }
+
+    const damageData = {
+      attacker: attackerActor.id,
+      dice: context.dice || "1d",
+      damage: Number(context.damage) || 0,
+      damageType: context.damageType || "cr",
+      armorDivisor: Number(context.armorDivisor) || 1,
+      hitlocation: context.hitlocation || "Random"
+    };
+
+    try {
+      defenderActor.handleDamageDrop(damageData);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to open native ApplyDamageDialog from pending damage.", { error, damageData, context });
+      ui.notifications?.warn("QuickDeck: Could not open GURPS Apply Damage Dialog.");
     }
   }
 
@@ -3391,13 +3542,15 @@ export class QuickDeckApp extends Application {
     }
 
     const parsed = this.parseGurpsDamageString(formula);
-    if (parsed && await this.rollParsedDamageFormula(actor, attack, parsed)) return;
+    if (parsed && await this.rollParsedDamageFormula(actor, attack, parsed, attackIndex)) return;
 
     const damageOtf = this.buildDamageOtfFromDamageText(formula);
     const gurps = globalThis.GURPS ?? game.GURPS;
     if (damageOtf && typeof gurps?.executeOTF === "function") {
       try {
         await gurps.executeOTF(damageOtf, false, actor);
+        this.rememberPendingDamageContext(actor, attack, attackIndex, { rawDamage: formula, dice: formula, damage: 0 });
+        this.render(false, { focus: false });
         return;
       } catch (error) {
         console.warn("gurps-quickdeck | Damage OTF execution failed.", { damageOtf, error });
@@ -4930,6 +5083,7 @@ export class QuickDeckApp extends Application {
       ui2CarouselActorIdsCsv,
       tokenDropAutoMinimizeEnabled: this.getTokenDropAutoMinimizeEnabled(),
       tokenDropAutoRestoreEnabled: this.getTokenDropAutoRestoreEnabled(),
+      damagePickAutoMinimizeEnabled: this.getDamagePickAutoMinimizeEnabled(),
       centerRosterView,
       activeActor: activeActor
         ? {
@@ -4945,6 +5099,7 @@ export class QuickDeckApp extends Application {
       isTargetOpponentModeActive: this.pendingTargetOpponentAttackIndex !== null,
       currentTargetName: this.getCurrentTargetDisplayName(),
       modifierBucketStatus,
+      pendingDamageView: this.getPendingDamageView(),
       canRepeatLastAttack: Boolean(this.pendingAttackContext?.actorId),
       lastAttackName: this.pendingAttackContext?.attackName ?? "No attack selected",
       gurpsData,
@@ -5508,6 +5663,562 @@ export class QuickDeckApp extends Application {
     );
   }
 
+
+  getDamagePickAutoMinimizeEnabled() {
+    try {
+      return game.settings.get(MODULE_ID, SETTING_KEYS.DAMAGE_PICK_AUTO_MINIMIZE) !== false;
+    } catch (_error) {
+      return true;
+    }
+  }
+
+  async setDamagePickAutoMinimizeEnabled(enabled) {
+    try {
+      await game.settings.set(MODULE_ID, SETTING_KEYS.DAMAGE_PICK_AUTO_MINIMIZE, Boolean(enabled));
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to save damage pick auto-minimize setting.", error);
+    }
+  }
+
+  capturePendingDamageFromChatMessage(message, html) {
+    const transfer = this.getGurpsDamageTransferFromMessage(message, html);
+    if (!transfer?.payload) return;
+
+    const payload = this.cloneGurpsDamagePayload(transfer.payload);
+    const firstPayload = Array.isArray(payload) ? payload[0] : payload;
+    if (!firstPayload?.attacker) return;
+
+    const attackerActor = game.actors.get(firstPayload.attacker);
+    const attackerToken = this.findTokenForActorId(firstPayload.attacker);
+    const defaultTokenId = this.choosePendingDamageDefaultTokenId({
+      userTarget: transfer.userTarget ?? null,
+      attackerActorId: firstPayload.attacker
+    });
+
+    this.qdPendingDamageContext = {
+      messageId: message?.id ?? null,
+      payload,
+      attackerActorId: firstPayload.attacker,
+      attackerName: attackerActor?.name ?? firstPayload.attackerName ?? "Unknown attacker",
+      attackerTokenId: attackerToken?.id ?? null,
+      defaultTokenId,
+      queuedAt: Date.now()
+    };
+
+    this.renderPendingDamagePopup();
+  }
+
+  getGurpsDamageTransferFromMessage(message, html) {
+    const transfer =
+      message?.flags?.gurps?.transfer
+      ?? (typeof message?.getFlag === "function" ? message.getFlag("gurps", "transfer") : null);
+
+    const root = html?.[0] ?? html;
+    const hasDamageHtml = Boolean(root?.querySelector?.(".damage-chat-message, .damage-message, .damage-all-message"));
+    const hasPayload = Boolean(transfer?.payload);
+    const type = String(transfer?.type ?? "").toLowerCase();
+
+    if (!hasPayload) return null;
+    if (type.includes("damage") || hasDamageHtml) return transfer;
+    return null;
+  }
+
+  cloneGurpsDamagePayload(payload) {
+    try {
+      return foundry?.utils?.deepClone ? foundry.utils.deepClone(payload) : JSON.parse(JSON.stringify(payload));
+    } catch (_error) {
+      return payload;
+    }
+  }
+
+  getPendingDamagePayloadArray() {
+    const payload = this.qdPendingDamageContext?.payload;
+    if (!payload) return [];
+    return Array.isArray(payload) ? payload : [payload];
+  }
+
+  getPendingDamageView() {
+    const context = this.qdPendingDamageContext;
+    const payloads = this.getPendingDamagePayloadArray();
+    const first = payloads[0] ?? {};
+    const countSuffix = payloads.length > 1 ? ` ×${payloads.length}` : "";
+    const damageText = Number(first.damage) > 0
+      ? `${first.damage} ${first.damageType ?? ""}`.trim()
+      : first.dice || "Damage";
+
+    if (!context?.payload) {
+      return {
+        hasDamage: false,
+        title: "No pending damage",
+        subtitle: "Roll GURPS damage to queue it here.",
+        attackerName: "Unknown"
+      };
+    }
+
+    return {
+      hasDamage: true,
+      title: `${damageText}${countSuffix}`,
+      subtitle: `Attacker: ${context.attackerName ?? "Unknown"}`,
+      attackerName: context.attackerName ?? "Unknown"
+    };
+  }
+
+  findTokenForActorId(actorId) {
+    if (!actorId) return null;
+    return (canvas?.tokens?.placeables ?? canvas?.tokens?.objects?.children ?? [])
+      .find((token) => token?.actor?.id === actorId) ?? null;
+  }
+
+  getAllCanvasActorTokens() {
+    return Array.from(canvas?.tokens?.placeables ?? canvas?.tokens?.objects?.children ?? [])
+      .filter((token) => token?.id && token?.actor)
+      .sort((a, b) => String(a.name ?? a.actor?.name ?? "").localeCompare(String(b.name ?? b.actor?.name ?? "")));
+  }
+
+  choosePendingDamageDefaultTokenId({ userTarget = null, attackerActorId = null } = {}) {
+    const tokens = this.getAllCanvasActorTokens();
+    if (!tokens.length) return "";
+
+    if (userTarget && tokens.some((token) => token.id === userTarget)) return userTarget;
+
+    const targeted = Array.from(game.user?.targets ?? []).find((token) => token?.actor);
+    if (targeted?.id && tokens.some((token) => token.id === targeted.id)) return targeted.id;
+
+    const controlled = canvas?.tokens?.controlled?.find((token) => token?.actor);
+    if (controlled?.id && tokens.some((token) => token.id === controlled.id)) return controlled.id;
+
+    const nonAttacker = tokens.find((token) => token.actor?.id !== attackerActorId);
+    return nonAttacker?.id ?? tokens[0]?.id ?? "";
+  }
+
+  getPendingDamageTokenOptions() {
+    const context = this.qdPendingDamageContext ?? {};
+    const defaultTokenId =
+      context.selectedTokenId
+      ?? context.defaultTokenId
+      ?? this.choosePendingDamageDefaultTokenId({ attackerActorId: context.attackerActorId });
+    return this.getAllCanvasActorTokens().map((token) => ({
+      id: token.id,
+      name: String(token.name ?? token.actor?.name ?? "Token"),
+      actorName: String(token.actor?.name ?? "Unknown"),
+      isAttacker: token.actor?.id === context.attackerActorId,
+      selected: token.id === defaultTokenId
+    }));
+  }
+
+  openPendingDamageDialogForTokenId(tokenId) {
+    const token = this.getAllCanvasActorTokens().find((candidate) => candidate.id === tokenId);
+    if (!token?.actor) {
+      ui.notifications?.warn("QuickDeck: Choose a token with an actor before applying damage.");
+      return false;
+    }
+
+    const payload = this.qdPendingDamageContext?.payload;
+    if (!payload) {
+      ui.notifications?.warn("QuickDeck: No pending damage. Roll GURPS damage first.");
+      return false;
+    }
+
+    if (typeof token.actor.handleDamageDrop !== "function") {
+      ui.notifications?.warn("QuickDeck: This token actor does not expose native GURPS handleDamageDrop.");
+      return false;
+    }
+
+    try {
+      token.actor.handleDamageDrop(this.cloneGurpsDamagePayload(payload));
+      this.qdPendingDamageContext.selectedTokenId = token.id;
+      this.renderPendingDamagePopup();
+      return true;
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to open GURPS ApplyDamageDialog from pending damage popup.", { error, token, payload });
+      ui.notifications?.warn("QuickDeck: Could not open GURPS Apply Damage Dialog.");
+      return false;
+    }
+  }
+
+  openPendingDamageDialogForSelectedPopupToken() {
+    const popup = this._qdPendingDamagePopupElement;
+    const tokenId = popup?.querySelector?.("[data-qdeck-pending-damage-target-select]")?.value
+      ?? this.qdPendingDamageContext?.selectedTokenId
+      ?? this.qdPendingDamageContext?.defaultTokenId
+      ?? "";
+    this.openPendingDamageDialogForTokenId(tokenId);
+  }
+
+  clearPendingDamageContext({ render = false } = {}) {
+    this.qdPendingDamageContext = null;
+    this.stopPendingDamagePickTarget({ notify: false, restore: false });
+    this.removePendingDamagePopup();
+    if (render) this.render(false, { focus: false });
+  }
+
+  qdGetCanvasCoordinatesFromClientEvent(event) {
+    if (typeof this.getCanvasCoordinatesFromClientEvent === "function") {
+      return this.getCanvasCoordinatesFromClientEvent(event);
+    }
+
+    const clientX = Number(event?.clientX ?? event?.data?.originalEvent?.clientX);
+    const clientY = Number(event?.clientY ?? event?.data?.originalEvent?.clientY);
+
+    if (Number.isFinite(clientX) && Number.isFinite(clientY)) {
+      if (typeof canvas?.canvasCoordinatesFromClient === "function") {
+        const point = canvas.canvasCoordinatesFromClient({ x: clientX, y: clientY });
+        return { x: Math.round(point.x), y: Math.round(point.y) };
+      }
+
+      const view = canvas?.app?.view;
+      const rect = view?.getBoundingClientRect?.();
+      if (rect && canvas?.stage?.worldTransform && globalThis.PIXI?.Point) {
+        const point = new PIXI.Point(clientX - rect.left, clientY - rect.top);
+        const world = canvas.stage.worldTransform.applyInverse(point);
+        return { x: Math.round(world.x), y: Math.round(world.y) };
+      }
+    }
+
+    return { x: 0, y: 0 };
+  }
+
+  getTokensAtCanvasPoint(x, y) {
+    const children = canvas?.tokens?.placeables ?? canvas?.tokens?.objects?.children ?? [];
+    return Array.from(children).filter((token) => {
+      try {
+        return token?.hitArea?.contains?.(x - token.x, y - token.y) && token.actor;
+      } catch (_error) {
+        return false;
+      }
+    });
+  }
+
+  ensurePendingDamagePickTargetReticle() {
+    let reticle = this._qdPendingDamagePickTargetReticleElement;
+    if (reticle && document.body.contains(reticle)) return reticle;
+
+    reticle = document.createElement("div");
+    reticle.className = "qd-ui2-pending-damage-target-reticle";
+    reticle.innerHTML = '<img src="/icons/svg/target.svg" alt="" /><span>Pick Damage Target</span>';
+    document.body.appendChild(reticle);
+    this._qdPendingDamagePickTargetReticleElement = reticle;
+    return reticle;
+  }
+
+  updatePendingDamagePickTargetReticle(event) {
+    const reticle = this.ensurePendingDamagePickTargetReticle();
+    const clientX = Number(event?.clientX ?? 0);
+    const clientY = Number(event?.clientY ?? 0);
+    reticle.style.left = `${Math.round(clientX)}px`;
+    reticle.style.top = `${Math.round(clientY)}px`;
+  }
+
+  removePendingDamagePickTargetReticle() {
+    const reticle = this._qdPendingDamagePickTargetReticleElement;
+    if (reticle) reticle.remove();
+    this._qdPendingDamagePickTargetReticleElement = null;
+  }
+
+  restoreAfterPendingDamagePickTarget() {
+    const wasMinimized = this._qdPendingDamagePickTargetWasMinimized;
+    this._qdPendingDamagePickTargetWasMinimized = null;
+
+    if (wasMinimized === false) {
+      this.isMinimized = false;
+      this.persistMinimizedState?.();
+      this.render(false, { focus: false });
+    }
+  }
+
+  stopPendingDamagePickTarget({ notify = false, restore = true } = {}) {
+    if (typeof this._qdPendingDamagePickTargetCleanup === "function") {
+      this._qdPendingDamagePickTargetCleanup();
+    }
+
+    this._qdPendingDamagePickTargetCleanup = null;
+    this.removePendingDamagePickTargetReticle();
+
+    if (restore) this.restoreAfterPendingDamagePickTarget();
+    if (notify) ui.notifications?.info("QuickDeck: Pending damage target pick cancelled.");
+  }
+
+  startPendingDamagePickTarget() {
+    if (!this.qdPendingDamageContext?.payload) {
+      ui.notifications?.warn("QuickDeck: No pending damage. Roll GURPS damage first.");
+      return;
+    }
+
+    if (!canvas?.ready || !canvas?.scene || !canvas?.app?.view) {
+      ui.notifications?.warn("QuickDeck: Open an active scene before picking a damage target.");
+      return;
+    }
+
+    this.stopPendingDamagePickTarget({ notify: false, restore: false });
+
+    this._qdPendingDamagePickTargetWasMinimized = Boolean(this.isMinimized);
+    if (this.getDamagePickAutoMinimizeEnabled() && !this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState?.();
+      this.render(false, { focus: false });
+    }
+
+    const view = canvas.app.view;
+    const previousCursor = view.style.cursor;
+    view.style.cursor = "crosshair";
+    this.ensurePendingDamagePickTargetReticle();
+
+    const cleanupListeners = [];
+    let finished = false;
+
+    const cleanup = () => {
+      view.style.cursor = previousCursor;
+      this.removePendingDamagePickTargetReticle();
+      for (const [target, type, handler, options] of cleanupListeners) {
+        target.removeEventListener(type, handler, options);
+      }
+    };
+
+    const finish = ({ notify = false, restore = true } = {}) => {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      this._qdPendingDamagePickTargetCleanup = null;
+      if (restore) this.restoreAfterPendingDamagePickTarget();
+      if (notify) ui.notifications?.info("QuickDeck: Pending damage target pick cancelled.");
+    };
+
+    const onPointerMove = (event) => {
+      this.updatePendingDamagePickTargetReticle(event);
+    };
+
+    const onPointerDown = (event) => {
+      if (event.button && event.button !== 0) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const point = this.qdGetCanvasCoordinatesFromClientEvent(event);
+      const tokens = this.getTokensAtCanvasPoint(point.x, point.y);
+
+      if (tokens.length === 0) {
+        ui.notifications?.warn("QuickDeck: No token under the damage target picker.");
+        return;
+      }
+
+      if (tokens.length > 1) {
+        ui.notifications?.warn("QuickDeck: Multiple tokens under the picker. Choose one from the popup dropdown or target/select one token.");
+        return;
+      }
+
+      const token = tokens[0];
+      finish({ notify: false, restore: true });
+      this.openPendingDamageDialogForTokenId(token.id);
+    };
+
+    const onContextMenu = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      finish({ notify: true, restore: true });
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      finish({ notify: true, restore: true });
+    };
+
+    cleanupListeners.push([view, "pointermove", onPointerMove, true]);
+    cleanupListeners.push([view, "pointerdown", onPointerDown, true]);
+    cleanupListeners.push([view, "contextmenu", onContextMenu, true]);
+    cleanupListeners.push([window, "keydown", onKeyDown, true]);
+
+    view.addEventListener("pointermove", onPointerMove, true);
+    view.addEventListener("pointerdown", onPointerDown, true);
+    view.addEventListener("contextmenu", onContextMenu, true);
+    window.addEventListener("keydown", onKeyDown, true);
+
+    this._qdPendingDamagePickTargetCleanup = cleanup;
+
+    ui.notifications?.info("QuickDeck: Click a defender token to apply pending damage. Press Escape or right-click to cancel.");
+  }
+
+
+  getPendingDamagePopupPosition() {
+    try {
+      const raw = localStorage.getItem("gurps-quickdeck.pendingDamagePopupPosition");
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (!parsed || !Number.isFinite(parsed.left) || !Number.isFinite(parsed.top)) return null;
+      return parsed;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  setPendingDamagePopupPosition(left, top) {
+    const clampedLeft = Math.max(8, Math.min(Math.round(left), Math.max(8, window.innerWidth - 120)));
+    const clampedTop = Math.max(8, Math.min(Math.round(top), Math.max(8, window.innerHeight - 80)));
+
+    try {
+      localStorage.setItem("gurps-quickdeck.pendingDamagePopupPosition", JSON.stringify({ left: clampedLeft, top: clampedTop }));
+    } catch (_error) {
+      // localStorage can be unavailable in some embedded contexts.
+    }
+
+    return { left: clampedLeft, top: clampedTop };
+  }
+
+  applyPendingDamagePopupPosition(popup) {
+    if (!popup) return;
+    const position = this.getPendingDamagePopupPosition();
+    if (!position) return;
+
+    popup.style.left = `${position.left}px`;
+    popup.style.top = `${position.top}px`;
+    popup.style.right = "auto";
+    popup.style.bottom = "auto";
+    popup.classList.add("is-user-positioned");
+  }
+
+  wirePendingDamagePopupDrag(popup) {
+    if (!popup) return;
+    const handle = popup.querySelector("[data-qdeck-pending-damage-drag-handle]");
+    if (!handle || handle.dataset.qdeckDragWired === "true") return;
+
+    handle.dataset.qdeckDragWired = "true";
+
+    handle.addEventListener("pointerdown", (event) => {
+      const interactive = event.target?.closest?.("button, select, option, input, textarea, a");
+      if (interactive) return;
+      if (event.button && event.button !== 0) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const rect = popup.getBoundingClientRect();
+      this._qdPendingDamagePopupDrag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        startLeft: rect.left,
+        startTop: rect.top
+      };
+
+      popup.classList.add("is-dragging");
+      handle.setPointerCapture?.(event.pointerId);
+    });
+
+    handle.addEventListener("pointermove", (event) => {
+      const drag = this._qdPendingDamagePopupDrag;
+      if (!drag || drag.pointerId !== event.pointerId) return;
+
+      event.preventDefault();
+
+      const left = drag.startLeft + (event.clientX - drag.startX);
+      const top = drag.startTop + (event.clientY - drag.startY);
+      const position = this.setPendingDamagePopupPosition(left, top);
+
+      popup.style.left = `${position.left}px`;
+      popup.style.top = `${position.top}px`;
+      popup.style.right = "auto";
+      popup.style.bottom = "auto";
+      popup.classList.add("is-user-positioned");
+    });
+
+    const endDrag = (event) => {
+      const drag = this._qdPendingDamagePopupDrag;
+      if (!drag || drag.pointerId !== event.pointerId) return;
+
+      this._qdPendingDamagePopupDrag = null;
+      popup.classList.remove("is-dragging");
+
+      try {
+        handle.releasePointerCapture?.(event.pointerId);
+      } catch (_error) {
+        // Ignore release errors from browser/Foundry focus changes.
+      }
+    };
+
+    handle.addEventListener("pointerup", endDrag);
+    handle.addEventListener("pointercancel", endDrag);
+  }
+
+  renderPendingDamagePopup() {
+    const view = this.getPendingDamageView();
+    if (!view.hasDamage) {
+      this.removePendingDamagePopup();
+      return;
+    }
+
+    const tokenOptions = this.getPendingDamageTokenOptions();
+    const optionsHtml = tokenOptions.length
+      ? tokenOptions.map((token) => {
+          const suffix = token.isAttacker ? " — attacker" : ` — ${token.actorName}`;
+          return `<option value="${this.escapeHtml(token.id)}" ${token.selected ? "selected" : ""}>${this.escapeHtml(token.name + suffix)}</option>`;
+        }).join("")
+      : '<option value="">No actor tokens on canvas</option>';
+
+    let popup = this._qdPendingDamagePopupElement;
+    if (!popup || !document.body.contains(popup)) {
+      popup = document.createElement("aside");
+      popup.className = "qd-ui2-pending-damage-popup";
+      popup.setAttribute("aria-label", "QuickDeck pending damage");
+      document.body.appendChild(popup);
+      this._qdPendingDamagePopupElement = popup;
+    }
+
+    popup.innerHTML = `
+      <div class="qd-ui2-pending-damage-popup-titlebar" data-qdeck-pending-damage-drag-handle="true" title="Drag to move">
+        <div class="qd-ui2-pending-damage-popup-titletext">
+          <span class="qd-ui2-pending-damage-popup-kicker">Pending Damage</span>
+          <span class="qd-ui2-pending-damage-popup-grab">Drag bar</span>
+        </div>
+        <button type="button" class="qd-ui2-pending-damage-popup-close" data-qdeck-pending-damage-action="clear" title="Close pending damage popup" aria-label="Close pending damage popup">×</button>
+      </div>
+      <div class="qd-ui2-pending-damage-popup-main">
+        <strong>${this.escapeHtml(view.title)}</strong>
+        <small>${this.escapeHtml(view.subtitle)}</small>
+      </div>
+      <label class="qd-ui2-pending-damage-target-row">
+        <span>Apply to</span>
+        <select data-qdeck-pending-damage-target-select>${optionsHtml}</select>
+      </label>
+      <div class="qd-ui2-pending-damage-popup-controls">
+        <button type="button" data-qdeck-pending-damage-action="apply">Apply Selected</button>
+        <button type="button" data-qdeck-pending-damage-action="pick">Pick Target</button>
+      </div>
+    `;
+
+    this.applyPendingDamagePopupPosition(popup);
+    this.wirePendingDamagePopupDrag(popup);
+
+    popup.querySelector("[data-qdeck-pending-damage-target-select]")?.addEventListener("change", (event) => {
+      if (this.qdPendingDamageContext) this.qdPendingDamageContext.selectedTokenId = event.currentTarget.value;
+    });
+
+    popup.querySelectorAll("[data-qdeck-pending-damage-action='apply']").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.openPendingDamageDialogForSelectedPopupToken();
+      });
+    });
+
+    popup.querySelectorAll("[data-qdeck-pending-damage-action='pick']").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.startPendingDamagePickTarget();
+      });
+    });
+
+    popup.querySelectorAll("[data-qdeck-pending-damage-action='clear']").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.clearPendingDamageContext();
+      });
+    });
+  }
+
+  removePendingDamagePopup() {
+    const popup = this._qdPendingDamagePopupElement;
+    if (popup) popup.remove();
+    this._qdPendingDamagePopupElement = null;
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
 
@@ -5569,6 +6280,11 @@ export class QuickDeckApp extends Application {
 
     html.find("[data-action='set-token-drop-auto-minimize']").on("change", async (event) => {
       await this.setTokenDropAutoMinimizeEnabled(Boolean(event.currentTarget.checked));
+      this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='set-damage-pick-auto-minimize']").on("change", async (event) => {
+      await this.setDamagePickAutoMinimizeEnabled(Boolean(event.currentTarget.checked));
       this.render(false, { focus: false });
     });
 
@@ -6014,6 +6730,18 @@ export class QuickDeckApp extends Application {
         });
         this.scheduleChatFocus();
       }
+    });
+
+    html.find("[data-action='apply-pending-damage']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.openPendingDamageDialog();
+    });
+
+    html.find("[data-action='clear-pending-damage']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.clearPendingDamageContext();
     });
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {

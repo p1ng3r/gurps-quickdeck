@@ -13,6 +13,7 @@ const SETTING_KEYS = {
   RESTORE_PILL_POSITION: "restorePillPosition",
   TOKEN_DROP_AUTO_MINIMIZE: "tokenDropAutoMinimize",
   TOKEN_DROP_AUTO_RESTORE: "tokenDropAutoRestore",
+  DAMAGE_PICK_AUTO_MINIMIZE: "damagePickAutoMinimize",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
   UI_MODE: "uiMode",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
@@ -46,6 +47,11 @@ function renderQuickDeckIfOpen() {
 
 Hooks.once("ready", () => {
   console.log(`${MODULE_ID} | Ready`);
+  Hooks.on("renderChatMessage", (message, html) => {
+    if (!quickDeckApp) quickDeckApp = new QuickDeckApp();
+    quickDeckApp.capturePendingDamageFromChatMessage?.(message, html);
+  });
+
   game.gurpsQuickDeckDebug = {
     open: () => openQuickDeck(),
     forceOpen: () => openQuickDeck(),
@@ -141,6 +147,15 @@ Hooks.once("init", () => {
   game.settings.register(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_RESTORE, {
     name: "QuickDeck Token Drop: Auto-Restore",
     hint: "Restore QuickDeck after Drop Carousel token placement completes or is cancelled.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.DAMAGE_PICK_AUTO_MINIMIZE, {
+    name: "QuickDeck Damage Picker: Auto-Minimize",
+    hint: "Minimize QuickDeck while using the pending damage Pick Target reticle.",
     scope: "client",
     config: true,
     type: Boolean,

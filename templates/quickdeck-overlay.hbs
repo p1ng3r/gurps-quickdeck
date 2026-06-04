@@ -283,6 +283,7 @@
           </div>
         </section>
 
+
         <section class="qd-ui2-quick-slots-card" aria-label="Pinned quick slots">
           <header class="qd-ui2-quick-slots-header">
             <div>
@@ -528,6 +529,10 @@
               <label class="qd-ui2-mode-field">
                 <input type="checkbox" data-action="set-token-drop-auto-restore" {{#if tokenDropAutoRestoreEnabled}}checked{{/if}}>
                 <span>Restore QuickDeck after Drop Carousel placement</span>
+              </label>
+              <label class="qd-ui2-mode-field">
+                <input type="checkbox" data-action="set-damage-pick-auto-minimize" {{#if damagePickAutoMinimizeEnabled}}checked{{/if}}>
+                <span>Minimize QuickDeck during Damage Pick Target</span>
               </label>
               {{#if devArtTunerEnabled}}
               <div class="qd-ui2-settings-actions">
