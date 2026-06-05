@@ -287,13 +287,17 @@
         </section>
 
 
-        <section class="qd-ui2-quick-slots-card" aria-label="Pinned quick slots">
-          <header class="qd-ui2-quick-slots-header">
+        <section class="qd-ui2-quick-slots-card qd-ui2-suggestions-card" aria-label="Action Deck">
+          <header class="qd-ui2-quick-slots-header qd-ui2-suggestions-header">
             <div>
-              <h2>Quick Slots</h2>
-              <p>Pinned actions for {{activeActor.name}}</p>
+              <h2>Action Deck</h2>
+              <p>Ready actions for {{activeActor.name}}</p>
             </div>
-            <span>Pins {{favoriteAttackCount}} · {{quickSkillsCount}} · {{favoriteSpellCount}}</span>
+            <span class="qd-ui2-suggestions-counts" title="Pinned combat, skills, and spells">
+              <b><i>Combat</i> {{favoriteAttackCount}}</b>
+              <b><i>Skills</i> {{quickSkillsCount}}</b>
+              <b><i>Spells</i> {{favoriteSpellCount}}</b>
+            </span>
           </header>
 
           <div class="qd-ui2-quick-slots-sections">
@@ -308,12 +312,12 @@
                   <article class="qd-ui2-quick-slot-card is-favorite">
                     <div class="qd-ui2-quick-slot-main">
                       <strong>{{attack.name}}</strong>
-                      <div class="qd-ui2-quick-slot-detail">{{#if attack.mode}}{{attack.mode}} · {{/if}}{{#if attack.type}}{{attack.type}}{{/if}}{{#if attack.damageDisplay}} · {{attack.damageDisplay}}{{else if attack.damageFormula}} · {{attack.damageFormula}}{{else if attack.damage}} · {{attack.damage}}{{/if}}{{#if attack.reach}} · {{attack.reach}}{{/if}}{{#if attack.range}} · {{attack.range}}{{/if}}</div>
+                      <div class="qd-ui2-quick-slot-detail">{{#if attack.mode}}Mode: {{attack.mode}}{{/if}}{{#if attack.type}}{{#if attack.mode}} · {{/if}}Type: {{attack.type}}{{/if}}{{#if attack.damageDisplay}} · Damage: {{attack.damageDisplay}}{{else if attack.damageFormula}} · Damage: {{attack.damageFormula}}{{else if attack.damage}} · Damage: {{attack.damage}}{{/if}}{{#if attack.reach}} · Reach: {{attack.reach}}{{/if}}{{#if attack.range}} · Range: {{attack.range}}{{/if}}</div>
                       {{#if attack.variant}}<div class="qd-ui2-quick-slot-variant">{{attack.variant}}</div>{{/if}}
                     </div>
                     <div class="qd-ui2-quick-slot-controls">
-                      <button type="button" class="qd-ui2-quick-slot-button is-primary" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll">Attack</button>
-                      {{#if attack.damageDisplay}}<button type="button" class="qd-ui2-quick-slot-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">Damage</button>{{else if attack.damageFormula}}<button type="button" class="qd-ui2-quick-slot-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">Damage</button>{{else if attack.damage}}<button type="button" class="qd-ui2-quick-slot-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">Damage</button>{{/if}}
+                      <button type="button" class="qd-ui2-quick-slot-icon is-primary" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll" aria-label="Attack Roll">⚔</button>
+                      {{#if attack.damageDisplay}}<button type="button" class="qd-ui2-quick-slot-icon" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll" aria-label="Damage Roll">💥</button>{{else if attack.damageFormula}}<button type="button" class="qd-ui2-quick-slot-icon" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll" aria-label="Damage Roll">💥</button>{{else if attack.damage}}<button type="button" class="qd-ui2-quick-slot-icon" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll" aria-label="Damage Roll">💥</button>{{/if}}
                       <button type="button" class="qd-ui2-quick-slot-icon" data-action="target-opponent" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Target Opponent">🎯</button>
                       <button type="button" class="qd-ui2-quick-slot-icon" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
                       {{#if attack.reference}}<button type="button" class="qd-ui2-quick-slot-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" title="Reference">Ref</button>{{/if}}
@@ -322,7 +326,7 @@
                   </article>
                   {{/each}}
                 {{else}}
-                  <div class="qd-ui2-quick-slot-empty">Pin attacks from Combat.</div>
+                  <div class="qd-ui2-quick-slot-empty">Pin attacks from the Combat drawer.</div>
                 {{/if}}
               </div>
             </section>
@@ -338,18 +342,18 @@
                   <article class="qd-ui2-quick-slot-card is-favorite">
                     <div class="qd-ui2-quick-slot-main">
                       <strong>{{skill.name}}</strong>
-                      <div class="qd-ui2-quick-slot-detail">{{#if skill.relativeLevelDisplay}}{{skill.relativeLevelDisplay}}{{else}}{{skill.levelDisplay}}{{/if}}</div>
+                      <div class="qd-ui2-quick-slot-detail">Skill Level: {{#if skill.relativeLevelDisplay}}{{skill.relativeLevelDisplay}}{{else}}{{skill.levelDisplay}}{{/if}}</div>
                       {{#if skill.specialization}}<div class="qd-ui2-quick-slot-variant">{{skill.specialization}}</div>{{/if}}
                     </div>
                     <div class="qd-ui2-quick-slot-controls">
                       <button type="button" class="qd-ui2-quick-slot-icon is-unpin" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="Unpin">📌</button>
-                      <button type="button" class="qd-ui2-quick-slot-button is-primary" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill">Roll</button>
+                      <button type="button" class="qd-ui2-quick-slot-icon is-primary" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill" aria-label="Roll Skill">🎲</button>
                       <button type="button" class="qd-ui2-quick-slot-icon" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>
                     </div>
                   </article>
                   {{/each}}
                 {{else}}
-                  <div class="qd-ui2-quick-slot-empty">Pin skills from Skills.</div>
+                  <div class="qd-ui2-quick-slot-empty">Pin skills from the Skills drawer.</div>
                 {{/if}}
               </div>
             </section>
@@ -365,20 +369,20 @@
                   <article class="qd-ui2-quick-slot-card is-favorite">
                     <div class="qd-ui2-quick-slot-main">
                       <strong>{{spell.name}}</strong>
-                      <div class="qd-ui2-quick-slot-detail">{{#if spell.class}}{{spell.class}}{{/if}}{{#if spell.college}} · {{spell.college}}{{/if}}</div>
+                      <div class="qd-ui2-quick-slot-detail">{{#if spell.class}}Class: {{spell.class}}{{/if}}{{#if spell.college}}{{#if spell.class}} · {{/if}}College: {{spell.college}}{{/if}}</div>
                       {{#if spell.detail}}<div class="qd-ui2-quick-slot-variant">{{spell.detail}}</div>{{/if}}
                     </div>
                     <div class="qd-ui2-quick-slot-controls">
                       <button type="button" class="qd-ui2-quick-slot-icon" data-action="target-action" title="Target">🎯</button>
                       <button type="button" class="qd-ui2-quick-slot-icon" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
                       <button type="button" class="qd-ui2-quick-slot-icon is-unpin" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="Unpin">📌</button>
-                      <button type="button" class="qd-ui2-quick-slot-button is-primary" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell">Cast</button>
+                      <button type="button" class="qd-ui2-quick-slot-icon is-primary" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell" aria-label="Roll Spell">✨</button>
                       <button type="button" class="qd-ui2-quick-slot-icon" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>
                     </div>
                   </article>
                   {{/each}}
                 {{else}}
-                  <div class="qd-ui2-quick-slot-empty">Pin spells from Spells.</div>
+                  <div class="qd-ui2-quick-slot-empty">Pin spells from the Spells drawer.</div>
                 {{/if}}
               </div>
             </section>
