@@ -5283,3 +5283,811 @@
   user-select: text !important;
 }
 
+/* v0.16.7a UI2 right drawer shell tabs search polish.
+   Beautifies right drawer frame, tab bar, and search rows without changing handlers. */
+
+/* Right drawer shell: dark command panel with brass edge. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer,
+.qd40-overlay .qd-ui2-right-drawer {
+  border-color: rgba(229, 178, 83, 0.38) !important;
+  background:
+    radial-gradient(circle at 50% -8%, rgba(245, 196, 91, 0.13), transparent 36%),
+    linear-gradient(180deg, rgba(46, 30, 16, 0.88), rgba(6, 5, 4, 0.93)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 154, 0.10),
+    inset 0 -24px 32px rgba(0, 0, 0, 0.30),
+    0 10px 24px rgba(0, 0, 0, 0.24) !important;
+}
+
+/* Tab rail: stronger command selector. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs {
+  min-height: 38px !important;
+  padding: 5px !important;
+  gap: 5px !important;
+  border: 1px solid rgba(214, 161, 70, 0.30) !important;
+  border-radius: 11px !important;
+  background:
+    linear-gradient(180deg, rgba(15, 11, 8, 0.78), rgba(43, 28, 14, 0.58)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 226, 150, 0.05),
+    inset 0 0 18px rgba(0, 0, 0, 0.30) !important;
+}
+
+/* Individual tabs. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab {
+  min-height: 28px !important;
+  padding: 0 8px !important;
+  border-radius: 9px !important;
+  border: 1px solid rgba(214, 161, 70, 0.30) !important;
+  color: rgba(246, 224, 180, 0.82) !important;
+  background:
+    linear-gradient(180deg, rgba(51, 32, 16, 0.72), rgba(12, 9, 6, 0.88)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.06),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.22) !important;
+  font-size: 11px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.045em !important;
+  text-transform: uppercase !important;
+  transition:
+    transform 110ms ease,
+    filter 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease,
+    background 110ms ease !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.10) !important;
+  border-color: rgba(244, 194, 91, 0.62) !important;
+  color: #fff0c6 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 239, 190, 0.14),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.24),
+    0 0 8px rgba(233, 169, 57, 0.16) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab:active,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.94) !important;
+}
+
+/* Active tabs by category. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab.is-active,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab.is-active {
+  color: #1f1307 !important;
+  border-color: rgba(255, 225, 142, 0.72) !important;
+  background: linear-gradient(180deg, #f2cc78, #a76b24) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 241, 190, 0.25),
+    inset 0 -5px 10px rgba(80, 39, 8, 0.24),
+    0 0 10px rgba(229, 164, 54, 0.22) !important;
+}
+
+/* Drawer scroll surface. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-scroll,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-scroll {
+  padding: 5px 3px 4px 0 !important;
+  border-radius: 10px !important;
+}
+
+/* Search row: dark inset control well. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
+  min-height: 34px !important;
+  margin: 0 0 5px !important;
+  padding: 4px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 28px !important;
+  gap: 5px !important;
+  border: 1px solid rgba(214, 161, 70, 0.30) !important;
+  border-radius: 10px !important;
+  background:
+    linear-gradient(180deg, rgba(12, 9, 6, 0.82), rgba(0, 0, 0, 0.58)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.05),
+    inset 0 -7px 12px rgba(0, 0, 0, 0.22) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input {
+  height: 26px !important;
+  min-height: 26px !important;
+  padding: 0 8px !important;
+  color: #f6e2b8 !important;
+  background:
+    linear-gradient(180deg, rgba(31, 22, 13, 0.96), rgba(3, 3, 3, 0.98)) !important;
+  background-color: #050403 !important;
+  border: 1px solid rgba(214, 161, 70, 0.42) !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  font-weight: 750 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input::placeholder,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input::placeholder {
+  color: rgba(230, 205, 160, 0.50) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input:hover {
+  border-color: rgba(244, 194, 91, 0.62) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input:focus-visible,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input:focus-visible {
+  outline: 2px solid rgba(255, 218, 126, 0.78) !important;
+  outline-offset: 1px !important;
+}
+
+/* Search clear button. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear {
+  width: 26px !important;
+  min-width: 26px !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  border-radius: 8px !important;
+  color: #f6dfad !important;
+  border: 1px solid rgba(214, 161, 70, 0.38) !important;
+  background:
+    linear-gradient(180deg, rgba(70, 44, 21, 0.78), rgba(18, 12, 7, 0.90)) !important;
+  font-size: 16px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  transition:
+    transform 110ms ease,
+    filter 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.10) !important;
+  border-color: rgba(244, 194, 91, 0.72) !important;
+  box-shadow: 0 0 8px rgba(233, 169, 57, 0.18) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear:active,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.94) !important;
+}
+
+/* v0.16.7b UI2 right action card color identity.
+   Combat ember, Skills blue-steel, Spells arcane violet, Settings brass. */
+
+/* Shared right action card foundation. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row {
+  border-radius: 10px !important;
+  transition:
+    transform 120ms ease,
+    filter 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease,
+    background 120ms ease !important;
+}
+
+/* Combat cards: ember/orange. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row {
+  border-color: rgba(255, 130, 72, 0.30) !important;
+  background:
+    linear-gradient(180deg, rgba(58, 25, 13, 0.84), rgba(8, 6, 5, 0.90)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(255, 120, 58, 0.52),
+    inset 0 1px 0 rgba(255, 220, 170, 0.06) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover {
+  border-color: rgba(255, 152, 82, 0.58) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(255, 126, 58, 0.88),
+    inset 0 1px 0 rgba(255, 230, 180, 0.10),
+    0 0 10px rgba(255, 105, 48, 0.18) !important;
+}
+
+/* Skill cards: blue steel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row {
+  border-color: rgba(96, 190, 255, 0.28) !important;
+  background:
+    linear-gradient(180deg, rgba(16, 43, 62, 0.82), rgba(6, 9, 12, 0.90)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(96, 190, 255, 0.48),
+    inset 0 1px 0 rgba(190, 235, 255, 0.06) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover {
+  border-color: rgba(120, 210, 255, 0.56) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(96, 190, 255, 0.86),
+    inset 0 1px 0 rgba(200, 240, 255, 0.10),
+    0 0 10px rgba(80, 190, 255, 0.18) !important;
+}
+
+/* Spell cards: arcane violet. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row {
+  border-color: rgba(177, 119, 255, 0.28) !important;
+  background:
+    linear-gradient(180deg, rgba(46, 28, 70, 0.84), rgba(8, 6, 12, 0.91)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(177, 119, 255, 0.50),
+    inset 0 1px 0 rgba(225, 200, 255, 0.06) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover {
+  border-color: rgba(196, 148, 255, 0.56) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(177, 119, 255, 0.86),
+    inset 0 1px 0 rgba(230, 210, 255, 0.10),
+    0 0 10px rgba(177, 119, 255, 0.18) !important;
+}
+
+/* Favorite/pinned cards get a stronger ready-state glow. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row.is-favorite,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row.is-favorite {
+  filter: brightness(1.06) saturate(1.06) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover {
+  transform: translateX(1px) !important;
+  filter: brightness(1.06) saturate(1.05) !important;
+}
+
+/* Right panel action names/details: readable on varied colors. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button {
+  color: #ffe4a8 !important;
+  text-shadow:
+    0 1px 0 #120b05,
+    0 0 7px rgba(0, 0, 0, 0.78) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta span,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta span {
+  color: rgba(247, 226, 184, 0.84) !important;
+  font-weight: 750 !important;
+}
+
+/* v0.16.7c UI2 right action button polish.
+   Beautifies right drawer command buttons without changing handlers. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button {
+  border-radius: 8px !important;
+  border: 1px solid rgba(214, 161, 70, 0.38) !important;
+  color: #f6dfad !important;
+  background:
+    linear-gradient(180deg, rgba(70, 44, 21, 0.78), rgba(18, 12, 7, 0.90)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.09),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.24) !important;
+  transition:
+    transform 110ms ease,
+    filter 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease,
+    background 110ms ease !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.12) !important;
+  border-color: rgba(244, 194, 91, 0.72) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 239, 190, 0.16),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.26),
+    0 0 8px rgba(233, 169, 57, 0.20) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:active,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.94) !important;
+}
+
+/* Primary roll/action icons get a stronger command-button look. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-attack"],
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-skill"],
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-spell"],
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-attack"],
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-skill"],
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-spell"] {
+  color: #1f1307 !important;
+  border-color: rgba(255, 225, 142, 0.70) !important;
+  background: linear-gradient(180deg, #f2cc78, #a76b24) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 241, 190, 0.25),
+    inset 0 -5px 10px rgba(80, 39, 8, 0.24),
+    0 0 8px rgba(229, 164, 54, 0.16) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-attack"]:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-skill"]:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-spell"]:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-attack"]:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-skill"]:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-spell"]:hover {
+  background: linear-gradient(180deg, #ffe19a, #b87928) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 205, 0.36),
+    inset 0 -5px 10px rgba(80, 39, 8, 0.24),
+    0 0 11px rgba(242, 184, 65, 0.32) !important;
+}
+
+/* Damage gets a hot ember feel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-damage"],
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-damage"] {
+  color: #ffe0c2 !important;
+  border-color: rgba(255, 130, 72, 0.50) !important;
+  background:
+    linear-gradient(180deg, rgba(106, 38, 18, 0.90), rgba(30, 12, 8, 0.94)) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-damage"]:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="roll-damage"]:hover {
+  border-color: rgba(255, 158, 92, 0.78) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 220, 175, 0.16),
+    0 0 9px rgba(255, 105, 48, 0.28) !important;
+}
+
+/* Target / modifier utility buttons get subtle utility identities. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="target-opponent"],
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="target-action"],
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="target-opponent"],
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="target-action"] {
+  border-color: rgba(96, 190, 255, 0.42) !important;
+  background:
+    linear-gradient(180deg, rgba(25, 54, 72, 0.86), rgba(7, 10, 13, 0.94)) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="open-modifier-bucket"],
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button[data-action="open-modifier-bucket"] {
+  border-color: rgba(177, 119, 255, 0.40) !important;
+  background:
+    linear-gradient(180deg, rgba(46, 28, 70, 0.86), rgba(8, 6, 12, 0.94)) !important;
+}
+
+/* Active pin/favorite buttons should visibly read as pinned. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button.is-active,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button.is-active {
+  color: #1f1307 !important;
+  border-color: rgba(255, 225, 142, 0.84) !important;
+  background: linear-gradient(180deg, #ffd98a, #b87928) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 205, 0.30),
+    inset 0 -5px 10px rgba(80, 39, 8, 0.24),
+    0 0 10px rgba(242, 184, 65, 0.28) !important;
+}
+
+/* Focus ring. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:focus-visible,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button:focus-visible,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:focus-visible,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button:focus-visible {
+  outline: 2px solid rgba(255, 218, 126, 0.86) !important;
+  outline-offset: 2px !important;
+  box-shadow:
+    0 0 0 2px rgba(45, 28, 10, 0.88),
+    0 0 12px rgba(241, 186, 74, 0.34) !important;
+}
+
+/* v0.16.7d UI2 right drawer empty state polish.
+   Makes no-result and no-actor states read like intentional command wells. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-empty,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-empty-note,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-empty,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-empty-note {
+  min-height: 42px !important;
+  display: grid !important;
+  place-items: center !important;
+  margin: 5px 0 !important;
+  padding: 9px 10px !important;
+  border: 1px dashed rgba(220, 166, 72, 0.34) !important;
+  border-radius: 10px !important;
+  color: rgba(239, 217, 175, 0.78) !important;
+  background:
+    linear-gradient(180deg, rgba(18, 13, 8, 0.58), rgba(0, 0, 0, 0.24)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(214, 161, 70, 0.24),
+    inset 0 0 18px rgba(0, 0, 0, 0.22) !important;
+  font-size: 11px !important;
+  line-height: 1.15 !important;
+  font-weight: 750 !important;
+  letter-spacing: 0.02em !important;
+  text-align: center !important;
+}
+
+/* Combat empty well. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-search-empty,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-empty-note,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-search-empty,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-empty-note {
+  color: rgba(255, 219, 190, 0.80) !important;
+  border-color: rgba(255, 130, 72, 0.34) !important;
+  background:
+    linear-gradient(180deg, rgba(70, 28, 14, 0.42), rgba(8, 6, 5, 0.38)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(255, 120, 58, 0.30),
+    inset 0 0 18px rgba(255, 94, 42, 0.06) !important;
+}
+
+/* Skills empty well. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-search-empty,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-empty-note,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-search-empty,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-empty-note {
+  color: rgba(205, 238, 255, 0.80) !important;
+  border-color: rgba(96, 190, 255, 0.32) !important;
+  background:
+    linear-gradient(180deg, rgba(16, 43, 62, 0.42), rgba(6, 9, 12, 0.38)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(96, 190, 255, 0.26),
+    inset 0 0 18px rgba(80, 190, 255, 0.06) !important;
+}
+
+/* Spells empty well. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-search-empty,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-empty-note,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-search-empty,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-empty-note {
+  color: rgba(231, 211, 255, 0.82) !important;
+  border-color: rgba(177, 119, 255, 0.32) !important;
+  background:
+    linear-gradient(180deg, rgba(46, 28, 70, 0.42), rgba(8, 6, 12, 0.38)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(177, 119, 255, 0.28),
+    inset 0 0 18px rgba(177, 119, 255, 0.06) !important;
+}
+
+/* v0.16.7e UI2 restore right drawer stone texture.
+   Re-adds the shared UI2 stone texture under the v0.16.7 right-panel polish layers. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer,
+.qd40-overlay .qd-ui2-right-drawer {
+  background:
+    radial-gradient(circle at 50% -8%, rgba(245, 196, 91, 0.13), transparent 36%),
+    linear-gradient(180deg, rgba(46, 30, 16, 0.72), rgba(6, 5, 4, 0.82)),
+    var(--qd-ui2-panel-texture, var(--qd-dwarf-panel-texture, none)),
+    var(--qd-dwarf-stone-texture, none),
+    linear-gradient(180deg, rgba(34, 28, 22, 0.96), rgba(8, 7, 6, 0.98)) !important;
+  background-size:
+    auto,
+    auto,
+    cover,
+    cover,
+    auto !important;
+  background-position:
+    center,
+    center,
+    center,
+    center,
+    center !important;
+  background-repeat:
+    no-repeat,
+    no-repeat,
+    repeat,
+    repeat,
+    no-repeat !important;
+}
+
+/* Keep the right drawer interior surfaces translucent enough for the stone to read. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
+  background:
+    linear-gradient(180deg, rgba(15, 11, 8, 0.70), rgba(43, 28, 14, 0.46)) !important;
+}
+
+/* v0.16.7f UI2 right drawer real stone texture.
+   Uses the actual command-desk texture variables:
+   --qd-panel-bg / --qd-card-bg / --qd-shell-bg. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer,
+.qd40-overlay .qd-ui2-right-drawer {
+  background-image:
+    radial-gradient(circle at 50% -8%, rgba(245, 196, 91, 0.13), transparent 36%),
+    linear-gradient(180deg, rgba(46, 30, 16, 0.58), rgba(6, 5, 4, 0.70)),
+    var(--qd-panel-bg) !important;
+  background-size:
+    auto,
+    auto,
+    cover !important;
+  background-position:
+    center,
+    center,
+    center !important;
+  background-repeat:
+    no-repeat,
+    no-repeat,
+    repeat !important;
+}
+
+/* Let the stone texture show through the right panel interior surfaces. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs {
+  background-image:
+    linear-gradient(180deg, rgba(15, 11, 8, 0.66), rgba(43, 28, 14, 0.44)),
+    var(--qd-card-bg) !important;
+  background-size: auto, cover !important;
+  background-position: center, center !important;
+  background-repeat: no-repeat, repeat !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
+  background-image:
+    linear-gradient(180deg, rgba(12, 9, 6, 0.72), rgba(0, 0, 0, 0.42)),
+    var(--qd-card-bg) !important;
+  background-size: auto, cover !important;
+  background-position: center, center !important;
+  background-repeat: no-repeat, repeat !important;
+}
+
+/* v0.16.7g UI2 force right drawer common stone texture.
+   The right panel must use the same common stone texture system as left/center.
+   This intentionally overrides earlier v0.16.7 right-panel gradient-only backgrounds. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer,
+.qd40-overlay .qd-ui2-right-drawer {
+  background-image: var(--qd-panel-bg) !important;
+  background-size: cover !important;
+  background-position: center center !important;
+  background-repeat: repeat !important;
+  background-color: #0b0907 !important;
+}
+
+/* Let the shared stone texture remain visible through right-panel interior wells. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
+  background-image:
+    linear-gradient(180deg, rgba(15, 11, 8, 0.58), rgba(43, 28, 14, 0.34)),
+    var(--qd-card-bg) !important;
+  background-size: auto, cover !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+}
+
+/* Action rows should keep their color identity but allow stone/grain to show through more. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row {
+  background-blend-mode: normal, normal !important;
+}
+
+/* v0.16.7h UI2 right action card stone texture.
+   Restores the common card stone texture under the right-panel colored action cards. */
+
+/* Combat: ember overlay over common card texture. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row {
+  background-image:
+    linear-gradient(180deg, rgba(58, 25, 13, 0.68), rgba(8, 6, 5, 0.76)),
+    var(--qd-card-bg) !important;
+  background-size: auto, cover !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+}
+
+/* Skills: blue-steel overlay over common card texture. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row {
+  background-image:
+    linear-gradient(180deg, rgba(16, 43, 62, 0.64), rgba(6, 9, 12, 0.76)),
+    var(--qd-card-bg) !important;
+  background-size: auto, cover !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+}
+
+/* Spells: violet overlay over common card texture. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row {
+  background-image:
+    linear-gradient(180deg, rgba(46, 28, 70, 0.66), rgba(8, 6, 12, 0.78)),
+    var(--qd-card-bg) !important;
+  background-size: auto, cover !important;
+  background-position: center center, center center !important;
+  background-repeat: no-repeat, repeat !important;
+}
+
+/* Keep hover color identity but retain texture underneath. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover {
+  background-image:
+    linear-gradient(180deg, rgba(80, 32, 15, 0.66), rgba(12, 7, 5, 0.72)),
+    var(--qd-card-bg) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover {
+  background-image:
+    linear-gradient(180deg, rgba(20, 55, 78, 0.64), rgba(7, 11, 15, 0.72)),
+    var(--qd-card-bg) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover {
+  background-image:
+    linear-gradient(180deg, rgba(58, 35, 88, 0.64), rgba(10, 7, 15, 0.74)),
+    var(--qd-card-bg) !important;
+}
+
+/* v0.16.7i UI2 right panel fit guard.
+   Final right-drawer spacing pass after beautify/texture restore. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer,
+.qd40-overlay .qd-ui2-right-drawer {
+  gap: 6px !important;
+  padding: 7px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs {
+  min-height: 36px !important;
+  padding: 4px !important;
+  gap: 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab {
+  min-height: 27px !important;
+  padding: 0 7px !important;
+  font-size: 10px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-scroll,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-scroll {
+  min-height: 0 !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
+  margin-bottom: 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row {
+  margin-bottom: 2px !important;
+}
+
+/* Keep long action names from forcing panel overflow. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-main,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-controls {
+  min-width: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button {
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Button lane remains single-line and compact. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-controls {
+  flex-wrap: nowrap !important;
+  gap: 3px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button {
+  width: 26px !important;
+  min-width: 26px !important;
+  height: 26px !important;
+  min-height: 26px !important;
+  padding: 0 !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  font-size: 13px !important;
+}
+
+/* Search/empty states stay compact. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-empty,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-empty-note,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-empty,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-empty-note {
+  min-height: 38px !important;
+  padding: 8px !important;
+}
+
+/* Very cramped windows: tabs can use slightly tighter type. */
+@media (max-width: 1100px) {
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab,
+  .qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab {
+    padding: 0 5px !important;
+    font-size: 9px !important;
+    letter-spacing: 0.035em !important;
+  }
+
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button,
+  .qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button {
+    width: 24px !important;
+    min-width: 24px !important;
+    height: 24px !important;
+    min-height: 24px !important;
+    font-size: 12px !important;
+  }
+}
+
+/* v0.16.7j UI2 right search single pill fix.
+   Removes the double-pill look by keeping the search-row as the decorated well
+   and making the input itself flat/transparent. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
+  min-height: 34px !important;
+  padding: 4px 5px !important;
+  grid-template-columns: minmax(0, 1fr) 26px !important;
+  border-radius: 10px !important;
+}
+
+/* Search input should not draw its own second pill inside the search well. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input {
+  height: 26px !important;
+  min-height: 26px !important;
+  padding: 0 6px !important;
+  color: #f6e2b8 !important;
+  background: transparent !important;
+  background-image: none !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+/* Hover/focus should light the outer search well, not create an inner box. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row:has(input:hover),
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row:has(input:hover),
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row:has(input:focus),
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row:has(input:focus) {
+  border-color: rgba(244, 194, 91, 0.62) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.08),
+    inset 0 -7px 12px rgba(0, 0, 0, 0.24),
+    0 0 8px rgba(233, 169, 57, 0.14) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input:focus-visible,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input:focus-visible {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+/* Keep clear button as the only visible mini-button inside the search well. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear {
+  width: 24px !important;
+  min-width: 24px !important;
+  height: 24px !important;
+  min-height: 24px !important;
+}
+
