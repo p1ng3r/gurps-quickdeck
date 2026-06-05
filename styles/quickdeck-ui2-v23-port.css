@@ -416,9 +416,6 @@
   white-space: nowrap !important;
 }
 
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button,
-.qd40-overlay .qd-ui2-action-button { min-width: 28px !important; min-height: 28px !important; padding: 4px 7px !important; }
-
 /* QuickDeck UI2 v23 port tune v0.15.4 */
 
 /* Shorter center-only shell; drawer states keep more working height. */
