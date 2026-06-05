@@ -4520,3 +4520,766 @@
   background-color: #050403 !important;
 }
 
+/* v0.16.6a UI2 center actor card polish.
+   Beautifies selected actor card, HP/FP meters, and defense tiles without changing handlers. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  border-color: rgba(229, 178, 83, 0.38) !important;
+  background:
+    radial-gradient(circle at 18% 8%, rgba(245, 196, 91, 0.14), transparent 35%),
+    radial-gradient(circle at 88% 12%, rgba(126, 214, 255, 0.08), transparent 32%),
+    linear-gradient(180deg, rgba(50, 32, 17, 0.86), rgba(7, 6, 5, 0.92)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 154, 0.10),
+    inset 0 -24px 32px rgba(0, 0, 0, 0.30),
+    0 10px 24px rgba(0, 0, 0, 0.25) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-portrait-ring {
+  border-color: rgba(232, 181, 82, 0.46) !important;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(255, 220, 130, 0.14), transparent 55%),
+    linear-gradient(180deg, rgba(61, 39, 20, 0.90), rgba(10, 8, 6, 0.94)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 230, 160, 0.08),
+    inset 0 -14px 22px rgba(0, 0, 0, 0.32),
+    0 0 12px rgba(222, 160, 52, 0.16) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-portrait,
+.qd40-overlay .qd-ui2-actor-portrait {
+  border-radius: 10px !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 230, 160, 0.10),
+    0 2px 8px rgba(0, 0, 0, 0.38) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-name,
+.qd40-overlay .qd-ui2-actor-name {
+  color: #ffe4a8 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.035em !important;
+  text-shadow:
+    0 1px 0 #140d07,
+    0 0 8px rgba(0, 0, 0, 0.84),
+    0 0 11px rgba(222, 160, 52, 0.18) !important;
+}
+
+/* HP / FP meters: clearer labels, black readout boxes, stronger fills. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-stack,
+.qd40-overlay .qd-ui2-vital-stack {
+  gap: 6px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-meter,
+.qd40-overlay .qd-ui2-vital-meter {
+  height: 26px !important;
+  min-height: 26px !important;
+  border-radius: 9px !important;
+  border-color: rgba(214, 161, 70, 0.42) !important;
+  background:
+    linear-gradient(180deg, rgba(9, 7, 5, 0.92), rgba(0, 0, 0, 0.88)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.06),
+    inset 0 -8px 13px rgba(0, 0, 0, 0.26) !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-hp-meter .qd-ui2-vital-fill,
+.qd40-overlay .qd-ui2-hp-meter .qd-ui2-vital-fill {
+  background:
+    linear-gradient(90deg, rgba(116, 16, 16, 0.92), rgba(210, 54, 40, 0.78), rgba(255, 132, 80, 0.58)) !important;
+  box-shadow: 0 0 10px rgba(220, 50, 40, 0.25) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-fp-meter .qd-ui2-vital-fill,
+.qd40-overlay .qd-ui2-fp-meter .qd-ui2-vital-fill {
+  background:
+    linear-gradient(90deg, rgba(18, 53, 82, 0.92), rgba(55, 137, 203, 0.78), rgba(126, 214, 255, 0.58)) !important;
+  box-shadow: 0 0 10px rgba(80, 190, 255, 0.24) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-label,
+.qd40-overlay .qd-ui2-vital-label {
+  color: #fff0c4 !important;
+  font-size: 11px !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.08em !important;
+  text-shadow:
+    0 1px 0 #100a05,
+    0 0 6px rgba(0, 0, 0, 0.82) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-readout,
+.qd40-overlay .qd-ui2-vital-readout {
+  min-width: 82px !important;
+  height: 20px !important;
+  border-radius: 7px !important;
+  color: #ffe9b8 !important;
+  background: rgba(3, 3, 3, 0.88) !important;
+  border-color: rgba(232, 181, 82, 0.66) !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input,
+.qd40-overlay .qd-ui2-vital-input {
+  color: #ffe9b8 !important;
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  text-align: right !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-max,
+.qd40-overlay .qd-ui2-vital-max {
+  color: rgba(255, 232, 184, 0.78) !important;
+  font-size: 12px !important;
+}
+
+/* Defense / Move tiles: larger, clearer, clickable command plaques. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-grid,
+.qd40-overlay .qd-ui2-stat-grid {
+  gap: 8px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-tile,
+.qd40-overlay .qd-ui2-stat-tile {
+  border-color: rgba(214, 161, 70, 0.38) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(245, 196, 91, 0.13), transparent 52%),
+    linear-gradient(180deg, rgba(53, 34, 18, 0.86), rgba(10, 8, 6, 0.92)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.09),
+    inset 0 -10px 15px rgba(0, 0, 0, 0.26) !important;
+  transition:
+    transform 110ms ease,
+    filter 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-tile span,
+.qd40-overlay .qd-ui2-stat-tile span {
+  color: rgba(255, 232, 184, 0.78) !important;
+  font-size: 9px !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-tile strong,
+.qd40-overlay .qd-ui2-stat-tile strong {
+  color: #ffe4a8 !important;
+  font-size: 20px !important;
+  font-weight: 950 !important;
+  text-shadow:
+    0 1px 0 #130c06,
+    0 0 8px rgba(0, 0, 0, 0.72) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-button:hover,
+.qd40-overlay .qd-ui2-stat-button:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.10) !important;
+  border-color: rgba(244, 194, 91, 0.72) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 240, 190, 0.16),
+    inset 0 -10px 15px rgba(0, 0, 0, 0.28),
+    0 0 10px rgba(233, 169, 57, 0.20) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-button:active,
+.qd40-overlay .qd-ui2-stat-button:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.94) !important;
+}
+
+/* v0.16.6b UI2 roll chip polish.
+   Cleans up primary/secondary roll controls and dropdown readability. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-row,
+.qd40-overlay .qd-ui2-roll-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) !important;
+  gap: 7px !important;
+  width: 100% !important;
+  min-width: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-pill,
+.qd40-overlay .qd-ui2-roll-pill {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  min-height: 34px !important;
+  height: 34px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) 34px 32px !important;
+  align-items: center !important;
+  gap: 4px !important;
+  padding: 3px !important;
+  border-radius: 10px !important;
+  border: 1px solid rgba(214, 161, 70, 0.42) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(245, 196, 91, 0.12), transparent 52%),
+    linear-gradient(180deg, rgba(45, 29, 15, 0.86), rgba(7, 6, 5, 0.92)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.08),
+    inset 0 -8px 13px rgba(0, 0, 0, 0.26) !important;
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-select,
+.qd40-overlay .qd-ui2-roll-select {
+  width: 100% !important;
+  min-width: 0 !important;
+  height: 28px !important;
+  padding: 0 8px !important;
+  color: #f6e2b8 !important;
+  background-color: #050403 !important;
+  background:
+    linear-gradient(180deg, rgba(31, 22, 13, 0.98), rgba(3, 3, 3, 0.98)) !important;
+  border: 1px solid rgba(214, 161, 70, 0.48) !important;
+  border-radius: 8px !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+  line-height: 1 !important;
+  text-overflow: ellipsis !important;
+  cursor: pointer !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-select option,
+.qd40-overlay .qd-ui2-roll-select option {
+  color: #f6e2b8 !important;
+  background-color: #050403 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-select:hover,
+.qd40-overlay .qd-ui2-roll-select:hover {
+  border-color: rgba(244, 194, 91, 0.72) !important;
+  filter: brightness(1.08) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-select:focus-visible,
+.qd40-overlay .qd-ui2-roll-select:focus-visible {
+  outline: 2px solid rgba(255, 218, 126, 0.80) !important;
+  outline-offset: 1px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-value,
+.qd40-overlay .qd-ui2-roll-value {
+  width: 34px !important;
+  min-width: 34px !important;
+  height: 28px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  color: #ffe4a8 !important;
+  background:
+    linear-gradient(180deg, rgba(5, 4, 3, 0.94), rgba(0, 0, 0, 0.90)) !important;
+  border: 1px solid rgba(232, 181, 82, 0.58) !important;
+  border-radius: 8px !important;
+  font-size: 14px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+  text-shadow:
+    0 1px 0 #120b05,
+    0 0 7px rgba(0, 0, 0, 0.75) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-button,
+.qd40-overlay .qd-ui2-roll-button {
+  width: 30px !important;
+  min-width: 30px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  padding: 0 !important;
+  color: #1f1307 !important;
+  background: linear-gradient(180deg, #f2cc78, #a76b24) !important;
+  border: 1px solid rgba(255, 225, 142, 0.68) !important;
+  border-radius: 8px !important;
+  font-size: 16px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 241, 190, 0.24),
+    inset 0 -5px 10px rgba(80, 39, 8, 0.24),
+    0 0 8px rgba(229, 164, 54, 0.16) !important;
+  transition:
+    transform 110ms ease,
+    filter 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-button:hover,
+.qd40-overlay .qd-ui2-roll-button:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.10) !important;
+  border-color: rgba(255, 226, 143, 0.90) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 246, 205, 0.36),
+    inset 0 -5px 10px rgba(80, 39, 8, 0.24),
+    0 0 11px rgba(242, 184, 65, 0.30) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-button:active,
+.qd40-overlay .qd-ui2-roll-button:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.94) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-button:focus-visible,
+.qd40-overlay .qd-ui2-roll-button:focus-visible {
+  outline: 2px solid rgba(255, 218, 126, 0.86) !important;
+  outline-offset: 2px !important;
+}
+
+/* Three-panel squeeze: keep roll chips compact but readable. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-row,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-row {
+  gap: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-pill,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-pill {
+  grid-template-columns: minmax(0, 1fr) 30px 28px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-value,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-value {
+  width: 30px !important;
+  min-width: 30px !important;
+  font-size: 13px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-button,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-button {
+  width: 28px !important;
+  min-width: 28px !important;
+}
+
+/* v0.16.6c UI2 defense tile identity.
+   Gives Move/Dodge/Parry/Block clearer visual identities without changing roll handlers. */
+
+/* Shared final defense tile fit. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-grid,
+.qd40-overlay .qd-ui2-stat-grid {
+  grid-template-columns: repeat(4, 56px) !important;
+  gap: 7px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-tile,
+.qd40-overlay .qd-ui2-stat-tile {
+  width: 56px !important;
+  height: 56px !important;
+  min-height: 56px !important;
+  padding: 5px !important;
+  overflow: hidden !important;
+}
+
+/* Move: brass/stone, not clickable. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-grid .qd-ui2-stat-tile:nth-child(1),
+.qd40-overlay .qd-ui2-stat-grid .qd-ui2-stat-tile:nth-child(1) {
+  border-color: rgba(219, 169, 76, 0.42) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(245, 196, 91, 0.16), transparent 52%),
+    linear-gradient(180deg, rgba(56, 36, 18, 0.88), rgba(9, 8, 6, 0.94)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(214, 161, 70, 0.50),
+    inset 0 1px 0 rgba(255, 230, 160, 0.09),
+    inset 0 -10px 15px rgba(0, 0, 0, 0.26) !important;
+}
+
+/* Dodge: blue quickness. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-button[data-defense="dodge"],
+.qd40-overlay .qd-ui2-stat-button[data-defense="dodge"] {
+  border-color: rgba(96, 190, 255, 0.42) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(126, 214, 255, 0.16), transparent 52%),
+    linear-gradient(180deg, rgba(25, 54, 72, 0.88), rgba(7, 10, 13, 0.94)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(96, 190, 255, 0.54),
+    inset 0 1px 0 rgba(190, 235, 255, 0.08),
+    inset 0 -10px 15px rgba(0, 0, 0, 0.26) !important;
+}
+
+/* Parry: golden weapon defense. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-button[data-defense="parry"],
+.qd40-overlay .qd-ui2-stat-button[data-defense="parry"] {
+  border-color: rgba(245, 188, 75, 0.46) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 214, 104, 0.17), transparent 52%),
+    linear-gradient(180deg, rgba(70, 45, 17, 0.90), rgba(10, 8, 5, 0.94)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(245, 188, 75, 0.60),
+    inset 0 1px 0 rgba(255, 231, 160, 0.09),
+    inset 0 -10px 15px rgba(0, 0, 0, 0.26) !important;
+}
+
+/* Block: iron/guard gray with cool edge. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-button[data-defense="block"],
+.qd40-overlay .qd-ui2-stat-button[data-defense="block"] {
+  border-color: rgba(170, 184, 196, 0.38) !important;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(210, 226, 238, 0.13), transparent 52%),
+    linear-gradient(180deg, rgba(45, 48, 49, 0.88), rgba(8, 8, 8, 0.94)) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(170, 184, 196, 0.46),
+    inset 0 1px 0 rgba(235, 245, 255, 0.07),
+    inset 0 -10px 15px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* Hover glows by defense type. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-button[data-defense="dodge"]:hover,
+.qd40-overlay .qd-ui2-stat-button[data-defense="dodge"]:hover {
+  border-color: rgba(126, 214, 255, 0.72) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(96, 190, 255, 0.88),
+    inset 0 1px 0 rgba(200, 240, 255, 0.12),
+    0 0 11px rgba(80, 190, 255, 0.22) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-button[data-defense="parry"]:hover,
+.qd40-overlay .qd-ui2-stat-button[data-defense="parry"]:hover {
+  border-color: rgba(255, 217, 112, 0.74) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(245, 188, 75, 0.90),
+    inset 0 1px 0 rgba(255, 236, 174, 0.13),
+    0 0 11px rgba(245, 188, 75, 0.24) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-stat-button[data-defense="block"]:hover,
+.qd40-overlay .qd-ui2-stat-button[data-defense="block"]:hover {
+  border-color: rgba(210, 226, 238, 0.70) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(190, 205, 216, 0.82),
+    inset 0 1px 0 rgba(235, 245, 255, 0.11),
+    0 0 11px rgba(190, 205, 216, 0.16) !important;
+}
+
+/* v0.16.6d UI2 portrait and drop token polish.
+   Beautifies portrait stack and Drop Token / Drop Carousel buttons without changing handlers. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-stack,
+.qd40-overlay .qd-ui2-portrait-stack {
+  gap: 5px !important;
+  align-items: center !important;
+  justify-content: start !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-ring,
+.qd40-overlay .qd-ui2-portrait-ring {
+  cursor: pointer !important;
+  transition:
+    transform 120ms ease,
+    filter 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-ring:hover,
+.qd40-overlay .qd-ui2-portrait-ring:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.08) saturate(1.05) !important;
+  border-color: rgba(245, 194, 91, 0.72) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 230, 160, 0.10),
+    inset 0 -14px 22px rgba(0, 0, 0, 0.34),
+    0 0 14px rgba(235, 170, 55, 0.24) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-ring:active,
+.qd40-overlay .qd-ui2-portrait-ring:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.96) !important;
+}
+
+/* Compact portrait-stack command buttons. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drop-token-button,
+.qd40-overlay .qd-ui2-drop-token-button {
+  width: 100% !important;
+  min-height: 24px !important;
+  height: 24px !important;
+  padding: 0 7px !important;
+  display: inline-grid !important;
+  place-items: center !important;
+  border-radius: 8px !important;
+  border: 1px solid rgba(214, 161, 70, 0.38) !important;
+  color: #f6dfad !important;
+  background:
+    linear-gradient(180deg, rgba(70, 44, 21, 0.78), rgba(18, 12, 7, 0.90)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.09),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.24) !important;
+  font-size: 10px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: 0.025em !important;
+  white-space: nowrap !important;
+  transition:
+    transform 110ms ease,
+    filter 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease,
+    background 110ms ease !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drop-token-button:hover,
+.qd40-overlay .qd-ui2-drop-token-button:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.10) !important;
+  border-color: rgba(244, 194, 91, 0.72) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 239, 190, 0.16),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.26),
+    0 0 9px rgba(233, 169, 57, 0.20) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drop-token-button:active,
+.qd40-overlay .qd-ui2-drop-token-button:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.94) !important;
+}
+
+/* Make Drop Token the primary portrait command. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drop-token-button:not(.qd-ui2-mass-drop-token-button),
+.qd40-overlay .qd-ui2-drop-token-button:not(.qd-ui2-mass-drop-token-button) {
+  color: #1f1307 !important;
+  border-color: rgba(255, 225, 142, 0.68) !important;
+  background: linear-gradient(180deg, #f2cc78, #a76b24) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 241, 190, 0.25),
+    inset 0 -5px 10px rgba(80, 39, 8, 0.24),
+    0 0 8px rgba(229, 164, 54, 0.14) !important;
+}
+
+/* Drop Carousel is secondary utility. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-mass-drop-token-button,
+.qd40-overlay .qd-ui2-mass-drop-token-button {
+  color: rgba(239, 218, 176, 0.88) !important;
+  background:
+    linear-gradient(180deg, rgba(33, 45, 50, 0.76), rgba(9, 10, 10, 0.92)) !important;
+  border-color: rgba(151, 178, 190, 0.34) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-mass-drop-token-button:hover,
+.qd40-overlay .qd-ui2-mass-drop-token-button:hover {
+  border-color: rgba(190, 216, 226, 0.58) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(235, 245, 255, 0.10),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.26),
+    0 0 8px rgba(151, 196, 215, 0.14) !important;
+}
+
+/* v0.16.6e UI2 center carousel polish.
+   Beautifies the actor selector carousel inside the selected actor card. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-card-carousel {
+  border-color: rgba(214, 161, 70, 0.36) !important;
+  border-radius: 11px !important;
+  background:
+    linear-gradient(180deg, rgba(31, 21, 12, 0.78), rgba(6, 5, 4, 0.90)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.07),
+    inset 0 -8px 13px rgba(0, 0, 0, 0.26) !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track {
+  gap: 4px !important;
+  padding: 2px 3px !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-arrow,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-arrow {
+  border-radius: 8px !important;
+  color: #f6dfad !important;
+  border: 1px solid rgba(214, 161, 70, 0.38) !important;
+  background:
+    linear-gradient(180deg, rgba(70, 44, 21, 0.76), rgba(18, 12, 7, 0.90)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.09),
+    inset 0 -5px 9px rgba(0, 0, 0, 0.24) !important;
+  transition:
+    transform 110ms ease,
+    filter 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-arrow:hover,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-arrow:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.10) !important;
+  border-color: rgba(244, 194, 91, 0.72) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 239, 190, 0.16),
+    inset 0 -5px 9px rgba(0, 0, 0, 0.26),
+    0 0 8px rgba(233, 169, 57, 0.18) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-arrow:active,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-arrow:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.94) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button,
+.qd40-overlay .qd-ui2-carousel-portrait-button {
+  border-radius: 9px !important;
+  border: 1px solid rgba(214, 161, 70, 0.28) !important;
+  background:
+    linear-gradient(180deg, rgba(40, 26, 14, 0.78), rgba(8, 7, 5, 0.88)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.06),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.24) !important;
+  transition:
+    transform 110ms ease,
+    filter 110ms ease,
+    border-color 110ms ease,
+    box-shadow 110ms ease !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button:hover,
+.qd40-overlay .qd-ui2-carousel-portrait-button:hover {
+  transform: translateY(-1px) !important;
+  filter: brightness(1.08) saturate(1.04) !important;
+  border-color: rgba(244, 194, 91, 0.58) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 239, 190, 0.12),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.26),
+    0 0 8px rgba(233, 169, 57, 0.16) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button.is-active,
+.qd40-overlay .qd-ui2-carousel-portrait-button.is-active {
+  border-color: rgba(255, 215, 118, 0.88) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 238, 180, 0.18),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.24),
+    0 0 10px rgba(242, 184, 65, 0.30) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button.is-current-turn,
+.qd40-overlay .qd-ui2-carousel-portrait-button.is-current-turn {
+  border-color: rgba(126, 214, 255, 0.74) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(190, 235, 255, 0.18),
+    inset 0 -6px 10px rgba(0, 0, 0, 0.24),
+    0 0 10px rgba(80, 190, 255, 0.24) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait,
+.qd40-overlay .qd-ui2-carousel-portrait {
+  border-radius: 7px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-turn-marker,
+.qd40-overlay .qd-ui2-carousel-turn-marker {
+  color: #bfefff !important;
+  text-shadow:
+    0 0 5px rgba(126, 214, 255, 0.85),
+    0 0 10px rgba(80, 190, 255, 0.42) !important;
+}
+
+/* v0.16.6f UI2 center focus finish.
+   Polishes focus/active/disabled states for center actor controls without changing handlers. */
+
+/* Shared premium focus ring for center cockpit controls. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card button:focus-visible,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card select:focus-visible,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card input:focus-visible,
+.qd40-overlay .qd-ui2-actor-card button:focus-visible,
+.qd40-overlay .qd-ui2-actor-card select:focus-visible,
+.qd40-overlay .qd-ui2-actor-card input:focus-visible {
+  outline: 2px solid rgba(255, 218, 126, 0.86) !important;
+  outline-offset: 2px !important;
+  box-shadow:
+    0 0 0 2px rgba(45, 28, 10, 0.88),
+    0 0 12px rgba(241, 186, 74, 0.34) !important;
+}
+
+/* Portrait is clickable/double-clickable; make keyboard-style focus visible if it receives focus later. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-ring:focus-visible,
+.qd40-overlay .qd-ui2-portrait-ring:focus-visible {
+  outline: 2px solid rgba(255, 218, 126, 0.86) !important;
+  outline-offset: 3px !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 230, 160, 0.12),
+    0 0 14px rgba(241, 186, 74, 0.36) !important;
+}
+
+/* Inputs should not inherit browser white boxes on edit. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input,
+.qd40-overlay .qd-ui2-vital-input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  appearance: textfield !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input::-webkit-outer-spin-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input::-webkit-inner-spin-button,
+.qd40-overlay .qd-ui2-vital-input::-webkit-outer-spin-button,
+.qd40-overlay .qd-ui2-vital-input::-webkit-inner-spin-button {
+  -webkit-appearance: none !important;
+  margin: 0 !important;
+}
+
+/* Button press feedback should be consistent across the center card. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card button:active,
+.qd40-overlay .qd-ui2-actor-card button:active {
+  transform: translateY(1px) !important;
+  filter: brightness(0.94) !important;
+}
+
+/* But carousel portrait active press should not distort the selected highlight too much. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button:active,
+.qd40-overlay .qd-ui2-carousel-portrait-button:active {
+  transform: translateY(1px) scale(0.98) !important;
+}
+
+/* Disabled buttons/selects should read as unavailable, not broken. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card button:disabled,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card select:disabled,
+.qd40-overlay .qd-ui2-actor-card button:disabled,
+.qd40-overlay .qd-ui2-actor-card select:disabled {
+  opacity: 0.48 !important;
+  filter: grayscale(0.25) !important;
+  cursor: not-allowed !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card button:disabled:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card select:disabled:hover,
+.qd40-overlay .qd-ui2-actor-card button:disabled:hover,
+.qd40-overlay .qd-ui2-actor-card select:disabled:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Small final readability bump for the instrument deck. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-instrument-deck,
+.qd40-overlay .qd-ui2-instrument-deck {
+  gap: 7px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-row,
+.qd40-overlay .qd-ui2-roll-row {
+  margin-bottom: 1px !important;
+}
+
+/* Prevent all center labels from selecting text during fast play. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  user-select: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input,
+.qd40-overlay .qd-ui2-vital-input {
+  user-select: text !important;
+}
+
