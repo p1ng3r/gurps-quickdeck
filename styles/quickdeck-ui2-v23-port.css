@@ -226,10 +226,6 @@
   text-overflow: ellipsis !important;
   white-space: nowrap !important;
 }
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-type,
-.qd40-overlay .qd-ui2-actor-type { font-size: 10px !important; letter-spacing: 0.12em !important; }
-
 /* HP/FP meters. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-stack,
 .qd40-overlay .qd-ui2-vital-stack { min-width: 0 !important; gap: 6px !important; }
@@ -1460,13 +1456,6 @@
   white-space: nowrap !important;
   text-overflow: ellipsis !important;
 }
-
-/* Kill actor type everywhere in the UI2 card even if future template data tries to render it. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card .qd-ui2-actor-type,
-.qd40-overlay .qd-ui2-actor-card .qd-ui2-actor-type {
-  display: none !important;
-}
-
 /* The carousel is now a compact five-slot selector inside the actor card title band. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel,
 .qd40-overlay .qd-ui2-card-carousel {
@@ -1628,13 +1617,6 @@
   align-self: start !important;
   gap: 6px !important;
 }
-
-/* Actor type/"Character" never appears in the UI2 actor card. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card .qd-ui2-actor-type,
-.qd40-overlay .qd-ui2-actor-card .qd-ui2-actor-type {
-  display: none !important;
-}
-
 /* Three-panel mode preserves the same structure with a tighter portrait column. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card,
 .qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card {
