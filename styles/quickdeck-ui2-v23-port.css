@@ -381,18 +381,6 @@
 .qd40-overlay .qd-ui2-active-roster-portrait,
 .qd40-overlay .qd-ui2-inactive-roster-portrait { width: 40px !important; height: 40px !important; }
 
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-remove,
-.qd40-overlay .qd-ui2-active-roster-remove { width: 28px !important; height: 28px !important; }
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-add,
-.qd40-overlay .qd-ui2-inactive-roster-add {
-  min-width: 42px !important;
-  min-height: 28px !important;
-  height: 28px !important;
-  padding: 0 6px !important;
-  font-size: 10px !important;
-}
-
 /* Right drawer: native scroll, denser rows. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-scroll,
 .qd40-overlay .qd-ui2-drawer-scroll {
