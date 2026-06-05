@@ -3370,3 +3370,125 @@
   transform: translate(4px, 10px) !important;
 }
 
+/* v0.16.3 UI2 header shell polish.
+   Keeps existing data-action handlers; improves title/help/minimize/close chrome only. */
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-chrome-row,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-chrome-row {
+  min-height: 42px !important;
+  height: 42px !important;
+  padding: 5px 8px !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  align-items: center !important;
+  gap: 8px !important;
+  border: 1px solid rgba(218, 168, 75, 0.34) !important;
+  border-radius: 14px 14px 10px 10px !important;
+  background:
+    radial-gradient(circle at 18% 0%, rgba(245, 196, 91, 0.16), transparent 42%),
+    linear-gradient(180deg, rgba(58, 36, 16, 0.94), rgba(12, 9, 7, 0.96)) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 233, 170, 0.10),
+    inset 0 -10px 20px rgba(0, 0, 0, 0.22),
+    0 6px 18px rgba(0, 0, 0, 0.24) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-corner-badge,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-corner-badge {
+  min-width: 0 !important;
+  height: 32px !important;
+  padding: 0 5px 0 10px !important;
+  display: inline-grid !important;
+  grid-template-columns: minmax(0, auto) 30px !important;
+  align-items: center !important;
+  justify-content: start !important;
+  gap: 8px !important;
+  border: 1px solid rgba(218, 168, 75, 0.28) !important;
+  border-radius: 11px !important;
+  background:
+    linear-gradient(180deg, rgba(14, 11, 8, 0.72), rgba(43, 28, 14, 0.58)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 226, 150, 0.05),
+    inset 0 0 16px rgba(0, 0, 0, 0.32) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-corner-title,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-corner-title {
+  overflow: hidden !important;
+  color: #f5d58d !important;
+  font-size: 18px !important;
+  line-height: 1 !important;
+  font-weight: 950 !important;
+  letter-spacing: 0.045em !important;
+  text-transform: none !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  text-shadow:
+    0 1px 0 #140d07,
+    0 0 8px rgba(0, 0, 0, 0.82),
+    0 0 10px rgba(220, 151, 45, 0.18) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-window-controls,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-window-controls {
+  height: 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: end !important;
+  gap: 5px !important;
+  padding: 0 4px !important;
+  border: 1px solid rgba(218, 168, 75, 0.24) !important;
+  border-radius: 11px !important;
+  background:
+    linear-gradient(180deg, rgba(14, 11, 8, 0.70), rgba(40, 25, 13, 0.58)) !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 226, 150, 0.04),
+    inset 0 0 14px rgba(0, 0, 0, 0.30) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-info-button,
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-window-button,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-info-button,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-window-button {
+  width: 28px !important;
+  height: 28px !important;
+  min-width: 28px !important;
+  min-height: 28px !important;
+  padding: 0 !important;
+  border-radius: 9px !important;
+  color: #f7dfad !important;
+  background:
+    linear-gradient(180deg, rgba(91, 57, 24, 0.92), rgba(24, 17, 10, 0.96)) !important;
+  border: 1px solid rgba(214, 161, 70, 0.42) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.12),
+    inset 0 -5px 9px rgba(0, 0, 0, 0.22) !important;
+  font-size: 18px !important;
+  font-weight: 950 !important;
+  line-height: 1 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-info-button:hover,
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-window-button:hover,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-info-button:hover,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-window-button:hover {
+  color: #fff1c9 !important;
+  border-color: rgba(244, 194, 91, 0.74) !important;
+  filter: brightness(1.12) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-window-button[data-action="close-overlay"]:hover,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-window-button[data-action="close-overlay"]:hover {
+  color: #ffe2d3 !important;
+  border-color: rgba(255, 120, 82, 0.78) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 230, 160, 0.10),
+    0 0 10px rgba(255, 74, 42, 0.20) !important;
+}
+
+/* Keep help popover aligned to the polished UI2 chrome. */
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd40-info-popover,
+.qd40-overlay:has(.qd-ui2-shell) .qd40-info-popover {
+  top: 48px !important;
+  left: 8px !important;
+}
+
