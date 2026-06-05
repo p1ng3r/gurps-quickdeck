@@ -2646,3 +2646,727 @@
   line-height: 1 !important;
 }
 
+/* v0.16.2 UI2 right action drawer first cleanup: denser header/search/action scan. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-panel-header,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-panel-header {
+  min-height: 0 !important;
+  padding: 6px 8px !important;
+  margin: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-panel-header h2,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-panel-header h2 {
+  margin: 0 !important;
+  font-size: 18px !important;
+  line-height: 1.05 !important;
+  letter-spacing: 0.055em !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs {
+  gap: 4px !important;
+  margin-bottom: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab {
+  min-height: 28px !important;
+  padding: 4px 6px !important;
+  font-size: 10px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-section-header,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-section-header {
+  min-height: 28px !important;
+  padding: 4px 7px !important;
+  margin-bottom: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-section-header h3,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-section-header h3 {
+  font-size: 12px !important;
+  line-height: 1 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-section-header span,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-section-header span {
+  font-size: 9px !important;
+  line-height: 1 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
+  grid-template-columns: minmax(0, 1fr) 28px !important;
+  gap: 5px !important;
+  margin-bottom: 6px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 4px 8px !important;
+  font-size: 11px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear {
+  width: 28px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  min-height: 28px !important;
+  padding: 0 !important;
+  display: grid !important;
+  place-items: center !important;
+  font-size: 18px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row {
+  min-height: 44px !important;
+  gap: 6px !important;
+  padding: 6px !important;
+  margin-bottom: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row.is-favorite,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row.is-favorite {
+  border-color: rgba(255, 210, 118, 0.48) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(239, 186, 78, 0.95),
+    inset 0 1px 0 rgba(255, 231, 159, 0.08),
+    0 0 10px rgba(224, 160, 58, 0.14) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button {
+  min-height: 20px !important;
+  padding: 1px 4px !important;
+  font-size: 12px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta {
+  font-size: 9px !important;
+  gap: 3px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button {
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+}
+
+/* v0.16.2b UI2 right drawer tab tooltips:
+   tabs carry count/status on hover; repeated Combat/Skills/Spells section headers removed. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-combat-section .qd-ui2-search-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-skills-section .qd-ui2-search-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-spells-section .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-combat-section .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-skills-section .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-spells-section .qd-ui2-search-row {
+  margin-top: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab {
+  cursor: pointer !important;
+}
+
+/* v0.16.2c UI2 combat action pill layout:
+   name centered on top row, Type/Mode + buttons share middle row, Damage owns bottom row. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row {
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-areas:
+    "name name"
+    "meta buttons"
+    "damage damage" !important;
+  align-items: center !important;
+  gap: 3px 7px !important;
+  min-height: 74px !important;
+  padding: 7px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-main {
+  display: contents !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-reference-button {
+  grid-area: name !important;
+  width: 100% !important;
+  min-height: 22px !important;
+  justify-self: stretch !important;
+  text-align: center !important;
+  font-size: 15px !important;
+  line-height: 1.05 !important;
+  padding: 1px 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-combat-meta-primary,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-combat-meta-primary {
+  grid-area: meta !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-combat-meta-primary span,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-combat-meta-primary span {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 12px !important;
+  line-height: 1.05 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-controls {
+  grid-area: buttons !important;
+  justify-self: end !important;
+  align-self: center !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+  white-space: nowrap !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-combat-meta-damage,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-combat-meta-damage {
+  grid-area: damage !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-combat-meta-damage span,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-combat-meta-damage span {
+  width: 100% !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  font-size: 12px !important;
+  line-height: 1.1 !important;
+}
+
+/* v0.16.2d UI2 right action card button placement.
+   Applies the Art Tuner button-cluster offset x:3 y:23 as the shared action-card look. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row {
+  position: relative !important;
+  min-height: 78px !important;
+  padding: 7px 8px !important;
+  overflow: hidden !important;
+}
+
+/* Shared button cluster placement: tuned from selected target x:3 y:23. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-controls {
+  transform: translate(3px, 23px) !important;
+  align-self: start !important;
+  justify-self: end !important;
+  flex-wrap: nowrap !important;
+  white-space: nowrap !important;
+  z-index: 3 !important;
+}
+
+/* Bigger, centered attack / weapon / action name. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-reference-button {
+  width: 100% !important;
+  min-height: 24px !important;
+  padding: 2px 5px !important;
+  display: block !important;
+  color: #ffe4a8 !important;
+  font-size: 15px !important;
+  line-height: 1.08 !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+/* Keep the text area readable while the buttons occupy the lower-right lane. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-main {
+  min-width: 0 !important;
+  padding-right: 156px !important;
+  gap: 4px !important;
+}
+
+/* Meta text grows slightly and uses the lower-left lane opposite the buttons. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta {
+  font-size: 12px !important;
+  line-height: 1.12 !important;
+  gap: 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta span,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-meta span {
+  font-size: 12px !important;
+  line-height: 1.12 !important;
+}
+
+/* Combat rows have more controls, so reserve a little extra room for the button line. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-main {
+  padding-right: 186px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-reference-button {
+  font-size: 16px !important;
+}
+
+/* Keep buttons compact enough to remain one clean row. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button {
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+  padding: 0 !important;
+}
+
+/* Make Combat / Skills / Spells ability pills nearly touch vertically. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row {
+  margin-bottom: 2px !important;
+  transition:
+    min-height 140ms ease,
+    height 140ms ease,
+    padding 140ms ease,
+    transform 140ms ease,
+    box-shadow 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease !important;
+}
+
+/* 50% hover growth: base 78px -> about 117px. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover {
+  min-height: 117px !important;
+  height: 117px !important;
+  padding: 10px !important;
+  z-index: 5 !important;
+  transform: translateX(2px) !important;
+  border-color: rgba(235, 184, 88, 0.58) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(239, 186, 78, 0.70),
+    inset 0 1px 0 rgba(255, 231, 159, 0.10),
+    0 0 14px rgba(224, 160, 58, 0.18) !important;
+}
+
+/* Keep expanded cards from clipping enlarged button rows. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover {
+  overflow: visible !important;
+}
+
+/* Scale the main action / weapon / skill / spell name on hover. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-reference-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-reference-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-reference-button {
+  min-height: 30px !important;
+  font-size: 18px !important;
+  line-height: 1.08 !important;
+}
+
+/* Scale meta/damage text on hover. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-meta,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-meta,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-meta {
+  font-size: 14px !important;
+  line-height: 1.16 !important;
+  gap: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-meta span,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-meta span,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-meta span,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-meta span,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-meta span,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-meta span {
+  font-size: 14px !important;
+  line-height: 1.16 !important;
+}
+
+/* Enlarge the button row on hover and move it proportionally lower. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-controls,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-controls,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-controls {
+  transform: translate(3px, 42px) !important;
+  gap: 5px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-button {
+  width: 32px !important;
+  height: 32px !important;
+  min-width: 32px !important;
+  min-height: 32px !important;
+  font-size: 15px !important;
+}
+
+/* Give text lanes more room on expanded cards while preserving one-line buttons. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-main,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-main {
+  padding-right: 178px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-action-main {
+  padding-right: 210px !important;
+}
+
+/* v0.16.2f UI2 right drawer no hover growth and tight rows.
+   Search sits directly under Combat/Skills/Spells tab pills; action pills nearly touch. */
+
+/* Put search area tight under the tab pills. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs {
+  margin-bottom: 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-scroll,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-scroll {
+  padding-top: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section {
+  padding-top: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
+  margin-top: 0 !important;
+  margin-bottom: 4px !important;
+}
+
+/* Ability/action pills should be very close together vertically. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row {
+  margin-bottom: 2px !important;
+}
+
+/* Remove the big hover expansion. Keep only subtle existing hover color/border behavior. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover {
+  height: auto !important;
+  min-height: 78px !important;
+  padding: 7px 8px !important;
+  transform: none !important;
+  overflow: hidden !important;
+}
+
+/* Prevent hover from enlarging inner text/buttons. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-reference-button {
+  min-height: 24px !important;
+  font-size: 15px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-reference-button {
+  font-size: 16px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-meta,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-meta span,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-meta span {
+  font-size: 12px !important;
+  line-height: 1.12 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-controls {
+  transform: translate(3px, 23px) !important;
+  gap: 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-button {
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+}
+
+/* v0.16.2g UI2 right drawer tight search and action stack.
+   Final override: search bars sit directly under tabs; action pills sit 2px apart. */
+
+/* Tabs/nav to search: 2px visual gap. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs {
+  margin-bottom: 2px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-scroll,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-scroll {
+  padding-top: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  gap: 0 !important;
+}
+
+/* Combat / Skills / Spells search rows move tight under tab nav. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-combat-section .qd-ui2-search-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-skills-section .qd-ui2-search-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-spells-section .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-combat-section .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-skills-section .qd-ui2-search-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-spells-section .qd-ui2-search-row {
+  margin-top: 0 !important;
+  margin-bottom: 2px !important;
+  padding-top: 0 !important;
+}
+
+/* Compact search fields without changing behavior. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input {
+  height: 28px !important;
+  min-height: 28px !important;
+}
+
+/* Action cards/pills: exactly tight stack rhythm. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row {
+  margin-top: 0 !important;
+  margin-bottom: 2px !important;
+}
+
+/* Remove big hover growth. Keep only subtle color/border hover from older rules. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover {
+  transform: none !important;
+  height: auto !important;
+  min-height: 78px !important;
+  padding: 7px 8px !important;
+  overflow: hidden !important;
+}
+
+/* Lock hover internals back to normal size. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-reference-button {
+  min-height: 24px !important;
+  font-size: 15px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover .qd-ui2-reference-button {
+  font-size: 16px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-meta,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-meta span,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-meta span {
+  font-size: 12px !important;
+  line-height: 1.12 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-controls {
+  transform: translate(3px, 23px) !important;
+  gap: 4px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-row:hover .qd-ui2-action-button {
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+}
+
+/* v0.16.2h UI2 skills spells button/name layout.
+   Combat stays untouched. Skills/Spells button clusters use tuner offset y:-50.
+   Skill and spell names are centered in the top/name row. */
+
+/* Skills and Spells use card grid layout independent of Combat. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) auto !important;
+  grid-template-areas:
+    "name name"
+    "meta buttons" !important;
+  align-items: center !important;
+  min-height: 78px !important;
+  padding: 7px 8px !important;
+  margin-bottom: 2px !important;
+  overflow: hidden !important;
+}
+
+/* Allow child pieces to occupy grid areas cleanly. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-main,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-main,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-main {
+  display: contents !important;
+}
+
+/* Center skill/spell names across the full top row. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-reference-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-reference-button {
+  grid-area: name !important;
+  width: 100% !important;
+  justify-self: stretch !important;
+  min-height: 24px !important;
+  padding: 2px 5px !important;
+  display: block !important;
+  text-align: center !important;
+  color: #ffe4a8 !important;
+  font-size: 15px !important;
+  line-height: 1.08 !important;
+  font-weight: 900 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+/* Meta text sits in lower-left lane. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-meta,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-meta,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-meta {
+  grid-area: meta !important;
+  min-width: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  overflow: hidden !important;
+  font-size: 12px !important;
+  line-height: 1.12 !important;
+}
+
+/* Buttons move to the tuned upper-right position for Skills/Spells only. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-controls,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-controls {
+  grid-area: buttons !important;
+  justify-self: end !important;
+  align-self: center !important;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  gap: 4px !important;
+  white-space: nowrap !important;
+  z-index: 3 !important;
+  transform: translate(0px, -2px) !important;
+}
+
+/* Keep Skills/Spells buttons compact and single-line. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-button {
+  width: 26px !important;
+  height: 26px !important;
+  min-width: 26px !important;
+  min-height: 26px !important;
+  padding: 0 !important;
+}
+
+/* Lock hover state so it does not re-grow or move the Skills/Spells layout. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover {
+  transform: none !important;
+  min-height: 78px !important;
+  height: auto !important;
+  padding: 7px 8px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-controls,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-controls {
+  transform: translate(0px, -2px) !important;
+}
+
+/* v0.16.2j UI2 skill level meta polish.
+   Applies tuner offset y:4 to all Skill meta labels and increases readability. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-meta span,
+.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-meta span {
+  transform: translateY(4px) !important;
+  font-size: 14px !important;
+  line-height: 1.14 !important;
+}
+
+/* v0.16.2k UI2 spell button placement.
+   Applies new Art Tuner template to Spells only: x:4 y:10. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-controls {
+  transform: translate(4px, 10px) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-controls,
+.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover .qd-ui2-action-controls {
+  transform: translate(4px, 10px) !important;
+}
+

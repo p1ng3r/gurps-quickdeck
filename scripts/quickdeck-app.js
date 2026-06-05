@@ -2199,6 +2199,15 @@ export class QuickDeckApp extends Application {
     this.updateSearchUiState(html, "available", visible, "inactive characters", hasQuery);
   }
 
+  updateDrawerTabTooltip(html, drawer, visible, noun, hasQuery = false) {
+    const tab = html.find(`[data-action='toggle-drawer'][data-drawer='${drawer}']`)[0];
+    if (!tab) return;
+    const label = drawer === "combat" ? "Combat actions" : drawer === "skills" ? "Skills" : drawer === "spells" ? "Spells" : drawer;
+    const text = hasQuery ? `${visible} matching ${noun}` : `${visible} ${noun}`;
+    tab.title = text;
+    tab.setAttribute("aria-label", `${label}: ${text}`);
+  }
+
   applyCombatFilter(html) {
     const { visible, total } = this.applyDomFilterBySelector(
       html,
@@ -2207,7 +2216,9 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "attacks-visible", visible);
     this.updateCountText(html, "attacks-total", total);
-    this.updateSearchUiState(html, "combat", visible, "attacks", Boolean(this.normalizeSearchText(this.combatSearch)));
+    const hasQuery = Boolean(this.normalizeSearchText(this.combatSearch));
+    this.updateSearchUiState(html, "combat", visible, "attacks", hasQuery);
+    this.updateDrawerTabTooltip(html, "combat", visible, "attacks", hasQuery);
   }
 
   applySkillsFilter(html) {
@@ -2218,7 +2229,9 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "skills-visible", visible);
     this.updateCountText(html, "skills-total", total);
-    this.updateSearchUiState(html, "skills", visible, "skills", Boolean(this.normalizeSearchText(this.skillsSearch)));
+    const hasQuery = Boolean(this.normalizeSearchText(this.skillsSearch));
+    this.updateSearchUiState(html, "skills", visible, "skills", hasQuery);
+    this.updateDrawerTabTooltip(html, "skills", visible, "skills", hasQuery);
   }
 
   applyQuickSkillsFilter(html) {
@@ -2239,7 +2252,9 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "spells-visible", visible);
     this.updateCountText(html, "spells-total", total);
-    this.updateSearchUiState(html, "spells", visible, "spells", Boolean(this.normalizeSearchText(this.spellsSearch)));
+    const hasQuery = Boolean(this.normalizeSearchText(this.spellsSearch));
+    this.updateSearchUiState(html, "spells", visible, "spells", hasQuery);
+    this.updateDrawerTabTooltip(html, "spells", visible, "spells", hasQuery);
   }
 
   toDisplayValue(value) {
