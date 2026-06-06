@@ -43,8 +43,8 @@
   --qd-ui2-center-one: clamp(620px, 44vw, 680px);
   --qd-ui2-center-wide: clamp(720px, 56vw, 820px);
   --qd-ui2-center-w: var(--qd-ui2-center-wide);
-  --qd-ui2-tab-w: 54px;
-  --qd-ui2-tab-h: 158px;
+  --qd-ui2-tab-w: 46px;
+  --qd-ui2-tab-h: 138px;
   --qd-ui2-body-h: min(640px, calc(100vh - 122px));
   position: relative !important;
   display: flex !important;
@@ -445,12 +445,6 @@
 }
 
 /* Slightly smaller Foundry side tabs. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
-.qd40-overlay .qd-ui2-shell {
-  --qd-ui2-tab-w: 46px;
-  --qd-ui2-tab-h: 138px;
-}
-
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-edge-tab,
 .qd40-overlay .qd-ui2-edge-tab {
   font-size: 10px !important;
