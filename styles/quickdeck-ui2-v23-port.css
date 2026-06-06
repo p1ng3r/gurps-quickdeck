@@ -418,12 +418,6 @@
 
 /* QuickDeck UI2 v23 port tune v0.15.4 */
 
-/* Shorter center-only shell; drawer states keep more working height. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
-.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
-  --qd-ui2-body-h: min(640px, calc(100vh - 122px));
-}
-
 /* Keep actor card from stretching too wide in wider states. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card,
 .qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) .qd-ui2-actor-card {
