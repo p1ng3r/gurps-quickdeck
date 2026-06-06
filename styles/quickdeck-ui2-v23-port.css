@@ -5351,12 +5351,6 @@
   border-color: rgba(244, 194, 91, 0.62) !important;
 }
 
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input:focus-visible,
-.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row input:focus-visible {
-  outline: 2px solid rgba(255, 218, 126, 0.78) !important;
-  outline-offset: 1px !important;
-}
-
 /* Search clear button. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear,
 .qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-clear {
