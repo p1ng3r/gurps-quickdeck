@@ -2515,69 +2515,6 @@
   line-height: 1 !important;
 }
 
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-row,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-row,
-.qd40-overlay .qd-ui2-active-roster-row,
-.qd40-overlay .qd-ui2-inactive-roster-row {
-  transition: height 140ms ease, min-height 140ms ease, transform 140ms ease, box-shadow 140ms ease !important;
-  transform-origin: center !important;
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-row:hover,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-row:hover,
-.qd40-overlay .qd-ui2-active-roster-row:hover,
-.qd40-overlay .qd-ui2-inactive-roster-row:hover {
-  min-height: 81px !important;
-  height: 81px !important;
-  transform: translateX(2px) !important;
-  z-index: 4 !important;
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-row:hover .qd-ui2-active-roster-portrait,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-row:hover .qd-ui2-inactive-roster-portrait,
-.qd40-overlay .qd-ui2-active-roster-row:hover .qd-ui2-active-roster-portrait,
-.qd40-overlay .qd-ui2-inactive-roster-row:hover .qd-ui2-inactive-roster-portrait {
-  width: 60px !important;
-  height: 60px !important;
-}
-
-/* v0.16.1b UI2 left roster hover balance:
-   enlarge portrait and give actor names a wider, cleaner text lane. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-row:hover,
-.qd40-overlay .qd-ui2-active-roster-row:hover {
-  grid-template-columns: 64px minmax(0, 1fr) 30px !important;
-  gap: 10px !important;
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-row:hover,
-.qd40-overlay .qd-ui2-inactive-roster-row:hover {
-  grid-template-columns: 64px minmax(0, 1fr) 32px !important;
-  gap: 10px !important;
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-row:hover .qd-ui2-active-roster-meta,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-row:hover .qd-ui2-inactive-roster-meta,
-.qd40-overlay .qd-ui2-active-roster-row:hover .qd-ui2-active-roster-meta,
-.qd40-overlay .qd-ui2-inactive-roster-row:hover .qd-ui2-inactive-roster-meta {
-  transform: translateX(-2px) !important;
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-row:hover .qd-ui2-active-roster-meta strong,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-row:hover .qd-ui2-inactive-roster-meta strong,
-.qd40-overlay .qd-ui2-active-roster-row:hover .qd-ui2-active-roster-meta strong,
-.qd40-overlay .qd-ui2-inactive-roster-row:hover .qd-ui2-inactive-roster-meta strong {
-  font-size: 13px !important;
-  line-height: 1.08 !important;
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-row:hover .qd-ui2-active-roster-meta small,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-row:hover .qd-ui2-inactive-roster-meta small,
-.qd40-overlay .qd-ui2-active-roster-row:hover .qd-ui2-active-roster-meta small,
-.qd40-overlay .qd-ui2-inactive-roster-row:hover .qd-ui2-inactive-roster-meta small {
-  font-size: 10px !important;
-  line-height: 1 !important;
-}
-
 /* v0.16.2 UI2 right action drawer first cleanup: denser header/search/action scan. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-panel-header,
 .qd40-overlay .qd-ui2-right-drawer .qd-ui2-panel-header {
