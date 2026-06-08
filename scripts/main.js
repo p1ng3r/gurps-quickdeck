@@ -15,7 +15,6 @@ const SETTING_KEYS = {
   TOKEN_DROP_AUTO_RESTORE: "tokenDropAutoRestore",
   DAMAGE_PICK_AUTO_MINIMIZE: "damagePickAutoMinimize",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
-  UI_MODE: "uiMode",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
@@ -190,16 +189,6 @@ Hooks.once("init", () => {
     config: false,
     type: Boolean,
     default: false
-  });
-
-
-  game.settings.register(MODULE_ID, SETTING_KEYS.UI_MODE, {
-    name: "QuickDeck UI Mode",
-    hint: "Choose UI1 or the experimental UI2 shell.",
-    scope: "client",
-    config: false,
-    type: String,
-    default: "ui1"
   });
 
 
