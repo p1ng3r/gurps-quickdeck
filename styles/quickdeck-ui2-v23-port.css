@@ -3151,8 +3151,10 @@
 /* v0.16.4 UI2 center roll dice button polish.
    Makes the dice buttons square/transparent, raises chip height by ~5px,
    and gives the dice a larger shake hover without changing roll handlers. */
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd-ui2-roll-pill,
 #gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd31-primary-roll-chip,
 #gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd31-secondary-roll-chip,
+.qd40-overlay:has(.qd-ui2-shell) .qd-ui2-roll-pill,
 .qd40-overlay:has(.qd-ui2-shell) .qd31-primary-roll-chip,
 .qd40-overlay:has(.qd-ui2-shell) .qd31-secondary-roll-chip {
   min-height: 35px !important;
@@ -3162,8 +3164,10 @@
 }
 
 /* Dice button itself: square transparent die. */
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd-ui2-roll-pill > button:nth-of-type(1),
 #gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd31-primary-roll-chip > button:nth-of-type(1),
 #gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd31-secondary-roll-chip > button:nth-of-type(1),
+.qd40-overlay:has(.qd-ui2-shell) .qd-ui2-roll-pill > button:nth-of-type(1),
 .qd40-overlay:has(.qd-ui2-shell) .qd31-primary-roll-chip > button:nth-of-type(1),
 .qd40-overlay:has(.qd-ui2-shell) .qd31-secondary-roll-chip > button:nth-of-type(1) {
   width: 30px !important;
@@ -3193,8 +3197,10 @@
 }
 
 /* Hover: double-size dice with a little shake. */
+#gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd-ui2-roll-pill > button:nth-of-type(1):hover,
 #gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd31-primary-roll-chip > button:nth-of-type(1):hover,
 #gurps-quickdeck-overlay.qd40-overlay:has(.qd-ui2-shell) .qd31-secondary-roll-chip > button:nth-of-type(1):hover,
+.qd40-overlay:has(.qd-ui2-shell) .qd-ui2-roll-pill > button:nth-of-type(1):hover,
 .qd40-overlay:has(.qd-ui2-shell) .qd31-primary-roll-chip > button:nth-of-type(1):hover,
 .qd40-overlay:has(.qd-ui2-shell) .qd31-secondary-roll-chip > button:nth-of-type(1):hover {
   transform: scale(2) !important;
@@ -5479,7 +5485,7 @@
   background-image:
     radial-gradient(circle at 50% -8%, rgba(245, 196, 91, 0.13), transparent 36%),
     linear-gradient(180deg, rgba(46, 30, 16, 0.58), rgba(6, 5, 4, 0.70)),
-    var(--qd-panel-bg) !important;
+    var(--qd-ui2-panel-bg, linear-gradient(180deg, #17130f, #070605)) !important;
   background-size:
     auto,
     auto,
@@ -5499,7 +5505,7 @@
 .qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tabs {
   background-image:
     linear-gradient(180deg, rgba(15, 11, 8, 0.66), rgba(43, 28, 14, 0.44)),
-    var(--qd-card-bg) !important;
+    var(--qd-ui2-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99))) !important;
   background-size: auto, cover !important;
   background-position: center, center !important;
   background-repeat: no-repeat, repeat !important;
@@ -5509,7 +5515,7 @@
 .qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
   background-image:
     linear-gradient(180deg, rgba(12, 9, 6, 0.72), rgba(0, 0, 0, 0.42)),
-    var(--qd-card-bg) !important;
+    var(--qd-ui2-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99))) !important;
   background-size: auto, cover !important;
   background-position: center, center !important;
   background-repeat: no-repeat, repeat !important;
@@ -5520,7 +5526,7 @@
    This intentionally overrides earlier v0.16.7 right-panel gradient-only backgrounds. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer,
 .qd40-overlay .qd-ui2-right-drawer {
-  background-image: var(--qd-panel-bg) !important;
+  background-image: var(--qd-ui2-panel-bg, linear-gradient(180deg, #17130f, #070605)) !important;
   background-size: cover !important;
   background-position: center center !important;
   background-repeat: repeat !important;
@@ -5534,7 +5540,7 @@
 .qd40-overlay .qd-ui2-right-drawer .qd-ui2-search-row {
   background-image:
     linear-gradient(180deg, rgba(15, 11, 8, 0.58), rgba(43, 28, 14, 0.34)),
-    var(--qd-card-bg) !important;
+    var(--qd-ui2-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99))) !important;
   background-size: auto, cover !important;
   background-position: center center, center center !important;
   background-repeat: no-repeat, repeat !important;
@@ -5554,7 +5560,7 @@
 .qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row {
   background-image:
     linear-gradient(180deg, rgba(58, 25, 13, 0.68), rgba(8, 6, 5, 0.76)),
-    var(--qd-card-bg) !important;
+    var(--qd-ui2-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99))) !important;
   background-size: auto, cover !important;
   background-position: center center, center center !important;
   background-repeat: no-repeat, repeat !important;
@@ -5565,7 +5571,7 @@
 .qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row {
   background-image:
     linear-gradient(180deg, rgba(16, 43, 62, 0.64), rgba(6, 9, 12, 0.76)),
-    var(--qd-card-bg) !important;
+    var(--qd-ui2-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99))) !important;
   background-size: auto, cover !important;
   background-position: center center, center center !important;
   background-repeat: no-repeat, repeat !important;
@@ -5576,7 +5582,7 @@
 .qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row {
   background-image:
     linear-gradient(180deg, rgba(46, 28, 70, 0.66), rgba(8, 6, 12, 0.78)),
-    var(--qd-card-bg) !important;
+    var(--qd-ui2-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99))) !important;
   background-size: auto, cover !important;
   background-position: center center, center center !important;
   background-repeat: no-repeat, repeat !important;
@@ -5587,21 +5593,21 @@
 .qd40-overlay .qd-ui2-combat-section .qd-ui2-action-row:hover {
   background-image:
     linear-gradient(180deg, rgba(80, 32, 15, 0.66), rgba(12, 7, 5, 0.72)),
-    var(--qd-card-bg) !important;
+    var(--qd-ui2-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99))) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover,
 .qd40-overlay .qd-ui2-skills-section .qd-ui2-action-row:hover {
   background-image:
     linear-gradient(180deg, rgba(20, 55, 78, 0.64), rgba(7, 11, 15, 0.72)),
-    var(--qd-card-bg) !important;
+    var(--qd-ui2-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99))) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover,
 .qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row:hover {
   background-image:
     linear-gradient(180deg, rgba(58, 35, 88, 0.64), rgba(10, 7, 15, 0.74)),
-    var(--qd-card-bg) !important;
+    var(--qd-ui2-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99))) !important;
 }
 
 /* v0.16.7i UI2 right panel fit guard.

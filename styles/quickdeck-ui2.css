@@ -1,3 +1,23 @@
+/* UI2-owned design-token aliases.
+   These keep UI2 renderable when legacy quickdeck/command-desk token scopes are removed.
+   Legacy --qd-* values still win while UI1 CSS is present so the current skin remains stable. */
+#gurps-quickdeck-overlay.qd40-overlay,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-body,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
+.qd40-overlay,
+.qd40-overlay .qd-ui2-body,
+.qd40-overlay .qd-ui2-shell {
+  --qd-ui2-text: var(--qd-text, #f4e6be);
+  --qd-ui2-text-strong: var(--qd-text-strong, #fff0c7);
+  --qd-ui2-text-muted: var(--qd-text-muted, #cbbd98);
+  --qd-ui2-brass-bright: var(--qd-brass-bright, #f0cd7a);
+  --qd-ui2-font-title: var(--qd-font-title, Georgia, serif);
+  --qd-ui2-font-ui: var(--qd-font-ui, "Trebuchet MS", "Segoe UI", system-ui, sans-serif);
+  --qd-ui2-shell-bg: var(--qd-shell-bg, linear-gradient(180deg, #17130f, #070605));
+  --qd-ui2-panel-bg: var(--qd-panel-bg, linear-gradient(180deg, #17130f, #070605));
+  --qd-ui2-card-bg: var(--qd-card-bg, linear-gradient(180deg, rgba(19, 15, 12, 0.98), rgba(7, 6, 5, 0.99)));
+}
+
 /* QuickDeck UI2 shell alignment pass — v0.14.3 shell HTML. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-body,
 .qd40-overlay .qd-ui2-body {
@@ -28,7 +48,7 @@
   min-height: 520px;
   padding: 0 !important;
   overflow: visible !important;
-  color: var(--qd-text, #f4e6be);
+  color: var(--qd-ui2-text, #f4e6be);
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -53,7 +73,7 @@
   min-width: 0;
   min-height: 0;
   background-color: rgba(11, 9, 7, 0.96);
-  background-image: var(--qd-panel-bg, linear-gradient(180deg, #17130f, #070605));
+  background-image: var(--qd-ui2-panel-bg, linear-gradient(180deg, #17130f, #070605));
   border: 1px solid rgba(240, 205, 122, 0.45);
   border-radius: 18px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.56), inset 0 0 0 1px rgba(0, 0, 0, 0.72);
@@ -88,8 +108,8 @@
 .qd-ui2-panel-header h1,
 .qd-ui2-panel-header h2 {
   margin: 0;
-  color: var(--qd-text-strong, #fff0c7);
-  font-family: var(--qd-font-title, Georgia, serif);
+  color: var(--qd-ui2-text-strong, #fff0c7);
+  font-family: var(--qd-ui2-font-title, Georgia, serif);
   letter-spacing: 0.04em;
   text-shadow: 0 2px 0 #000, 0 0 18px rgba(240, 205, 122, 0.18);
 }
@@ -99,7 +119,7 @@
 
 .qd-ui2-placeholder-card {
   padding: 16px;
-  color: var(--qd-text, #f4e6be);
+  color: var(--qd-ui2-text, #f4e6be);
   background: rgba(2, 2, 2, 0.32);
   border: 1px solid rgba(199, 154, 56, 0.28);
   border-radius: 14px;
@@ -108,8 +128,8 @@
 .qd-ui2-placeholder-card h2,
 .qd-ui2-placeholder-card h3 {
   margin: 0 0 8px;
-  color: var(--qd-text-strong, #fff0c7);
-  font-family: var(--qd-font-title, Georgia, serif);
+  color: var(--qd-ui2-text-strong, #fff0c7);
+  font-family: var(--qd-ui2-font-title, Georgia, serif);
 }
 
 .qd-ui2-placeholder-card p { margin: 0; }
@@ -119,7 +139,7 @@
   gap: 12px;
   min-height: 0;
   padding: 16px;
-  color: var(--qd-text, #f4e6be);
+  color: var(--qd-ui2-text, #f4e6be);
   background: rgba(2, 2, 2, 0.36);
   border: 1px solid rgba(199, 154, 56, 0.34);
   border-radius: 14px;
@@ -127,8 +147,8 @@
 
 .qd-ui2-active-roster-card h3 {
   margin: 0;
-  color: var(--qd-text-strong, #fff0c7);
-  font-family: var(--qd-font-title, Georgia, serif);
+  color: var(--qd-ui2-text-strong, #fff0c7);
+  font-family: var(--qd-ui2-font-title, Georgia, serif);
 }
 
 .qd-ui2-active-roster-card p {
@@ -151,7 +171,7 @@
   align-items: center;
   min-height: 54px;
   padding: 6px;
-  color: var(--qd-text, #f4e6be);
+  color: var(--qd-ui2-text, #f4e6be);
   background: linear-gradient(180deg, rgba(31, 24, 17, 0.86), rgba(8, 7, 5, 0.92));
   border: 1px solid rgba(199, 154, 56, 0.3);
   border-radius: 12px;
@@ -193,7 +213,7 @@
 }
 
 .qd-ui2-active-roster-meta strong {
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   font-size: 13px;
 }
 
@@ -232,7 +252,7 @@
   gap: 12px;
   min-height: 0;
   padding: 16px;
-  color: var(--qd-text, #f4e6be);
+  color: var(--qd-ui2-text, #f4e6be);
   background: rgba(2, 2, 2, 0.3);
   border: 1px solid rgba(199, 154, 56, 0.28);
   border-radius: 14px;
@@ -247,8 +267,8 @@
 
 .qd-ui2-inactive-roster-header h3 {
   margin: 0 0 4px;
-  color: var(--qd-text-strong, #fff0c7);
-  font-family: var(--qd-font-title, Georgia, serif);
+  color: var(--qd-ui2-text-strong, #fff0c7);
+  font-family: var(--qd-ui2-font-title, Georgia, serif);
 }
 
 .qd-ui2-inactive-roster-header p,
@@ -260,7 +280,7 @@
 
 .qd-ui2-inactive-roster-count {
   flex: 0 0 auto;
-  color: var(--qd-brass-bright, #f0cd7a);
+  color: var(--qd-ui2-brass-bright, #f0cd7a);
   font-size: 10px;
   font-weight: 800;
   letter-spacing: 0.1em;
@@ -272,7 +292,7 @@
   width: 100%;
   min-height: 34px;
   padding: 7px 10px;
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   background: rgba(5, 4, 3, 0.72);
   border: 1px solid rgba(240, 205, 122, 0.36);
   border-radius: 10px;
@@ -300,7 +320,7 @@
   align-items: center;
   min-height: 50px;
   padding: 6px;
-  color: var(--qd-text, #f4e6be);
+  color: var(--qd-ui2-text, #f4e6be);
   background: rgba(12, 10, 7, 0.78);
   border: 1px solid rgba(199, 154, 56, 0.22);
   border-radius: 12px;
@@ -335,7 +355,7 @@
 }
 
 .qd-ui2-inactive-roster-meta strong {
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   font-size: 13px;
 }
 
@@ -387,11 +407,11 @@
   height: 164px;
   padding: 10px 4px;
   transform: translateY(-50%);
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   background-color: rgba(8, 7, 6, 0.96);
   border: 1px solid rgba(240, 205, 122, 0.55);
   box-shadow: 0 14px 32px rgba(0, 0, 0, 0.52);
-  font-family: var(--qd-font-ui, "Trebuchet MS", "Segoe UI", system-ui, sans-serif);
+  font-family: var(--qd-ui2-font-ui, "Trebuchet MS", "Segoe UI", system-ui, sans-serif);
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -508,8 +528,8 @@
 
 .qd-ui2-actor-name {
   margin: 0;
-  color: var(--qd-text-strong, #fff0c7);
-  font-family: var(--qd-font-title, Georgia, serif);
+  color: var(--qd-ui2-text-strong, #fff0c7);
+  font-family: var(--qd-ui2-font-title, Georgia, serif);
   font-size: clamp(28px, 3.4vw, 42px);
   line-height: 1;
   letter-spacing: 0.035em;
@@ -597,7 +617,7 @@
   min-width: 0;
   height: 30px;
   padding: 0 8px 0 12px;
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   background: transparent;
   border: 0;
   font-size: 12px;
@@ -614,7 +634,7 @@
 
 .qd-ui2-roll-value {
   min-width: 26px;
-  color: var(--qd-brass-bright, #f0cd7a);
+  color: var(--qd-ui2-brass-bright, #f0cd7a);
   font-size: 14px;
   font-weight: 900;
   text-align: center;
@@ -645,7 +665,7 @@
   min-height: 58px;
   padding: 8px 6px;
   place-items: center;
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   background: linear-gradient(180deg, rgba(35, 28, 20, 0.94), rgba(7, 6, 5, 0.96));
   border: 1px solid rgba(199, 154, 56, 0.38);
   border-radius: 14px;
@@ -709,7 +729,7 @@ button.qd-ui2-stat-tile {
 
 .qd-ui2-carousel-arrow,
 .qd-ui2-carousel-portrait-button {
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   background: rgba(5, 4, 3, 0.82);
   border: 1px solid rgba(240, 205, 122, 0.38);
   cursor: pointer;
@@ -836,7 +856,7 @@ button.qd-ui2-stat-tile {
 .qd-ui2-drawer-tab {
   min-width: 0;
   padding: 8px 6px;
-  color: var(--qd-text, #f4e6be);
+  color: var(--qd-ui2-text, #f4e6be);
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.04em;
@@ -851,7 +871,7 @@ button.qd-ui2-stat-tile {
 .qd-ui2-drawer-tab:focus-visible,
 .qd-ui2-drawer-tab.is-active,
 .qd-ui2-shell[data-active-drawer=""] .qd-ui2-drawer-tab[data-drawer="combat"] {
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   background: rgba(130, 83, 29, 0.55);
   border-color: rgba(240, 205, 122, 0.62);
   box-shadow: 0 0 14px rgba(240, 205, 122, 0.16);
@@ -890,13 +910,13 @@ button.qd-ui2-stat-tile {
 
 .qd-ui2-section-header h3 {
   margin: 0;
-  color: var(--qd-text-strong, #fff0c7);
-  font-family: var(--qd-font-title, Georgia, serif);
+  color: var(--qd-ui2-text-strong, #fff0c7);
+  font-family: var(--qd-ui2-font-title, Georgia, serif);
   font-size: 18px;
 }
 
 .qd-ui2-section-header span {
-  color: var(--qd-text-muted, #cbbd98);
+  color: var(--qd-ui2-text-muted, #cbbd98);
   font-size: 11px;
   text-align: right;
 }
@@ -910,7 +930,7 @@ button.qd-ui2-stat-tile {
   flex: 1 1 auto;
   min-width: 0;
   padding: 8px 10px;
-  color: var(--qd-text, #f4e6be);
+  color: var(--qd-ui2-text, #f4e6be);
   background: rgba(0, 0, 0, 0.42);
   border: 1px solid rgba(240, 205, 122, 0.3);
   border-radius: 10px;
@@ -919,7 +939,7 @@ button.qd-ui2-stat-tile {
 .qd-ui2-search-clear {
   flex: 0 0 auto;
   padding: 8px 10px;
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   background: rgba(85, 45, 22, 0.62);
   border: 1px solid rgba(240, 205, 122, 0.38);
   border-radius: 10px;
@@ -930,7 +950,7 @@ button.qd-ui2-stat-tile {
 .qd-ui2-empty-note {
   margin: 0;
   padding: 10px 12px;
-  color: var(--qd-text-muted, #cbbd98);
+  color: var(--qd-ui2-text-muted, #cbbd98);
   background: rgba(2, 2, 2, 0.25);
   border: 1px dashed rgba(199, 154, 56, 0.25);
   border-radius: 12px;
@@ -957,7 +977,7 @@ button.qd-ui2-stat-tile {
 
 .qd-ui2-reference-button {
   padding: 0;
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   font-weight: 800;
   text-align: left;
   background: transparent;
@@ -974,7 +994,7 @@ button.qd-ui2-stat-tile {
   display: flex;
   flex-wrap: wrap;
   gap: 4px 8px;
-  color: var(--qd-text-muted, #cbbd98);
+  color: var(--qd-ui2-text-muted, #cbbd98);
   font-size: 11px;
   line-height: 1.25;
 }
@@ -990,7 +1010,7 @@ button.qd-ui2-stat-tile {
   min-width: 30px;
   min-height: 28px;
   padding: 5px 8px;
-  color: var(--qd-text-strong, #fff0c7);
+  color: var(--qd-ui2-text-strong, #fff0c7);
   font-weight: 800;
   background: rgba(17, 13, 10, 0.88);
   border: 1px solid rgba(199, 154, 56, 0.34);
@@ -1019,7 +1039,7 @@ button.qd-ui2-stat-tile {
   align-items: center;
   gap: 8px;
   padding: 10px 12px;
-  color: var(--qd-text, #f4e6be);
+  color: var(--qd-ui2-text, #f4e6be);
   background: rgba(2, 2, 2, 0.32);
   border: 1px solid rgba(199, 154, 56, 0.24);
   border-radius: 12px;
