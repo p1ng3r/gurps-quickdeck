@@ -5866,41 +5866,56 @@
 }
 
 /* v0.18.1 UI2 drag performance guard.
-   While the overlay is being moved, keep the rich idle visuals intact but avoid
-   per-frame layout/paint churn from transitions, hover growth, shadows, and filters. */
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell),
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) {
-  will-change: transform !important;
+   Transform-only drag moves #gurps-quickdeck-overlay, but the full UI2 body is
+   still expensive to composite. Cheap mode is added only while actively dragging
+   that real overlay root so idle hover, drawer, and glow visuals are preserved. */
+#gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap,
+.qd40-overlay.qd40-ui2-dragging-cheap {
+  contain: paint !important;
   user-select: none !important;
+  will-change: transform !important;
 }
 
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *,
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *::before,
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *::after,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *::before,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *::after {
+#gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap *,
+#gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap *::before,
+#gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap *::after,
+.qd40-overlay.qd40-ui2-dragging-cheap *,
+.qd40-overlay.qd40-ui2-dragging-cheap *::before,
+.qd40-overlay.qd40-ui2-dragging-cheap *::after {
   animation: none !important;
+  backdrop-filter: none !important;
+  box-shadow: none !important;
+  filter: none !important;
+  text-shadow: none !important;
   transition: none !important;
 }
 
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-body,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-body {
-  pointer-events: none !important;
+#gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame,
+.qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame {
+  position: relative !important;
+  border-color: rgba(236, 182, 79, 0.72) !important;
 }
 
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-frame,
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-chrome-row,
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-center-cockpit,
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-drawer,
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-actor-card,
-#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-action-row,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-frame,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-chrome-row,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-center-cockpit,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-drawer,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-actor-card,
-.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-action-row {
-  box-shadow: none !important;
-  filter: none !important;
+#gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame::after,
+.qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame::after {
+  content: "";
+  position: absolute;
+  inset: 46px 6px 6px;
+  border: 1px dashed rgba(236, 182, 79, 0.54);
+  border-radius: 10px;
+  pointer-events: none;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-chrome-row,
+.qd40-overlay.qd40-ui2-dragging-cheap .qd40-chrome-row {
+  cursor: grabbing !important;
+  opacity: 0.96 !important;
+  pointer-events: auto !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-body,
+.qd40-overlay.qd40-ui2-dragging-cheap .qd40-body {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
 }

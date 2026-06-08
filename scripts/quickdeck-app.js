@@ -4810,9 +4810,16 @@ export class QuickDeckApp extends Application {
     const maxTop = Math.max(minTop, (window.innerHeight || height) - height);
     let nextPosition = { left: startLeft, top: startTop };
     let dragRaf = null;
+    let isCleaningUp = false;
+    const dragHandle = event.currentTarget;
+    const isUi2Overlay = Boolean(overlay.querySelector(".qd-ui2-shell"));
+    const dragClasses = isUi2Overlay
+      ? ["qd40-dragging", "qd40-ui2-dragging-cheap"]
+      : ["qd40-dragging"];
 
     this.stopOverlayDrag();
-    overlay.classList.add("qd40-dragging");
+    overlay.classList.add(...dragClasses);
+    dragHandle?.setPointerCapture?.(event.pointerId);
     overlay.style.transform = "translate3d(0, 0, 0)";
 
     const updateDragTransform = () => {
@@ -4832,6 +4839,7 @@ export class QuickDeckApp extends Application {
 
     const onPointerUp = () => this.stopOverlayDrag();
     const onBlur = () => this.stopOverlayDrag();
+    const onLostPointerCapture = () => this.stopOverlayDrag();
 
     const abortController = typeof AbortController === "function" ? new AbortController() : null;
     const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
@@ -4839,20 +4847,25 @@ export class QuickDeckApp extends Application {
     window.addEventListener("pointerup", onPointerUp, listenerOptions);
     window.addEventListener("pointercancel", onPointerUp, listenerOptions);
     window.addEventListener("blur", onBlur, listenerOptions);
+    dragHandle?.addEventListener?.("lostpointercapture", onLostPointerCapture, listenerOptions);
 
     this._overlayDragCleanup = () => {
+      if (isCleaningUp) return;
+      isCleaningUp = true;
       if (dragRaf) cancelAnimationFrame(dragRaf);
       dragRaf = null;
       this._overlayPosition = nextPosition;
       overlay.style.left = `${nextPosition.left}px`;
       overlay.style.top = `${nextPosition.top}px`;
       overlay.style.removeProperty("transform");
-      overlay.classList.remove("qd40-dragging");
+      overlay.classList.remove(...dragClasses);
+      if (dragHandle?.hasPointerCapture?.(event.pointerId)) dragHandle.releasePointerCapture(event.pointerId);
       if (abortController) { abortController.abort(); return; }
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
       window.removeEventListener("pointercancel", onPointerUp);
       window.removeEventListener("blur", onBlur);
+      dragHandle?.removeEventListener?.("lostpointercapture", onLostPointerCapture);
     };
   }
 
