@@ -5871,8 +5871,15 @@
    that real overlay root so idle hover, drawer, and glow visuals are preserved. */
 #gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap,
 .qd40-overlay.qd40-ui2-dragging-cheap {
-  contain: paint !important;
+  backface-visibility: hidden !important;
+  background-blend-mode: normal !important;
+  background-color: transparent !important;
+  background-image: none !important;
+  contain: layout paint !important;
+  isolation: isolate !important;
+  transform-style: flat !important;
   user-select: none !important;
+  -webkit-backface-visibility: hidden !important;
   will-change: transform !important;
 }
 
@@ -5892,22 +5899,28 @@
 
 #gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame,
 .qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame {
+  background:
+    linear-gradient(180deg, rgba(45, 32, 22, 0.68), rgba(8, 7, 6, 0.58)) !important;
+  background-blend-mode: normal !important;
+  border: 1px solid rgba(236, 182, 79, 0.72) !important;
+  box-shadow: none !important;
+  outline: 1px solid rgba(236, 182, 79, 0.30) !important;
+  outline-offset: -7px !important;
   position: relative !important;
-  border-color: rgba(236, 182, 79, 0.72) !important;
 }
 
+#gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame::before,
 #gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame::after,
+.qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame::before,
 .qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame::after {
-  content: "";
-  position: absolute;
-  inset: 46px 6px 6px;
-  border: 1px dashed rgba(236, 182, 79, 0.54);
-  border-radius: 10px;
-  pointer-events: none;
+  content: none !important;
+  display: none !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-chrome-row,
 .qd40-overlay.qd40-ui2-dragging-cheap .qd40-chrome-row {
+  background: rgba(54, 35, 18, 0.42) !important;
+  border-color: rgba(236, 182, 79, 0.36) !important;
   cursor: grabbing !important;
   opacity: 0.96 !important;
   pointer-events: auto !important;
@@ -5915,6 +5928,8 @@
 
 #gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-body,
 .qd40-overlay.qd40-ui2-dragging-cheap .qd40-body {
+  background: transparent !important;
+  background-image: none !important;
   opacity: 0 !important;
   pointer-events: none !important;
   visibility: hidden !important;

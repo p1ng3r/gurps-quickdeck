@@ -4811,6 +4811,9 @@ export class QuickDeckApp extends Application {
     let nextPosition = { left: startLeft, top: startTop };
     let dragRaf = null;
     let isCleaningUp = false;
+    const previousWillChange = overlay.style.willChange;
+    const previousBackfaceVisibility = overlay.style.backfaceVisibility;
+    const previousTouchAction = overlay.style.touchAction;
     const dragHandle = event.currentTarget;
     const isUi2Overlay = Boolean(overlay.querySelector(".qd-ui2-shell"));
     const dragClasses = isUi2Overlay
@@ -4820,6 +4823,9 @@ export class QuickDeckApp extends Application {
     this.stopOverlayDrag();
     overlay.classList.add(...dragClasses);
     dragHandle?.setPointerCapture?.(event.pointerId);
+    overlay.style.willChange = "transform";
+    overlay.style.backfaceVisibility = "hidden";
+    overlay.style.touchAction = "none";
     overlay.style.transform = "translate3d(0, 0, 0)";
 
     const updateDragTransform = () => {
@@ -4842,7 +4848,7 @@ export class QuickDeckApp extends Application {
     const onLostPointerCapture = () => this.stopOverlayDrag();
 
     const abortController = typeof AbortController === "function" ? new AbortController() : null;
-    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+    const listenerOptions = abortController ? { signal: abortController.signal, passive: true } : { passive: true };
     window.addEventListener("pointermove", onPointerMove, listenerOptions);
     window.addEventListener("pointerup", onPointerUp, listenerOptions);
     window.addEventListener("pointercancel", onPointerUp, listenerOptions);
@@ -4858,6 +4864,9 @@ export class QuickDeckApp extends Application {
       overlay.style.left = `${nextPosition.left}px`;
       overlay.style.top = `${nextPosition.top}px`;
       overlay.style.removeProperty("transform");
+      overlay.style.willChange = previousWillChange;
+      overlay.style.backfaceVisibility = previousBackfaceVisibility;
+      overlay.style.touchAction = previousTouchAction;
       overlay.classList.remove(...dragClasses);
       if (dragHandle?.hasPointerCapture?.(event.pointerId)) dragHandle.releasePointerCapture(event.pointerId);
       if (abortController) { abortController.abort(); return; }
