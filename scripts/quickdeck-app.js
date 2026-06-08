@@ -4796,21 +4796,38 @@ export class QuickDeckApp extends Application {
     if (target?.closest?.("button, input, select, textarea, a")) return;
 
     event.preventDefault();
-    const startLeft = Number.parseFloat(this._overlayRoot.style.left) || this._overlayRoot.offsetLeft || 0;
-    const startTop = Number.parseFloat(this._overlayRoot.style.top) || this._overlayRoot.offsetTop || 0;
+    const overlay = this._overlayRoot;
+    const startLeft = Number.parseFloat(overlay.style.left) || overlay.offsetLeft || 0;
+    const startTop = Number.parseFloat(overlay.style.top) || overlay.offsetTop || 0;
     const startClientX = Number(event.clientX);
     const startClientY = Number(event.clientY);
+    const rect = overlay.getBoundingClientRect?.();
+    const width = rect?.width ?? overlay.offsetWidth ?? 0;
+    const height = rect?.height ?? overlay.offsetHeight ?? 0;
+    const minLeft = 0;
+    const minTop = 0;
+    const maxLeft = Math.max(minLeft, (window.innerWidth || width) - width);
+    const maxTop = Math.max(minTop, (window.innerHeight || height) - height);
+    let nextPosition = { left: startLeft, top: startTop };
+    let dragRaf = null;
 
     this.stopOverlayDrag();
-    this._overlayRoot.classList.add("qd40-dragging");
+    overlay.classList.add("qd40-dragging");
+    overlay.style.transform = "translate3d(0, 0, 0)";
+
+    const updateDragTransform = () => {
+      dragRaf = null;
+      overlay.style.transform = `translate3d(${Math.round(nextPosition.left - startLeft)}px, ${Math.round(nextPosition.top - startTop)}px, 0)`;
+    };
 
     const onPointerMove = (moveEvent) => {
-      const deltaX = Number(moveEvent.clientX) - startClientX;
-      const deltaY = Number(moveEvent.clientY) - startClientY;
-      const clamped = this.getClampedOverlayPosition(startLeft + deltaX, startTop + deltaY);
-      this._overlayPosition = clamped;
-      this._overlayRoot.style.left = `${clamped.left}px`;
-      this._overlayRoot.style.top = `${clamped.top}px`;
+      const left = startLeft + (Number(moveEvent.clientX) - startClientX);
+      const top = startTop + (Number(moveEvent.clientY) - startClientY);
+      nextPosition = {
+        left: Math.min(Math.max(minLeft, Number(left) || 0), maxLeft),
+        top: Math.min(Math.max(minTop, Number(top) || 0), maxTop)
+      };
+      if (!dragRaf) dragRaf = requestAnimationFrame(updateDragTransform);
     };
 
     const onPointerUp = () => this.stopOverlayDrag();
@@ -4820,13 +4837,21 @@ export class QuickDeckApp extends Application {
     const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
     window.addEventListener("pointermove", onPointerMove, listenerOptions);
     window.addEventListener("pointerup", onPointerUp, listenerOptions);
+    window.addEventListener("pointercancel", onPointerUp, listenerOptions);
     window.addEventListener("blur", onBlur, listenerOptions);
 
     this._overlayDragCleanup = () => {
-      this._overlayRoot?.classList?.remove("qd40-dragging");
+      if (dragRaf) cancelAnimationFrame(dragRaf);
+      dragRaf = null;
+      this._overlayPosition = nextPosition;
+      overlay.style.left = `${nextPosition.left}px`;
+      overlay.style.top = `${nextPosition.top}px`;
+      overlay.style.removeProperty("transform");
+      overlay.classList.remove("qd40-dragging");
       if (abortController) { abortController.abort(); return; }
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
       window.removeEventListener("blur", onBlur);
     };
   }

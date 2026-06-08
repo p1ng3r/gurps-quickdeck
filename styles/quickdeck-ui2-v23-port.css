@@ -5864,3 +5864,43 @@
     --qd-ui2-center-compact: clamp(420px, 38vw, 460px);
   }
 }
+
+/* v0.18.1 UI2 drag performance guard.
+   While the overlay is being moved, keep the rich idle visuals intact but avoid
+   per-frame layout/paint churn from transitions, hover growth, shadows, and filters. */
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell),
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) {
+  will-change: transform !important;
+  user-select: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *,
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *::before,
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *::after,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *::before,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-body,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-body {
+  pointer-events: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-frame,
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-chrome-row,
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-center-cockpit,
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-drawer,
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-actor-card,
+#gurps-quickdeck-overlay.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-action-row,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-frame,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd40-chrome-row,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-center-cockpit,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-drawer,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-actor-card,
+.qd40-overlay.qd40-dragging:has(.qd-ui2-shell) .qd-ui2-action-row {
+  box-shadow: none !important;
+  filter: none !important;
+}
