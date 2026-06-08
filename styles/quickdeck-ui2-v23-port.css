@@ -66,24 +66,28 @@
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open),
 .qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) {
   --qd-ui2-center-w: var(--qd-ui2-center-wide);
+  --qd-ui2-body-h: min(660px, calc(100vh - 116px));
   width: var(--qd-ui2-center-w) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
 .qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open) {
   --qd-ui2-center-w: var(--qd-ui2-center-one);
+  --qd-ui2-body-h: min(690px, calc(100vh - 108px));
   width: calc(var(--qd-ui2-left-w) + var(--qd-ui2-center-w)) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open,
 .qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open {
   --qd-ui2-center-w: var(--qd-ui2-center-one);
+  --qd-ui2-body-h: min(690px, calc(100vh - 108px));
   width: calc(var(--qd-ui2-center-w) + var(--qd-ui2-right-w)) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
 .qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
   --qd-ui2-center-w: var(--qd-ui2-center-compact);
+  --qd-ui2-body-h: min(700px, calc(100vh - 104px));
   width: calc(var(--qd-ui2-left-w) + var(--qd-ui2-center-w) + var(--qd-ui2-right-w)) !important;
 }
 
@@ -1004,24 +1008,6 @@
 }
 
 /* QuickDeck UI2 center quick slots restore v0.15.8 */
-
-/* Re-open enough vertical room for the restored Quick Slots deck. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open),
-.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) {
-  --qd-ui2-body-h: min(660px, calc(100vh - 116px));
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open,
-.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
-.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open {
-  --qd-ui2-body-h: min(690px, calc(100vh - 108px));
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
-.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
-  --qd-ui2-body-h: min(700px, calc(100vh - 104px));
-}
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
 .qd40-overlay .qd-ui2-center-cockpit {
