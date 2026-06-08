@@ -4,7 +4,7 @@ import { PAGE_REF_KEY_NAMES, getPageRefKeyNameFromMap } from "./page-ref-key-nam
 import { normalizePdfMapKey, parsePageReferences, getMappedPdfFinalPage, buildPdfPageUrl } from "./pdf-page-ref-utils.js";
 import { installQuickDeckArtTunerGlobals } from "./dev/quickdeck-art-tuner.js";
 
-const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
+const HOST_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-host.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
@@ -21,12 +21,9 @@ const SETTING_KEYS = {
   TOKEN_DROP_AUTO_RESTORE: "tokenDropAutoRestore",
   DAMAGE_PICK_AUTO_MINIMIZE: "damagePickAutoMinimize",
   DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
-  UI_MODE: "uiMode",
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
-const VALID_UI_MODES = new Set(["ui1", "ui2"]);
-const DEFAULT_UI_MODE = "ui1";
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS = 30000;
@@ -408,7 +405,6 @@ export class QuickDeckApp extends Application {
     this.primaryRollKey = DEFAULT_PRIMARY_ROLL_KEY;
     this.secondaryRollKey = DEFAULT_SECONDARY_ROLL_KEY;
     this._stateLoadedFromSettings = false;
-    this.uiMode = DEFAULT_UI_MODE;
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
@@ -443,7 +439,7 @@ export class QuickDeckApp extends Application {
       height: 820,
       minWidth: 520,
       title: "GURPS QuickDeck",
-      template: TEMPLATE_PATH
+      template: HOST_TEMPLATE_PATH
     });
   }
 
@@ -1866,8 +1862,6 @@ export class QuickDeckApp extends Application {
     );
     this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
 
-    const savedUiMode = String(game.settings.get(MODULE_ID, SETTING_KEYS.UI_MODE) || DEFAULT_UI_MODE);
-    this.uiMode = VALID_UI_MODES.has(savedUiMode) ? savedUiMode : DEFAULT_UI_MODE;
 
     this._stateLoadedFromSettings = true;
   }
@@ -5211,9 +5205,6 @@ export class QuickDeckApp extends Application {
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
-      uiMode: this.uiMode,
-      isUi1Mode: this.isUi1Mode,
-      isUi2Mode: this.isUi2Mode,
       isRosterDrawerOpen: this.isRosterDrawerOpen,
       isActionsDrawerOpen: this.isActionsDrawerOpen,
       isCombatDrawerOpen: this.activeDrawer === "combat",
@@ -5266,24 +5257,6 @@ export class QuickDeckApp extends Application {
     };
   }
 
-
-  get isUi2Mode() {
-    return this.uiMode === "ui2";
-  }
-
-  get isUi1Mode() {
-    return !this.isUi2Mode;
-  }
-
-  async setUiMode(mode) {
-    const nextMode = VALID_UI_MODES.has(String(mode)) ? String(mode) : DEFAULT_UI_MODE;
-    this.uiMode = nextMode;
-    await game?.settings?.set?.(MODULE_ID, SETTING_KEYS.UI_MODE, nextMode);
-
-    if (this.rendered) this.render(true, { focus: false });
-    await this.renderOverlay();
-    this.syncMinimizedPresentation();
-  }
 
   isDevArtTunerEnabled() {
     try {
@@ -6325,14 +6298,6 @@ export class QuickDeckApp extends Application {
   activateListeners(html) {
     super.activateListeners(html);
 
-    html.find("[data-action='set-ui-mode']").on("change", (event) => {
-      event.preventDefault();
-      const target = event.currentTarget;
-      const nextMode = target.type === "checkbox"
-        ? (target.checked ? "ui2" : "ui1")
-        : target.value;
-      void this.setUiMode(nextMode);
-    });
 
     html.find("[data-action='add-actor']").on("click", (event) => {
       event.preventDefault();
@@ -6675,11 +6640,11 @@ export class QuickDeckApp extends Application {
       this.render(false);
     });
 
-    html.find("[data-action='open-roster-drawer'], [data-action='open-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.openRosterDrawer(); });
-    html.find("[data-action='close-roster-drawer'], [data-action='close-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.closeRosterDrawer(); });
+    html.find("[data-action='open-roster-drawer']").on("click", (event) => { event.preventDefault(); this.openRosterDrawer(); });
+    html.find("[data-action='close-roster-drawer']").on("click", (event) => { event.preventDefault(); this.closeRosterDrawer(); });
     html.find("[data-action='toggle-roster-drawer']").on("click", (event) => { event.preventDefault(); this.toggleRosterDrawer(); });
-    html.find("[data-action='open-actions-drawer'], [data-action='open-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
-    html.find("[data-action='close-actions-drawer'], [data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
+    html.find("[data-action='open-actions-drawer']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
+    html.find("[data-action='close-actions-drawer']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
     html.find("[data-action='toggle-actions-drawer']").on("click", (event) => { event.preventDefault(); this.toggleActionsDrawer(event.currentTarget.dataset.drawer); });
     html.find("[data-action='toggle-info-popover']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.isInfoPopoverOpen = !this.isInfoPopoverOpen; this.render(false); });
     html.find("[data-action='minimize-overlay']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.toggleMinimizedState(); });
