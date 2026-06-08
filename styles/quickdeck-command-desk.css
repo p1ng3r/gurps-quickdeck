@@ -10,7 +10,7 @@
  *
  * Texture policy:
  * - Large shell/panel backgrounds use the new clean-dark-stone-tile.webp, with CSS-only fallback modes.
- * - Do not use the old dirty dark-stone-tile.webp or blackened-iron-tile.webp on large surfaces.
+ * - Do not reintroduce old dirty stone variants on large surfaces.
  * - Search bars, buttons, tabs, and defense medallions may use the working art assets.
  */
 
@@ -1599,9 +1599,8 @@
  * Required asset location:
  * C:/Users/Owner/AppData/Local/FoundryVTT/Data/modules/gurps-quickdeck/assets/ui/dwarven/clean-dark-stone-tile.webp
  *
- * Old dirty assets intentionally remain unused on large surfaces:
- * - dark-stone-tile.webp
- * - blackened-iron-tile.webp
+ * Legacy dirty stone variants were intentionally purged after the clean tile
+ * became the only referenced large-surface texture.
  *
  * Console fallback mode:
  * const qd = document.querySelector(".qd40-overlay");
