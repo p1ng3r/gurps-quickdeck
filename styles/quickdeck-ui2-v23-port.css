@@ -5873,7 +5873,7 @@
 .qd40-overlay.qd40-ui2-dragging-cheap {
   backface-visibility: hidden !important;
   background-blend-mode: normal !important;
-  background-color: rgba(5, 4, 3, 0.88) !important;
+  background-color: transparent !important;
   background-image: none !important;
   contain: layout paint !important;
   isolation: isolate !important;
@@ -5899,11 +5899,12 @@
 
 #gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame,
 .qd40-overlay.qd40-ui2-dragging-cheap .qd40-frame {
+  background:
+    linear-gradient(180deg, rgba(45, 32, 22, 0.68), rgba(8, 7, 6, 0.58)) !important;
   background-blend-mode: normal !important;
-  background-color: rgba(6, 5, 4, 0.9) !important;
-  background-image: none !important;
-  border-color: rgba(236, 182, 79, 0.72) !important;
-  outline: 1px solid rgba(236, 182, 79, 0.26) !important;
+  border: 1px solid rgba(236, 182, 79, 0.72) !important;
+  box-shadow: none !important;
+  outline: 1px solid rgba(236, 182, 79, 0.30) !important;
   outline-offset: -7px !important;
   position: relative !important;
 }
@@ -5918,7 +5919,8 @@
 
 #gurps-quickdeck-overlay.qd40-overlay.qd40-ui2-dragging-cheap .qd40-chrome-row,
 .qd40-overlay.qd40-ui2-dragging-cheap .qd40-chrome-row {
-  background: rgba(5, 4, 3, 0.74) !important;
+  background: rgba(54, 35, 18, 0.42) !important;
+  border-color: rgba(236, 182, 79, 0.36) !important;
   cursor: grabbing !important;
   opacity: 0.96 !important;
   pointer-events: auto !important;
