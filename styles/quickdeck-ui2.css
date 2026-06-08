@@ -1024,3 +1024,329 @@ button.qd-ui2-stat-tile {
   border: 1px solid rgba(199, 154, 56, 0.24);
   border-radius: 12px;
 }
+
+/* UI2 v0.15.0 foundation fit + readability polish. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
+.qd40-overlay .qd-ui2-shell {
+  --qd-ui2-drawer-width: clamp(268px, 22vw, 320px);
+  --qd-ui2-center-wide: clamp(620px, 52vw, 780px);
+  --qd-ui2-center-medium: clamp(520px, 42vw, 650px);
+  --qd-ui2-center-compact: clamp(420px, 32vw, 500px);
+  --qd-ui2-panel-gap: clamp(6px, 0.8vw, 10px);
+  height: min(740px, calc(100vh - 104px));
+  min-height: min(500px, calc(100vh - 104px));
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
+  --qd-ui2-drawer-width: clamp(248px, 20vw, 292px);
+  --qd-ui2-tab-gap: 6px;
+  --qd-ui2-panel-gap: 6px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-center-cockpit {
+  justify-content: center;
+  gap: 10px;
+  padding: clamp(14px, 2vw, 22px);
+  overflow: hidden;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer,
+.qd40-overlay .qd-ui2-drawer {
+  gap: 10px;
+  padding: clamp(12px, 1.6vw, 18px);
+  overflow: hidden;
+}
+
+.qd-ui2-panel-header {
+  flex: 0 0 auto;
+  min-width: 0;
+}
+
+.qd-ui2-panel-header h1,
+.qd-ui2-panel-header h2,
+.qd-ui2-section-header h3,
+.qd-ui2-actor-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qd-ui2-left-drawer .qd-ui2-active-roster-card,
+.qd-ui2-left-drawer .qd-ui2-inactive-roster-card {
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 8px;
+  min-height: 0;
+  padding: 12px;
+}
+
+.qd-ui2-left-drawer .qd-ui2-active-roster-card {
+  flex: 1 1 44%;
+}
+
+.qd-ui2-left-drawer .qd-ui2-inactive-roster-card {
+  flex: 1 1 56%;
+  grid-template-rows: auto auto minmax(0, 1fr);
+}
+
+.qd-ui2-active-roster-list,
+.qd-ui2-inactive-roster-list {
+  max-height: none;
+  min-height: 72px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.qd-ui2-active-roster-row,
+.qd-ui2-inactive-roster-row {
+  gap: 8px;
+  min-width: 0;
+  min-height: 46px;
+  padding: 5px;
+}
+
+.qd-ui2-active-roster-row {
+  grid-template-columns: 36px minmax(0, 1fr) 28px;
+}
+
+.qd-ui2-inactive-roster-row {
+  grid-template-columns: 34px minmax(0, 1fr) minmax(40px, auto);
+}
+
+.qd-ui2-active-roster-portrait {
+  width: 36px;
+  height: 36px;
+}
+
+.qd-ui2-inactive-roster-portrait {
+  width: 34px;
+  height: 34px;
+}
+
+.qd-ui2-active-roster-remove,
+.qd-ui2-inactive-roster-add {
+  flex: 0 0 auto;
+  min-height: 28px;
+}
+
+.qd-ui2-inactive-roster-add {
+  min-width: 40px;
+  padding-inline: 8px;
+}
+
+.qd-ui2-inactive-roster-header {
+  min-width: 0;
+}
+
+.qd-ui2-inactive-roster-header > div {
+  min-width: 0;
+}
+
+.qd-ui2-inactive-roster-header h3,
+.qd-ui2-inactive-roster-header p,
+.qd-ui2-inactive-roster-count {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qd-ui2-center-placeholder {
+  flex: 1 1 auto;
+  min-height: 220px;
+  margin-top: 0;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  flex: 0 1 auto;
+  margin-top: 0;
+  max-height: 100%;
+}
+
+.qd-ui2-actor-title-block,
+.qd-ui2-vital-stack,
+.qd-ui2-instrument-deck,
+.qd-ui2-roll-pill,
+.qd-ui2-stat-tile {
+  min-width: 0;
+}
+
+.qd-ui2-vital-meter {
+  grid-template-columns: 40px minmax(0, 1fr);
+}
+
+.qd-ui2-vital-readout {
+  padding-right: 20px;
+  white-space: nowrap;
+}
+
+.qd-ui2-roll-select {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qd-ui2-carousel-card {
+  flex: 0 0 auto;
+  margin-top: 0;
+}
+
+.qd-ui2-carousel-track {
+  min-height: 54px;
+  overflow-y: hidden;
+}
+
+.qd-ui2-right-drawer .qd-ui2-drawer-tabs {
+  flex: 0 0 auto;
+}
+
+.qd-ui2-drawer-tab {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-right-drawer .qd-ui2-drawer-scroll {
+  flex: 1 1 auto;
+  align-content: start;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.qd-ui2-drawer-section,
+.qd-ui2-section-header,
+.qd-ui2-search-row,
+.qd-ui2-action-row,
+.qd-ui2-action-main,
+.qd-ui2-settings-stack,
+.qd-ui2-mode-field {
+  min-width: 0;
+}
+
+.qd-ui2-section-header {
+  padding: 10px;
+}
+
+.qd-ui2-section-header span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-search-row {
+  flex-wrap: wrap;
+}
+
+.qd-ui2-search-row input[type="search"] {
+  flex: 1 1 150px;
+}
+
+.qd-ui2-search-clear {
+  flex: 0 0 auto;
+}
+
+.qd-ui2-action-row {
+  gap: 6px;
+  padding: 8px;
+}
+
+.qd-ui2-reference-button {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-action-meta > span,
+.qd-ui2-mode-field span,
+.qd-ui2-mode-field strong {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.qd-ui2-action-controls,
+.qd-ui2-settings-actions {
+  min-width: 0;
+}
+
+.qd-ui2-action-button {
+  flex: 0 1 auto;
+  min-width: 28px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-center-cockpit,
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-drawer {
+  padding: 12px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-panel-header h2 {
+  font-size: 18px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-kicker,
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-drawer-tab {
+  font-size: 10px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-active-roster-card,
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-inactive-roster-card {
+  padding: 10px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-portrait-ring {
+  width: min(100%, 142px);
+  padding: 8px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-name {
+  font-size: clamp(24px, 2.6vw, 34px);
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-vital-stack,
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-instrument-deck {
+  gap: 7px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-pill {
+  grid-template-columns: minmax(0, 1fr) auto 30px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-roll-button {
+  width: 28px;
+  height: 28px;
+}
+
+@media (max-height: 680px) {
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
+  .qd40-overlay .qd-ui2-shell {
+    height: calc(100vh - 88px);
+    min-height: 440px;
+  }
+
+  .qd-ui2-panel-header h2 {
+    font-size: 18px;
+  }
+
+  .qd-ui2-active-roster-list,
+  .qd-ui2-inactive-roster-list {
+    min-height: 58px;
+  }
+
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+  .qd40-overlay .qd-ui2-actor-card {
+    gap: 10px 12px;
+    padding: 14px;
+  }
+
+  .qd-ui2-stat-tile {
+    min-height: 46px;
+  }
+
+  .qd-ui2-carousel-portrait-button {
+    width: 44px;
+    height: 44px;
+  }
+}
