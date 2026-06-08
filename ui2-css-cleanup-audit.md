@@ -1,5 +1,7 @@
 # UI2 CSS duplicate/superseded-rule audit
 
+> Post-retirement note: UI2 is now the only supported QuickDeck interface. This older cleanup audit is retained as historical cascade evidence; rows that referenced the former interface now describe the same files as shared/current skin layers.
+
 Date: 2026-06-05  
 Branch observed: `work` from `git branch --show-current` (user requested `codex/v0.16.9-ui2-css-cleanup-audit`).  
 Scope: report-only. No CSS, JS, HBS, or manifest files were edited.
@@ -39,8 +41,8 @@ Scope: report-only. No CSS, JS, HBS, or manifest files were edited.
 
 | File | Lines | Selector/rule | Reason | Risk | Recommended action |
 |---|---:|---|---|---|---|
-| `module.json` | 26-30 | CSS load order | Confirms `quickdeck-ui2-v23-port.css` is final active override after base/UI1, command-desk tokens, and UI2 base. | DO NOT REMOVE | Keep all four CSS files loaded until a separate migration explicitly retires a layer. |
-| `styles/quickdeck.css` | whole file | `.quickdeck-*` UI1 rules | UI1 still exists per task context. | DO NOT REMOVE | Exclude UI1 from UI2 cleanup safety-removal lists. |
+| `module.json` | 26-30 | CSS load order | Confirms `quickdeck-ui2-v23-port.css` is final active override after shared base, command-desk tokens, and UI2 base. | DO NOT REMOVE | Keep all four CSS files loaded until a separate migration explicitly retires a layer. |
+| `styles/quickdeck.css` | whole file | shared `.quickdeck-*` runtime/reference rules | Retained after legacy interface retirement for launcher, restore, and reference styling. | DO NOT REMOVE | Exclude shared runtime/reference selectors from UI2 cleanup safety-removal lists. |
 | `styles/quickdeck-command-desk.css` | whole file | `qd40` and shared texture/token rules, including `--qd-panel-bg`, `--qd-card-bg`, `--qd-shell-bg` | Command-desk skin variables and qd40 shell/chrome remain shared dependencies. | DO NOT REMOVE | Do not remove shared variables or qd40 shell/chrome styles. |
 | `styles/quickdeck-ui2.css` | whole file | UI2 base layer | Still loaded before v23 port. Some v23 blocks are overrides, not replacements. | DO NOT REMOVE | Keep until a full cascade ownership pass proves it obsolete. |
 | `styles/quickdeck-ui2-v23-port.css` | 39-64 | base `.qd-ui2-shell` block | Carries required custom props, flex layout, position, dimensions, overflow, and transition. Later blocks only partially override it. | DO NOT REMOVE | Only fold final variable values into it; do not remove the base shell structure. |
@@ -75,7 +77,7 @@ Scope: report-only. No CSS, JS, HBS, or manifest files were edited.
 3. **Patch 3: focus/search cleanup.** Decide whether input focus outline should be removed in favor of the outer search-well focus glow; consolidate 5390-5393 and 6046-6050 accordingly.
 4. **Patch 4: performance cleanup for roster rows only.** Remove roster row height/min-height/transform/portrait-resize hover behavior around 2557-2616. Keep cheap color, border-color, background tint, and modest box-shadow only.
 5. **Patch 5: performance cleanup for action rows only.** Remove action-row height/min-height/padding/transform/nested font-size hover enlargement around 2938-3000 and 5515-5519. Keep section colors and cheap hover tint.
-6. **Patch 6: dead-selector verification.** Before removing pending-damage selectors, search runtime DOM construction and any unlisted files; qd31/qd40/UI1 rules are not part of this cleanup.
+6. **Patch 6: dead-selector verification.** Before removing pending-damage selectors, search runtime DOM construction and any unlisted files; qd31/qd40/current shell rules are not part of this cleanup.
 
 ## G. Validation commands
 

@@ -2,19 +2,19 @@
 
 ### Changed
 - Replaces the UI2 right drawer placeholder with a first mapping foundation for existing Combat, Skills, Spells, and Settings content using existing QuickDeck data/actions where possible.
-- Preserves the v0.14.8 carousel, v0.14.7 inactive roster, v0.14.6 active roster, v0.14.5 center actor card, UI1 default behavior, and leaves final art integration for later passes.
+- Preserves the v0.14.8 carousel, v0.14.7 inactive roster, v0.14.6 active roster, v0.14.5 center actor card, and existing QuickDeck behavior while leaving final art integration for later passes.
 
 ## [Unreleased] - v0.14.8-ui2-carousel-foundation-local
 
 ### Changed
 - Adds a compact UI2 center carousel foundation using active roster actors as portrait selectors while preserving the v0.14.5 center actor card.
-- Preserves the v0.14.6 Active Characters list, v0.14.7 Inactive Characters search/add foundation, UI1 default behavior, and leaves right drawer mapping/final art integration for later passes.
+- Preserves the v0.14.6 Active Characters list, v0.14.7 Inactive Characters search/add foundation, and existing QuickDeck behavior while leaving right drawer mapping/final art integration for later passes.
 
 ## [Unreleased] - v0.14.7-ui2-inactive-roster-foundation-local
 
 ### Changed
 - Replaces the UI2 left drawer Inactive Characters placeholder with a searchable inactive/available actor list and Add controls using existing QuickDeck actor/roster behavior where possible.
-- Preserves the v0.14.6 Active Characters rows, v0.14.5 center actor card, UI1 default behavior, and leaves carousel/right drawer mapping/final art integration for later passes.
+- Preserves the v0.14.6 Active Characters rows, v0.14.5 center actor card, and existing QuickDeck behavior while leaving carousel/right drawer mapping/final art integration for later passes.
 
 ## [Unreleased] - v0.14.6-ui2-active-roster-after-v145-local
 
@@ -25,7 +25,7 @@
 
 ### Changed
 - Refines the UI2 center actor card toward the v23 handoff with the visible `QD v0.14.5 — v23 card` badge, character portrait, centered identity, overlay HP/FP meters, compact primary/secondary roll controls, and Move/Dodge/Parry/Block tiles.
-- Keeps UI1, the UI2 shell architecture, drawer behavior, and existing GURPS/GGA roll handling intact while leaving roster/carousel, right-drawer mapping, and final art asset integration for later passes.
+- Keeps the UI2 shell architecture, drawer behavior, and existing GURPS/GGA roll handling intact while leaving roster/carousel, right-drawer mapping, and final art asset integration for later passes.
 
 ## [Unreleased] - v0.9.7.2 batch2-fit
 
