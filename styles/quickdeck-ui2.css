@@ -1024,3 +1024,590 @@ button.qd-ui2-stat-tile {
   border: 1px solid rgba(199, 154, 56, 0.24);
   border-radius: 12px;
 }
+
+/* UI2 v0.15.1 screenshot-driven layout triage — compact fit/readability pass. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-body,
+.qd40-overlay .qd-ui2-body {
+  max-width: calc(100vw - 32px);
+  max-height: calc(100vh - 72px);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
+.qd40-overlay .qd-ui2-shell {
+  --qd-ui2-drawer-width: clamp(286px, 22vw, 332px);
+  --qd-ui2-right-drawer-width: clamp(318px, 25vw, 360px);
+  --qd-ui2-center-wide: clamp(600px, 50vw, 740px);
+  --qd-ui2-center-medium: clamp(520px, 40vw, 620px);
+  --qd-ui2-center-compact: clamp(410px, 32vw, 500px);
+  --qd-ui2-tab-width: 34px;
+  --qd-ui2-tab-gap: 5px;
+  --qd-ui2-panel-gap: 8px;
+  max-width: calc(100vw - 76px);
+  height: min(680px, calc(100vh - 96px));
+  min-height: 460px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-center-cockpit {
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 14px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer,
+.qd40-overlay .qd-ui2-drawer {
+  gap: 9px;
+  padding: 12px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer,
+.qd40-overlay .qd-ui2-right-drawer {
+  flex-basis: var(--qd-ui2-right-drawer-width) !important;
+  width: var(--qd-ui2-right-drawer-width) !important;
+}
+
+.qd-ui2-panel-header {
+  min-width: 0;
+  gap: 2px;
+}
+
+.qd-ui2-panel-header h1,
+.qd-ui2-panel-header h2,
+.qd-ui2-active-roster-card h3,
+.qd-ui2-inactive-roster-header h3,
+.qd-ui2-section-header h3 {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: normal;
+  overflow-wrap: normal;
+}
+
+.qd-ui2-panel-header h1 { font-size: clamp(22px, 2.1vw, 26px); }
+.qd-ui2-panel-header h2 { font-size: clamp(17px, 1.6vw, 19px); }
+
+.qd-ui2-kicker {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-left-drawer {
+  min-width: 0;
+}
+
+.qd-ui2-active-roster-card,
+.qd-ui2-inactive-roster-card {
+  min-width: 0;
+  overflow: hidden;
+  gap: 7px;
+  padding: 10px;
+  border-radius: 12px;
+}
+
+.qd-ui2-active-roster-card {
+  flex: 1 1 42%;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.qd-ui2-inactive-roster-card {
+  flex: 1.2 1 48%;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+
+.qd-ui2-active-roster-card h3,
+.qd-ui2-inactive-roster-header h3 {
+  font-size: 15px;
+  letter-spacing: 0.02em;
+}
+
+.qd-ui2-active-roster-card p,
+.qd-ui2-inactive-roster-header p,
+.qd-ui2-inactive-roster-empty {
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.qd-ui2-active-roster-list,
+.qd-ui2-inactive-roster-list {
+  max-height: none;
+  min-height: 0;
+  gap: 5px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 1px;
+  scrollbar-gutter: stable;
+}
+
+.qd-ui2-active-roster-row {
+  grid-template-columns: 34px minmax(0, 1fr) 26px;
+  gap: 7px;
+  min-height: 42px;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.qd-ui2-active-roster-portrait {
+  width: 34px;
+  height: 34px;
+}
+
+.qd-ui2-active-roster-meta strong,
+.qd-ui2-inactive-roster-meta strong {
+  font-size: 12px;
+}
+
+.qd-ui2-active-roster-meta small,
+.qd-ui2-inactive-roster-meta small {
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.qd-ui2-active-roster-remove {
+  width: 24px;
+  min-width: 24px;
+  height: 24px;
+  min-height: 24px;
+  font-size: 15px;
+}
+
+.qd-ui2-inactive-roster-header {
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.qd-ui2-inactive-roster-header > div {
+  min-width: 0;
+}
+
+.qd-ui2-inactive-roster-count {
+  max-width: 42%;
+  overflow: hidden;
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+}
+
+.qd-ui2-inactive-roster-search {
+  min-height: 28px;
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.qd-ui2-inactive-roster-row {
+  grid-template-columns: 32px minmax(0, 1fr) 38px;
+  gap: 7px;
+  min-height: 40px;
+  padding: 4px;
+  border-radius: 10px;
+}
+
+.qd-ui2-inactive-roster-portrait {
+  width: 32px;
+  height: 32px;
+}
+
+.qd-ui2-inactive-roster-add {
+  min-width: 38px;
+  min-height: 24px;
+  padding: 0 6px;
+  font-size: 9px;
+  letter-spacing: 0.05em;
+  border-radius: 8px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-edge-tab,
+.qd40-overlay .qd-ui2-edge-tab {
+  height: 122px;
+  padding: 8px 2px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  border-radius: 10px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.46);
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-tab,
+.qd40-overlay .qd-ui2-left-tab {
+  border-radius: 10px 0 0 10px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-tab,
+.qd40-overlay .qd-ui2-right-tab {
+  border-radius: 0 10px 10px 0;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-dev-badge,
+.qd40-overlay .qd-ui2-dev-badge {
+  min-height: 20px;
+  padding: 3px 9px;
+  font-size: 10px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  grid-template-columns: minmax(132px, 0.62fr) minmax(0, 1.38fr);
+  gap: 10px 14px;
+  margin-top: 6px;
+  padding: clamp(12px, 1.8vw, 18px);
+  border-radius: 18px;
+}
+
+.qd-ui2-portrait-ring {
+  width: min(100%, 188px);
+  padding: 7px;
+}
+
+.qd-ui2-actor-title-block { gap: 2px; }
+
+.qd-ui2-actor-name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: clamp(22px, 2.7vw, 32px);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-actor-type {
+  overflow: hidden;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-vital-stack { gap: 6px; }
+
+.qd-ui2-vital-meter {
+  grid-template-columns: 38px 1fr;
+  min-height: 30px;
+}
+
+.qd-ui2-vital-label {
+  padding-left: 11px;
+  font-size: 10px;
+}
+
+.qd-ui2-vital-readout {
+  padding-right: 34px;
+  font-size: 13px;
+}
+
+.qd-ui2-instrument-deck { gap: 7px; }
+.qd-ui2-roll-row { gap: 7px; }
+
+.qd-ui2-roll-pill {
+  grid-template-columns: minmax(0, 1fr) auto 30px;
+  min-height: 34px;
+  padding: 3px;
+}
+
+.qd-ui2-roll-select {
+  height: 28px;
+  padding: 0 6px 0 9px;
+  font-size: 11px;
+}
+
+.qd-ui2-roll-value {
+  min-width: 22px;
+  font-size: 13px;
+}
+
+.qd-ui2-roll-button {
+  width: 28px;
+  height: 28px;
+}
+
+.qd-ui2-stat-grid { gap: 6px; }
+
+.qd-ui2-stat-tile {
+  min-height: 48px;
+  padding: 6px 5px;
+  border-radius: 11px;
+}
+
+.qd-ui2-stat-tile strong { font-size: 19px; }
+
+.qd-ui2-carousel-card {
+  grid-template-columns: 28px minmax(0, 1fr) 28px;
+  gap: 5px;
+  margin-top: 8px;
+  padding: 5px;
+  border-radius: 12px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.58), 0 6px 14px rgba(0, 0, 0, 0.24);
+}
+
+.qd-ui2-carousel-track {
+  gap: 5px;
+  scrollbar-width: none;
+}
+
+.qd-ui2-carousel-track::-webkit-scrollbar { height: 0; }
+
+.qd-ui2-carousel-arrow {
+  width: 28px;
+  height: 36px;
+  border-radius: 9px;
+  font-size: 20px;
+  background: rgba(5, 4, 3, 0.62);
+}
+
+.qd-ui2-carousel-portrait-button {
+  width: 42px;
+  height: 42px;
+  padding: 2px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-carousel-card {
+  grid-template-columns: 26px minmax(0, 1fr) 26px;
+  gap: 4px;
+  padding: 4px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-carousel-arrow {
+  width: 26px;
+  height: 34px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-carousel-portrait-button {
+  width: 38px;
+  height: 38px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-actor-card {
+  grid-template-columns: minmax(100px, 128px) minmax(0, 1fr);
+  gap: 8px 10px;
+  padding: 10px;
+}
+
+.qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-stat-tile {
+  min-height: 42px;
+}
+
+.qd-ui2-drawer-tabs {
+  gap: 4px;
+}
+
+.qd-ui2-drawer-tab {
+  overflow: hidden;
+  padding: 6px 4px;
+  font-size: 10px;
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-radius: 8px;
+}
+
+.qd-ui2-right-drawer > .qd-custom-scroll-wrapper {
+  min-height: 0;
+  flex: 1 1 auto;
+}
+
+.qd-ui2-right-drawer .qd-custom-scrollbar {
+  display: none !important;
+}
+
+.qd-ui2-right-drawer .qd-custom-scroll-host,
+.qd-ui2-right-drawer .qd-custom-scrollbar-hidden-native {
+  scrollbar-width: thin !important;
+}
+
+.qd-ui2-right-drawer .qd-custom-scrollbar-hidden-native::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+.qd-ui2-drawer-scroll {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-right: 2px;
+  scrollbar-gutter: stable;
+}
+
+.qd-ui2-drawer-section {
+  min-width: 0;
+  gap: 7px;
+}
+
+.qd-ui2-section-header {
+  min-width: 0;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 10px;
+}
+
+.qd-ui2-section-header h3 {
+  font-size: 15px;
+}
+
+.qd-ui2-section-header span {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 10px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-search-row {
+  min-width: 0;
+  gap: 4px;
+}
+
+.qd-ui2-search-row input[type="search"] {
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.qd-ui2-search-clear {
+  padding: 6px 8px;
+  font-size: 11px;
+  border-radius: 8px;
+}
+
+.qd-ui2-search-empty,
+.qd-ui2-empty-note {
+  padding: 8px 9px;
+  font-size: 11px;
+  line-height: 1.3;
+  border-radius: 10px;
+}
+
+.qd-ui2-action-row {
+  min-width: 0;
+  gap: 5px;
+  padding: 7px;
+  border-radius: 10px;
+}
+
+.qd-ui2-action-main {
+  min-width: 0;
+  gap: 3px;
+}
+
+.qd-ui2-reference-button {
+  min-width: 0;
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-action-meta {
+  min-width: 0;
+  gap: 2px 6px;
+  overflow: hidden;
+  font-size: 10px;
+  line-height: 1.2;
+}
+
+.qd-ui2-action-meta span {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-action-controls,
+.qd-ui2-settings-actions {
+  min-width: 0;
+  gap: 4px;
+}
+
+.qd-ui2-action-button {
+  min-width: 28px;
+  min-height: 26px;
+  padding: 4px 7px;
+  font-size: 12px;
+  border-radius: 8px;
+}
+
+.qd-ui2-text-button {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.qd-ui2-settings-stack { gap: 7px; }
+
+.qd-ui2-mode-field {
+  min-width: 0;
+  gap: 6px;
+  padding: 8px 9px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+.qd-ui2-mode-field span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (max-height: 680px) {
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
+  .qd40-overlay .qd-ui2-shell {
+    height: calc(100vh - 84px);
+    min-height: 420px;
+  }
+
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer,
+  .qd40-overlay .qd-ui2-center-cockpit,
+  .qd40-overlay .qd-ui2-drawer {
+    padding: 9px;
+  }
+
+  .qd-ui2-panel-header h2 { font-size: 16px; }
+  .qd-ui2-kicker { display: none; }
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+  .qd40-overlay .qd-ui2-actor-card { margin-top: 0; }
+  .qd-ui2-portrait-ring { width: min(100%, 158px); }
+  .qd-ui2-carousel-card { margin-top: 5px; }
+}
+
+@media (max-width: 1120px) {
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
+  .qd40-overlay .qd-ui2-shell {
+    --qd-ui2-drawer-width: clamp(260px, 26vw, 292px);
+    --qd-ui2-right-drawer-width: clamp(288px, 28vw, 320px);
+    --qd-ui2-center-compact: clamp(380px, 31vw, 440px);
+  }
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer > .qd-custom-scroll-wrapper,
+.qd40-overlay .qd-ui2-right-drawer > .qd-custom-scroll-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-custom-scrollbar,
+.qd40-overlay .qd-ui2-right-drawer .qd-custom-scrollbar {
+  display: none !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-custom-scrollbar-hidden-native,
+.qd40-overlay .qd-ui2-right-drawer .qd-custom-scrollbar-hidden-native {
+  scrollbar-width: thin !important;
+  -ms-overflow-style: auto !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-custom-scrollbar-hidden-native::-webkit-scrollbar,
+.qd40-overlay .qd-ui2-right-drawer .qd-custom-scrollbar-hidden-native::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
