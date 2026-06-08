@@ -1,57 +1,79 @@
-/* QuickDeck UI2 shell alignment pass — v0.14.3 shell HTML. */
+/* QuickDeck UI2 v0.15.2 — v23 state layout model port. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-body,
 .qd40-overlay .qd-ui2-body {
-  overflow: visible !important;
+  --qd-ui2-body-h: min(640px, calc(100vh - 120px));
+
   width: fit-content !important;
-  max-width: calc(100vw - 48px);
+  max-width: none;
+  height: var(--qd-ui2-body-h);
+  max-height: var(--qd-ui2-body-h);
+  overflow: visible !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,
 .qd40-overlay .qd-ui2-shell {
-  --qd-ui2-drawer-width: clamp(300px, 24vw, 340px);
-  --qd-ui2-center-wide: clamp(660px, 56vw, 820px);
-  --qd-ui2-center-medium: clamp(560px, 44vw, 680px);
+  --qd-ui2-left-w: clamp(300px, 24vw, 340px);
+  --qd-ui2-right-w: clamp(300px, 24vw, 340px);
   --qd-ui2-center-compact: clamp(460px, 34vw, 500px);
-  --qd-ui2-tab-width: 44px;
-  --qd-ui2-tab-gap: 8px;
-  --qd-ui2-panel-gap: 10px;
-  --qd-ui2-center-width: var(--qd-ui2-center-wide);
+  --qd-ui2-center-one: clamp(560px, 44vw, 680px);
+  --qd-ui2-center-wide: clamp(660px, 56vw, 820px);
+  --qd-ui2-center-w: var(--qd-ui2-center-wide);
+  --qd-ui2-tab-w: 54px;
+  --qd-ui2-tab-h: 158px;
+  --qd-ui2-chrome-h: 40px;
+  --qd-ui2-body-h: min(640px, calc(100vh - 120px));
 
   position: relative;
   display: flex !important;
   align-items: stretch !important;
-  gap: var(--qd-ui2-panel-gap) !important;
-  width: fit-content !important;
+  gap: 0 !important;
+  width: var(--qd-ui2-center-w) !important;
   min-width: 0 !important;
-  max-width: calc(100vw - 96px);
-  height: min(760px, calc(100vh - 120px));
-  min-height: 520px;
+  max-width: none;
+  height: var(--qd-ui2-body-h);
+  max-height: var(--qd-ui2-body-h);
   padding: 0 !important;
   overflow: visible !important;
   color: var(--qd-text, #f4e6be);
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
+  transition: width 240ms ease;
 }
 
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-collapsed,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-collapsed.qd-ui2-right-open,
-.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-collapsed,
-.qd40-overlay .qd-ui2-shell.qd-ui2-left-collapsed.qd-ui2-right-open {
-  --qd-ui2-center-width: var(--qd-ui2-center-medium);
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open),
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open):not(.qd-ui2-right-open) {
+  --qd-ui2-center-w: var(--qd-ui2-center-wide);
+  width: var(--qd-ui2-center-w) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open),
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open:not(.qd-ui2-right-open) {
+  --qd-ui2-center-w: var(--qd-ui2-center-one);
+  width: calc(var(--qd-ui2-left-w) + var(--qd-ui2-center-w)) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open,
+.qd40-overlay .qd-ui2-shell:not(.qd-ui2-left-open).qd-ui2-right-open {
+  --qd-ui2-center-w: var(--qd-ui2-center-one);
+  width: calc(var(--qd-ui2-center-w) + var(--qd-ui2-right-w)) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
 .qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
-  --qd-ui2-center-width: var(--qd-ui2-center-compact);
+  --qd-ui2-center-w: var(--qd-ui2-center-compact);
+  width: calc(var(--qd-ui2-left-w) + var(--qd-ui2-center-w) + var(--qd-ui2-right-w)) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer,
 .qd40-overlay .qd-ui2-center-cockpit,
 .qd40-overlay .qd-ui2-drawer {
+  position: relative;
   min-width: 0;
   min-height: 0;
+  height: var(--qd-ui2-body-h);
+  max-height: var(--qd-ui2-body-h);
   background-color: rgba(11, 9, 7, 0.96);
   background-image: var(--qd-panel-bg, linear-gradient(180deg, #17130f, #070605));
   border: 1px solid rgba(240, 205, 122, 0.45);
@@ -61,22 +83,50 @@
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
 .qd40-overlay .qd-ui2-center-cockpit {
-  flex: 0 0 var(--qd-ui2-center-width) !important;
-  width: var(--qd-ui2-center-width) !important;
+  z-index: 3;
+  flex: 0 0 var(--qd-ui2-center-w) !important;
+  width: var(--qd-ui2-center-w) !important;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 22px;
+  padding: 10px;
+  overflow: hidden;
+  transition: width 240ms ease, flex-basis 240ms ease;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer,
 .qd40-overlay .qd-ui2-drawer {
-  flex: 0 0 var(--qd-ui2-drawer-width) !important;
-  width: var(--qd-ui2-drawer-width) !important;
+  flex: 0 0 0 !important;
+  width: 0 !important;
+  min-width: 0;
+  opacity: 0;
   display: flex;
   flex-direction: column;
   gap: 14px;
+  padding: 0;
+  overflow: hidden;
+  border-width: 0;
+  transition: width 240ms ease, flex-basis 240ms ease, opacity 160ms ease;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open .qd-ui2-left-drawer,
+.qd40-overlay .qd-ui2-shell.qd-ui2-left-open .qd-ui2-left-drawer {
+  flex-basis: var(--qd-ui2-left-w) !important;
+  width: var(--qd-ui2-left-w) !important;
+  min-width: var(--qd-ui2-left-w);
+  opacity: 1;
   padding: 18px;
+  border-width: 1px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-right-open .qd-ui2-right-drawer,
+.qd40-overlay .qd-ui2-shell.qd-ui2-right-open .qd-ui2-right-drawer {
+  flex-basis: var(--qd-ui2-right-w) !important;
+  width: var(--qd-ui2-right-w) !important;
+  min-width: var(--qd-ui2-right-w);
+  opacity: 1;
+  padding: 18px;
+  border-width: 1px;
 }
 
 .qd-ui2-panel-header {
@@ -91,6 +141,9 @@
   color: var(--qd-text-strong, #fff0c7);
   font-family: var(--qd-font-title, Georgia, serif);
   letter-spacing: 0.04em;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
   text-shadow: 0 2px 0 #000, 0 0 18px rgba(240, 205, 122, 0.18);
 }
 
@@ -380,13 +433,14 @@
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-edge-tab,
 .qd40-overlay .qd-ui2-edge-tab {
   position: absolute;
-  z-index: 5;
-  top: 50%;
-  width: var(--qd-ui2-tab-width);
-  min-width: var(--qd-ui2-tab-width);
-  height: 164px;
+  z-index: 30;
+  top: max(16px, min(255px, calc(var(--qd-ui2-body-h) - var(--qd-ui2-tab-h) - 16px)));
+  width: var(--qd-ui2-tab-w);
+  min-width: var(--qd-ui2-tab-w);
+  height: var(--qd-ui2-tab-h);
   padding: 10px 4px;
-  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
   color: var(--qd-text-strong, #fff0c7);
   background-color: rgba(8, 7, 6, 0.96);
   border: 1px solid rgba(240, 205, 122, 0.55);
@@ -406,13 +460,13 @@
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-tab,
 .qd40-overlay .qd-ui2-left-tab {
-  left: calc(-1 * (var(--qd-ui2-tab-width) + var(--qd-ui2-tab-gap)));
+  left: calc(-1 * var(--qd-ui2-tab-w));
   border-radius: 14px 0 0 14px;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-tab,
 .qd40-overlay .qd-ui2-right-tab {
-  right: calc(-1 * (var(--qd-ui2-tab-width) + var(--qd-ui2-tab-gap)));
+  right: calc(-1 * var(--qd-ui2-tab-w));
   border-radius: 0 14px 14px 0;
 }
 
@@ -679,8 +733,8 @@ button.qd-ui2-stat-tile {
   grid-template-columns: 34px minmax(0, 1fr) 34px;
   align-items: center;
   gap: 8px;
-  width: 100%;
-  margin-top: 12px;
+  width: min(100%, 560px);
+  margin: 12px auto 0;
   padding: 8px;
   background: linear-gradient(180deg, rgba(30, 23, 16, 0.9), rgba(6, 5, 4, 0.92));
   border: 1px solid rgba(240, 205, 122, 0.34);
