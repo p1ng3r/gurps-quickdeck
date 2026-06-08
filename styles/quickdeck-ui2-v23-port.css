@@ -3563,18 +3563,6 @@
   padding-right: 4px !important;
 }
 
-/* Skill card: Skill Level / Spec left, dice + pin right. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-skills .qd-ui2-quick-slot-card,
-.qd40-overlay .qd-ui2-quick-slot-skills .qd-ui2-quick-slot-card {
-  min-height: 54px !important;
-}
-
-/* Spell card: Class · College / Detail left, cast + utility icons right. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-spells .qd-ui2-quick-slot-card,
-.qd40-overlay .qd-ui2-quick-slot-spells .qd-ui2-quick-slot-card {
-  min-height: 56px !important;
-}
-
 /* Make primary Action Deck actions read as the command button. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-suggestions-card .qd-ui2-quick-slot-button.is-primary,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-suggestions-card .qd-ui2-quick-slot-icon.is-primary,
@@ -3595,21 +3583,14 @@
    After icon conversion, tighten cards by type and align controls cleanly. */
 
 /* Shared tighter rhythm. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-suggestions-card .qd-ui2-quick-slot-list,
-.qd40-overlay .qd-ui2-suggestions-card .qd-ui2-quick-slot-list {
-  gap: 2px !important;
-}
-
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-suggestions-card .qd-ui2-quick-slot-card,
 .qd40-overlay .qd-ui2-suggestions-card .qd-ui2-quick-slot-card {
   gap: 2px 6px !important;
-  margin-bottom: 2px !important;
 }
 
 /* Combat cards have the most buttons, so keep them roomy but compact. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-combat .qd-ui2-quick-slot-card,
 .qd40-overlay .qd-ui2-quick-slot-combat .qd-ui2-quick-slot-card {
-  min-height: 56px !important;
   padding: 6px 7px !important;
 }
 
@@ -3621,7 +3602,6 @@
 /* Skills only need Roll + Pin, so they can be shorter and cleaner. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-skills .qd-ui2-quick-slot-card,
 .qd40-overlay .qd-ui2-quick-slot-skills .qd-ui2-quick-slot-card {
-  min-height: 50px !important;
   padding: 5px 7px !important;
 }
 
@@ -3633,7 +3613,6 @@
 /* Spells sit between combat and skills. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-spells .qd-ui2-quick-slot-card,
 .qd40-overlay .qd-ui2-quick-slot-spells .qd-ui2-quick-slot-card {
-  min-height: 54px !important;
   padding: 6px 7px !important;
 }
 
@@ -3724,22 +3703,6 @@
   line-height: 1.12 !important;
   font-weight: 700 !important;
   margin-top: 14px !important;
-}
-
-/* Slightly increase card height so the larger details do not feel cramped. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-combat .qd-ui2-quick-slot-card,
-.qd40-overlay .qd-ui2-quick-slot-combat .qd-ui2-quick-slot-card {
-  min-height: 60px !important;
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-skills .qd-ui2-quick-slot-card,
-.qd40-overlay .qd-ui2-quick-slot-skills .qd-ui2-quick-slot-card {
-  min-height: 54px !important;
-}
-
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-spells .qd-ui2-quick-slot-card,
-.qd40-overlay .qd-ui2-quick-slot-spells .qd-ui2-quick-slot-card {
-  min-height: 58px !important;
 }
 
 /* v0.16.5h UI2 Action Deck button hover polish.
