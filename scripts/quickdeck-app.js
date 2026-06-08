@@ -448,11 +448,30 @@ export class QuickDeckApp extends Application {
   }
 
 
-  openRosterDrawer() { this.isRosterDrawerOpen = true; this.render(false); }
-  closeRosterDrawer() { this.isRosterDrawerOpen = false; this.render(false); }
+  openRosterDrawer() {
+    if (this.isRosterDrawerOpen) return;
+    this.isRosterDrawerOpen = true;
+    this.render(false);
+  }
+  closeRosterDrawer() {
+    if (!this.isRosterDrawerOpen) return;
+    this.isRosterDrawerOpen = false;
+    this.render(false);
+  }
   toggleRosterDrawer() { this.isRosterDrawerOpen ? this.closeRosterDrawer() : this.openRosterDrawer(); }
-  openActionsDrawer(drawer = null) { if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer; this.isActionsDrawerOpen = true; this.render(false); }
-  closeActionsDrawer() { this.isActionsDrawerOpen = false; this.render(false); }
+  openActionsDrawer(drawer = null) {
+    const previousDrawer = this.activeDrawer;
+    const nextDrawer = drawer && VALID_DRAWERS.has(drawer) ? drawer : previousDrawer;
+    if (nextDrawer) this.activeDrawer = nextDrawer;
+    if (this.isActionsDrawerOpen && previousDrawer === this.activeDrawer) return;
+    this.isActionsDrawerOpen = true;
+    this.render(false);
+  }
+  closeActionsDrawer() {
+    if (!this.isActionsDrawerOpen) return;
+    this.isActionsDrawerOpen = false;
+    this.render(false);
+  }
   toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
 
   getApplicationHostElement() {
@@ -706,11 +725,11 @@ export class QuickDeckApp extends Application {
   }
 
   removeActorFromRoster(actorId) {
-    if (!actorId) return;
+    if (!actorId) return false;
 
     const previousLength = this.rosterActorIds.length;
     this.rosterActorIds = this.rosterActorIds.filter((id) => id !== actorId);
-    if (this.rosterActorIds.length === previousLength) return;
+    if (this.rosterActorIds.length === previousLength) return false;
 
     if (this.activeActorId === actorId) {
       this.activeActorId = this.rosterActorIds[0] ?? null;
@@ -718,11 +737,13 @@ export class QuickDeckApp extends Application {
     this.clampCenterRosterWindow();
 
     this.persistRosterState();
+    return true;
   }
 
   onActorDeleted(actorId) {
-    this.removeActorFromRoster(actorId);
-    this.render();
+    const didRemove = this.removeActorFromRoster(actorId);
+    if (didRemove) this.render();
+    return didRemove;
   }
 
   getActiveActor() {
@@ -919,24 +940,39 @@ export class QuickDeckApp extends Application {
 
   selectCenterRosterActor(actorId) {
     if (!actorId || !game.actors.has(actorId)) return false;
+    const previousActorId = this.activeActorId;
+    const previousRosterStartIndex = this.centerRosterStartIndex;
     if (this.activeActorId && this.activeActorId !== actorId) {
       this.cancelTokenDrop({ render: false });
       this.cancelTargetOpponentMode({ render: false, restore: false });
     }
     this.activeActorId = actorId;
     this.keepActiveActorInCenterRosterWindow();
-    return true;
+    return previousActorId !== this.activeActorId || previousRosterStartIndex !== this.centerRosterStartIndex;
   }
 
   pageCenterRoster(direction) {
     const total = this.rosterActorIds.length;
+    const previousRosterStartIndex = this.centerRosterStartIndex;
     if (total <= 5) {
       this.centerRosterStartIndex = 0;
-      return;
+      return previousRosterStartIndex !== this.centerRosterStartIndex;
     }
     const delta = direction === "prev" ? -5 : 5;
     this.centerRosterStartIndex += delta;
     this.clampCenterRosterWindow(total);
+    return previousRosterStartIndex !== this.centerRosterStartIndex;
+  }
+
+  isActorRelevantToCurrentView(actorId, options = {}) {
+    const id = String(actorId ?? "");
+    if (!id) return false;
+    const includeActive = options.includeActive !== false;
+    const includeRoster = options.includeRoster !== false;
+    const includeAvailable = Boolean(options.includeAvailable);
+    if (includeActive && this.activeActorId === id) return true;
+    if (includeRoster && this.rosterActorIds.includes(id)) return true;
+    return includeAvailable && this.isRosterDrawerOpen;
   }
 
   invalidateDerivedActorData(actorId = null) {
@@ -2053,14 +2089,18 @@ export class QuickDeckApp extends Application {
   scheduleQd18WindowResize() {}
 
   setLeftPanelCollapsed(collapsed) {
-    this.isLeftPanelCollapsed = Boolean(collapsed);
+    const nextCollapsed = Boolean(collapsed);
+    if (this.isLeftPanelCollapsed === nextCollapsed) return;
+    this.isLeftPanelCollapsed = nextCollapsed;
     this.render(false);
   }
 
   toggleLeftPanelCollapsed() { this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed); }
 
   setRightPanelCollapsed(collapsed) {
-    this.isRightPanelCollapsed = Boolean(collapsed);
+    const nextCollapsed = Boolean(collapsed);
+    if (this.isRightPanelCollapsed === nextCollapsed) return;
+    this.isRightPanelCollapsed = nextCollapsed;
     this.render(false);
   }
 
@@ -2178,7 +2218,8 @@ export class QuickDeckApp extends Application {
     let visible = 0;
 
     for (const row of rows) {
-      const searchableText = this.normalizeSearchText(row.dataset.searchText);
+      const searchableText = row.dataset.qdeckNormalizedSearchText
+        ?? (row.dataset.qdeckNormalizedSearchText = this.normalizeSearchText(row.dataset.searchText));
       const isVisible = !normalizedSearch || searchableText.includes(normalizedSearch);
       row.hidden = !isVisible;
       if (isVisible) visible += 1;
@@ -6357,8 +6398,8 @@ export class QuickDeckApp extends Application {
 
       if (this._actorSelectTimeout) clearTimeout(this._actorSelectTimeout);
       this._actorSelectTimeout = window.setTimeout(() => {
-        this.selectCenterRosterActor(actorId);
-        this.render();
+        const didChange = this.selectCenterRosterActor(actorId);
+        if (didChange) this.render();
         this._actorSelectTimeout = null;
       }, 225);
     });
@@ -6372,22 +6413,20 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
-      this.selectCenterRosterActor(actorId);
+      const didChange = this.selectCenterRosterActor(actorId);
       this.openActorSheet(actorId);
-      this.render(false, { focus: false });
+      if (didChange) this.render(false, { focus: false });
     });
 
 
     html.find("[data-action='center-roster-prev']").on("click", (event) => {
       event.preventDefault();
-      this.pageCenterRoster("prev");
-      this.render(false, { focus: false });
+      if (this.pageCenterRoster("prev")) this.render(false, { focus: false });
     });
 
     html.find("[data-action='center-roster-next']").on("click", (event) => {
       event.preventDefault();
-      this.pageCenterRoster("next");
-      this.render(false, { focus: false });
+      if (this.pageCenterRoster("next")) this.render(false, { focus: false });
     });
 
     html.find("[data-action='drop-ui2-carousel-tokens']").on("click", async (event) => {
