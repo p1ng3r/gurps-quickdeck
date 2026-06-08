@@ -5852,3 +5852,15 @@
   outline: 2px solid rgba(255, 218, 126, 0.78) !important;
   outline-offset: 2px !important;
 }
+
+/* v0.17.0 UI2 fit QA: both-drawer viewport guard.
+   Keep the completed shell art intact, but prevent the three-panel state from
+   exceeding Foundry windows just below the full desktop width. */
+@media (max-width: 1180px) {
+  #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open,
+  .qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open {
+    --qd-ui2-left-w: clamp(280px, 28vw, 320px);
+    --qd-ui2-right-w: clamp(280px, 28vw, 320px);
+    --qd-ui2-center-compact: clamp(420px, 38vw, 460px);
+  }
+}
