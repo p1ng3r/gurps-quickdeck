@@ -4805,6 +4805,30 @@
     0 0 10px rgba(80, 190, 255, 0.42) !important;
 }
 
+/* v0.18.3 UI2 carousel hover zoom unclip.
+   Later center polish re-clipped the deliberate v0.15.8k portrait zoom by
+   forcing overflow hidden on the carousel card/track. Keep the five-slot rail
+   layout fixed, but allow only the carousel hover/focus portrait to paint out. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel,
+.qd40-overlay .qd-ui2-card-carousel,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track,
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track {
+  overflow: visible !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card:has(.qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:is(:hover, :focus-visible)),
+.qd40-overlay .qd-ui2-actor-card:has(.qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:is(:hover, :focus-visible)),
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel:has(.qd-ui2-carousel-portrait-button:is(:hover, :focus-visible)),
+.qd40-overlay .qd-ui2-card-carousel:has(.qd-ui2-carousel-portrait-button:is(:hover, :focus-visible)) {
+  overflow: visible !important;
+  z-index: 60 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:is(:hover, :focus-visible),
+.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:is(:hover, :focus-visible) {
+  z-index: 70 !important;
+}
+
 /* v0.16.6f UI2 center focus finish.
    Polishes focus/active/disabled states for center actor controls without changing handlers. */
 
