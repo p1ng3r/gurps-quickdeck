@@ -69,11 +69,11 @@ export class QuickDeckReferenceApp extends Application {
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       id: "gurps-quickdeck-reference-app",
-      classes: ["gurps-quickdeck-reference"],
+      classes: ["gurps-quickdeck-reference", "gurps-quickdeck-reference-scroll"],
       popOut: true,
       minimizable: true,
       resizable: false,
-      width: 430,
+      width: 560,
       height: "auto",
       title: "QuickDeck Reference",
       template: TEMPLATE_PATH
@@ -252,6 +252,11 @@ export class QuickDeckReferenceApp extends Application {
 
   activateListeners(html) {
     super.activateListeners(html);
+
+    html.find("[data-action='close-reference-scroll']").on("click", (event) => {
+      event.preventDefault();
+      this.close();
+    });
 
     html.find("[data-action='open-reference-index-entry']").on("click", (event) => {
       event.preventDefault();

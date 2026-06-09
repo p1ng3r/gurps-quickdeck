@@ -1,3 +1,97 @@
+## [Unreleased] - v0.20.3-release-readiness-checkpoint
+
+### Added
+- Adds a release-readiness checkpoint report for the UI2-only v0.20 hardening line, covering README/CHANGELOG sanity, manifest path existence, deleted UI1 reference searches, remaining shared `.quickdeck-*` references, CSS URL asset resolution, Forge/local path safety, validation commands, and manual Foundry smoke-test coverage.
+
+### Changed
+- Updates package metadata and README release wording to the v0.20.3 checkpoint while preserving runtime behavior, template behavior, CSS layout/visuals, `data-action` names, dependencies, and binary assets.
+
+## [Unreleased] - v0.20.1-foundry-forge-api-audit
+
+### Added
+- Adds a Foundry v13 API, Application lifecycle, hook usage, drag/drop, manifest/path, and Forge compatibility audit report for the UI2-only QuickDeck runtime.
+
+### Changed
+- Updates package metadata to the v0.20.1 audit release and keeps README release wording aligned with the UI2-only state.
+- Tightens close-time cleanup for UI2 carousel token drop, pending damage popup/pick-target state, scheduled UI2 sizing frames, and inline sizing.
+
+## [Unreleased] - v0.19.5-ui2-only-release-checkpoint
+
+### Added
+- Adds a UI2-only release checkpoint report confirming README/CHANGELOG/module manifest state, deleted UI1 reference searches, remaining shared `.quickdeck-*` carryovers, CSS URL asset resolution, validation results, and manual Foundry QA coverage.
+
+### Changed
+- Confirms current release wording treats UI2 as the only supported QuickDeck interface after UI1 retirement, with no runtime behavior, template behavior, CSS layout, `data-action`, or binary asset changes.
+
+## [Unreleased] - v0.14.9-ui2-right-drawer-mapping-local
+
+### Changed
+- Replaces the UI2 right drawer placeholder with a first mapping foundation for existing Combat, Skills, Spells, and Settings content using existing QuickDeck data/actions where possible.
+- Preserves the v0.14.8 carousel, v0.14.7 inactive roster, v0.14.6 active roster, v0.14.5 center actor card, and existing QuickDeck behavior while leaving final art integration for later passes.
+
+## [Unreleased] - v0.14.8-ui2-carousel-foundation-local
+
+### Changed
+- Adds a compact UI2 center carousel foundation using active roster actors as portrait selectors while preserving the v0.14.5 center actor card.
+- Preserves the v0.14.6 Active Characters list, v0.14.7 Inactive Characters search/add foundation, and existing QuickDeck behavior while leaving right drawer mapping/final art integration for later passes.
+
+## [Unreleased] - v0.14.7-ui2-inactive-roster-foundation-local
+
+### Changed
+- Replaces the UI2 left drawer Inactive Characters placeholder with a searchable inactive/available actor list and Add controls using existing QuickDeck actor/roster behavior where possible.
+- Preserves the v0.14.6 Active Characters rows, v0.14.5 center actor card, and existing QuickDeck behavior while leaving carousel/right drawer mapping/final art integration for later passes.
+
+## [Unreleased] - v0.14.6-ui2-active-roster-after-v145-local
+
+### Changed
+- Replaces the UI2 left drawer Active Characters placeholder with real roster rows that reuse existing roster data plus open/remove actions while preserving the v0.14.5 center actor card and keeping Inactive Characters placeholder-only.
+
+## [Unreleased] - v0.14.5-ui2-actor-card-v23-alignment-local
+
+### Changed
+- Refines the UI2 center actor card toward the v23 handoff with the visible `QD v0.14.5 — v23 card` badge, character portrait, centered identity, overlay HP/FP meters, compact primary/secondary roll controls, and Move/Dodge/Parry/Block tiles.
+- Keeps the UI2 shell architecture, drawer behavior, and existing GURPS/GGA roll handling intact while leaving roster/carousel, right-drawer mapping, and final art asset integration for later passes.
+
+## [Unreleased] - v0.9.7.2 batch2-fit
+
+### Changed
+- Wired Batch 2 dwarven UI assets for unpin buttons, top drawer tabs, search field frames, window header buttons, and defense medallions.
+
+## [Unreleased] - v0.9.7 batch1-fit
+
+### Changed
+- Wired Batch 1 dwarven UI assets into CSS (header plates, drawer title plate, mini-header strip, left/right collapse tabs, square/wide button shells) without changing QuickDeck behavior.
+
+## [Unreleased] - v0.9.6 dwarven-measured-fit-local
+
+### Changed
+- Tuned dwarven header/title fit against measured live slots with per-header background sizing and a reduced main cockpit H2 footprint for improved title-plate breathing room.
+- Rebalanced tiny-slot button skins (square/icon/unpin and pinned action buttons) so ornate art reads as subtle texture while preserving readability and click affordance.
+- Adjusted left/right collapse-tab art scaling for the measured 32x132 tab boxes while preserving strict outside-edge positioning contracts.
+- Refined roster/quick-action/action-row surface treatment with compact bronze gradients/borders/inset highlights to reduce noise while keeping the UI visually cohesive.
+
+## [Unreleased] - v0.9.5 dwarven-ui-composition-local
+
+### Changed
+- Strengthened dwarven visual composition via CSS-only pass across headers, buttons, edge tabs, and panel/card rows while preserving QuickDeck behavior, three-pane layout, and collapse-tab position contracts.
+- Improved title-plate readability with stronger bronze/iron edging, inset shadowing, and knotwork accent layering using existing dwarven assets.
+- Improved framed button states (default/hover/focus-visible) for clearer affordance and contrast without reducing click targets or adding new controls.
+- Enhanced left/right/closed collapse-tab handle readability and metal-edge treatment without moving tabs or changing collapse behavior.
+
+## [Unreleased] - v0.9.4 dwarven-assets-normalize-local
+
+### Changed
+- Added `dev/dwarven-asset-proof.html` to preview all 14 dwarven Batch 1 assets with path, actual image dimensions, target dimensions, intended usage, and repeat/stretch guidance on checkerboard/dark backgrounds.
+- Tuned dwarven header/button background sizing to better match normalized-asset proportions at UI scale while preserving existing layout and tab positioning contracts.
+
+## [Unreleased] - v0.9.3 dwarven-shell-css
+
+### Changed
+- Fixed dwarven CSS variable scope by defining `--qd-dwarf-*` on `:root` and `.qd40-overlay`, and switched key header/button/tab skins to explicit background-image/background-size/background-repeat/background-position declarations for reliable Foundry cascade resolution.
+- Applied a CSS-only dwarven shell pass to QuickDeck using Batch 1 assets (frame rails/corners, header plate/knotwork accents, button skins, and collapse-tab art) while preserving existing three-pane behavior and collapse contracts.
+- Strengthened left/right edge-tab outside positioning (`left: -32px` for left tab, `right: -32px` for right tab) within wrapper-scoped selectors so tabs remain on outer edges in both open and collapsed states.
+- Follow-up visual tuning increases dwarven art visibility (thicker-but-compact rails, stronger header plate/knotwork treatment, stronger square/wide button art, and clearer collapse-tab skins) without changing layout or behavior.
+
 ## [Unreleased] - v0.9.0 settings-source-manager-local
 
 ### Changed
@@ -100,7 +194,7 @@
 
 ### Changed
 - Replaces the always-visible QD version badge text with a compact ? info button.
-- Adds an in-frame version/info popover for build label, module version, and UI mode.
+- Adds an in-frame version/info popover for build label, module version, and interface status.
 
 ## [Unreleased] - v0.8.5.0 in-frame-chrome
 

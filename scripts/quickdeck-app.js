@@ -2,8 +2,9 @@ import { QuickDeckReferenceApp } from "./reference-app.js";
 import { openReferenceIndexManager } from "./reference-index-app.js";
 import { PAGE_REF_KEY_NAMES, getPageRefKeyNameFromMap } from "./page-ref-key-names.js";
 import { normalizePdfMapKey, parsePageReferences, getMappedPdfFinalPage, buildPdfPageUrl } from "./pdf-page-ref-utils.js";
+import { installQuickDeckArtTunerGlobals } from "./dev/quickdeck-art-tuner.js";
 
-const TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck.hbs";
+const HOST_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-host.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
@@ -16,17 +17,336 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
+  TOKEN_DROP_AUTO_MINIMIZE: "tokenDropAutoMinimize",
+  TOKEN_DROP_AUTO_RESTORE: "tokenDropAutoRestore",
+  DAMAGE_PICK_AUTO_MINIMIZE: "damagePickAutoMinimize",
+  DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
 const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
+const SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS = 30000;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
+const PRIMARY_ROLL_OPTIONS = [
+  { key: "st", label: "ST", otf: "ST", valueType: "ST" },
+  { key: "dx", label: "DX", otf: "DX", valueType: "DX" },
+  { key: "iq", label: "IQ", otf: "IQ", valueType: "IQ" },
+  { key: "ht", label: "HT", otf: "HT", valueType: "HT" }
+];
+const DEFAULT_PRIMARY_ROLL_KEY = PRIMARY_ROLL_OPTIONS[0].key;
+const SECONDARY_ROLL_OPTIONS = [
+  { key: "will", label: "Will", otf: "Will", valueType: "will" },
+  { key: "fright-check", label: "Fright Check", otf: "Fright Check", valueType: "fright-check" },
+  { key: "perception", label: "Perception", otf: "Per", valueType: "perception" },
+  { key: "vision", label: "Vision", otf: "Vision", valueType: "vision" },
+  { key: "hearing", label: "Hearing", otf: "Hearing", valueType: "hearing" },
+  { key: "taste-smell", label: "Taste/Smell", otf: "Taste/Smell", valueType: "taste-smell" },
+  { key: "touch", label: "Touch", otf: "Touch", valueType: "touch" }
+];
+const DEFAULT_SECONDARY_ROLL_KEY = SECONDARY_ROLL_OPTIONS[0].key;
+
+installQuickDeckArtTunerGlobals();
 
 const renderQuickDeckTemplate = async (path, data) => {
   const foundryRenderTemplate = foundry?.applications?.handlebars?.renderTemplate;
   const renderer = foundryRenderTemplate ?? renderTemplate;
   return renderer(path, data);
+};
+
+
+
+class QuickDeckCustomScrollbarManager {
+  static MIN_SCROLL_RANGE = 16;
+  static MIN_HOST_HEIGHT = 64;
+  static MIN_TRACK_HEIGHT = 40;
+  static MIN_THUMB_HEIGHT = 56;
+
+  constructor(root) {
+    this.root = root;
+    this.entries = new Map();
+    this.resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver((records) => {
+      for (const record of records) this.refreshHost(record.target);
+    }) : null;
+    this.mutationObserver = typeof MutationObserver === "function" ? new MutationObserver(() => this.refreshAll()) : null;
+    this.refreshRaf = null;
+    this.handleWindowResize = () => this.refreshAll();
+    this.pendingHostRefresh = new Set();
+    this.candidateSelectors = [
+      ".qd31-center-scroll-body",
+      ".qd31-right-drawer .qd31-drawer-body",
+      ".qd31-left-drawer .qd31-drawer-body",
+      ".qd31-roster-list",
+      ".qd31-available-list",
+      ".qd31-pdf-map-list"
+    ];
+  }
+
+  setup() {
+    if (!this.root) return;
+    this.scanCandidates();
+    this.refreshAll();
+    this.mutationObserver?.observe(this.root, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style", "hidden", "open"] });
+    window.addEventListener("resize", this.handleWindowResize);
+  }
+
+  teardown() {
+    if (this.refreshRaf) cancelAnimationFrame(this.refreshRaf);
+    this.refreshRaf = null;
+    this.pendingHostRefresh.clear();
+    window.removeEventListener("resize", this.handleWindowResize);
+    this.mutationObserver?.disconnect();
+    this.resizeObserver?.disconnect();
+    for (const [host, entry] of this.entries.entries()) this.unbindHost(host, entry);
+    this.entries.clear();
+  }
+  refreshAll() { this.scheduleRefresh(); }
+
+  scheduleHostRefresh(host) {
+    if (host) this.pendingHostRefresh.add(host);
+    if (this.refreshRaf) return;
+    this.refreshRaf = requestAnimationFrame(() => {
+      this.refreshRaf = null;
+      this.scanCandidates();
+      const hosts = this.pendingHostRefresh.size ? Array.from(this.pendingHostRefresh) : Array.from(this.entries.keys());
+      this.pendingHostRefresh.clear();
+      for (const targetHost of hosts) this.refreshHost(targetHost);
+    });
+  }
+  scheduleRefresh() {
+    this.scheduleHostRefresh(null);
+  }
+  scanCandidates() {
+    const found = new Set();
+    for (const selector of this.candidateSelectors) {
+      for (const host of this.root.querySelectorAll(selector)) {
+        found.add(host);
+        if (!this.entries.has(host)) this.bindHost(host);
+      }
+    }
+    for (const host of this.root.querySelectorAll('[data-qd-custom-scroll-candidate="true"]')) {
+      found.add(host);
+      if (!this.entries.has(host)) this.bindHost(host);
+    }
+    for (const host of Array.from(this.entries.keys())) {
+      if (!this.root.contains(host) || !found.has(host)) this.unbindHost(host, this.entries.get(host));
+    }
+  }
+  bindHost(host) {
+    if (host.parentElement?.classList?.contains("qd-custom-scroll-wrapper")) return;
+    const originalParent = host.parentElement;
+    if (!originalParent) return;
+    const nextSibling = host.nextSibling;
+    const wrapper = document.createElement("div");
+    wrapper.className = "qd-custom-scroll-wrapper";
+    originalParent.insertBefore(wrapper, nextSibling);
+    wrapper.appendChild(host);
+
+    const rail = document.createElement("div");
+    rail.className = "qd-custom-scrollbar";
+    const track = document.createElement("div");
+    track.className = "qd-custom-scrollbar-track";
+    const thumb = document.createElement("div");
+    thumb.className = "qd-custom-scrollbar-thumb";
+    track.appendChild(thumb);
+    rail.appendChild(track);
+    wrapper.appendChild(rail);
+    host.classList.add("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
+    const onScroll = () => this.refreshHost(host);
+    const onTrackPointerDown = (event) => this.onTrackPointerDown(host, event);
+    const onThumbPointerDown = (event) => this.onThumbPointerDown(host, event);
+    host.addEventListener("scroll", onScroll, { passive: true });
+    track.addEventListener("pointerdown", onTrackPointerDown);
+    thumb.addEventListener("pointerdown", onThumbPointerDown);
+    const entry = {
+      rail,
+      track,
+      thumb,
+      wrapper,
+      originalParent,
+      nextSibling,
+      onScroll,
+      onTrackPointerDown,
+      onThumbPointerDown,
+      cleanupDrag: null
+    };
+    this.entries.set(host, entry);
+    this.resizeObserver?.observe(host);
+  }
+  unbindHost(host, entry) {
+    if (!entry) return;
+    entry.cleanupDrag?.();
+    host.removeEventListener("scroll", entry.onScroll);
+    entry.track.removeEventListener("pointerdown", entry.onTrackPointerDown);
+    entry.thumb.removeEventListener("pointerdown", entry.onThumbPointerDown);
+    host.classList.remove("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
+    entry.rail.remove();
+    if (entry.wrapper?.contains?.(host)) {
+      const parent = entry.wrapper.parentElement ?? entry.originalParent;
+      if (parent) parent.insertBefore(host, entry.wrapper);
+    }
+    entry.wrapper?.remove?.();
+    this.entries.delete(host);
+  }
+  isVisible(host) {
+    if (!host || host.hidden) return false;
+    const style = window.getComputedStyle(host);
+    if (!style || style.display === "none" || style.visibility === "hidden") return false;
+    if (host.offsetParent === null && style.position !== "fixed") return false;
+    const rect = host.getBoundingClientRect();
+    if (!rect || rect.width <= 0 || rect.height <= 0) return false;
+    if (host.clientHeight <= 0) return false;
+    return true;
+  }
+
+  isUsableScrollHost(host, entry) {
+    if (!entry || !this.isVisible(host)) return false;
+    const thresholds = this.getHostThresholds(host);
+    const clientHeight = Number(host.clientHeight) || 0;
+    if (clientHeight < thresholds.minHostHeight) return false;
+    const trackHeight = Number(entry.track.clientHeight) || 0;
+    if (trackHeight < thresholds.minTrackHeight) return false;
+    const scrollRange = Math.max(0, (Number(host.scrollHeight) || 0) - clientHeight);
+    if (scrollRange < thresholds.minScrollRange) return false;
+    return true;
+  }
+
+  getHostThresholds(host) {
+    if (host?.classList?.contains("qd31-center-scroll-body")) {
+      return {
+        minHostHeight: 96,
+        minTrackHeight: 64,
+        minScrollRange: 32
+      };
+    }
+    return {
+      minHostHeight: QuickDeckCustomScrollbarManager.MIN_HOST_HEIGHT,
+      minTrackHeight: QuickDeckCustomScrollbarManager.MIN_TRACK_HEIGHT,
+      minScrollRange: QuickDeckCustomScrollbarManager.MIN_SCROLL_RANGE
+    };
+  }
+
+  refreshHost(host) {
+    const entry = this.entries.get(host);
+    if (!entry) return;
+
+    // Mirror host visibility onto the wrapper so CSS can avoid relational selectors.
+    const isHiddenHost = Boolean(host.hidden);
+    entry.wrapper?.classList?.toggle("qd-custom-scroll-wrapper-hidden-host", isHiddenHost);
+    entry.wrapper?.classList?.toggle("qd-custom-scroll-wrapper-visible-host", !isHiddenHost);
+
+    const isUsable = this.isUsableScrollHost(host, entry);
+    entry.rail.classList.toggle("is-active", isUsable);
+    if (!isUsable) {
+      entry.thumb.style.removeProperty("height");
+      entry.thumb.style.removeProperty("transform");
+      return;
+    }
+
+    const trackHeight = Math.max(0, entry.track.clientHeight);
+    const maxScroll = Math.max(0, host.scrollHeight - host.clientHeight);
+    // Runestone thumb travel:
+    // The visible thumb art is a fixed-size rune stone, so the custom thumb
+    // should travel using that fixed height instead of a browser-style ratio
+    // height. This keeps the runestone moving linearly from the top of the
+    // chain track to the bottom.
+    const thumbHeight = Math.min(trackHeight, QuickDeckCustomScrollbarManager.MIN_THUMB_HEIGHT);
+    const maxTop = Math.max(0, trackHeight - thumbHeight);
+    const top = maxScroll > 0 ? (host.scrollTop / maxScroll) * maxTop : 0;
+    entry.thumb.style.height = `${thumbHeight}px`;
+    entry.thumb.style.transform = `translateY(${Math.max(0, Math.min(maxTop, top))}px)`;
+  }
+  onTrackPointerDown(host,event){
+    const entry=this.entries.get(host); if(!entry) return; if(event.target===entry.thumb) return;
+    event.preventDefault();
+    const thumbRect = entry.thumb.getBoundingClientRect();
+    const clickY = Number(event.clientY);
+    const pageStep = Math.max(1, host.clientHeight * 0.85);
+    const maxScroll = Math.max(0, host.scrollHeight - host.clientHeight);
+    let nextScrollTop = host.scrollTop;
+    if (clickY > thumbRect.bottom) nextScrollTop += pageStep;
+    else if (clickY < thumbRect.top) nextScrollTop -= pageStep;
+    host.scrollTop = Math.max(0, Math.min(maxScroll, nextScrollTop));
+    this.refreshHost(host);
+  }
+  onThumbPointerDown(host,event){
+    const entry=this.entries.get(host); if(!entry) return;
+    event.preventDefault(); event.stopPropagation();
+    const startY=event.clientY; const startTop=host.scrollTop;
+    const trackRect=entry.track.getBoundingClientRect();
+    const thumbRect=entry.thumb.getBoundingClientRect();
+    const dragScale=Math.max(1, trackRect.height-thumbRect.height);
+    const maxScroll=Math.max(0, host.scrollHeight-host.clientHeight);
+    const onMove=(moveEvent)=>{
+      moveEvent.preventDefault();
+      const delta=Number(moveEvent.clientY)-startY;
+      const liveMaxScroll=Math.max(0, host.scrollHeight-host.clientHeight);
+      const liveTrackRect=entry.track.getBoundingClientRect();
+      const liveThumbRect=entry.thumb.getBoundingClientRect();
+      const maxThumbTravel=Math.max(1, liveTrackRect.height-liveThumbRect.height);
+      const scrollRatio=liveMaxScroll/maxThumbTravel;
+      host.scrollTop=Math.max(0, Math.min(liveMaxScroll, startTop + (delta*scrollRatio)));
+      this.refreshHost(host);
+    };
+    const onUp=()=>cleanup();
+    const cleanup=()=>{ window.removeEventListener("pointermove", onMove); window.removeEventListener("pointerup", onUp); window.removeEventListener("pointercancel", onUp); entry.cleanupDrag=null; entry.thumb.classList.remove("is-dragging"); entry.thumb.style.removeProperty("user-select"); entry.thumb.style.removeProperty("touch-action"); document.body.style.removeProperty("user-select"); if (entry.thumb.hasPointerCapture?.(event.pointerId)) entry.thumb.releasePointerCapture(event.pointerId);};
+    entry.cleanupDrag=cleanup;
+    entry.thumb.classList.add("is-dragging");
+    entry.thumb.style.userSelect = "none";
+    entry.thumb.style.touchAction = "none";
+    document.body.style.userSelect = "none";
+    entry.thumb.setPointerCapture?.(event.pointerId);
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp, { once: true });
+    window.addEventListener("pointercancel", onUp, { once: true });
+  }
+}
+
+
+const focusQuickDeckCockpitFirst = (root) => {
+  const run = () => {
+    const overlay = root ?? document.querySelector("#gurps-quickdeck-overlay");
+    if (!overlay) return false;
+
+    const body = overlay.querySelector(".qd40-body");
+    const center = overlay.querySelector(".qd31-center-wrap");
+    if (!body || !center) return false;
+
+    const maxScrollLeft = Math.max(0, Number(body.scrollWidth) - Number(body.clientWidth));
+    if (maxScrollLeft <= 0) return false;
+
+    const bodyRect = body.getBoundingClientRect();
+    const centerRect = center.getBoundingClientRect();
+    const currentScrollLeft = Number(body.scrollLeft) || 0;
+    const bodyClientWidth = Number(body.clientWidth) || Math.round(bodyRect.width) || 0;
+    const centerWidth = Math.round(centerRect.width) || Number(center.offsetWidth) || 0;
+    const lanePadding = 8;
+
+    let desiredLeft;
+    if (centerWidth >= bodyClientWidth - (lanePadding * 2)) {
+      // Tiny viewport: the cockpit cannot fully fit, so align its left edge.
+      desiredLeft = currentScrollLeft + (centerRect.left - bodyRect.left) - lanePadding;
+    } else {
+      // Wider viewport: center the cockpit in the visible horizontal lane.
+      desiredLeft = currentScrollLeft
+        + (centerRect.left - bodyRect.left)
+        - Math.max(0, (bodyClientWidth - centerWidth) / 2);
+    }
+
+    const clampedLeft = Math.max(0, Math.min(maxScrollLeft, Math.round(desiredLeft)));
+    body.scrollLeft = clampedLeft;
+    overlay.classList.add("qd31-cockpit-first-scroll-applied");
+    return true;
+  };
+
+  requestAnimationFrame(() => {
+    run();
+    requestAnimationFrame(run);
+  });
+
+  for (const delay of [50, 150, 300, 600]) {
+    setTimeout(run, delay);
+  }
 };
 
 
@@ -46,6 +366,8 @@ export class QuickDeckApp extends Application {
     this.spellFavoriteKeysByActor = {};
     this.pinnedActionsByActor = {};
     this._actorSelectTimeout = null;
+    this.centerRosterStartIndex = 0;
+    this.isCenterRosterMinimized = false;
     this.isDragOverRoster = false;
     this.pendingTokenDropActorId = null;
     this._pendingTokenDropCleanup = null;
@@ -53,6 +375,18 @@ export class QuickDeckApp extends Application {
     this._tokenDropReticleElement = null;
     this._tokenDropCursorTarget = null;
     this._tokenDropPreviousCursor = null;
+    this.pendingUi2CarouselTokenDropActorIds = null;
+    this._pendingUi2CarouselTokenDropCleanup = null;
+    this._ui2CarouselTokenDropWasMinimized = null;
+    this._ui2CarouselTokenDropShouldRestore = true;
+    this.pendingDamageContext = null;
+    this.qdPendingDamageContext = null;
+    this._qdPendingDamagePopupElement = null;
+    this._qdPendingDamagePickTargetCleanup = null;
+    this._qdPendingDamagePickTargetReticleElement = null;
+    this._qdPendingDamagePickTargetWasMinimized = null;
+    this._qdPendingDamagePopupDrag = null;
+    this._qdPendingDamagePopupDragBlurHandler = null;
     this.pendingTargetOpponentAttackIndex = null;
     this._pendingTargetOpponentCleanup = null;
     this._targetOpponentSceneId = null;
@@ -69,6 +403,8 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusUntil = 0;
     this._lastNativeWindowIds = new Set();
     this._nativeWindowFocusLock = null;
+    this.primaryRollKey = DEFAULT_PRIMARY_ROLL_KEY;
+    this.secondaryRollKey = DEFAULT_SECONDARY_ROLL_KEY;
     this._stateLoadedFromSettings = false;
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
@@ -76,7 +412,11 @@ export class QuickDeckApp extends Application {
     this.referenceApp = null;
     this._overlayRoot = null;
     this._overlayDragCleanup = null;
+    this._overlayDragPointerId = null;
     this._overlayPosition = null;
+    this._filterRafByAction = new Map();
+    this._overlayWindowResizeHandler = () => this.scheduleQd31WindowResize();
+    this._qd31ResizeRaf = null;
     this.isInfoPopoverOpen = false;
     this.centerFavoriteSections = {
       combat: true,
@@ -103,16 +443,35 @@ export class QuickDeckApp extends Application {
       height: 820,
       minWidth: 520,
       title: "GURPS QuickDeck",
-      template: TEMPLATE_PATH
+      template: HOST_TEMPLATE_PATH
     });
   }
 
 
-  openRosterDrawer() { this.isRosterDrawerOpen = true; this.render(false); }
-  closeRosterDrawer() { this.isRosterDrawerOpen = false; this.render(false); }
+  openRosterDrawer() {
+    if (this.isRosterDrawerOpen) return;
+    this.isRosterDrawerOpen = true;
+    this.render(false);
+  }
+  closeRosterDrawer() {
+    if (!this.isRosterDrawerOpen) return;
+    this.isRosterDrawerOpen = false;
+    this.render(false);
+  }
   toggleRosterDrawer() { this.isRosterDrawerOpen ? this.closeRosterDrawer() : this.openRosterDrawer(); }
-  openActionsDrawer(drawer = null) { if (drawer && VALID_DRAWERS.has(drawer)) this.activeDrawer = drawer; this.isActionsDrawerOpen = true; this.render(false); }
-  closeActionsDrawer() { this.isActionsDrawerOpen = false; this.render(false); }
+  openActionsDrawer(drawer = null) {
+    const previousDrawer = this.activeDrawer;
+    const nextDrawer = drawer && VALID_DRAWERS.has(drawer) ? drawer : previousDrawer;
+    if (nextDrawer) this.activeDrawer = nextDrawer;
+    if (this.isActionsDrawerOpen && previousDrawer === this.activeDrawer) return;
+    this.isActionsDrawerOpen = true;
+    this.render(false);
+  }
+  closeActionsDrawer() {
+    if (!this.isActionsDrawerOpen) return;
+    this.isActionsDrawerOpen = false;
+    this.render(false);
+  }
   toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
 
   getApplicationHostElement() {
@@ -134,21 +493,30 @@ export class QuickDeckApp extends Application {
     const closedTabWidth = 0;
     const gap = 4;
     const shellPadding = 8;
-    const chromeAllowance = 24;
+    const chromeAllowance = 16;
+    const edgeTabGutter = 40;
+    const viewportPadding = 24;
+    const viewportWidth = Math.max(360, Number(window.innerWidth) || 1440);
+    const viewportHeight = Math.max(360, Number(window.innerHeight) || 900);
+    const maxFrameWidth = Math.max(360, viewportWidth - viewportPadding);
+    const maxFrameHeight = Math.max(360, viewportHeight - 12);
     const leftOpen = Boolean(this.isRosterDrawerOpen);
     const rightOpen = Boolean(this.isActionsDrawerOpen);
 
     let leftDrawerWidth = leftOpen ? drawerDefaultWidth : 0;
     let rightDrawerWidth = rightOpen ? drawerDefaultWidth : 0;
 
-    const baseShellWidth = shellPadding + centerWidth + (leftOpen ? gap : 0) + (rightOpen ? gap : 0) + (leftOpen ? leftDrawerWidth : 0) + (rightOpen ? rightDrawerWidth : 0);
-    const maxWindowWidth = Math.max(640, (window.innerWidth || (baseShellWidth + chromeAllowance)) - 24);
-    let targetWindowWidth = baseShellWidth + chromeAllowance;
+    const openGapWidth = (leftOpen ? gap : 0) + (rightOpen ? gap : 0);
+    const baseShellWidth = shellPadding + centerWidth + openGapWidth + leftDrawerWidth + rightDrawerWidth;
+    const maxShellWidthWithoutViewportScroll = Math.max(centerWidth + shellPadding, maxFrameWidth - chromeAllowance - (edgeTabGutter * 2));
 
-    if (targetWindowWidth > maxWindowWidth) {
-      const overflow = targetWindowWidth - maxWindowWidth;
-      const totalReducible = (leftOpen ? (drawerDefaultWidth - drawerMinWidth) : 0) + (rightOpen ? (drawerDefaultWidth - drawerMinWidth) : 0);
+    if (baseShellWidth > maxShellWidthWithoutViewportScroll) {
+      const overflow = baseShellWidth - maxShellWidthWithoutViewportScroll;
+      const totalReducible =
+        (leftOpen ? (drawerDefaultWidth - drawerMinWidth) : 0) +
+        (rightOpen ? (drawerDefaultWidth - drawerMinWidth) : 0);
       const reduction = Math.min(overflow, totalReducible);
+
       if (reduction > 0) {
         if (leftOpen && rightOpen) {
           const leftShare = Math.ceil(reduction / 2);
@@ -164,23 +532,84 @@ export class QuickDeckApp extends Application {
     }
 
     const shellWidth = shellPadding + centerWidth + (leftOpen ? gap + leftDrawerWidth : 0) + (rightOpen ? gap + rightDrawerWidth : 0);
-    targetWindowWidth = shellWidth + chromeAllowance;
+    const naturalFrameWidth = shellWidth + chromeAllowance + (edgeTabGutter * 2);
+    const targetWindowWidth = naturalFrameWidth;
+    const frameWidth = Math.min(naturalFrameWidth, maxFrameWidth);
+    const needsHorizontalScroll = naturalFrameWidth > maxFrameWidth;
 
-    return { centerWidth, leftDrawerWidth, rightDrawerWidth, closedTabWidth, gap, shellPadding, chromeAllowance, targetWindowWidth, shellWidth };
+    return {
+      centerWidth,
+      leftDrawerWidth,
+      rightDrawerWidth,
+      closedTabWidth,
+      gap,
+      shellPadding,
+      chromeAllowance,
+      edgeTabGutter,
+      viewportPadding,
+      viewportWidth,
+      viewportHeight,
+      maxFrameWidth,
+      maxFrameHeight,
+      targetWindowWidth,
+      naturalFrameWidth,
+      frameWidth,
+      shellWidth,
+      needsHorizontalScroll
+    };
   }
   getQd31TargetWindowWidth() {
     return this.getQd31LayoutMetrics().targetWindowWidth;
   }
-  applyQd31LayoutSizing(metrics) {
-    const root = this.element?.[0] ?? this.element;
-    if (!root) return;
-    const shell = root.querySelector?.(".qd31-shell");
-    if (!shell) return;
-    shell.style.setProperty("--qd31-center-width", `${metrics.centerWidth}px`);
-    shell.style.setProperty("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
-    shell.style.setProperty("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
+  applyQd31LayoutSizing(metrics = this.getQd31LayoutMetrics()) {
+    const applicationRoot = this.element?.[0] ?? this.element;
+    const roots = [this._overlayRoot, applicationRoot].filter(Boolean);
+
+    for (const root of roots) {
+      root.style?.setProperty?.("--qd31-center-width", `${metrics.centerWidth}px`);
+      root.style?.setProperty?.("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
+      root.style?.setProperty?.("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
+      root.style?.setProperty?.("--qd31-shell-width", `${metrics.shellWidth}px`);
+      root.style?.setProperty?.("--qd31-frame-width", `${metrics.frameWidth}px`);
+      root.style?.setProperty?.("--qd31-natural-frame-width", `${metrics.naturalFrameWidth}px`);
+      root.style?.setProperty?.("--qd31-max-frame-width", `${metrics.maxFrameWidth}px`);
+      root.style?.setProperty?.("--qd31-max-frame-height", `${metrics.maxFrameHeight}px`);
+      root.style?.setProperty?.("--qd31-edge-tab-gutter", `${metrics.edgeTabGutter}px`);
+      root.classList?.toggle?.("qd31-horizontal-scroll-needed", Boolean(metrics.needsHorizontalScroll));
+
+      const shell = root.querySelector?.(".qd31-shell");
+      if (shell?.style) {
+        shell.style.setProperty("--qd31-center-width", `${metrics.centerWidth}px`);
+        shell.style.setProperty("--qd31-left-drawer-width", `${metrics.leftDrawerWidth}px`);
+        shell.style.setProperty("--qd31-right-drawer-width", `${metrics.rightDrawerWidth}px`);
+        shell.style.setProperty("--qd31-shell-width", `${metrics.shellWidth}px`);
+        shell.style.setProperty("--qd31-frame-width", `${metrics.frameWidth}px`);
+        shell.style.setProperty("--qd31-natural-frame-width", `${metrics.naturalFrameWidth}px`);
+        shell.style.setProperty("--qd31-max-frame-width", `${metrics.maxFrameWidth}px`);
+        shell.style.setProperty("--qd31-edge-tab-gutter", `${metrics.edgeTabGutter}px`);
+      }
+    }
   }
-  scheduleQd31WindowResize() { if (this._qd31ResizeRaf) return; this._qd31ResizeRaf=requestAnimationFrame(()=>{ this._qd31ResizeRaf=null; if(!this.rendered||!this.position)return; const metrics=this.getQd31LayoutMetrics(); const height=Math.max(Number(this.position.height)||0, Number(this._lastPosition?.height)||0); this.setPosition({left:this.position.left,top:this.position.top,height:height||this.position.height}); this.applyQd31LayoutSizing(metrics); }); }
+
+  scheduleQd31WindowResize() {
+    if (this._qd31ResizeRaf) return;
+    this._qd31ResizeRaf = requestAnimationFrame(() => {
+      this._qd31ResizeRaf = null;
+      const metrics = this.getQd31LayoutMetrics();
+      this.applyQd31LayoutSizing(metrics);
+      this.setOverlayPosition();
+      focusQuickDeckCockpitFirst(this._overlayRoot);
+
+      if (this.rendered && this.position) {
+        const height = Math.max(Number(this.position.height) || 0, Number(this._lastPosition?.height) || 0);
+        this.setPosition({
+          left: this.position.left,
+          top: this.position.top,
+          height: height || this.position.height
+        });
+      }
+    });
+  }
 
   close(options) {
     this.clearQd31InlineSizing();
@@ -188,17 +617,41 @@ export class QuickDeckApp extends Application {
   }
 
   clearQd31InlineSizing() {
-    const root = this.element?.[0] ?? this.element;
+    const applicationRoot = this.element?.[0] ?? this.element;
     const appElement = this.getApplicationHostElement();
-    const shell = root?.querySelector?.(".qd31-shell");
+    const roots = [this._overlayRoot, applicationRoot].filter(Boolean);
+
     appElement?.classList?.remove("qd31-window-active");
     if (appElement?.style) appElement.style.width = appElement.style.minWidth = appElement.style.maxWidth = "";
-    if (shell?.style) {
-      shell.style.width = ""; shell.style.minWidth = ""; shell.style.maxWidth = "";
-      shell.style.removeProperty("--qd31-center-width");
-      shell.style.removeProperty("--qd31-left-drawer-width");
-      shell.style.removeProperty("--qd31-right-drawer-width");
-      shell.style.removeProperty("--qd31-shell-width");
+
+    for (const root of roots) {
+      root.classList?.remove?.("qd31-horizontal-scroll-needed");
+      if (root?.style) {
+        root.style.removeProperty("--qd31-center-width");
+        root.style.removeProperty("--qd31-left-drawer-width");
+        root.style.removeProperty("--qd31-right-drawer-width");
+        root.style.removeProperty("--qd31-shell-width");
+        root.style.removeProperty("--qd31-frame-width");
+        root.style.removeProperty("--qd31-natural-frame-width");
+        root.style.removeProperty("--qd31-max-frame-width");
+        root.style.removeProperty("--qd31-max-frame-height");
+        root.style.removeProperty("--qd31-edge-tab-gutter");
+      }
+
+      const shell = root.querySelector?.(".qd31-shell");
+      if (shell?.style) {
+        shell.style.width = "";
+        shell.style.minWidth = "";
+        shell.style.maxWidth = "";
+        shell.style.removeProperty("--qd31-center-width");
+        shell.style.removeProperty("--qd31-left-drawer-width");
+        shell.style.removeProperty("--qd31-right-drawer-width");
+        shell.style.removeProperty("--qd31-shell-width");
+        shell.style.removeProperty("--qd31-frame-width");
+        shell.style.removeProperty("--qd31-natural-frame-width");
+        shell.style.removeProperty("--qd31-max-frame-width");
+        shell.style.removeProperty("--qd31-edge-tab-gutter");
+      }
     }
   }
 
@@ -261,35 +714,265 @@ export class QuickDeckApp extends Application {
       this.cancelTargetOpponentMode({ render: false, restore: false });
     }
     this.activeActorId = actorId;
+    this.keepActiveActorInCenterRosterWindow();
   }
 
   clearRoster() {
     this.rosterActorIds = [];
     this.activeActorId = null;
+    this.centerRosterStartIndex = 0;
     this.persistRosterState();
   }
 
   removeActorFromRoster(actorId) {
-    if (!actorId) return;
+    if (!actorId) return false;
 
     const previousLength = this.rosterActorIds.length;
     this.rosterActorIds = this.rosterActorIds.filter((id) => id !== actorId);
-    if (this.rosterActorIds.length === previousLength) return;
+    if (this.rosterActorIds.length === previousLength) return false;
 
     if (this.activeActorId === actorId) {
       this.activeActorId = this.rosterActorIds[0] ?? null;
     }
+    this.clampCenterRosterWindow();
 
     this.persistRosterState();
+    return true;
   }
 
   onActorDeleted(actorId) {
-    this.removeActorFromRoster(actorId);
-    this.render();
+    const didRemove = this.removeActorFromRoster(actorId);
+    if (didRemove) this.render();
+    return didRemove;
   }
 
   getActiveActor() {
     return this.activeActorId ? game.actors.get(this.activeActorId) : null;
+  }
+
+  getSelectedPrimaryRollOption() {
+    return PRIMARY_ROLL_OPTIONS.find((option) => option.key === this.primaryRollKey) ?? PRIMARY_ROLL_OPTIONS[0];
+  }
+
+  getPrimaryAttributeValue(actor, option) {
+    if (!actor || !option?.valueType) return null;
+
+    const attribute = option.valueType;
+    return this.getFirstDefinedValue(actor, [
+      `system.attributes.${attribute}.value`,
+      `system.attributes.${attribute}.import`,
+      `data.data.attributes.${attribute}.value`,
+      `data.data.attributes.${attribute}.import`
+    ]);
+  }
+
+  getPrimaryRollView(actor = this.getActiveActor()) {
+    const selectedKey = this.getSelectedPrimaryRollOption().key;
+    const options = PRIMARY_ROLL_OPTIONS.map((option) => {
+      const value = this.getPrimaryAttributeValue(actor, option);
+      const displayValue = this.toDisplayValue(value);
+      return {
+        ...option,
+        displayValue,
+        displayLabel: `${option.label} ${displayValue}`,
+        selected: option.key === selectedKey
+      };
+    });
+    const selected = options.find((option) => option.selected) ?? options[0];
+    return {
+      selectedKey: selected?.key ?? DEFAULT_PRIMARY_ROLL_KEY,
+      selectedValue: selected?.displayValue ?? "—",
+      options
+    };
+  }
+
+  getSelectedSecondaryRollOption() {
+    return SECONDARY_ROLL_OPTIONS.find((option) => option.key === this.secondaryRollKey) ?? SECONDARY_ROLL_OPTIONS[0];
+  }
+
+  getSecondaryAttributeValue(actor, option) {
+    if (!actor || !option) return null;
+
+    const willValue = () => this.getFirstDefinedValue(actor, [
+      "system.attributes.WILL.value",
+      "system.attributes.WILL.import",
+      "system.WILL.value",
+      "system.attributes.will.value",
+      "system.attributes.will.import",
+      "system.will.value",
+      "data.data.attributes.WILL.value",
+      "data.data.attributes.WILL.import",
+      "data.data.WILL.value",
+      "data.data.attributes.will.value",
+      "data.data.attributes.will.import"
+    ]);
+    const perceptionValue = () => this.getFirstDefinedValue(actor, [
+      "system.attributes.PER.value",
+      "system.attributes.PER.import",
+      "system.currentper",
+      "system.currentperception",
+      "system.Per.value",
+      "system.PER.value",
+      "system.per.value",
+      "system.attributes.Per.value",
+      "system.attributes.Per.import",
+      "system.attributes.per.value",
+      "system.attributes.per.import",
+      "system.perception.value",
+      "data.data.attributes.PER.value",
+      "data.data.attributes.PER.import",
+      "data.data.currentper",
+      "data.data.currentperception",
+      "data.data.Per.value",
+      "data.data.PER.value",
+      "data.data.per.value",
+      "data.data.attributes.Per.value",
+      "data.data.attributes.Per.import",
+      "data.data.attributes.per.value",
+      "data.data.attributes.per.import"
+    ]);
+
+    if (option.valueType === "will") return willValue();
+    if (option.valueType === "perception") return perceptionValue();
+
+    if (option.valueType === "fright-check") {
+      return this.getFirstDefinedValue(actor, [
+        "system.frightcheck",
+        "data.data.frightcheck"
+      ]) ?? willValue();
+    }
+
+    if (option.valueType === "vision") {
+      return this.getFirstDefinedValue(actor, [
+        "system.vision",
+        "data.data.vision"
+      ]) ?? perceptionValue();
+    }
+
+    if (option.valueType === "hearing") {
+      return this.getFirstDefinedValue(actor, [
+        "system.hearing",
+        "data.data.hearing"
+      ]) ?? perceptionValue();
+    }
+
+    if (option.valueType === "taste-smell") {
+      return this.getFirstDefinedValue(actor, [
+        "system.tastesmell",
+        "data.data.tastesmell"
+      ]) ?? perceptionValue();
+    }
+
+    if (option.valueType === "touch") {
+      return this.getFirstDefinedValue(actor, [
+        "system.touch",
+        "data.data.touch"
+      ]) ?? perceptionValue();
+    }
+
+    return null;
+  }
+
+  getSecondaryRollView(actor = this.getActiveActor(), derivedData = null) {
+    const selectedKey = this.getSelectedSecondaryRollOption().key;
+    const options = SECONDARY_ROLL_OPTIONS.map((option) => {
+      const value = this.getSecondaryAttributeValue(actor, option);
+      return {
+        ...option,
+        displayValue: this.toDisplayValue(value),
+        displayLabel: `${option.label} ${this.toDisplayValue(value)}`,
+        selected: option.key === selectedKey
+      };
+    });
+    const selected = options.find((option) => option.selected) ?? options[0];
+    return {
+      selectedKey: selected?.key ?? DEFAULT_SECONDARY_ROLL_KEY,
+      selectedValue: selected?.displayValue ?? "—",
+      options
+    };
+  }
+
+
+  clampCenterRosterWindow(total = this.rosterActorIds.length) {
+    const maxStartIndex = Math.max(0, total - 5);
+    const currentStartIndex = Number.isFinite(this.centerRosterStartIndex)
+      ? Math.trunc(this.centerRosterStartIndex)
+      : 0;
+    this.centerRosterStartIndex = Math.min(Math.max(0, currentStartIndex), maxStartIndex);
+    return this.centerRosterStartIndex;
+  }
+
+  keepActiveActorInCenterRosterWindow(rosterActorIds = this.rosterActorIds) {
+    const total = rosterActorIds.length;
+    this.clampCenterRosterWindow(total);
+    if (!this.activeActorId || total <= 5) {
+      this.centerRosterStartIndex = 0;
+      return;
+    }
+
+    const activeIndex = rosterActorIds.indexOf(this.activeActorId);
+    if (activeIndex < 0) return;
+    if (activeIndex < this.centerRosterStartIndex) {
+      this.centerRosterStartIndex = activeIndex;
+    } else if (activeIndex >= this.centerRosterStartIndex + 5) {
+      this.centerRosterStartIndex = activeIndex - 4;
+    }
+    this.clampCenterRosterWindow(total);
+  }
+
+  getCenterRosterView(rosterActors) {
+    const actors = Array.isArray(rosterActors) ? rosterActors : [];
+    this.keepActiveActorInCenterRosterWindow(actors.map((actor) => actor.id));
+    const total = actors.length;
+    const startIndex = this.clampCenterRosterWindow(total);
+    const hasPaging = total > 5;
+    return {
+      actors: actors.slice(startIndex, startIndex + 5),
+      total,
+      startIndex,
+      canPagePrev: hasPaging && startIndex > 0,
+      canPageNext: hasPaging && startIndex + 5 < total,
+      hasPaging,
+      isMinimized: this.isCenterRosterMinimized,
+      isEmpty: total === 0
+    };
+  }
+
+  selectCenterRosterActor(actorId) {
+    if (!actorId || !game.actors.has(actorId)) return false;
+    const previousActorId = this.activeActorId;
+    const previousRosterStartIndex = this.centerRosterStartIndex;
+    if (this.activeActorId && this.activeActorId !== actorId) {
+      this.cancelTokenDrop({ render: false });
+      this.cancelTargetOpponentMode({ render: false, restore: false });
+    }
+    this.activeActorId = actorId;
+    this.keepActiveActorInCenterRosterWindow();
+    return previousActorId !== this.activeActorId || previousRosterStartIndex !== this.centerRosterStartIndex;
+  }
+
+  pageCenterRoster(direction) {
+    const total = this.rosterActorIds.length;
+    const previousRosterStartIndex = this.centerRosterStartIndex;
+    if (total <= 5) {
+      this.centerRosterStartIndex = 0;
+      return previousRosterStartIndex !== this.centerRosterStartIndex;
+    }
+    const delta = direction === "prev" ? -5 : 5;
+    this.centerRosterStartIndex += delta;
+    this.clampCenterRosterWindow(total);
+    return previousRosterStartIndex !== this.centerRosterStartIndex;
+  }
+
+  isActorRelevantToCurrentView(actorId, options = {}) {
+    const id = String(actorId ?? "");
+    if (!id) return false;
+    const includeActive = options.includeActive !== false;
+    const includeRoster = options.includeRoster !== false;
+    const includeAvailable = Boolean(options.includeAvailable);
+    if (includeActive && this.activeActorId === id) return true;
+    if (includeRoster && this.rosterActorIds.includes(id)) return true;
+    return includeAvailable && this.isRosterDrawerOpen;
   }
 
   invalidateDerivedActorData(actorId = null) {
@@ -1183,6 +1866,7 @@ export class QuickDeckApp extends Application {
     );
     this.restorePillPosition = this.normalizeRestorePillPosition(savedRestorePillPosition);
 
+
     this._stateLoadedFromSettings = true;
   }
 
@@ -1403,14 +2087,18 @@ export class QuickDeckApp extends Application {
   scheduleQd18WindowResize() {}
 
   setLeftPanelCollapsed(collapsed) {
-    this.isLeftPanelCollapsed = Boolean(collapsed);
+    const nextCollapsed = Boolean(collapsed);
+    if (this.isLeftPanelCollapsed === nextCollapsed) return;
+    this.isLeftPanelCollapsed = nextCollapsed;
     this.render(false);
   }
 
   toggleLeftPanelCollapsed() { this.setLeftPanelCollapsed(!this.isLeftPanelCollapsed); }
 
   setRightPanelCollapsed(collapsed) {
-    this.isRightPanelCollapsed = Boolean(collapsed);
+    const nextCollapsed = Boolean(collapsed);
+    if (this.isRightPanelCollapsed === nextCollapsed) return;
+    this.isRightPanelCollapsed = nextCollapsed;
     this.render(false);
   }
 
@@ -1528,7 +2216,9 @@ export class QuickDeckApp extends Application {
     let visible = 0;
 
     for (const row of rows) {
-      const searchableText = this.normalizeSearchText(row.dataset.searchText);
+      if (!row?.dataset) continue;
+      const searchableText = row.dataset.qdeckNormalizedSearchText
+        ?? (row.dataset.qdeckNormalizedSearchText = this.normalizeSearchText(row.dataset.searchText));
       const isVisible = !normalizedSearch || searchableText.includes(normalizedSearch);
       row.hidden = !isVisible;
       if (isVisible) visible += 1;
@@ -1537,14 +2227,48 @@ export class QuickDeckApp extends Application {
     return { visible, total: rows.length };
   }
 
+  scheduleSearchFilter(actionKey, html, applyFilter) {
+    if (!actionKey || typeof applyFilter !== "function") return;
+    const existing = this._filterRafByAction?.get(actionKey);
+    if (existing) cancelAnimationFrame(existing);
+
+    const raf = requestAnimationFrame(() => {
+      this._filterRafByAction?.delete(actionKey);
+      const root = html?.[0] ?? html;
+      if (root && !document.body.contains(root)) return;
+      try {
+        applyFilter();
+      } catch (error) {
+        console.warn("gurps-quickdeck | Search filter update failed safely.", error);
+      }
+    });
+    this._filterRafByAction?.set(actionKey, raf);
+  }
+
+  clearScheduledSearchFilters() {
+    for (const raf of this._filterRafByAction?.values?.() ?? []) cancelAnimationFrame(raf);
+    this._filterRafByAction?.clear?.();
+  }
+
   applyAvailableActorFilter(html) {
     const { visible, total } = this.applyDomFilterBySelector(
       html,
       "[data-search-row='available']",
       this.availableSearch
     );
+    const hasQuery = Boolean(this.normalizeSearchText(this.availableSearch));
     this.updateCountText(html, "available-visible", visible);
     this.updateCountText(html, "available-total", total);
+    this.updateSearchUiState(html, "available", visible, "inactive characters", hasQuery);
+  }
+
+  updateDrawerTabTooltip(html, drawer, visible, noun, hasQuery = false) {
+    const tab = html.find(`[data-action='toggle-drawer'][data-drawer='${drawer}']`)[0];
+    if (!tab) return;
+    const label = drawer === "combat" ? "Combat actions" : drawer === "skills" ? "Skills" : drawer === "spells" ? "Spells" : drawer;
+    const text = hasQuery ? `${visible} matching ${noun}` : `${visible} ${noun}`;
+    tab.title = text;
+    tab.setAttribute("aria-label", `${label}: ${text}`);
   }
 
   applyCombatFilter(html) {
@@ -1555,7 +2279,9 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "attacks-visible", visible);
     this.updateCountText(html, "attacks-total", total);
-    this.updateSearchUiState(html, "combat", visible, "attacks", Boolean(this.normalizeSearchText(this.combatSearch)));
+    const hasQuery = Boolean(this.normalizeSearchText(this.combatSearch));
+    this.updateSearchUiState(html, "combat", visible, "attacks", hasQuery);
+    this.updateDrawerTabTooltip(html, "combat", visible, "attacks", hasQuery);
   }
 
   applySkillsFilter(html) {
@@ -1566,7 +2292,9 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "skills-visible", visible);
     this.updateCountText(html, "skills-total", total);
-    this.updateSearchUiState(html, "skills", visible, "skills", Boolean(this.normalizeSearchText(this.skillsSearch)));
+    const hasQuery = Boolean(this.normalizeSearchText(this.skillsSearch));
+    this.updateSearchUiState(html, "skills", visible, "skills", hasQuery);
+    this.updateDrawerTabTooltip(html, "skills", visible, "skills", hasQuery);
   }
 
   applyQuickSkillsFilter(html) {
@@ -1587,7 +2315,9 @@ export class QuickDeckApp extends Application {
     );
     this.updateCountText(html, "spells-visible", visible);
     this.updateCountText(html, "spells-total", total);
-    this.updateSearchUiState(html, "spells", visible, "spells", Boolean(this.normalizeSearchText(this.spellsSearch)));
+    const hasQuery = Boolean(this.normalizeSearchText(this.spellsSearch));
+    this.updateSearchUiState(html, "spells", visible, "spells", hasQuery);
+    this.updateDrawerTabTooltip(html, "spells", visible, "spells", hasQuery);
   }
 
   toDisplayValue(value) {
@@ -2028,13 +2758,13 @@ export class QuickDeckApp extends Application {
     }
   }
 
-  async triggerNativeSheetRoll(actor, dataset, { event = null, targets = [], label = "roll" } = {}) {
+  async triggerNativeSheetRoll(actor, dataset, { event = null, targets = [], label = "roll", focusReason = null, scheduleChat = true } = {}) {
     const gurps = globalThis.GURPS ?? game.GURPS;
     if (!actor || !dataset?.otf) return false;
 
     if (typeof gurps?.SetLastActor === "function") gurps.SetLastActor(actor);
     const previousWindowIds = this.getNativeWindowIds();
-    this.startNativeWindowFocusLock(previousWindowIds, `native-sheet-${label}`);
+    this.startNativeWindowFocusLock(previousWindowIds, focusReason ?? `native-sheet-${label}`);
 
     if (dataset.key && typeof gurps?.handleRoll === "function") {
       try {
@@ -2045,7 +2775,7 @@ export class QuickDeckApp extends Application {
         console.warn(`gurps-quickdeck | Native GURPS ${label} handleRoll failed, falling back to OTF.`, error);
       } finally {
         this.scheduleNativeWindowFocus(previousWindowIds);
-        this.scheduleChatFocus();
+        if (scheduleChat) this.scheduleChatFocus();
       }
     }
 
@@ -2058,7 +2788,7 @@ export class QuickDeckApp extends Application {
       // Let the caller decide whether a non-native fallback is appropriate.
     } finally {
       this.scheduleNativeWindowFocus(previousWindowIds);
-      this.scheduleChatFocus();
+      if (scheduleChat) this.scheduleChatFocus();
     }
 
     return false;
@@ -2126,7 +2856,11 @@ export class QuickDeckApp extends Application {
 
   getQuickDeckWindowElement() {
     try {
-      return this.element?.[0] ?? this.element ?? document.getElementById(this.options?.id ?? this.id);
+      return this._overlayRoot
+        ?? document.getElementById("gurps-quickdeck-overlay")
+        ?? this.element?.[0]
+        ?? this.element
+        ?? document.getElementById(this.options?.id ?? this.id);
     } catch (_error) {
       return null;
     }
@@ -2200,7 +2934,7 @@ export class QuickDeckApp extends Application {
   }
 
   startNativeWindowFocusLock(previousWindowIds = new Set(), reason = "native-window") {
-    this.stopNativeWindowFocusLock();
+    this.stopNativeWindowFocusLock({ force: true });
 
     const previousIds = previousWindowIds instanceof Set ? previousWindowIds : new Set();
     const quickDeckElement = this.getQuickDeckWindowElement();
@@ -2211,6 +2945,8 @@ export class QuickDeckApp extends Application {
       previousQuickDeckZIndex: this.getWindowZIndex(this),
       previousQuickDeckInlineZIndex: quickDeckElement?.style?.zIndex ?? "",
       focusedWindowIds: new Set(),
+      persistWhileNativeOpen: ["primary-", "secondary-"].some((prefix) => String(reason ?? "").startsWith(prefix)),
+      maxUntil: Date.now() + SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS,
       hooks: [],
       timeoutId: null,
       until
@@ -2233,9 +2969,33 @@ export class QuickDeckApp extends Application {
     return lock;
   }
 
-  stopNativeWindowFocusLock() {
+  hasFocusedNativeWindowsOpen(lock) {
+    if (!lock?.focusedWindowIds?.size) return false;
+    const openWindowIds = this.getNativeWindowIds();
+    for (const id of lock.focusedWindowIds) {
+      if (openWindowIds.has(String(id))) return true;
+    }
+    return false;
+  }
+
+  shouldExtendNativeWindowFocusLock(lock) {
+    return Boolean(
+      lock?.persistWhileNativeOpen &&
+      Date.now() < lock.maxUntil &&
+      this.hasFocusedNativeWindowsOpen(lock)
+    );
+  }
+
+  stopNativeWindowFocusLock({ force = false } = {}) {
     const lock = this._nativeWindowFocusLock;
     if (!lock) return;
+
+    if (!force && this.shouldExtendNativeWindowFocusLock(lock)) {
+      lock.until = Date.now() + NATIVE_WINDOW_FOCUS_GUARD_MS;
+      lock.timeoutId = globalThis.setTimeout?.(() => this.stopNativeWindowFocusLock(), NATIVE_WINDOW_FOCUS_GUARD_MS) ?? null;
+      this.bringNativeWindowsToFront(lock.previousWindowIds);
+      return;
+    }
 
     for (const [hookName, hookId, hookCallback] of lock.hooks ?? []) {
       try {
@@ -2259,6 +3019,9 @@ export class QuickDeckApp extends Application {
       }
     }
 
+    const quickDeckElement = this.getQuickDeckWindowElement();
+    if (quickDeckElement?.style) quickDeckElement.style.zIndex = lock.previousQuickDeckInlineZIndex ?? "";
+
     this._nativeWindowFocusLock = null;
   }
 
@@ -2269,6 +3032,8 @@ export class QuickDeckApp extends Application {
       for (const app of windows) {
         if (!this.isNativeWindowFocusCandidate(app, previousIds)) continue;
         this.focusNativeWindow(app);
+        const appId = this.getNativeWindowId(app);
+        this._nativeWindowFocusLock?.focusedWindowIds?.add?.(appId ?? app?.constructor?.name ?? "unknown");
       }
     } catch (_error) {
       // Native window focus is best-effort only.
@@ -2513,10 +3278,59 @@ export class QuickDeckApp extends Application {
     const currentIndex = this.activeActorId ? this.rosterActorIds.indexOf(this.activeActorId) : -1;
     const nextIndex = (currentIndex + 1) % this.rosterActorIds.length;
     this.activeActorId = this.rosterActorIds[nextIndex] ?? null;
+    this.keepActiveActorInCenterRosterWindow();
     this.persistRosterState();
     this.render(false);
   }
 
+
+  async rollPrimaryAttribute(event = null) {
+    const actor = this.getActiveActor();
+    if (!actor?.id) {
+      ui.notifications?.warn("QuickDeck: No active actor selected for primary roll.");
+      return;
+    }
+
+    const option = this.getSelectedPrimaryRollOption();
+    if (!option) {
+      ui.notifications?.warn("QuickDeck: Choose a primary roll first.");
+      return;
+    }
+
+    const handled = await this.triggerNativeSheetRoll(actor, { name: option.label, otf: option.otf }, {
+      event,
+      focusReason: `primary-${option.key}`,
+      label: option.key,
+      scheduleChat: false
+    });
+    if (!handled) {
+      ui.notifications?.warn(`QuickDeck: Could not route ${option.label} through native GURPS rolling.`);
+    }
+  }
+
+  async rollSecondaryAttribute(event = null) {
+    const actor = this.getActiveActor();
+    if (!actor?.id) {
+      ui.notifications?.warn("QuickDeck: No active actor selected for secondary roll.");
+      return;
+    }
+
+    const option = this.getSelectedSecondaryRollOption();
+    if (!option) {
+      ui.notifications?.warn("QuickDeck: Choose a secondary roll first.");
+      return;
+    }
+
+    const handled = await this.triggerNativeSheetRoll(actor, { name: option.label, otf: option.otf }, {
+      event,
+      focusReason: `secondary-${option.key}`,
+      label: option.key,
+      scheduleChat: false
+    });
+    if (!handled) {
+      ui.notifications?.warn(`QuickDeck: Could not route ${option.label} through native GURPS rolling.`);
+    }
+  }
 
   async triggerCombatRoll(actorId, rollContext) {
     const actor = game.actors.get(actorId);
@@ -2609,7 +3423,7 @@ export class QuickDeckApp extends Application {
     return `[${parsed.formula}${suffix}]`;
   }
 
-  async rollParsedDamageFormula(actor, attack, parsed) {
+  async rollParsedDamageFormula(actor, attack, parsed, attackIndex = null) {
     if (!actor || !parsed?.formula) return false;
     const attackName = attack?.name ?? "Attack";
     if (parsed.isDerived) {
@@ -2618,6 +3432,8 @@ export class QuickDeckApp extends Application {
       if (derivedOtf && typeof gurps?.executeOTF === "function") {
         try {
           await gurps.executeOTF(derivedOtf, false, actor);
+          this.rememberPendingDamageContext(actor, attack, attackIndex, { rawDamage: parsed.original ?? parsed.formula, dice: parsed.formula, damageType: parsed.damageType ?? null, damage: 0 });
+          this.render(false, { focus: false });
           return true;
         } catch (error) {
           console.warn("gurps-quickdeck | Derived damage OTF failed.", { derivedOtf, error });
@@ -2636,10 +3452,151 @@ export class QuickDeckApp extends Application {
         speaker: ChatMessage.getSpeaker({ actor }),
         flavor: `QuickDeck Damage (${attackName}${damageLabel})`
       });
+      this.rememberPendingDamageContext(actor, attack, attackIndex, { rawDamage: parsed.original ?? parsed.formula, dice: parsed.formula, damageType: parsed.damageType ?? null, damage: roll.total });
+      this.render(false, { focus: false });
       return true;
     } catch (error) {
       console.warn("gurps-quickdeck | Damage formula fallback roll failed.", { parsed, error });
       return false;
+    }
+  }
+
+
+  getPendingDamageView() {
+    const context = this.pendingDamageContext;
+    if (!context?.attackerActorId) {
+      return {
+        hasDamage: false,
+        title: "No damage queued",
+        subtitle: "Roll damage, then apply it to a targeted defender.",
+        buttonLabel: "Apply Last Damage"
+      };
+    }
+
+    const attacker = game.actors.get(context.attackerActorId);
+    const damageText = Number(context.damage) > 0 ? `${context.damage} ${context.damageType ?? ""}`.trim() : context.rawDamage || context.dice || "Damage";
+    const attackName = context.attackName || "Damage";
+
+    return {
+      hasDamage: true,
+      attackerName: attacker?.name ?? context.attackerName ?? "Unknown attacker",
+      attackName,
+      title: `${attackName} · ${damageText}`,
+      subtitle: `From ${attacker?.name ?? context.attackerName ?? "Unknown"}${context.dice ? ` · ${context.dice}` : ""}`,
+      damage: context.damage,
+      damageType: context.damageType,
+      dice: context.dice,
+      rawDamage: context.rawDamage,
+      buttonLabel: "Apply Last Damage"
+    };
+  }
+
+  rememberPendingDamageContext(actor, attack, attackIndex, data = {}) {
+    if (!actor?.id || !attack) return;
+
+    const rawDamage = String(data.rawDamage ?? this.getAttackDamageFormula(attack) ?? attack.damageDisplay ?? attack.damage ?? "").trim();
+    const parsedParts = this.parseQuickDeckDamageParts?.(attack, data) ?? {};
+    const damageType = String(data.damageType ?? parsedParts.damageType ?? "cr").trim() || "cr";
+    const dice = String(data.dice ?? parsedParts.dice ?? rawDamage ?? "1d").trim() || "1d";
+    const damage = Number(data.damage ?? parsedParts.damage ?? 0) || 0;
+    const armorDivisor = Number(data.armorDivisor ?? parsedParts.armorDivisor ?? 1) || 1;
+
+    this.pendingDamageContext = {
+      attackerActorId: actor.id,
+      attackerName: actor.name,
+      attackIndex: Number.isFinite(Number(attackIndex)) ? Number(attackIndex) : null,
+      attackName: String(attack.name ?? attack.displayName ?? "Damage"),
+      dice,
+      damage,
+      damageType,
+      armorDivisor,
+      rawDamage,
+      hitlocation: "Random",
+      queuedAt: Date.now()
+    };
+  }
+
+  clearPendingDamageContext({ render = true } = {}) {
+    this.pendingDamageContext = null;
+    if (render) this.render(false, { focus: false });
+  }
+
+  getQuickDeckApplyDamageTargetActor() {
+    const targeted = Array.from(game.user?.targets ?? []).find((token) => token?.actor);
+    if (targeted?.actor) return targeted.actor;
+
+    const controlled = canvas?.tokens?.controlled?.find((token) => token?.actor);
+    if (controlled?.actor) return controlled.actor;
+
+    return null;
+  }
+
+  parseQuickDeckDamageParts(attack, overrides = {}) {
+    const raw = String(
+      overrides.rawDamage
+      ?? attack?.damageDisplay
+      ?? attack?.damage
+      ?? attack?.damageFormula
+      ?? attack?.dam
+      ?? attack?.damageText
+      ?? ""
+    ).trim();
+
+    const lower = raw.toLowerCase();
+    const typeMatch = lower.match(/\b(pi\+\+|pi\+|pi-|pi|cr|cut|imp|burn|cor|tox|fat)\b/);
+    const damageType = String(overrides.damageType ?? attack?.damageType ?? attack?.typeDamage ?? typeMatch?.[1] ?? "cr").trim() || "cr";
+
+    const diceMatch = raw.match(/(?:sw|swing|thr|thrust|\d+d(?:\d+)?(?:[+-]\d+)?)/i);
+    const dice = String(overrides.dice ?? attack?.dice ?? attack?.damageFormula ?? diceMatch?.[0] ?? raw ?? "1d").trim() || "1d";
+
+    const flatMatch = raw.match(/(?:^|\s)(\d+)(?:\s|$)/);
+    const damage = Number(overrides.damage ?? attack?.basicDamage ?? attack?.damageValue ?? flatMatch?.[1] ?? 0) || 0;
+
+    const divisorMatch = raw.match(/\((\d+(?:\.\d+)?)\)/);
+    const armorDivisor = Number(overrides.armorDivisor ?? attack?.armorDivisor ?? divisorMatch?.[1] ?? 1) || 1;
+
+    return { raw, dice, damage, damageType, armorDivisor };
+  }
+
+  openPendingDamageDialog() {
+    const context = this.pendingDamageContext;
+    if (!context?.attackerActorId) {
+      ui.notifications?.warn("QuickDeck: No pending damage. Roll damage first.");
+      return;
+    }
+
+    const attackerActor = game.actors.get(context.attackerActorId);
+    const defenderActor = this.getQuickDeckApplyDamageTargetActor();
+
+    if (!attackerActor) {
+      ui.notifications?.warn("QuickDeck: Pending damage attacker is unavailable.");
+      return;
+    }
+
+    if (!defenderActor) {
+      ui.notifications?.warn("QuickDeck: Target a defender token, or select one token on the canvas, before applying damage.");
+      return;
+    }
+
+    if (typeof defenderActor.handleDamageDrop !== "function") {
+      ui.notifications?.warn("QuickDeck: This defender actor does not expose native GURPS handleDamageDrop.");
+      return;
+    }
+
+    const damageData = {
+      attacker: attackerActor.id,
+      dice: context.dice || "1d",
+      damage: Number(context.damage) || 0,
+      damageType: context.damageType || "cr",
+      armorDivisor: Number(context.armorDivisor) || 1,
+      hitlocation: context.hitlocation || "Random"
+    };
+
+    try {
+      defenderActor.handleDamageDrop(damageData);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to open native ApplyDamageDialog from pending damage.", { error, damageData, context });
+      ui.notifications?.warn("QuickDeck: Could not open GURPS Apply Damage Dialog.");
     }
   }
 
@@ -2663,13 +3620,15 @@ export class QuickDeckApp extends Application {
     }
 
     const parsed = this.parseGurpsDamageString(formula);
-    if (parsed && await this.rollParsedDamageFormula(actor, attack, parsed)) return;
+    if (parsed && await this.rollParsedDamageFormula(actor, attack, parsed, attackIndex)) return;
 
     const damageOtf = this.buildDamageOtfFromDamageText(formula);
     const gurps = globalThis.GURPS ?? game.GURPS;
     if (damageOtf && typeof gurps?.executeOTF === "function") {
       try {
         await gurps.executeOTF(damageOtf, false, actor);
+        this.rememberPendingDamageContext(actor, attack, attackIndex, { rawDamage: formula, dice: formula, damage: 0 });
+        this.render(false, { focus: false });
         return;
       } catch (error) {
         console.warn("gurps-quickdeck | Damage OTF execution failed.", { damageOtf, error });
@@ -2969,11 +3928,40 @@ export class QuickDeckApp extends Application {
 
   parseDropPayload(rawText) {
     if (!rawText || typeof rawText !== "string") return null;
+    if (rawText.length > 65536) {
+      console.warn("gurps-quickdeck | Ignored oversized drop payload.");
+      return null;
+    }
     try {
       return JSON.parse(rawText);
     } catch (_error) {
       return null;
     }
+  }
+
+  getSafeDropText(transfer) {
+    if (!transfer) return "";
+    const types = Array.from(transfer.types ?? []);
+    if (types.length && !types.includes("text/plain")) return "";
+    try {
+      const rawText = transfer.getData("text/plain");
+      if (typeof rawText !== "string") return "";
+      if (rawText.length > 65536) {
+        console.warn("gurps-quickdeck | Ignored oversized drop text.");
+        return "";
+      }
+      return rawText;
+    } catch (error) {
+      console.warn("gurps-quickdeck | Could not read drop data safely.", error);
+      return "";
+    }
+  }
+
+  isSupportedRosterDrop(event) {
+    const transfer = event?.dataTransfer;
+    if (!transfer) return false;
+    const types = Array.from(transfer.types ?? []);
+    return !types.length || types.includes("text/plain");
   }
 
   async resolveActorFromDropData(event) {
@@ -2983,7 +3971,7 @@ export class QuickDeckApp extends Application {
       return null;
     }
 
-    const rawText = transfer.getData("text/plain");
+    const rawText = this.getSafeDropText(transfer);
     const parsedPayload = this.parseDropPayload(rawText);
     const payload = parsedPayload && typeof parsedPayload === "object" ? parsedPayload : null;
 
@@ -3567,6 +4555,7 @@ export class QuickDeckApp extends Application {
     if (this.isMinimized) {
       this.cancelTokenDrop({ render: false });
       this.cancelTargetOpponentMode({ render: false, restore: false });
+      window.qdArtTunerOff?.();
     }
     this.persistMinimizedState();
     this.syncMinimizedPresentation();
@@ -3575,6 +4564,7 @@ export class QuickDeckApp extends Application {
   async minimize() {
     this.cancelTokenDrop({ render: false });
     this.cancelTargetOpponentMode({ render: false, restore: false });
+    window.qdArtTunerOff?.();
     if (!this.isMinimized) {
       this.isMinimized = true;
       this.persistMinimizedState();
@@ -3585,7 +4575,16 @@ export class QuickDeckApp extends Application {
 
   async close(options) {
     this.cancelTokenDrop({ render: false });
+    this.stopUi2CarouselTokenDrop({ restore: false });
+    this.clearPendingDamageContext({ render: false });
+    this.teardownQuickDeckCustomScrollbars();
     this.cancelTargetOpponentMode({ render: false, restore: false });
+    if (this._qd31ResizeRaf) {
+      cancelAnimationFrame(this._qd31ResizeRaf);
+      this._qd31ResizeRaf = null;
+    }
+    this.clearQd31InlineSizing();
+    window.qdArtTunerOff?.();
     this.unmountOverlay();
     this.showApplicationShellIfNeeded();
     this.removeFloatingRestoreIcon();
@@ -3594,7 +4593,7 @@ export class QuickDeckApp extends Application {
       this._actorSelectTimeout = null;
     }
     this.invalidateDerivedActorData();
-    this.stopNativeWindowFocusLock();
+    this.stopNativeWindowFocusLock({ force: true });
     return super.close(options);
   }
 
@@ -3806,9 +4805,13 @@ export class QuickDeckApp extends Application {
     this.mountOverlay();
     if (!this._overlayRoot) return;
     const html = await renderQuickDeckTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
+    this.teardownQuickDeckCustomScrollbars();
     this._overlayRoot.innerHTML = html;
+    this.applyQd31LayoutSizing(this.getQd31LayoutMetrics());
     this.setOverlayPosition();
     this.activateOverlayListeners(this._overlayRoot);
+    this.setupQuickDeckCustomScrollbars(this._overlayRoot);
+    focusQuickDeckCockpitFirst(this._overlayRoot);
   }
 
   mountOverlay() {
@@ -3818,11 +4821,18 @@ export class QuickDeckApp extends Application {
     root.className = "qd40-overlay";
     document.body.appendChild(root);
     this._overlayRoot = root;
+    if (this._overlayWindowResizeHandler) {
+      window.removeEventListener("resize", this._overlayWindowResizeHandler);
+      window.addEventListener("resize", this._overlayWindowResizeHandler);
+    }
     return root;
   }
 
   unmountOverlay() {
+    this.clearScheduledSearchFilters();
+    this.teardownQuickDeckCustomScrollbars();
     this.stopOverlayDrag();
+    if (this._overlayWindowResizeHandler) window.removeEventListener("resize", this._overlayWindowResizeHandler);
     this._overlayRoot?.remove();
     this._overlayRoot = null;
   }
@@ -3841,48 +4851,115 @@ export class QuickDeckApp extends Application {
 
   startOverlayDrag(event) {
     if (!this._overlayRoot) return;
+    if (event.button !== undefined && event.button !== 0) return;
     const target = event.target;
     if (target?.closest?.("button, input, select, textarea, a")) return;
 
     event.preventDefault();
-    const startLeft = Number.parseFloat(this._overlayRoot.style.left) || this._overlayRoot.offsetLeft || 0;
-    const startTop = Number.parseFloat(this._overlayRoot.style.top) || this._overlayRoot.offsetTop || 0;
+    const overlay = this._overlayRoot;
+    const startLeft = Number.parseFloat(overlay.style.left) || overlay.offsetLeft || 0;
+    const startTop = Number.parseFloat(overlay.style.top) || overlay.offsetTop || 0;
     const startClientX = Number(event.clientX);
     const startClientY = Number(event.clientY);
+    const rect = overlay.getBoundingClientRect?.();
+    const width = rect?.width ?? overlay.offsetWidth ?? 0;
+    const height = rect?.height ?? overlay.offsetHeight ?? 0;
+    const minLeft = 0;
+    const minTop = 0;
+    const maxLeft = Math.max(minLeft, (window.innerWidth || width) - width);
+    const maxTop = Math.max(minTop, (window.innerHeight || height) - height);
+    let nextPosition = { left: startLeft, top: startTop };
+    let dragRaf = null;
+    let isCleaningUp = false;
+    const previousWillChange = overlay.style.willChange;
+    const previousBackfaceVisibility = overlay.style.backfaceVisibility;
+    const previousTouchAction = overlay.style.touchAction;
+    const dragHandle = event.currentTarget;
+    const isUi2Overlay = Boolean(overlay.querySelector(".qd-ui2-shell"));
+    const dragClasses = isUi2Overlay
+      ? ["qd40-dragging", "qd40-ui2-dragging-cheap"]
+      : ["qd40-dragging"];
 
     this.stopOverlayDrag();
-    this._overlayRoot.classList.add("qd40-dragging");
+    this._overlayDragPointerId = event.pointerId;
+    overlay.classList.add(...dragClasses);
+    try {
+      dragHandle?.setPointerCapture?.(event.pointerId);
+    } catch (_error) {
+      // Pointer capture can fail if Foundry/browser focus changes mid-event.
+    }
+    overlay.style.willChange = "transform";
+    overlay.style.backfaceVisibility = "hidden";
+    overlay.style.touchAction = "none";
+    overlay.style.transform = "translate3d(0, 0, 0)";
 
-    const onPointerMove = (moveEvent) => {
-      const deltaX = Number(moveEvent.clientX) - startClientX;
-      const deltaY = Number(moveEvent.clientY) - startClientY;
-      const clamped = this.getClampedOverlayPosition(startLeft + deltaX, startTop + deltaY);
-      this._overlayPosition = clamped;
-      this._overlayRoot.style.left = `${clamped.left}px`;
-      this._overlayRoot.style.top = `${clamped.top}px`;
+    const updateDragTransform = () => {
+      dragRaf = null;
+      overlay.style.transform = `translate3d(${Math.round(nextPosition.left - startLeft)}px, ${Math.round(nextPosition.top - startTop)}px, 0)`;
     };
 
-    const onPointerUp = () => this.stopOverlayDrag();
+    const onPointerMove = (moveEvent) => {
+      if (moveEvent.pointerId !== this._overlayDragPointerId) return;
+      const left = startLeft + (Number(moveEvent.clientX) - startClientX);
+      const top = startTop + (Number(moveEvent.clientY) - startClientY);
+      nextPosition = {
+        left: Math.min(Math.max(minLeft, Number(left) || 0), maxLeft),
+        top: Math.min(Math.max(minTop, Number(top) || 0), maxTop)
+      };
+      if (!dragRaf) dragRaf = requestAnimationFrame(updateDragTransform);
+    };
+
+    const onPointerUp = (upEvent) => {
+      if (upEvent.pointerId !== this._overlayDragPointerId) return;
+      this.stopOverlayDrag();
+    };
     const onBlur = () => this.stopOverlayDrag();
+    const onLostPointerCapture = () => this.stopOverlayDrag();
 
     const abortController = typeof AbortController === "function" ? new AbortController() : null;
-    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
+    const listenerOptions = abortController ? { signal: abortController.signal, passive: true } : { passive: true };
     window.addEventListener("pointermove", onPointerMove, listenerOptions);
     window.addEventListener("pointerup", onPointerUp, listenerOptions);
+    window.addEventListener("pointercancel", onPointerUp, listenerOptions);
     window.addEventListener("blur", onBlur, listenerOptions);
+    dragHandle?.addEventListener?.("lostpointercapture", onLostPointerCapture, listenerOptions);
 
     this._overlayDragCleanup = () => {
-      this._overlayRoot?.classList?.remove("qd40-dragging");
+      if (isCleaningUp) return;
+      isCleaningUp = true;
+      if (dragRaf) cancelAnimationFrame(dragRaf);
+      dragRaf = null;
+      this._overlayDragPointerId = null;
+      this._overlayPosition = nextPosition;
+      overlay.style.left = `${nextPosition.left}px`;
+      overlay.style.top = `${nextPosition.top}px`;
+      overlay.style.removeProperty("transform");
+      overlay.style.willChange = previousWillChange;
+      overlay.style.backfaceVisibility = previousBackfaceVisibility;
+      overlay.style.touchAction = previousTouchAction;
+      overlay.classList.remove(...dragClasses);
+      try {
+        if (dragHandle?.hasPointerCapture?.(event.pointerId)) dragHandle.releasePointerCapture(event.pointerId);
+      } catch (_error) {
+        // Ignore release errors after pointercancel/blur.
+      }
       if (abortController) { abortController.abort(); return; }
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerUp);
       window.removeEventListener("blur", onBlur);
+      dragHandle?.removeEventListener?.("lostpointercapture", onLostPointerCapture);
     };
   }
 
   stopOverlayDrag() {
     if (typeof this._overlayDragCleanup === "function") this._overlayDragCleanup();
     this._overlayDragCleanup = null;
+    this._overlayDragPointerId = null;
+  }
+
+  isOverlayDragging() {
+    return typeof this._overlayDragCleanup === "function";
   }
 
   getClampedOverlayPosition(left, top) {
@@ -3901,8 +4978,25 @@ export class QuickDeckApp extends Application {
   }
 
   activateOverlayListeners(root) {
+    this.clearScheduledSearchFilters();
     this.activateListeners($(root));
-    root.querySelector("[data-action=\"drag-overlay\"]")?.addEventListener("pointerdown", (event) => this.startOverlayDrag(event));
+    root.querySelector("[data-action=\"drag-overlay\"]")?.addEventListener("pointerdown", (event) => this.startOverlayDrag(event), { passive: false });
+  }
+
+  setupQuickDeckCustomScrollbars(root) {
+    if (!root) return;
+    this.teardownQuickDeckCustomScrollbars();
+    this._quickDeckCustomScrollbarManager = new QuickDeckCustomScrollbarManager(root);
+    this._quickDeckCustomScrollbarManager.setup();
+  }
+
+  teardownQuickDeckCustomScrollbars() {
+    this._quickDeckCustomScrollbarManager?.teardown?.();
+    this._quickDeckCustomScrollbarManager = null;
+  }
+
+  refreshQuickDeckCustomScrollbars() {
+    this._quickDeckCustomScrollbarManager?.refreshAll?.();
   }
 
   hideApplicationShellForOverlay() {
@@ -3930,6 +5024,7 @@ export class QuickDeckApp extends Application {
       .map((id) => game.actors.get(id))
       .filter((actor) => actor && actor.id);
 
+    const availableSearchNormalized = this.normalizeSearchText(this.availableSearch);
     const availableActors = allActors
       .map((actor) => ({
         id: actor.id,
@@ -3939,11 +5034,44 @@ export class QuickDeckApp extends Application {
         isInRoster: this.rosterActorIds.includes(actor.id),
         searchText: this.buildSearchText([actor.name, actor.type])
       }))
+      .filter((actor) => !actor.isInRoster)
       .filter((actor) => {
         if (!actor.actorType) return true;
         const type = actor.actorType.toLowerCase();
         return type === "character" || type === "npc";
-      });
+      })
+      .map((actor) => ({
+        ...actor,
+        isAvailableSearchMatch:
+          !availableSearchNormalized ||
+          this.normalizeSearchText(actor.searchText).includes(availableSearchNormalized)
+      }));
+
+    const rosterActorViews = rosterActors.map((actor) => {
+      const hp = this.getResourceSummary(actor, "HP");
+      const fp = this.getResourceSummary(actor, "FP");
+      return {
+        id: actor.id,
+        name: actor.name,
+        img: actor.img || "icons/svg/mystery-man.svg",
+        actorType: actor.type ? String(actor.type) : null,
+        isActive: actor.id === this.activeActorId,
+        combatBadge: this.getCombatBadgeText(combatantByActorId.get(actor.id)),
+        isCurrentTurn:
+          combatantByActorId.get(actor.id)?.id &&
+          combatantByActorId.get(actor.id).id === currentCombatantId,
+        hpDisplay: hp.display,
+        hpMaxDisplay: hp.maxDisplay,
+        hpPercent: hp.percent,
+        fpDisplay: fp.display,
+        fpMaxDisplay: fp.maxDisplay,
+        fpPercent: fp.percent
+      };
+    });
+    const centerRosterView = this.getCenterRosterView(rosterActorViews);
+    const ui2CarouselSourceActors = this.getUi2CombatOrderedRosterActors(rosterActorViews);
+    const ui2CarouselActors = this.getUi2CarouselActors(ui2CarouselSourceActors);
+    const ui2CarouselActorIdsCsv = ui2CarouselActors.map((actor) => actor.id).filter(Boolean).join(",");
 
     const activeActor = this.getActiveActor();
     const shouldHydrateDerivedData = Boolean(activeActor);
@@ -3976,6 +5104,8 @@ export class QuickDeckApp extends Application {
     const spellsSearch = this.spellsSearch;
     const spells = derivedData.spells;
 
+    const visibleAvailableCount = this.getVisibleCountBySearchText(availableActors, this.availableSearch);
+    const availableSearchHasQuery = Boolean(this.normalizeSearchText(this.availableSearch));
     const activeActorId = activeActor?.id ?? null;
     const favoriteAttackSelection = this.getFavoriteAttackSelection(activeActorId);
     const modifierBucketStatus = this.getModifierBucketStatus();
@@ -4126,30 +5256,18 @@ export class QuickDeckApp extends Application {
       quickSkillsSearch,
       spellsSearch,
       availableActors,
-      visibleAvailableCount: this.getVisibleCountBySearchText(availableActors, this.availableSearch),
+      visibleAvailableCount,
+      availableSearchStatusText: this.formatSearchStatus(visibleAvailableCount, "inactive characters", availableSearchHasQuery),
+      availableSearchShowEmpty: availableSearchHasQuery && visibleAvailableCount === 0,
       rosterCount: rosterActors.length,
       availableCount: availableActors.length,
-      rosterActors: rosterActors.map((actor) => {
-        const hp = this.getResourceSummary(actor, "HP");
-        const fp = this.getResourceSummary(actor, "FP");
-        return {
-          id: actor.id,
-          name: actor.name,
-          img: actor.img || "icons/svg/mystery-man.svg",
-          actorType: actor.type ? String(actor.type) : null,
-          isActive: actor.id === this.activeActorId,
-          combatBadge: this.getCombatBadgeText(combatantByActorId.get(actor.id)),
-          isCurrentTurn:
-            combatantByActorId.get(actor.id)?.id &&
-            combatantByActorId.get(actor.id).id === currentCombatantId,
-          hpDisplay: hp.display,
-          hpMaxDisplay: hp.maxDisplay,
-          hpPercent: hp.percent,
-          fpDisplay: fp.display,
-          fpMaxDisplay: fp.maxDisplay,
-          fpPercent: fp.percent
-        };
-      }),
+      rosterActors: rosterActorViews,
+      ui2CarouselActors,
+      ui2CarouselActorIdsCsv,
+      tokenDropAutoMinimizeEnabled: this.getTokenDropAutoMinimizeEnabled(),
+      tokenDropAutoRestoreEnabled: this.getTokenDropAutoRestoreEnabled(),
+      damagePickAutoMinimizeEnabled: this.getDamagePickAutoMinimizeEnabled(),
+      centerRosterView,
       activeActor: activeActor
         ? {
             id: activeActor.id,
@@ -4164,9 +5282,12 @@ export class QuickDeckApp extends Application {
       isTargetOpponentModeActive: this.pendingTargetOpponentAttackIndex !== null,
       currentTargetName: this.getCurrentTargetDisplayName(),
       modifierBucketStatus,
+      pendingDamageView: this.getPendingDamageView(),
       canRepeatLastAttack: Boolean(this.pendingAttackContext?.actorId),
       lastAttackName: this.pendingAttackContext?.attackName ?? "No attack selected",
       gurpsData,
+      primaryRollView: this.getPrimaryRollView(activeActor),
+      secondaryRollView: this.getSecondaryRollView(activeActor, derivedData),
       hasAvailableActors: availableActors.length > 0,
       hasRosterActors: rosterActors.length > 0,
       activeDrawer: this.activeDrawer,
@@ -4212,17 +5333,1095 @@ export class QuickDeckApp extends Application {
       indexedSpells,
       pinnedActions,
       hasPinnedActions: pinnedActions.length > 0,
-      uiBuildLabel: "QD v0.8.7.1 — pinned-polish",
-      uiBranchLabel: "v0.8.7.1 pinned-actions-polish",
+      uiBuildLabel: "QD v0.9.7.1 — batch1-fit",
+      uiBranchLabel: "v0.9.7.1 batch1-fit",
       moduleVersion: game.modules.get(MODULE_ID)?.version ?? "unknown",
       isInfoPopoverOpen: this.isInfoPopoverOpen,
+      devArtTunerEnabled: this.isDevArtTunerEnabled(),
       pdfMapDraft: this.pdfMapDraft,
       pdfPageRefMappings: this.getPdfPageRefMappingRows()
     };
   }
 
+
+  isDevArtTunerEnabled() {
+    try {
+      return Boolean(game?.settings?.get?.(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED));
+    } catch (_error) {
+      return false;
+    }
+  }
+
+  async setDevArtTunerEnabled(enabled) {
+    await game?.settings?.set?.(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED, Boolean(enabled));
+    if (!enabled) window.qdArtTunerOff?.();
+    this.render(false, { focus: false });
+  }
+
+  openDevArtTuner() {
+    installQuickDeckArtTunerGlobals();
+    window.qdArtTunerOn?.();
+  }
+
+  closeDevArtTuner() {
+    window.qdArtTunerOff?.();
+  }
+
+  copyDevArtTunerCss() {
+    installQuickDeckArtTunerGlobals();
+    void window.qdArtTunerCopyCss?.();
+  }
+
+  resetDevArtTuner() {
+    installQuickDeckArtTunerGlobals();
+    window.qdArtTunerReset?.();
+  }
+
+  statusDevArtTuner() {
+    installQuickDeckArtTunerGlobals();
+    window.qdArtTunerStatus?.();
+  }
+
+
+  normalizeUi2CarouselIndex(index, count) {
+    const actorCount = Number(count) || 0;
+    if (actorCount <= 0) return 0;
+    return ((Number(index) % actorCount) + actorCount) % actorCount;
+  }
+
+
+
+  getTokenDropAutoMinimizeEnabled() {
+    try {
+      return game.settings.get(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_MINIMIZE) !== false;
+    } catch (_error) {
+      return true;
+    }
+  }
+
+  async setTokenDropAutoMinimizeEnabled(enabled) {
+    try {
+      await game.settings.set(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_MINIMIZE, Boolean(enabled));
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to save token drop auto-minimize setting.", error);
+    }
+  }
+
+  getTokenDropAutoRestoreEnabled() {
+    try {
+      return game.settings.get(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_RESTORE) !== false;
+    } catch (_error) {
+      return true;
+    }
+  }
+
+  async setTokenDropAutoRestoreEnabled(enabled) {
+    try {
+      await game.settings.set(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_RESTORE, Boolean(enabled));
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to save token drop auto-restore setting.", error);
+    }
+  }
+
+  ensureUi2CarouselDropReticle(count) {
+    let reticle = this._ui2CarouselTokenDropReticleElement;
+    if (reticle && document.body.contains(reticle)) return reticle;
+
+    reticle = document.createElement("div");
+    reticle.className = "qd-ui2-mass-drop-reticle";
+    reticle.innerHTML = `<span class="qd-ui2-mass-drop-reticle-ring"></span><span class="qd-ui2-mass-drop-reticle-label">Drop ${Number(count) || ""}</span>`;
+    document.body.appendChild(reticle);
+    this._ui2CarouselTokenDropReticleElement = reticle;
+    return reticle;
+  }
+
+  updateUi2CarouselDropReticle(event, count) {
+    const reticle = this.ensureUi2CarouselDropReticle(count);
+    const clientX = Number(event?.clientX ?? 0);
+    const clientY = Number(event?.clientY ?? 0);
+    reticle.style.left = `${Math.round(clientX)}px`;
+    reticle.style.top = `${Math.round(clientY)}px`;
+    const label = reticle.querySelector(".qd-ui2-mass-drop-reticle-label");
+    if (label) label.textContent = `Drop ${Number(count) || ""}`;
+  }
+
+  removeUi2CarouselDropReticle() {
+    const reticle = this._ui2CarouselTokenDropReticleElement;
+    if (reticle) reticle.remove();
+    this._ui2CarouselTokenDropReticleElement = null;
+  }
+
+  getUi2CombatOrderedRosterActors(rosterActors) {
+    const actors = Array.isArray(rosterActors) ? rosterActors : [];
+    const combat = game?.combat;
+    const combatants = Array.from(combat?.combatants ?? []);
+    if (!combat || !combatants.length || !actors.length) return actors;
+
+    const actorById = new Map(actors.map((actor) => [actor.id, actor]));
+    const ordered = [];
+    const seen = new Set();
+    const currentCombatantId = combat.combatant?.id ?? combat.current?.combatantId ?? null;
+
+    for (const combatant of combatants) {
+      const actorId = combatant?.actorId ?? combatant?.actor?.id ?? null;
+      if (!actorId || seen.has(actorId)) continue;
+      const actorView = actorById.get(actorId);
+      if (!actorView) continue;
+
+      seen.add(actorId);
+      ordered.push({
+        ...actorView,
+        isInCombat: true,
+        isCurrentTurn: actorView.isCurrentTurn || Boolean(combatant?.id && combatant.id === currentCombatantId),
+        combatInitiative: combatant?.initiative ?? null,
+        combatOrderIndex: ordered.length
+      });
+    }
+
+    for (const actorView of actors) {
+      if (!actorView?.id || seen.has(actorView.id)) continue;
+      ordered.push({
+        ...actorView,
+        isInCombat: false,
+        combatOrderIndex: null
+      });
+    }
+
+    return ordered.length ? ordered : actors;
+  }
+
+  getUi2CarouselTokenDropOrigin(count) {
+    const scene = canvas?.scene ?? game?.scenes?.active ?? null;
+    const gridSize = Number(canvas?.grid?.size ?? scene?.grid?.size ?? scene?.grid?.distance ?? 100) || 100;
+    const sceneWidth = Number(scene?.dimensions?.width ?? scene?.width ?? gridSize * Math.max(1, count));
+    const sceneHeight = Number(scene?.dimensions?.height ?? scene?.height ?? gridSize * Math.max(1, count));
+    const centerX = Math.round(sceneWidth / 2);
+    const centerY = Math.round(sceneHeight / 2);
+    return { centerX, centerY, gridSize };
+  }
+
+  async buildTokenDropDataForActor(actor, x, y) {
+    if (!actor?.id) return null;
+
+    try {
+      if (typeof actor.getTokenDocument === "function") {
+        const tokenDocument = await actor.getTokenDocument({ x, y });
+        const tokenData = typeof tokenDocument?.toObject === "function" ? tokenDocument.toObject() : tokenDocument;
+        return {
+          ...tokenData,
+          actorId: tokenData?.actorId ?? actor.id,
+          x,
+          y
+        };
+      }
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to build token document from actor.getTokenDocument.", { actor, error });
+    }
+
+    const prototypeToken =
+      typeof actor.prototypeToken?.toObject === "function"
+        ? actor.prototypeToken.toObject()
+        : actor.prototypeToken ?? {};
+
+    return {
+      ...prototypeToken,
+      actorId: actor.id,
+      name: prototypeToken.name ?? actor.name,
+      img: prototypeToken.texture?.src ? undefined : actor.img,
+      x,
+      y
+    };
+  }
+
+
+  getCanvasCoordinatesFromClientEvent(event) {
+    const clientX = Number(event?.clientX ?? event?.data?.originalEvent?.clientX);
+    const clientY = Number(event?.clientY ?? event?.data?.originalEvent?.clientY);
+
+    if (Number.isFinite(clientX) && Number.isFinite(clientY)) {
+      if (typeof canvas?.canvasCoordinatesFromClient === "function") {
+        const point = canvas.canvasCoordinatesFromClient({ x: clientX, y: clientY });
+        return { x: Math.round(point.x), y: Math.round(point.y) };
+      }
+
+      const view = canvas?.app?.view;
+      const rect = view?.getBoundingClientRect?.();
+      if (rect && canvas?.stage?.worldTransform && globalThis.PIXI?.Point) {
+        const point = new PIXI.Point(clientX - rect.left, clientY - rect.top);
+        const world = canvas.stage.worldTransform.applyInverse(point);
+        return { x: Math.round(world.x), y: Math.round(world.y) };
+      }
+    }
+
+    const offsetX = Number(event?.offsetX ?? event?.data?.global?.x);
+    const offsetY = Number(event?.offsetY ?? event?.data?.global?.y);
+    return {
+      x: Math.round(Number.isFinite(offsetX) ? offsetX : 0),
+      y: Math.round(Number.isFinite(offsetY) ? offsetY : 0)
+    };
+  }
+
+  getUi2CarouselTokenPositions(centerX, centerY, count) {
+    const scene = canvas?.scene ?? game?.scenes?.active ?? null;
+    const gridSize = Number(canvas?.grid?.size ?? scene?.grid?.size ?? scene?.grid?.distance ?? 100) || 100;
+    const spacing = Math.max(gridSize, Math.round(gridSize * 1.25));
+    const startX = Math.round(Number(centerX) - ((count - 1) * spacing) / 2);
+    const y = Math.round(Number(centerY));
+
+    return Array.from({ length: count }, (_unused, index) => ({
+      x: Math.round(startX + index * spacing),
+      y
+    }));
+  }
+
+  restoreAfterUi2CarouselTokenDrop() {
+    const shouldRestore =
+      this._ui2CarouselTokenDropShouldRestore !== false &&
+      (this._ui2CarouselTokenDropWasMinimized === false ||
+        this._ui2CarouselTokenDropWasMinimized === null);
+
+    this._ui2CarouselTokenDropWasMinimized = null;
+
+    if (shouldRestore) {
+      this.isMinimized = false;
+      this.persistMinimizedState();
+      this.render(false, { focus: false });
+    }
+  }
+
+  stopUi2CarouselTokenDrop({ restore = true } = {}) {
+    if (typeof this._pendingUi2CarouselTokenDropCleanup === "function") {
+      this._pendingUi2CarouselTokenDropCleanup();
+    }
+
+    this._pendingUi2CarouselTokenDropCleanup = null;
+    this.pendingUi2CarouselTokenDropActorIds = null;
+
+    if (restore) this.restoreAfterUi2CarouselTokenDrop();
+  }
+
+  async startUi2CarouselTokenDrop(actorIds) {
+    const ids = Array.from(new Set((Array.isArray(actorIds) ? actorIds : [])
+      .map((id) => String(id ?? "").trim())
+      .filter((id) => id && game.actors.has(id))));
+
+    if (!ids.length) {
+      ui.notifications?.warn("QuickDeck: No carousel actors are available to drop.");
+      return;
+    }
+
+    if (!canvas?.ready || !canvas?.scene || !canvas?.app?.view) {
+      ui.notifications?.warn("QuickDeck: Open an active scene before dropping carousel tokens.");
+      return;
+    }
+
+    this.stopUi2CarouselTokenDrop({ restore: false });
+    this.cancelTokenDrop?.({ render: false });
+
+    this.pendingUi2CarouselTokenDropActorIds = ids;
+    this._ui2CarouselTokenDropWasMinimized = Boolean(this.isMinimized);
+    this._ui2CarouselTokenDropShouldRestore = this.getTokenDropAutoRestoreEnabled();
+
+    if (this.getTokenDropAutoMinimizeEnabled() && !this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState();
+      this.render(false, { focus: false });
+    }
+
+    ui.notifications?.info(`QuickDeck: Click the scene to drop ${ids.length} carousel token${ids.length === 1 ? "" : "s"}. Press Escape or right-click to cancel.`);
+
+    const view = canvas.app.view;
+    const previousCursor = view.style.cursor;
+    view.style.cursor = "crosshair";
+    this.ensureUi2CarouselDropReticle(ids.length);
+
+    const cleanupListeners = [];
+    let finished = false;
+
+    const cleanup = () => {
+      view.style.cursor = previousCursor;
+      this.removeUi2CarouselDropReticle();
+      for (const [target, type, handler, options] of cleanupListeners) {
+        target.removeEventListener(type, handler, options);
+      }
+    };
+
+    const finish = ({ restore = true } = {}) => {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      this._pendingUi2CarouselTokenDropCleanup = null;
+      this.pendingUi2CarouselTokenDropActorIds = null;
+      if (restore) this.restoreAfterUi2CarouselTokenDrop();
+    };
+
+    const onPointerDown = async (event) => {
+      if (event.button && event.button !== 0) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const pendingIds = Array.from(this.pendingUi2CarouselTokenDropActorIds ?? ids);
+      const point = this.getCanvasCoordinatesFromClientEvent(event);
+      finish({ restore: false });
+
+      await this.dropUi2CarouselTokensAt(pendingIds, point.x, point.y);
+      this.restoreAfterUi2CarouselTokenDrop();
+    };
+
+    const onContextMenu = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      ui.notifications?.info("QuickDeck: Carousel token drop cancelled.");
+      finish({ restore: true });
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      ui.notifications?.info("QuickDeck: Carousel token drop cancelled.");
+      finish({ restore: true });
+    };
+
+    cleanupListeners.push([view, "pointerdown", onPointerDown, true]);
+    cleanupListeners.push([view, "contextmenu", onContextMenu, true]);
+    cleanupListeners.push([window, "keydown", onKeyDown, true]);
+
+    view.addEventListener("pointerdown", onPointerDown, true);
+    view.addEventListener("contextmenu", onContextMenu, true);
+    window.addEventListener("keydown", onKeyDown, true);
+
+    this._pendingUi2CarouselTokenDropCleanup = cleanup;
+  }
+
+  async dropUi2CarouselTokensAt(actorIds, centerX, centerY) {
+    const ids = Array.from(new Set((Array.isArray(actorIds) ? actorIds : [])
+      .map((id) => String(id ?? "").trim())
+      .filter((id) => id && game.actors.has(id))));
+
+    if (!ids.length) {
+      ui.notifications?.warn("QuickDeck: No carousel actors are available to drop.");
+      return;
+    }
+
+    const scene = canvas?.scene ?? game?.scenes?.active ?? null;
+    if (!scene || !canvas?.ready) {
+      ui.notifications?.warn("QuickDeck: Open an active scene before dropping carousel tokens.");
+      return;
+    }
+
+    const positions = this.getUi2CarouselTokenPositions(centerX, centerY, ids.length);
+    const tokenData = [];
+
+    for (let index = 0; index < ids.length; index += 1) {
+      const actor = game.actors.get(ids[index]);
+      if (!actor) continue;
+
+      const position = positions[index] ?? { x: centerX, y: centerY };
+      const built = await this.buildTokenDropDataForActor(actor, position.x, position.y);
+      if (built) tokenData.push(built);
+    }
+
+    if (!tokenData.length) {
+      ui.notifications?.warn("QuickDeck: Could not build any carousel tokens.");
+      return;
+    }
+
+    try {
+      if (typeof TokenDocument?.createDocuments === "function") {
+        await TokenDocument.createDocuments(tokenData, { parent: scene });
+      } else if (typeof scene.createEmbeddedDocuments === "function") {
+        await scene.createEmbeddedDocuments("Token", tokenData);
+      } else {
+        throw new Error("No supported Token creation API found.");
+      }
+
+      ui.notifications?.info(`QuickDeck: Dropped ${tokenData.length} carousel token${tokenData.length === 1 ? "" : "s"}.`);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to mass-drop carousel tokens.", error);
+      ui.notifications?.warn("QuickDeck: Could not drop carousel tokens.");
+    }
+  }
+
+  async dropUi2CarouselTokens(actorIds) {
+    const ids = Array.from(new Set((Array.isArray(actorIds) ? actorIds : [])
+      .map((id) => String(id ?? "").trim())
+      .filter((id) => id && game.actors.has(id))));
+
+    if (!ids.length) {
+      ui.notifications?.warn("QuickDeck: No carousel actors are available to drop.");
+      return;
+    }
+
+    const scene = canvas?.scene ?? game?.scenes?.active ?? null;
+    if (!scene || !canvas?.ready) {
+      ui.notifications?.warn("QuickDeck: Open an active scene before dropping carousel tokens.");
+      return;
+    }
+
+    const { centerX, centerY, gridSize } = this.getUi2CarouselTokenDropOrigin(ids.length);
+    const spacing = Math.max(gridSize, Math.round(gridSize * 1.25));
+    const startX = Math.round(centerX - ((ids.length - 1) * spacing) / 2);
+    const y = Math.round(centerY);
+    const tokenData = [];
+
+    for (let index = 0; index < ids.length; index += 1) {
+      const actor = game.actors.get(ids[index]);
+      if (!actor) continue;
+
+      const x = Math.round(startX + index * spacing);
+      const built = await this.buildTokenDropDataForActor(actor, x, y);
+      if (built) tokenData.push(built);
+    }
+
+    if (!tokenData.length) {
+      ui.notifications?.warn("QuickDeck: Could not build any carousel tokens.");
+      return;
+    }
+
+    try {
+      if (typeof TokenDocument?.createDocuments === "function") {
+        await TokenDocument.createDocuments(tokenData, { parent: scene });
+      } else if (typeof scene.createEmbeddedDocuments === "function") {
+        await scene.createEmbeddedDocuments("Token", tokenData);
+      } else {
+        throw new Error("No supported Token creation API found.");
+      }
+
+      ui.notifications?.info(`QuickDeck: Dropped ${tokenData.length} carousel token${tokenData.length === 1 ? "" : "s"}.`);
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to mass-drop carousel tokens.", error);
+      ui.notifications?.warn("QuickDeck: Could not drop carousel tokens.");
+    }
+  }
+
+  getUi2CarouselActors(rosterActors) {
+    const actors = Array.isArray(rosterActors) ? rosterActors : [];
+    const actorCount = actors.length;
+    this.ui2CarouselActorCount = actorCount;
+
+    if (actorCount <= 5) {
+      this.ui2CarouselStartIndex = 0;
+      return actors;
+    }
+
+    const start = this.normalizeUi2CarouselIndex(this.ui2CarouselStartIndex ?? 0, actorCount);
+    this.ui2CarouselStartIndex = start;
+
+    return Array.from({ length: 5 }, (_unused, offset) => actors[(start + offset) % actorCount]);
+  }
+
+  shiftUi2Carousel(direction) {
+    const actorCount = Number(this.ui2CarouselActorCount) || 0;
+    if (actorCount <= 5) {
+      this.ui2CarouselStartIndex = 0;
+      return;
+    }
+
+    const step = direction < 0 ? -1 : 1;
+    this.ui2CarouselStartIndex = this.normalizeUi2CarouselIndex(
+      (this.ui2CarouselStartIndex ?? 0) + step,
+      actorCount
+    );
+  }
+
+
+  getDamagePickAutoMinimizeEnabled() {
+    try {
+      return game.settings.get(MODULE_ID, SETTING_KEYS.DAMAGE_PICK_AUTO_MINIMIZE) !== false;
+    } catch (_error) {
+      return true;
+    }
+  }
+
+  async setDamagePickAutoMinimizeEnabled(enabled) {
+    try {
+      await game.settings.set(MODULE_ID, SETTING_KEYS.DAMAGE_PICK_AUTO_MINIMIZE, Boolean(enabled));
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to save damage pick auto-minimize setting.", error);
+    }
+  }
+
+  capturePendingDamageFromChatMessage(message, html) {
+    const transfer = this.getGurpsDamageTransferFromMessage(message, html);
+    if (!transfer?.payload) return;
+
+    const payload = this.cloneGurpsDamagePayload(transfer.payload);
+    const firstPayload = Array.isArray(payload) ? payload[0] : payload;
+    if (!firstPayload?.attacker) return;
+
+    const attackerActor = game.actors.get(firstPayload.attacker);
+    const attackerToken = this.findTokenForActorId(firstPayload.attacker);
+    const defaultTokenId = this.choosePendingDamageDefaultTokenId({
+      userTarget: transfer.userTarget ?? null,
+      attackerActorId: firstPayload.attacker
+    });
+
+    this.qdPendingDamageContext = {
+      messageId: message?.id ?? null,
+      payload,
+      attackerActorId: firstPayload.attacker,
+      attackerName: attackerActor?.name ?? firstPayload.attackerName ?? "Unknown attacker",
+      attackerTokenId: attackerToken?.id ?? null,
+      defaultTokenId,
+      queuedAt: Date.now()
+    };
+
+    this.renderPendingDamagePopup();
+  }
+
+  getGurpsDamageTransferFromMessage(message, html) {
+    const transfer =
+      message?.flags?.gurps?.transfer
+      ?? (typeof message?.getFlag === "function" ? message.getFlag("gurps", "transfer") : null);
+
+    const root = html?.[0] ?? html;
+    const hasDamageHtml = Boolean(root?.querySelector?.(".damage-chat-message, .damage-message, .damage-all-message"));
+    const hasPayload = Boolean(transfer?.payload);
+    const type = String(transfer?.type ?? "").toLowerCase();
+
+    if (!hasPayload) return null;
+    if (type.includes("damage") || hasDamageHtml) return transfer;
+    return null;
+  }
+
+  cloneGurpsDamagePayload(payload) {
+    try {
+      return foundry?.utils?.deepClone ? foundry.utils.deepClone(payload) : JSON.parse(JSON.stringify(payload));
+    } catch (_error) {
+      return payload;
+    }
+  }
+
+  getPendingDamagePayloadArray() {
+    const payload = this.qdPendingDamageContext?.payload;
+    if (!payload) return [];
+    return Array.isArray(payload) ? payload : [payload];
+  }
+
+  getPendingDamageView() {
+    const context = this.qdPendingDamageContext;
+    const payloads = this.getPendingDamagePayloadArray();
+    const first = payloads[0] ?? {};
+    const countSuffix = payloads.length > 1 ? ` ×${payloads.length}` : "";
+    const damageText = Number(first.damage) > 0
+      ? `${first.damage} ${first.damageType ?? ""}`.trim()
+      : first.dice || "Damage";
+
+    if (!context?.payload) {
+      return {
+        hasDamage: false,
+        title: "No pending damage",
+        subtitle: "Roll GURPS damage to queue it here.",
+        attackerName: "Unknown"
+      };
+    }
+
+    return {
+      hasDamage: true,
+      title: `${damageText}${countSuffix}`,
+      subtitle: `Attacker: ${context.attackerName ?? "Unknown"}`,
+      attackerName: context.attackerName ?? "Unknown"
+    };
+  }
+
+  findTokenForActorId(actorId) {
+    if (!actorId) return null;
+    return (canvas?.tokens?.placeables ?? canvas?.tokens?.objects?.children ?? [])
+      .find((token) => token?.actor?.id === actorId) ?? null;
+  }
+
+  getAllCanvasActorTokens() {
+    return Array.from(canvas?.tokens?.placeables ?? canvas?.tokens?.objects?.children ?? [])
+      .filter((token) => token?.id && token?.actor)
+      .sort((a, b) => String(a.name ?? a.actor?.name ?? "").localeCompare(String(b.name ?? b.actor?.name ?? "")));
+  }
+
+  choosePendingDamageDefaultTokenId({ userTarget = null, attackerActorId = null } = {}) {
+    const tokens = this.getAllCanvasActorTokens();
+    if (!tokens.length) return "";
+
+    if (userTarget && tokens.some((token) => token.id === userTarget)) return userTarget;
+
+    const targeted = Array.from(game.user?.targets ?? []).find((token) => token?.actor);
+    if (targeted?.id && tokens.some((token) => token.id === targeted.id)) return targeted.id;
+
+    const controlled = canvas?.tokens?.controlled?.find((token) => token?.actor);
+    if (controlled?.id && tokens.some((token) => token.id === controlled.id)) return controlled.id;
+
+    const nonAttacker = tokens.find((token) => token.actor?.id !== attackerActorId);
+    return nonAttacker?.id ?? tokens[0]?.id ?? "";
+  }
+
+  getPendingDamageTokenOptions() {
+    const context = this.qdPendingDamageContext ?? {};
+    const defaultTokenId =
+      context.selectedTokenId
+      ?? context.defaultTokenId
+      ?? this.choosePendingDamageDefaultTokenId({ attackerActorId: context.attackerActorId });
+    return this.getAllCanvasActorTokens().map((token) => ({
+      id: token.id,
+      name: String(token.name ?? token.actor?.name ?? "Token"),
+      actorName: String(token.actor?.name ?? "Unknown"),
+      isAttacker: token.actor?.id === context.attackerActorId,
+      selected: token.id === defaultTokenId
+    }));
+  }
+
+  openPendingDamageDialogForTokenId(tokenId) {
+    const token = this.getAllCanvasActorTokens().find((candidate) => candidate.id === tokenId);
+    if (!token?.actor) {
+      ui.notifications?.warn("QuickDeck: Choose a token with an actor before applying damage.");
+      return false;
+    }
+
+    const payload = this.qdPendingDamageContext?.payload;
+    if (!payload) {
+      ui.notifications?.warn("QuickDeck: No pending damage. Roll GURPS damage first.");
+      return false;
+    }
+
+    if (typeof token.actor.handleDamageDrop !== "function") {
+      ui.notifications?.warn("QuickDeck: This token actor does not expose native GURPS handleDamageDrop.");
+      return false;
+    }
+
+    try {
+      token.actor.handleDamageDrop(this.cloneGurpsDamagePayload(payload));
+      this.qdPendingDamageContext.selectedTokenId = token.id;
+      this.renderPendingDamagePopup();
+      return true;
+    } catch (error) {
+      console.warn("gurps-quickdeck | Failed to open GURPS ApplyDamageDialog from pending damage popup.", { error, token, payload });
+      ui.notifications?.warn("QuickDeck: Could not open GURPS Apply Damage Dialog.");
+      return false;
+    }
+  }
+
+  openPendingDamageDialogForSelectedPopupToken() {
+    const popup = this._qdPendingDamagePopupElement;
+    const tokenId = popup?.querySelector?.("[data-qdeck-pending-damage-target-select]")?.value
+      ?? this.qdPendingDamageContext?.selectedTokenId
+      ?? this.qdPendingDamageContext?.defaultTokenId
+      ?? "";
+    this.openPendingDamageDialogForTokenId(tokenId);
+  }
+
+  clearPendingDamageContext({ render = false } = {}) {
+    this.qdPendingDamageContext = null;
+    this.stopPendingDamagePickTarget({ notify: false, restore: false });
+    this.removePendingDamagePopup();
+    if (render) this.render(false, { focus: false });
+  }
+
+  qdGetCanvasCoordinatesFromClientEvent(event) {
+    if (typeof this.getCanvasCoordinatesFromClientEvent === "function") {
+      return this.getCanvasCoordinatesFromClientEvent(event);
+    }
+
+    const clientX = Number(event?.clientX ?? event?.data?.originalEvent?.clientX);
+    const clientY = Number(event?.clientY ?? event?.data?.originalEvent?.clientY);
+
+    if (Number.isFinite(clientX) && Number.isFinite(clientY)) {
+      if (typeof canvas?.canvasCoordinatesFromClient === "function") {
+        const point = canvas.canvasCoordinatesFromClient({ x: clientX, y: clientY });
+        return { x: Math.round(point.x), y: Math.round(point.y) };
+      }
+
+      const view = canvas?.app?.view;
+      const rect = view?.getBoundingClientRect?.();
+      if (rect && canvas?.stage?.worldTransform && globalThis.PIXI?.Point) {
+        const point = new PIXI.Point(clientX - rect.left, clientY - rect.top);
+        const world = canvas.stage.worldTransform.applyInverse(point);
+        return { x: Math.round(world.x), y: Math.round(world.y) };
+      }
+    }
+
+    return { x: 0, y: 0 };
+  }
+
+  getTokensAtCanvasPoint(x, y) {
+    const children = canvas?.tokens?.placeables ?? canvas?.tokens?.objects?.children ?? [];
+    return Array.from(children).filter((token) => {
+      try {
+        return token?.hitArea?.contains?.(x - token.x, y - token.y) && token.actor;
+      } catch (_error) {
+        return false;
+      }
+    });
+  }
+
+  ensurePendingDamagePickTargetReticle() {
+    let reticle = this._qdPendingDamagePickTargetReticleElement;
+    if (reticle && document.body.contains(reticle)) return reticle;
+
+    reticle = document.createElement("div");
+    reticle.className = "qd-ui2-pending-damage-target-reticle";
+    reticle.innerHTML = '<img src="/icons/svg/target.svg" alt="" /><span>Pick Damage Target</span>';
+    document.body.appendChild(reticle);
+    this._qdPendingDamagePickTargetReticleElement = reticle;
+    return reticle;
+  }
+
+  updatePendingDamagePickTargetReticle(event) {
+    const reticle = this.ensurePendingDamagePickTargetReticle();
+    const clientX = Number(event?.clientX ?? 0);
+    const clientY = Number(event?.clientY ?? 0);
+    reticle.style.left = `${Math.round(clientX)}px`;
+    reticle.style.top = `${Math.round(clientY)}px`;
+  }
+
+  removePendingDamagePickTargetReticle() {
+    const reticle = this._qdPendingDamagePickTargetReticleElement;
+    if (reticle) reticle.remove();
+    this._qdPendingDamagePickTargetReticleElement = null;
+  }
+
+  restoreAfterPendingDamagePickTarget() {
+    const wasMinimized = this._qdPendingDamagePickTargetWasMinimized;
+    this._qdPendingDamagePickTargetWasMinimized = null;
+
+    if (wasMinimized === false) {
+      this.isMinimized = false;
+      this.persistMinimizedState?.();
+      this.render(false, { focus: false });
+    }
+  }
+
+  stopPendingDamagePickTarget({ notify = false, restore = true } = {}) {
+    if (typeof this._qdPendingDamagePickTargetCleanup === "function") {
+      this._qdPendingDamagePickTargetCleanup();
+    }
+
+    this._qdPendingDamagePickTargetCleanup = null;
+    this.removePendingDamagePickTargetReticle();
+
+    if (restore) this.restoreAfterPendingDamagePickTarget();
+    if (notify) ui.notifications?.info("QuickDeck: Pending damage target pick cancelled.");
+  }
+
+  startPendingDamagePickTarget() {
+    if (!this.qdPendingDamageContext?.payload) {
+      ui.notifications?.warn("QuickDeck: No pending damage. Roll GURPS damage first.");
+      return;
+    }
+
+    if (!canvas?.ready || !canvas?.scene || !canvas?.app?.view) {
+      ui.notifications?.warn("QuickDeck: Open an active scene before picking a damage target.");
+      return;
+    }
+
+    this.stopPendingDamagePickTarget({ notify: false, restore: false });
+
+    this._qdPendingDamagePickTargetWasMinimized = Boolean(this.isMinimized);
+    if (this.getDamagePickAutoMinimizeEnabled() && !this.isMinimized) {
+      this.isMinimized = true;
+      this.persistMinimizedState?.();
+      this.render(false, { focus: false });
+    }
+
+    const view = canvas.app.view;
+    const previousCursor = view.style.cursor;
+    view.style.cursor = "crosshair";
+    this.ensurePendingDamagePickTargetReticle();
+
+    const cleanupListeners = [];
+    let finished = false;
+
+    const cleanup = () => {
+      view.style.cursor = previousCursor;
+      this.removePendingDamagePickTargetReticle();
+      for (const [target, type, handler, options] of cleanupListeners) {
+        target.removeEventListener(type, handler, options);
+      }
+    };
+
+    const finish = ({ notify = false, restore = true } = {}) => {
+      if (finished) return;
+      finished = true;
+      cleanup();
+      this._qdPendingDamagePickTargetCleanup = null;
+      if (restore) this.restoreAfterPendingDamagePickTarget();
+      if (notify) ui.notifications?.info("QuickDeck: Pending damage target pick cancelled.");
+    };
+
+    const onPointerMove = (event) => {
+      this.updatePendingDamagePickTargetReticle(event);
+    };
+
+    const onPointerDown = (event) => {
+      if (event.button && event.button !== 0) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const point = this.qdGetCanvasCoordinatesFromClientEvent(event);
+      const tokens = this.getTokensAtCanvasPoint(point.x, point.y);
+
+      if (tokens.length === 0) {
+        ui.notifications?.warn("QuickDeck: No token under the damage target picker.");
+        return;
+      }
+
+      if (tokens.length > 1) {
+        ui.notifications?.warn("QuickDeck: Multiple tokens under the picker. Choose one from the popup dropdown or target/select one token.");
+        return;
+      }
+
+      const token = tokens[0];
+      finish({ notify: false, restore: true });
+      this.openPendingDamageDialogForTokenId(token.id);
+    };
+
+    const onContextMenu = (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      finish({ notify: true, restore: true });
+    };
+
+    const onKeyDown = (event) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      finish({ notify: true, restore: true });
+    };
+
+    cleanupListeners.push([view, "pointermove", onPointerMove, true]);
+    cleanupListeners.push([view, "pointerdown", onPointerDown, true]);
+    cleanupListeners.push([view, "contextmenu", onContextMenu, true]);
+    cleanupListeners.push([window, "keydown", onKeyDown, true]);
+
+    view.addEventListener("pointermove", onPointerMove, true);
+    view.addEventListener("pointerdown", onPointerDown, true);
+    view.addEventListener("contextmenu", onContextMenu, true);
+    window.addEventListener("keydown", onKeyDown, true);
+
+    this._qdPendingDamagePickTargetCleanup = cleanup;
+
+    ui.notifications?.info("QuickDeck: Click a defender token to apply pending damage. Press Escape or right-click to cancel.");
+  }
+
+
+  getPendingDamagePopupPosition() {
+    try {
+      const raw = localStorage.getItem("gurps-quickdeck.pendingDamagePopupPosition");
+      const parsed = raw ? JSON.parse(raw) : null;
+      if (!parsed || !Number.isFinite(parsed.left) || !Number.isFinite(parsed.top)) return null;
+      return parsed;
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  clampPendingDamagePopupPosition(left, top) {
+    const clampedLeft = Math.max(8, Math.min(Math.round(left), Math.max(8, window.innerWidth - 120)));
+    const clampedTop = Math.max(8, Math.min(Math.round(top), Math.max(8, window.innerHeight - 80)));
+    return { left: clampedLeft, top: clampedTop };
+  }
+
+  setPendingDamagePopupPosition(left, top) {
+    const position = this.clampPendingDamagePopupPosition(left, top);
+
+    try {
+      localStorage.setItem("gurps-quickdeck.pendingDamagePopupPosition", JSON.stringify(position));
+    } catch (_error) {
+      // localStorage can be unavailable in some embedded contexts.
+    }
+
+    return position;
+  }
+
+  applyPendingDamagePopupPosition(popup) {
+    if (!popup) return;
+    const position = this.getPendingDamagePopupPosition();
+    if (!position) return;
+
+    popup.style.left = `${position.left}px`;
+    popup.style.top = `${position.top}px`;
+    popup.style.right = "auto";
+    popup.style.bottom = "auto";
+    popup.classList.add("is-user-positioned");
+  }
+
+  wirePendingDamagePopupDrag(popup) {
+    if (!popup) return;
+    const handle = popup.querySelector("[data-qdeck-pending-damage-drag-handle]");
+    if (!handle || handle.dataset.qdeckDragWired === "true") return;
+
+    handle.dataset.qdeckDragWired = "true";
+
+    handle.addEventListener("pointerdown", (event) => {
+      const interactive = event.target?.closest?.("button, select, option, input, textarea, a");
+      if (interactive) return;
+      if (event.button && event.button !== 0) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const rect = popup.getBoundingClientRect();
+      this._qdPendingDamagePopupDrag = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        startLeft: rect.left,
+        startTop: rect.top,
+        nextLeft: rect.left,
+        nextTop: rect.top,
+        raf: null
+      };
+
+      popup.classList.add("is-dragging");
+      try {
+        handle.setPointerCapture?.(event.pointerId);
+      } catch (_error) {
+        // Pointer capture can fail if the browser changes focus during Foundry events.
+      }
+    });
+
+    const applyDragFrame = () => {
+      const drag = this._qdPendingDamagePopupDrag;
+      if (!drag) return;
+      drag.raf = null;
+      const position = this.clampPendingDamagePopupPosition(drag.nextLeft, drag.nextTop);
+      popup.style.left = `${position.left}px`;
+      popup.style.top = `${position.top}px`;
+      popup.style.right = "auto";
+      popup.style.bottom = "auto";
+      popup.classList.add("is-user-positioned");
+    };
+
+    handle.addEventListener("pointermove", (event) => {
+      const drag = this._qdPendingDamagePopupDrag;
+      if (!drag || drag.pointerId !== event.pointerId) return;
+
+      event.preventDefault();
+      drag.nextLeft = drag.startLeft + (event.clientX - drag.startX);
+      drag.nextTop = drag.startTop + (event.clientY - drag.startY);
+      if (!drag.raf) drag.raf = requestAnimationFrame(applyDragFrame);
+    });
+
+    const endDrag = (event = null) => {
+      const drag = this._qdPendingDamagePopupDrag;
+      if (!drag) return;
+      if (event?.pointerId !== undefined && drag.pointerId !== event.pointerId) return;
+
+      if (drag.raf) cancelAnimationFrame(drag.raf);
+      const position = this.setPendingDamagePopupPosition(drag.nextLeft, drag.nextTop);
+      popup.style.left = `${position.left}px`;
+      popup.style.top = `${position.top}px`;
+      popup.style.right = "auto";
+      popup.style.bottom = "auto";
+      popup.classList.add("is-user-positioned");
+      this._qdPendingDamagePopupDrag = null;
+      popup.classList.remove("is-dragging");
+
+      try {
+        if (event?.pointerId !== undefined && handle.hasPointerCapture?.(event.pointerId)) handle.releasePointerCapture(event.pointerId);
+      } catch (_error) {
+        // Ignore release errors from browser/Foundry focus changes.
+      }
+    };
+
+    handle.addEventListener("pointerup", endDrag);
+    handle.addEventListener("pointercancel", endDrag);
+    if (this._qdPendingDamagePopupDragBlurHandler) window.removeEventListener("blur", this._qdPendingDamagePopupDragBlurHandler);
+    this._qdPendingDamagePopupDragBlurHandler = () => endDrag();
+    window.addEventListener("blur", this._qdPendingDamagePopupDragBlurHandler, { passive: true });
+  }
+
+  renderPendingDamagePopup() {
+    const view = this.getPendingDamageView();
+    if (!view.hasDamage) {
+      this.removePendingDamagePopup();
+      return;
+    }
+
+    const tokenOptions = this.getPendingDamageTokenOptions();
+    const optionsHtml = tokenOptions.length
+      ? tokenOptions.map((token) => {
+          const suffix = token.isAttacker ? " — attacker" : ` — ${token.actorName}`;
+          return `<option value="${this.escapeHtml(token.id)}" ${token.selected ? "selected" : ""}>${this.escapeHtml(token.name + suffix)}</option>`;
+        }).join("")
+      : '<option value="">No actor tokens on canvas</option>';
+
+    let popup = this._qdPendingDamagePopupElement;
+    if (!popup || !document.body.contains(popup)) {
+      popup = document.createElement("aside");
+      popup.className = "qd-ui2-pending-damage-popup";
+      popup.setAttribute("aria-label", "QuickDeck pending damage");
+      document.body.appendChild(popup);
+      this._qdPendingDamagePopupElement = popup;
+    }
+
+    popup.innerHTML = `
+      <div class="qd-ui2-pending-damage-popup-titlebar" data-qdeck-pending-damage-drag-handle="true" title="Drag to move">
+        <div class="qd-ui2-pending-damage-popup-titletext">
+          <span class="qd-ui2-pending-damage-popup-kicker">Pending Damage</span>
+          <span class="qd-ui2-pending-damage-popup-grab">Drag bar</span>
+        </div>
+        <button type="button" class="qd-ui2-pending-damage-popup-close" data-qdeck-pending-damage-action="clear" title="Close pending damage popup" aria-label="Close pending damage popup">×</button>
+      </div>
+      <div class="qd-ui2-pending-damage-popup-main">
+        <strong>${this.escapeHtml(view.title)}</strong>
+        <small>${this.escapeHtml(view.subtitle)}</small>
+      </div>
+      <label class="qd-ui2-pending-damage-target-row">
+        <span>Apply to</span>
+        <select data-qdeck-pending-damage-target-select>${optionsHtml}</select>
+      </label>
+      <div class="qd-ui2-pending-damage-popup-controls">
+        <button type="button" data-qdeck-pending-damage-action="apply">Apply Selected</button>
+        <button type="button" data-qdeck-pending-damage-action="pick">Pick Target</button>
+      </div>
+    `;
+
+    this.applyPendingDamagePopupPosition(popup);
+    this.wirePendingDamagePopupDrag(popup);
+
+    popup.querySelector("[data-qdeck-pending-damage-target-select]")?.addEventListener("change", (event) => {
+      if (this.qdPendingDamageContext) this.qdPendingDamageContext.selectedTokenId = event.currentTarget.value;
+    });
+
+    popup.querySelectorAll("[data-qdeck-pending-damage-action='apply']").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.openPendingDamageDialogForSelectedPopupToken();
+      });
+    });
+
+    popup.querySelectorAll("[data-qdeck-pending-damage-action='pick']").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.startPendingDamagePickTarget();
+      });
+    });
+
+    popup.querySelectorAll("[data-qdeck-pending-damage-action='clear']").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.clearPendingDamageContext();
+      });
+    });
+  }
+
+  removePendingDamagePopup() {
+    if (this._qdPendingDamagePopupDragBlurHandler) {
+      window.removeEventListener("blur", this._qdPendingDamagePopupDragBlurHandler);
+      this._qdPendingDamagePopupDragBlurHandler = null;
+    }
+    const drag = this._qdPendingDamagePopupDrag;
+    if (drag?.raf) cancelAnimationFrame(drag.raf);
+    this._qdPendingDamagePopupDrag = null;
+    const popup = this._qdPendingDamagePopupElement;
+    if (popup) {
+      popup.classList.remove("is-dragging");
+      popup.remove();
+    }
+    this._qdPendingDamagePopupElement = null;
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
+
 
     html.find("[data-action='add-actor']").on("click", (event) => {
       event.preventDefault();
@@ -4271,6 +6470,50 @@ export class QuickDeckApp extends Application {
       this.openReferenceIndexManager();
     });
 
+    html.find("[data-action='set-token-drop-auto-minimize']").on("change", async (event) => {
+      await this.setTokenDropAutoMinimizeEnabled(Boolean(event.currentTarget.checked));
+      this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='set-damage-pick-auto-minimize']").on("change", async (event) => {
+      await this.setDamagePickAutoMinimizeEnabled(Boolean(event.currentTarget.checked));
+      this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='set-token-drop-auto-restore']").on("change", async (event) => {
+      await this.setTokenDropAutoRestoreEnabled(Boolean(event.currentTarget.checked));
+      this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='toggle-dev-art-tuner-enabled']").on("change", async (event) => {
+      await this.setDevArtTunerEnabled(event.currentTarget.checked);
+    });
+
+    html.find("[data-action='open-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      this.openDevArtTuner();
+    });
+
+    html.find("[data-action='close-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      this.closeDevArtTuner();
+    });
+
+    html.find("[data-action='copy-dev-art-tuner-css']").on("click", (event) => {
+      event.preventDefault();
+      this.copyDevArtTunerCss();
+    });
+
+    html.find("[data-action='reset-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      this.resetDevArtTuner();
+    });
+
+    html.find("[data-action='status-dev-art-tuner']").on("click", (event) => {
+      event.preventDefault();
+      this.statusDevArtTuner();
+    });
+
     html.find("[data-action='remove-actor']").on("click", (event) => {
       event.preventDefault();
       event.stopPropagation();
@@ -4283,7 +6526,7 @@ export class QuickDeckApp extends Application {
       this.render();
     });
 
-    html.find("[data-action='open-actor']").on("click", (event) => {
+    html.find("[data-action='open-actor'], [data-action='center-roster-select']").on("click", (event) => {
       event.preventDefault();
       if (event.detail > 1) return;
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
@@ -4291,17 +6534,13 @@ export class QuickDeckApp extends Application {
 
       if (this._actorSelectTimeout) clearTimeout(this._actorSelectTimeout);
       this._actorSelectTimeout = window.setTimeout(() => {
-        if (this.activeActorId && this.activeActorId !== actorId) {
-          this.cancelTokenDrop({ render: false });
-          this.cancelTargetOpponentMode({ render: false, restore: false });
-        }
-        this.activeActorId = actorId;
-        this.render();
+        const didChange = this.selectCenterRosterActor(actorId);
+        if (didChange) this.render();
         this._actorSelectTimeout = null;
       }, 225);
     });
 
-    html.find("[data-action='open-actor'], [data-action='open-active-actor-sheet']").on("dblclick", (event) => {
+    html.find("[data-action='open-actor'], [data-action='center-roster-select'], [data-action='open-active-actor-sheet']").on("dblclick", (event) => {
       event.preventDefault();
       if (this._actorSelectTimeout) {
         clearTimeout(this._actorSelectTimeout);
@@ -4310,44 +6549,74 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       if (!actorId || !game.actors.has(actorId)) return;
 
-      if (this.activeActorId && this.activeActorId !== actorId) {
-        this.cancelTokenDrop({ render: false });
-        this.cancelTargetOpponentMode({ render: false, restore: false });
-      }
-      this.activeActorId = actorId;
+      const didChange = this.selectCenterRosterActor(actorId);
       this.openActorSheet(actorId);
+      if (didChange) this.render(false, { focus: false });
+    });
+
+
+    html.find("[data-action='center-roster-prev']").on("click", (event) => {
+      event.preventDefault();
+      if (this.pageCenterRoster("prev")) this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='center-roster-next']").on("click", (event) => {
+      event.preventDefault();
+      if (this.pageCenterRoster("next")) this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='drop-ui2-carousel-tokens']").on("click", async (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      const actorIds = String(event.currentTarget.dataset.actorIds || "")
+        .split(",")
+        .map((id) => id.trim())
+        .filter(Boolean);
+      await this.startUi2CarouselTokenDrop(actorIds);
+    });
+
+    html.find("[data-action='ui2-carousel-scroll']").on("click", (event) => {
+      event.preventDefault();
+      const direction = event.currentTarget.dataset.carouselDirection === "prev" ? -1 : 1;
+      this.shiftUi2Carousel(direction);
+      this.render(false, { focus: false });
+    });
+
+    html.find("[data-action='toggle-center-roster-minimized']").on("click", (event) => {
+      event.preventDefault();
+      this.isCenterRosterMinimized = !this.isCenterRosterMinimized;
       this.render(false, { focus: false });
     });
 
     html.find("[data-action='available-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.availableSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applyAvailableActorFilter(html);
+      this.scheduleSearchFilter("available", html, () => this.applyAvailableActorFilter(html));
     });
 
 
     html.find("[data-action='combat-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.combatSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applyCombatFilter(html);
+      this.scheduleSearchFilter("combat", html, () => this.applyCombatFilter(html));
     });
 
     html.find("[data-action='skills-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.skillsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applySkillsFilter(html);
+      this.scheduleSearchFilter("skills", html, () => this.applySkillsFilter(html));
     });
 
     html.find("[data-action='quick-skills-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.quickSkillsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applyQuickSkillsFilter(html);
+      this.scheduleSearchFilter("quick-skills", html, () => this.applyQuickSkillsFilter(html));
     });
 
     html.find("[data-action='spells-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.spellsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applySpellsFilter(html);
+      this.scheduleSearchFilter("spells", html, () => this.applySpellsFilter(html));
     });
 
     html.find("[data-action='clear-combat-search']").on("click", (event) => {
@@ -4495,11 +6764,11 @@ export class QuickDeckApp extends Application {
       this.render(false);
     });
 
-    html.find("[data-action='open-roster-drawer'], [data-action='open-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.openRosterDrawer(); });
-    html.find("[data-action='close-roster-drawer'], [data-action='close-roster-sidecar']").on("click", (event) => { event.preventDefault(); this.closeRosterDrawer(); });
+    html.find("[data-action='open-roster-drawer']").on("click", (event) => { event.preventDefault(); this.openRosterDrawer(); });
+    html.find("[data-action='close-roster-drawer']").on("click", (event) => { event.preventDefault(); this.closeRosterDrawer(); });
     html.find("[data-action='toggle-roster-drawer']").on("click", (event) => { event.preventDefault(); this.toggleRosterDrawer(); });
-    html.find("[data-action='open-actions-drawer'], [data-action='open-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
-    html.find("[data-action='close-actions-drawer'], [data-action='close-actions-sidecar']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
+    html.find("[data-action='open-actions-drawer']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
+    html.find("[data-action='close-actions-drawer']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
     html.find("[data-action='toggle-actions-drawer']").on("click", (event) => { event.preventDefault(); this.toggleActionsDrawer(event.currentTarget.dataset.drawer); });
     html.find("[data-action='toggle-info-popover']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.isInfoPopoverOpen = !this.isInfoPopoverOpen; this.render(false); });
     html.find("[data-action='minimize-overlay']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.toggleMinimizedState(); });
@@ -4523,6 +6792,38 @@ export class QuickDeckApp extends Application {
       if (event.key !== "Enter") return;
       event.preventDefault();
       event.currentTarget.blur();
+    });
+
+    html.find("[data-action='primary-roll-select']").on("change", (event) => {
+      const key = String(event.currentTarget.value || "");
+      if (!PRIMARY_ROLL_OPTIONS.some((option) => option.key === key)) return;
+      this.primaryRollKey = key;
+      const selectedOption = event.currentTarget.selectedOptions?.[0];
+      const valueDisplay = selectedOption?.dataset?.value ?? "—";
+      const chip = event.currentTarget.closest?.(".qd31-primary-roll-chip");
+      const valueElement = chip?.querySelector?.(".qd31-primary-roll-value");
+      if (valueElement) valueElement.textContent = valueDisplay;
+    });
+
+    html.find("[data-action='roll-primary-attribute']").on("click", async (event) => {
+      event.preventDefault();
+      await this.rollPrimaryAttribute(event);
+    });
+
+    html.find("[data-action='secondary-roll-select']").on("change", (event) => {
+      const key = String(event.currentTarget.value || "");
+      if (!SECONDARY_ROLL_OPTIONS.some((option) => option.key === key)) return;
+      this.secondaryRollKey = key;
+      const selectedOption = event.currentTarget.selectedOptions?.[0];
+      const valueDisplay = selectedOption?.dataset?.value ?? "—";
+      const chip = event.currentTarget.closest?.(".qd31-secondary-roll-chip");
+      const valueElement = chip?.querySelector?.(".qd31-secondary-roll-value");
+      if (valueElement) valueElement.textContent = valueDisplay;
+    });
+
+    html.find("[data-action='roll-secondary-attribute']").on("click", async (event) => {
+      event.preventDefault();
+      await this.rollSecondaryAttribute(event);
     });
 
     html.find("[data-action='roll-defense']").on("click", async (event) => {
@@ -4619,6 +6920,18 @@ export class QuickDeckApp extends Application {
         });
         this.scheduleChatFocus();
       }
+    });
+
+    html.find("[data-action='apply-pending-damage']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.openPendingDamageDialog();
+    });
+
+    html.find("[data-action='clear-pending-damage']").on("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      this.clearPendingDamageContext();
     });
 
     html.find("[data-action='roll-damage']").on("click", async (event) => {
@@ -4784,31 +7097,35 @@ export class QuickDeckApp extends Application {
       return;
     }
 
+    const setRosterDragOver = (isOver) => {
+      if (this.isDragOverRoster === isOver) return;
+      this.isDragOverRoster = isOver;
+      dropTarget.classList.toggle("is-drag-over", isOver);
+    };
+
     dropTarget.addEventListener("dragenter", (event) => {
+      if (!this.isSupportedRosterDrop(event)) return;
       event.preventDefault();
-      this.isDragOverRoster = true;
-      this.render(false);
+      setRosterDragOver(true);
     });
 
     dropTarget.addEventListener("dragover", (event) => {
+      if (!this.isSupportedRosterDrop(event)) return;
       event.preventDefault();
-      if (!this.isDragOverRoster) {
-        this.isDragOverRoster = true;
-        this.render(false);
-      }
+      if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+      setRosterDragOver(true);
     });
 
     dropTarget.addEventListener("dragleave", (event) => {
-      event.preventDefault();
       if (event.currentTarget?.contains(event.relatedTarget)) return;
-      this.isDragOverRoster = false;
-      this.render(false);
+      setRosterDragOver(false);
     });
 
     dropTarget.addEventListener("drop", async (event) => {
+      if (!this.isSupportedRosterDrop(event)) return;
       event.preventDefault();
       event.stopPropagation();
-      this.isDragOverRoster = false;
+      setRosterDragOver(false);
 
       try {
         const actor = await this.resolveActorFromDropData(event);
@@ -4821,7 +7138,7 @@ export class QuickDeckApp extends Application {
 
         this.ensureActorTab(actor.id);
         console.log("gurps-quickdeck | Actor dropped", actor.name);
-        this.render();
+        this.render(false, { focus: false });
       } catch (error) {
         console.warn("gurps-quickdeck | Failed to process dropped actor.", error);
       }

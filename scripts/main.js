@@ -11,6 +11,10 @@ const SETTING_KEYS = {
   DEFAULT_DRAWER: "defaultDrawer",
   MINIMIZED: "isMinimized",
   RESTORE_PILL_POSITION: "restorePillPosition",
+  TOKEN_DROP_AUTO_MINIMIZE: "tokenDropAutoMinimize",
+  TOKEN_DROP_AUTO_RESTORE: "tokenDropAutoRestore",
+  DAMAGE_PICK_AUTO_MINIMIZE: "damagePickAutoMinimize",
+  DEV_ART_TUNER_ENABLED: "devArtTunerEnabled",
   REFERENCE_INDEX: REFERENCE_INDEX_SETTING_KEY,
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
@@ -34,14 +38,37 @@ function openQuickDeck() {
   return quickDeckApp;
 }
 
-function renderQuickDeckIfOpen() {
+const QUICKDECK_RENDER_DEBOUNCE_MS = 25;
+const QUICKDECK_DRAG_RENDER_RETRY_MS = 100;
+let pendingQuickDeckRender = null;
+function renderQuickDeckIfOpen(delay = QUICKDECK_RENDER_DEBOUNCE_MS) {
   if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-  quickDeckApp.render(false, { focus: false });
-  quickDeckApp.scheduleNativeWindowFocusAfterRender?.();
+  if (pendingQuickDeckRender) return;
+
+  pendingQuickDeckRender = setTimeout(() => {
+    pendingQuickDeckRender = null;
+    if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
+    if (quickDeckApp.isOverlayDragging?.()) {
+      renderQuickDeckIfOpen(QUICKDECK_DRAG_RENDER_RETRY_MS);
+      return;
+    }
+    quickDeckApp.render(false, { focus: false });
+    quickDeckApp.scheduleNativeWindowFocusAfterRender?.();
+  }, delay);
+}
+
+function actorAffectsQuickDeckView(actorId, options = {}) {
+  if (!quickDeckApp || !actorId) return false;
+  return quickDeckApp.isActorRelevantToCurrentView?.(actorId, options) ?? true;
 }
 
 Hooks.once("ready", () => {
   console.log(`${MODULE_ID} | Ready`);
+  Hooks.on("renderChatMessage", (message, html) => {
+    if (!quickDeckApp) quickDeckApp = new QuickDeckApp();
+    quickDeckApp.capturePendingDamageFromChatMessage?.(message, html);
+  });
+
   game.gurpsQuickDeckDebug = {
     open: () => openQuickDeck(),
     forceOpen: () => openQuickDeck(),
@@ -125,6 +152,33 @@ Hooks.once("init", () => {
     default: false
   });
 
+  game.settings.register(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_MINIMIZE, {
+    name: "QuickDeck Token Drop: Auto-Minimize",
+    hint: "Minimize QuickDeck while placing tokens from Drop Carousel.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.TOKEN_DROP_AUTO_RESTORE, {
+    name: "QuickDeck Token Drop: Auto-Restore",
+    hint: "Restore QuickDeck after Drop Carousel token placement completes or is cancelled.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.DAMAGE_PICK_AUTO_MINIMIZE, {
+    name: "QuickDeck Damage Picker: Auto-Minimize",
+    hint: "Minimize QuickDeck while using the pending damage Pick Target reticle.",
+    scope: "client",
+    config: true,
+    type: Boolean,
+    default: true
+  });
+
   game.settings.register(MODULE_ID, SETTING_KEYS.RESTORE_PILL_POSITION, {
     name: "QuickDeck Restore Pill Position",
     hint: "Client-side saved top/left position for the minimized QuickDeck restore pill.",
@@ -132,6 +186,15 @@ Hooks.once("init", () => {
     config: false,
     type: String,
     default: "null"
+  });
+
+  game.settings.register(MODULE_ID, SETTING_KEYS.DEV_ART_TUNER_ENABLED, {
+    name: "QuickDeck Dev Art Tuner Enabled",
+    hint: "Client-side toggle for the developer-only QuickDeck art/layout tuner controls.",
+    scope: "client",
+    config: false,
+    type: Boolean,
+    default: false
   });
 
 
@@ -154,59 +217,82 @@ Hooks.once("init", () => {
 
 });
 
-Hooks.on("renderActorDirectory", (app, html) => {
+function injectQuickDeckActorDirectoryButton(html) {
   const root = html?.[0] ?? html;
   if (!root) return;
 
-  const headerActions = root.querySelector(".header-actions");
+  /*
+   * Foundry v13/sidebar markup can vary by theme/system/module.
+   * The old hook only used .header-actions, so the launcher vanished if that
+   * exact container was not present. Try the normal action strip first, then
+   * fall back to the directory header itself.
+   */
+  const headerActions =
+    root.querySelector(".header-actions")
+    ?? root.querySelector(".directory-header .header-actions")
+    ?? root.querySelector(".directory-header")
+    ?? root.querySelector("header")
+    ?? root;
+
   if (!headerActions) return;
 
-  if (headerActions.querySelector(`[data-action='${MODULE_ID}-open']`)) return;
+  if (root.querySelector(`[data-action='${MODULE_ID}-open']`)) return;
 
   const button = document.createElement("button");
   button.type = "button";
   button.classList.add("quickdeck-open-button");
   button.dataset.action = `${MODULE_ID}-open`;
-  button.innerHTML = '<i class="fas fa-id-card"></i> QuickDeck';
+  button.title = "Open GURPS QuickDeck";
+  button.setAttribute("aria-label", "Open GURPS QuickDeck");
+  button.innerHTML = '<i class="fas fa-id-card"></i> QD Run';
   button.addEventListener("click", (event) => {
     event.preventDefault();
+    event.stopPropagation();
     openQuickDeck();
   });
 
   headerActions.appendChild(button);
+}
+
+Hooks.on("renderActorDirectory", (_app, html) => {
+  injectQuickDeckActorDirectoryButton(html);
 });
 
 Hooks.on("deleteActor", (actor) => {
   if (!quickDeckApp) return;
-  quickDeckApp.invalidateDerivedActorData(actor?.id);
-  quickDeckApp.onActorDeleted(actor.id);
+  const actorId = actor?.id;
+  const shouldRender = actorAffectsQuickDeckView(actorId, { includeAvailable: true });
+  quickDeckApp.invalidateDerivedActorData(actorId);
+  if (shouldRender && !quickDeckApp.onActorDeleted(actorId)) renderQuickDeckIfOpen();
 });
 
 Hooks.on("updateActor", (actor) => {
   if (!quickDeckApp) return;
-  quickDeckApp.invalidateDerivedActorData(actor?.id);
-  renderQuickDeckIfOpen();
+  const actorId = actor?.id;
+  const shouldRender = actorAffectsQuickDeckView(actorId, { includeAvailable: true });
+  quickDeckApp.invalidateDerivedActorData(actorId);
+  if (shouldRender) renderQuickDeckIfOpen();
 });
 
 Hooks.on("createItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  renderQuickDeckIfOpen();
+  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen();
 });
 
 Hooks.on("updateItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  renderQuickDeckIfOpen();
+  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen();
 });
 
 Hooks.on("deleteItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  renderQuickDeckIfOpen();
+  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen();
 });
 
 function refreshQuickDeckOnCombatChange() {
