@@ -6931,3 +6931,108 @@ button.qd-ui2-stat-tile {
   pointer-events: none !important;
   visibility: hidden !important;
 }
+
+/* Milestone 1.1 hotfix: raw clean stone tile on center and roster panels.
+   Matches the Action Deck direction: raw dark rocky tile, no brown wash, no black mask.
+   Visual-only. No layout, JS, template, selector rename, or data-action changes. */
+
+/* Left roster + center cockpit raw stone surfaces. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-left-drawer,
+.qd40-overlay .qd-ui2-center-cockpit {
+  background-color: #050403 !important;
+  background-image: var(--qd-asset-clean-stone-tile) !important;
+  background-repeat: repeat !important;
+  background-size: 420px 420px !important;
+  background-position: 0 0 !important;
+  background-blend-mode: normal !important;
+}
+
+/* Stop center/left decorative overlays from tinting or masking the raw stone. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer::after,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit::after,
+.qd40-overlay .qd-ui2-left-drawer::before,
+.qd40-overlay .qd-ui2-left-drawer::after,
+.qd40-overlay .qd-ui2-center-cockpit::before,
+.qd40-overlay .qd-ui2-center-cockpit::after {
+  content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+  opacity: 0 !important;
+}
+
+/* Do not darken the large center/left containers over the stone. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer .qd-ui2-roster-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-actor-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-center-section,
+.qd40-overlay .qd-ui2-left-drawer .qd-ui2-roster-section,
+.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-center-section {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
+/* Milestone 1.2 hotfix: cheap action button render performance.
+   Reduces paint/compositing cost when clicking repeated roll/action controls.
+   Visual-only. No JS, template, roll logic, data-action, or layout changes. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab,
+.qd40-overlay .qd-ui2-action-row,
+.qd40-overlay .qd-ui2-action-button,
+.qd40-overlay .qd-ui2-reference-button,
+.qd40-overlay .qd-ui2-drawer-tab {
+  transition:
+    background-color 80ms ease,
+    border-color 80ms ease,
+    color 80ms ease !important;
+  will-change: auto !important;
+}
+
+/* Do not move or filter repeated rows/buttons on hover/click. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:active,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab:active,
+.qd40-overlay .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-action-button:hover,
+.qd40-overlay .qd-ui2-action-button:active,
+.qd40-overlay .qd-ui2-reference-button:hover,
+.qd40-overlay .qd-ui2-drawer-tab:hover,
+.qd40-overlay .qd-ui2-drawer-tab:active {
+  transform: none !important;
+  filter: none !important;
+}
+
+/* Reduce expensive glow stacks on repeated action hover states.
+   Keep border/background feedback, but avoid large repaint-heavy shadows. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:hover,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:focus-visible,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button:focus-visible,
+.qd40-overlay .qd-ui2-action-row:hover,
+.qd40-overlay .qd-ui2-action-button:hover,
+.qd40-overlay .qd-ui2-action-button:focus-visible,
+.qd40-overlay .qd-ui2-reference-button:focus-visible {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 224, 128, 0.16) !important;
+}
+
+/* Keep active/favorite/pin readable without heavy glow. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button.is-active,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row.is-favorite,
+.qd40-overlay .qd-ui2-action-button.is-active,
+.qd40-overlay .qd-ui2-action-row.is-favorite {
+  filter: none !important;
+  transform: none !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 224, 128, 0.18) !important;
+}
+
