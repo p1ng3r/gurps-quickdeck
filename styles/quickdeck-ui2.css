@@ -2512,7 +2512,9 @@ button.qd-ui2-stat-tile {
   width: 220px !important;
   min-width: 220px !important;
   max-width: 220px !important;
-}\n\n/*
+}
+
+/*
   Correct structure after moving carousel out of title block:
   [ Name above portrait ] [ Carousel             ]
   [ Portrait            ] [ HP meter             ]
@@ -2544,10 +2546,10 @@ button.qd-ui2-stat-tile {
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel,
 .qd40-overlay .qd-ui2-shell.qd-ui2-left-open.qd-ui2-right-open .qd-ui2-card-carousel {
   translate: 110px 0 !important;
-}\n
+}
 
-/* True carousel is render-driven by ui2CarouselActors.
-   The track is only a five-slot viewport, never a browser scroll strip. */
+
+/* Circular carousel viewport. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track,
 .qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track {
   overflow: hidden !important;
@@ -2559,7 +2561,9 @@ button.qd-ui2-stat-tile {
 .qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button {
   flex: 0 0 30px !important;
   scroll-snap-align: none !important;
-}\n\n/* Let hovered carousel portraits grow outside the five-slot rail. */
+}
+
+/* Carousel portrait hover overflow. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel,
 .qd40-overlay .qd-ui2-card-carousel,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-track,
@@ -2567,7 +2571,7 @@ button.qd-ui2-stat-tile {
   overflow: visible !important;
 }
 
-/* Smooth base state for the circular carousel portraits. */
+/* Circular carousel portrait base state. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button,
 .qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button {
   position: relative !important;
@@ -2581,7 +2585,7 @@ button.qd-ui2-stat-tile {
     z-index 120ms ease !important;
 }
 
-/* Hover/focus zoom: roughly double size without changing layout flow. */
+/* Carousel portrait hover/focus zoom. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:hover,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:focus-visible,
 .qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:hover,
@@ -2596,15 +2600,16 @@ button.qd-ui2-stat-tile {
     0 10px 24px rgba(0, 0, 0, 0.48) !important;
 }
 
-/* Active + hover should still look active while enlarged. */
+/* Active carousel portrait hover/focus state. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button.is-active:hover,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button.is-active:focus-visible,
 .qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button.is-active:hover,
 .qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button.is-active:focus-visible {
   transform: scale(2.08) !important;
-}\n
+}
 
-/* UI2 HP/FP bars expose the current value as an editable set-resource input. */
+
+/* Editable HP/FP vitals. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-control,
 .qd40-overlay .qd-ui2-vital-control {
   cursor: text !important;
@@ -2657,7 +2662,7 @@ button.qd-ui2-stat-tile {
   font-weight: 800 !important;
 }
 
-/* Hide number spinners so the value reads like cockpit text. */
+/* HP/FP number input chrome reset. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input::-webkit-outer-spin-button,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input::-webkit-inner-spin-button,
 .qd40-overlay .qd-ui2-vital-input::-webkit-outer-spin-button,
@@ -2669,7 +2674,9 @@ button.qd-ui2-stat-tile {
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input[type="number"],
 .qd40-overlay .qd-ui2-vital-input[type="number"] {
   -moz-appearance: textfield !important;
-}\n\n/* Keep HP/FP editable, but remove the inner input-pill look. */
+}
+
+/* Invisible HP/FP input chrome. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input,
 .qd40-overlay .qd-ui2-vital-input {
   width: 38px !important;
@@ -2707,8 +2714,10 @@ button.qd-ui2-stat-tile {
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-max,
 .qd40-overlay .qd-ui2-vital-max {
   margin-left: 1px !important;
-}\n\n\n/* Remove the black inner capsule around HP/FP values.
-   The editable input remains, but visually blends into the main HP/FP bar. */
+}
+
+
+/* HP/FP readout chrome reset. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-readout,
 .qd40-overlay .qd-ui2-vital-readout {
   background: transparent !important;
@@ -2755,7 +2764,10 @@ button.qd-ui2-stat-tile {
   border: 0 !important;
   box-shadow: none !important;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9) !important;
-}\n\n\n#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-stack,
+}
+
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-portrait-stack,
 .qd40-overlay .qd-ui2-portrait-stack {
   grid-area: portrait !important;
   display: grid !important;
@@ -2792,7 +2804,8 @@ button.qd-ui2-stat-tile {
   color: #fff1c9 !important;
   border-color: rgba(240, 190, 91, 0.72) !important;
   filter: brightness(1.1) !important;
-}\n
+}
+
 
 /* Combat tracker current turn is distinct from QuickDeck selected actor. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-portrait-button.is-current-turn,
@@ -3189,7 +3202,7 @@ button.qd-ui2-stat-tile {
 }
 
 
-/* QuickDeck UI2 remove stray center header p target */
+/* Remove stray center header paragraph target. */
 #gurps-quickdeck-overlay .qd40-shell > main:nth-of-type(1) > section:nth-of-type(2) > header:nth-of-type(1) > div:nth-of-type(1) > p:nth-of-type(1) {
   display: none !important;
   width: 0 !important;
