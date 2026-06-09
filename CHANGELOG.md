@@ -1,3 +1,12 @@
+## [Unreleased] - v0.20.1-foundry-forge-api-audit
+
+### Added
+- Adds a Foundry v13 API, Application lifecycle, hook usage, drag/drop, manifest/path, and Forge compatibility audit report for the UI2-only QuickDeck runtime.
+
+### Changed
+- Updates package metadata to the v0.20.1 audit release and keeps README release wording aligned with the UI2-only state.
+- Tightens close-time cleanup for UI2 carousel token drop, pending damage popup/pick-target state, scheduled UI2 sizing frames, and inline sizing.
+
 ## [Unreleased] - v0.19.5-ui2-only-release-checkpoint
 
 ### Added
