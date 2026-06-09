@@ -4836,53 +4836,38 @@
   z-index: 70 !important;
 }
 
-/* v0.21.0a UI2 carousel hover name label polish.
-   The button already carries data-hover-name from the template; reveal it only
-   for hover/focus as a paint-only pseudo-element so zoom sizing and selection
-   behavior stay unchanged. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button::after,
 .qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button::after {
-  content: attr(data-hover-name) !important;
+  content: none;
   position: absolute !important;
   z-index: 71 !important;
   left: 50% !important;
-  bottom: calc(100% + 6px) !important;
+  bottom: calc(100% + 5px) !important;
   display: block !important;
   box-sizing: border-box !important;
-  width: max-content !important;
-  min-width: 42px !important;
-  max-width: 124px !important;
-  padding: 3px 7px !important;
+  max-width: 108px !important;
+  padding: 2px 6px !important;
   overflow: hidden !important;
-  color: #fff3cf !important;
-  background: linear-gradient(180deg, rgba(26, 17, 9, 0.98), rgba(5, 4, 3, 0.94)) !important;
-  border: 1px solid rgba(244, 194, 91, 0.82) !important;
-  border-radius: 6px !important;
-  box-shadow:
-    0 1px 0 rgba(255, 239, 190, 0.16) inset,
-    0 5px 12px rgba(0, 0, 0, 0.55),
-    0 0 10px rgba(232, 174, 64, 0.22) !important;
+  color: #fff0c7 !important;
+  background: rgba(7, 5, 4, 0.92) !important;
+  border: 1px solid rgba(232, 181, 82, 0.72) !important;
+  border-radius: 5px !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.48) !important;
   font-size: 11px !important;
-  font-weight: 900 !important;
-  letter-spacing: 0.01em !important;
-  line-height: 1.15 !important;
-  opacity: 0 !important;
+  font-weight: 850 !important;
+  line-height: 1.1 !important;
   pointer-events: none !important;
   text-align: center !important;
   text-overflow: ellipsis !important;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.98) !important;
-  transform: translate(-50%, 2px) scale(0.5) !important;
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.95) !important;
+  transform: translateX(-50%) scale(0.5) !important;
   transform-origin: bottom center !important;
-  transition:
-    opacity 90ms ease,
-    transform 90ms ease !important;
   white-space: nowrap !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:is(:hover, :focus-visible)::after,
 .qd40-overlay .qd-ui2-card-carousel .qd-ui2-carousel-portrait-button:is(:hover, :focus-visible)::after {
-  opacity: 1 !important;
-  transform: translate(-50%, 0) scale(0.5) !important;
+  content: attr(data-hover-name);
 }
 
 /* v0.16.6f UI2 center focus finish.
