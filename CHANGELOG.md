@@ -1,3 +1,11 @@
+## [Unreleased] - v0.19.5-ui2-only-release-checkpoint
+
+### Added
+- Adds a UI2-only release checkpoint report confirming README/CHANGELOG/module manifest state, deleted UI1 reference searches, remaining shared `.quickdeck-*` carryovers, CSS URL asset resolution, validation results, and manual Foundry QA coverage.
+
+### Changed
+- Confirms current release wording treats UI2 as the only supported QuickDeck interface after UI1 retirement, with no runtime behavior, template behavior, CSS layout, `data-action`, or binary asset changes.
+
 ## [Unreleased] - v0.14.9-ui2-right-drawer-mapping-local
 
 ### Changed
