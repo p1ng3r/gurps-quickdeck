@@ -2,10 +2,11 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
-## What's New in v0.20.1 (Audit)
+## What's New in v0.20.3 (Release-readiness checkpoint)
 
-- QuickDeck remains UI2-only and now includes a narrow Foundry v13 API, lifecycle cleanup, manifest/path, and Forge-hosted path audit.
-- The Command Desk art skin remains wired after the existing QuickDeck stylesheet without replacing current behavior.
+- QuickDeck remains UI2-only; the retired UI1 app shell, sidecar templates, and old UI mode support are not part of the supported interface.
+- This checkpoint confirms the v0.20 hardening line is ready to move into UI2 polish after manifest/path checks, stale UI1 reference searches, CSS asset resolution checks, and Forge/local path safety review.
+- No runtime behavior, `data-action` names, CSS visuals/layout, templates, or binary assets were changed for this checkpoint.
 
 ## What's New in v0.6.0 (Release Candidate)
 
