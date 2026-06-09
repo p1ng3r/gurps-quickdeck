@@ -7,7 +7,7 @@
         class="qd40-info-button"
         data-action="toggle-info-popover"
         aria-expanded="{{#if isInfoPopoverOpen}}true{{else}}false{{/if}}"
-        title="QuickDeck version info"
+        title="QuickDeck Help / Dev"
       >?</button>
     </div>
 
@@ -20,446 +20,527 @@
 
 
   {{#if isInfoPopoverOpen}}
-  <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck version information">
-    <div class="qd40-info-title">GURPS QuickDeck</div>
+  <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck Help / Dev">
+    <div class="qd40-info-title">QuickDeck Help / Dev</div>
     <div class="qd40-info-row"><span>UI</span><strong>{{uiBuildLabel}}</strong></div>
     <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
-    <div class="qd40-info-row"><span>Mode</span><strong>qd40 chromeless command desk</strong></div>
+    <div class="qd40-info-row"><span>Interface</span><strong>UI2 command desk</strong></div>
     <div class="qd40-info-row"><span>Branch</span><strong>{{uiBranchLabel}}</strong></div>
+    <div class="qd40-info-divider" aria-hidden="true"></div>
+    <label class="qd40-info-dev-field">
+      <input type="checkbox" data-action="toggle-dev-art-tuner-enabled" {{#if devArtTunerEnabled}}checked{{/if}}>
+      <span>
+        <strong>Dev Art Tuner</strong>
+        <small>Layout/art inspection tools</small>
+      </span>
+    </label>
   </div>
   {{/if}}
 
-  <div class="qd40-body">
-  <section class="qd40-shell qd31-shell {{#if isRosterDrawerOpen}}qd31-left-open{{else}}qd31-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd31-right-open{{else}}qd31-right-collapsed{{/if}}" data-active-drawer="{{activeDrawer}}">
-    <div class="qd31-left-panel-wrap qd31-panel-wrap {{#if isRosterDrawerOpen}}is-open{{else}}is-collapsed{{/if}}">
-    <button class="qd31-edge-tab qd31-left-edge-tab {{#unless isRosterDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-roster-drawer" title="{{#if isRosterDrawerOpen}}Collapse roster{{else}}Open roster{{/if}}">{{#if isRosterDrawerOpen}}« Collapse{{else}}Roster ›{{/if}}</button>
-  {{#if isRosterDrawerOpen}}
-  <aside class="qd31-left-drawer">
-    <header class="qd31-drawer-header">
-      <h3>Active Roster</h3>
-      <button type="button" class="qd31-square-button qd31-trash-button" data-action="clear-roster" title="Clear roster">🗑</button>
-    </header>
-    <div class="qd31-roster-list" data-drop-zone="roster">
-      {{#each rosterActors as |actor|}}
-      <article class="qd31-roster-card {{#if actor.isActive}}is-active{{/if}}" data-action="open-actor" data-actor-id="{{actor.id}}">
-        <img src="{{actor.img}}" alt="{{actor.name}}" />
-        <div class="qd31-roster-meta">
-          <strong>{{actor.name}}</strong>
-          <div class="qd31-mini-bars">
-            <div class="qd31-mini-row qd31-mini-row-hp"><span>HP {{actor.hpDisplay}}/{{actor.hpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.hpPercent}}%;"></span></div></div>
-            <div class="qd31-mini-row qd31-mini-row-fp"><span>FP {{actor.fpDisplay}}/{{actor.fpMaxDisplay}}</span><div class="qd31-mini-fill"><span style="width: {{actor.fpPercent}}%;"></span></div></div>
-          </div>
-        </div>
-        <button type="button" class="qd31-square-button" data-action="remove-actor" data-actor-id="{{actor.id}}" title="Remove actor">×</button>
-      </article>
-      {{/each}}
-    </div>
+  <div class="qd40-body qd-ui2-body">
+    <section
+      class="qd40-shell qd-ui2-shell {{#if isRosterDrawerOpen}}qd-ui2-left-open{{else}}qd-ui2-left-collapsed{{/if}} {{#if isActionsDrawerOpen}}qd-ui2-right-open{{else}}qd-ui2-right-collapsed{{/if}}"
+      data-active-drawer="{{activeDrawer}}"
+      aria-label="QuickDeck UI2 shell"
+    >
+      <button
+        class="qd-ui2-edge-tab qd-ui2-left-tab"
+        type="button"
+        data-action="toggle-roster-drawer"
+        title="{{#if isRosterDrawerOpen}}Collapse Active Characters drawer{{else}}Open Active Characters drawer{{/if}}"
+        aria-expanded="{{#if isRosterDrawerOpen}}true{{else}}false{{/if}}"
+      >
+        <span>{{#if isRosterDrawerOpen}}‹ Close{{else}}Active ›{{/if}}</span>
+      </button>
 
-    <section class="qd31-available-section">
-      <details class="qd31-available-collapsible" open>
-        <summary class="qd31-available-summary">Search Actors</summary>
-        <div class="qd31-available-body">
-          <input type="search" data-action="available-search" value="{{availableSearch}}" placeholder="Search" aria-label="Search actors" />
-          <div class="qd31-available-list">
-          {{#each availableActors as |actor|}}
-            <div class="qd31-action-row qd31-available-row" data-search-row="available" data-search-text="{{actor.searchText}}">
-              <img class="qd31-available-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
-              <div class="qd31-available-meta">
+      {{#if isRosterDrawerOpen}}
+      <aside class="qd-ui2-drawer qd-ui2-left-drawer" aria-label="UI2 character drawer">
+        <header class="qd-ui2-panel-header">
+          <h2>Roster</h2>
+        </header>
+        <section class="qd-ui2-active-roster-card" aria-label="Active roster">
+          <h3>Active</h3>
+          {{#if hasRosterActors}}
+          <div class="qd-ui2-active-roster-list" data-drop-zone="roster">
+            {{#each rosterActors as |actor|}}
+            <article
+              class="qd-ui2-active-roster-row {{#if actor.isActive}}is-active{{/if}}"
+              data-action="open-actor"
+              data-actor-id="{{actor.id}}"
+              title="Select {{actor.name}}"
+            >
+              <img class="qd-ui2-active-roster-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+              <div class="qd-ui2-active-roster-meta">
                 <strong>{{actor.name}}</strong>
-                <small>{{actor.actorType}}</small>
+                {{#if actor.actorType}}<small>{{actor.actorType}}</small>{{/if}}
               </div>
-              <button type="button" class="qd31-square-button qd31-add-actor-button" data-action="add-actor" data-actor-id="{{actor.id}}" title="Add {{actor.name}}">+</button>
-            </div>
-          {{/each}}
+              <button
+                type="button"
+                class="qd-ui2-active-roster-remove"
+                data-action="remove-actor"
+                data-actor-id="{{actor.id}}"
+                title="Remove {{actor.name}}"
+                aria-label="Remove {{actor.name}}"
+              >×</button>
+            </article>
+            {{/each}}
           </div>
-        </div>
-      </details>
-    </section>
-  </aside>
-  {{/if}}
-  </div>
-
-  <div class="qd31-center-wrap qd31-panel-wrap">
-  <section class="qd31-center-cockpit">
-    <header class="qd31-header qd31-center-art-header"><h2>The Anvil Desk</h2></header>
-    <section class="qd31-center-roster {{#if centerRosterView.isMinimized}}is-minimized{{/if}}" aria-label="Center Active Roster carousel">
-      <header class="qd31-center-roster-header">
-        <button
-          type="button"
-          class="qd31-center-roster-title"
-          data-action="toggle-center-roster-minimized"
-          title="{{#if centerRosterView.isMinimized}}Expand Active Roster{{else}}Collapse Active Roster{{/if}}"
-        >
-          <span class="qd31-center-roster-gem" aria-hidden="true">◆</span>
-          <span>Active Roster</span>
-          <small>{{centerRosterView.total}}</small>
-        </button>
-        {{#unless centerRosterView.isMinimized}}
-        <div class="qd31-center-roster-controls">
-          {{#if centerRosterView.hasPaging}}
-          <button type="button" class="qd31-square-button qd31-center-roster-page" data-action="center-roster-prev" {{#unless centerRosterView.canPagePrev}}disabled{{/unless}} title="Previous roster actors">‹</button>
-          <button type="button" class="qd31-square-button qd31-center-roster-page" data-action="center-roster-next" {{#unless centerRosterView.canPageNext}}disabled{{/unless}} title="Next roster actors">›</button>
+          {{else}}
+          <p>No active actors yet. Drop actors here or add them from Available.</p>
           {{/if}}
-          <button type="button" class="qd31-square-button qd31-center-roster-collapse" data-action="toggle-center-roster-minimized" title="Collapse Active Roster">–</button>
-        </div>
-        {{/unless}}
-      </header>
-      {{#unless centerRosterView.isMinimized}}
-      <div class="qd31-center-roster-body">
-        {{#if centerRosterView.isEmpty}}
-        <div class="qd31-center-roster-empty">No roster actors yet. Add actors from the roster drawer.</div>
-        {{else}}
-        <div class="qd31-center-roster-track">
-          {{#each centerRosterView.actors as |actor|}}
-          <button
-            type="button"
-            class="qd31-center-roster-tile {{#if actor.isActive}}is-active{{/if}}"
-            data-action="center-roster-select"
-            data-actor-id="{{actor.id}}"
-            title="Select {{actor.name}} (double-click to open sheet)"
-          >
-            <span class="qd31-center-roster-portrait-frame">
-              <img src="{{actor.img}}" alt="{{actor.name}}" />
-            </span>
-            <span class="qd31-center-roster-name">{{actor.name}}</span>
-          </button>
-          {{/each}}
-        </div>
-        {{/if}}
-      </div>
-      {{/unless}}
-    </section>
-    {{#if activeActor}}
-    <section class="qd31-actor-card">
-      <header class="quickdeck-actor-header qd31-selected-actor-header">
-        <img
-          class="qd31-actor-portrait qd31-selected-actor-portrait qd31-actor-sheet-link"
-          src="{{activeActor.img}}"
-          alt="{{activeActor.name}}"
-          data-action="open-active-actor-sheet"
-          data-actor-id="{{activeActor.id}}"
-        />
-
-        <div class="quickdeck-actor-identity qd31-selected-actor-identity">
-          <h3
-            class="qd31-actor-name-link qd31-actor-sheet-link"
-            data-action="open-active-actor-sheet"
-            data-actor-id="{{activeActor.id}}"
-          >{{activeActor.name}}</h3>
-          <p>{{activeActor.actorType}}</p>
-          <div class="qd31-center-vitals">
-            <div class="qd31-roll-chip-row" aria-label="Attribute roll controls">
-              <div class="qd31-roll-chip qd31-primary-roll-chip" aria-label="Primary roll controls">
-                <select class="qd31-roll-select qd31-primary-roll-select" data-action="primary-roll-select" aria-label="Primary roll target">
-                  {{#each primaryRollView.options as |option|}}
-                  <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
-                  {{/each}}
-                </select>
-                <span class="qd31-roll-value qd31-primary-roll-value">{{primaryRollView.selectedValue}}</span>
-                <button type="button" class="qd31-square-button qd31-roll-button qd31-primary-roll-button" data-action="roll-primary-attribute" title="Roll selected primary attribute" aria-label="Roll selected primary attribute">🎲</button>
-              </div>
-              <div class="qd31-roll-chip qd31-secondary-roll-chip" aria-label="Secondary roll controls">
-                <select class="qd31-roll-select qd31-secondary-roll-select" data-action="secondary-roll-select" aria-label="Secondary roll target">
-                  {{#each secondaryRollView.options as |option|}}
-                  <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
-                  {{/each}}
-                </select>
-                <span class="qd31-roll-value qd31-secondary-roll-value">{{secondaryRollView.selectedValue}}</span>
-                <button type="button" class="qd31-square-button qd31-roll-button qd31-secondary-roll-button" data-action="roll-secondary-attribute" title="Roll selected secondary attribute" aria-label="Roll selected secondary attribute">🎲</button>
-              </div>
+        </section>
+        <section class="qd-ui2-inactive-roster-card" aria-label="Available actors">
+          <header class="qd-ui2-inactive-roster-header">
+            <div>
+              <h3>Available</h3>
             </div>
-            <div class="qd31-center-vital-line qd31-center-hp-line">
-              <div class="qd31-center-vital-main">
-                <span class="qd31-center-vital-label">❤️ HP</span>
+            <span
+              class="qd-ui2-inactive-roster-count"
+              data-search-status="available"
+              title="Click + to add an actor to the active roster"
+              aria-label="Click plus to add an actor to the active roster"
+            >{{availableSearchStatusText}}</span>
+          </header>
+          <input
+            class="qd-ui2-inactive-roster-search"
+            type="search"
+            data-action="available-search"
+            value="{{availableSearch}}"
+            placeholder="Search available"
+            aria-label="Search available actors"
+          />
+          {{#if hasAvailableActors}}
+          <div class="qd-ui2-inactive-roster-list">
+            {{#each availableActors as |actor|}}
+            <article class="qd-ui2-inactive-roster-row" data-search-row="available" data-search-text="{{actor.searchText}}" {{#unless actor.isAvailableSearchMatch}}hidden{{/unless}}>
+              <img class="qd-ui2-inactive-roster-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+              <div class="qd-ui2-inactive-roster-meta">
+                <strong>{{actor.name}}</strong>
+                {{#if actor.actorType}}<small>{{actor.actorType}}</small>{{/if}}
+              </div>
+              <button
+                type="button"
+                class="qd-ui2-inactive-roster-add"
+                data-action="add-actor"
+                data-actor-id="{{actor.id}}"
+                title="Add {{actor.name}} to active roster"
+                aria-label="Add {{actor.name}} to active roster"
+              >+</button>
+            </article>
+            {{/each}}
+          </div>
+          <p class="qd-ui2-inactive-roster-empty" data-search-empty="available" {{#unless availableSearchShowEmpty}}hidden{{/unless}}>No available actors match your search.</p>
+          {{else}}
+          <p class="qd-ui2-inactive-roster-empty">No available actors available.</p>
+          {{/if}}
+        </section>
+      </aside>
+      {{/if}}
+
+      <main class="qd-ui2-center-cockpit" aria-label="UI2 center cockpit">
+        {{#if activeActor}}
+        <section class="qd-ui2-actor-card" aria-label="Selected actor card">
+          <div class="qd-ui2-portrait-stack">
+            <div
+              class="qd-ui2-portrait-ring"
+              data-action="open-active-actor-sheet"
+              data-actor-id="{{activeActor.id}}"
+              title="Double-click to open {{activeActor.name}}"
+              aria-label="Double-click to open {{activeActor.name}}"
+            >
+              <img class="qd-ui2-actor-portrait" src="{{activeActor.img}}" alt="{{activeActor.name}}" />
+            </div>
+            <button
+              type="button"
+              class="qd-ui2-drop-token-button"
+              data-action="drop-token"
+              data-actor-id="{{activeActor.id}}"
+              title="Drop Token"
+              aria-label="Drop Token for {{activeActor.name}}"
+            >♟ Drop Token</button>
+            <button
+              type="button"
+              class="qd-ui2-drop-token-button qd-ui2-mass-drop-token-button"
+              data-action="drop-ui2-carousel-tokens"
+              data-actor-ids="{{ui2CarouselActorIdsCsv}}"
+              title="Drop tokens for visible carousel actors"
+              aria-label="Drop tokens for visible carousel actors"
+            >♟ Drop Carousel</button>
+          </div>
+
+          <div class="qd-ui2-actor-title-block">
+            <h1 class="qd-ui2-actor-name">{{activeActor.name}}</h1>
+          </div>
+
+          {{#if hasRosterActors}}
+          <section class="qd-ui2-carousel-card qd-ui2-card-carousel" aria-label="Active actor selector carousel">
+              <button
+                type="button"
+                class="qd-ui2-carousel-arrow qd-ui2-carousel-arrow-left"
+                data-action="ui2-carousel-scroll"
+                data-carousel-direction="prev"
+                title="Scroll active actors left"
+                aria-label="Scroll active actors left"
+              >‹</button>
+              <div class="qd-ui2-carousel-track" data-ui2-carousel-track tabindex="0" aria-label="Active roster actor portraits">
+                {{#each ui2CarouselActors as |actor|}}
+                <button
+                  type="button"
+                  class="qd-ui2-carousel-portrait-button {{#if actor.isActive}}is-active{{/if}} {{#if actor.isCurrentTurn}}is-current-turn{{/if}} {{#if actor.isInCombat}}is-in-combat{{/if}}"
+                  data-action="open-actor"
+                  data-actor-id="{{actor.id}}"
+                  data-hover-name="{{actor.name}}"
+                  title="Select {{actor.name}}"
+                  aria-label="Select {{actor.name}}"
+                  aria-current="{{#if actor.isActive}}true{{else}}false{{/if}}"
+                >
+                  <img class="qd-ui2-carousel-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+                  {{#if actor.isCurrentTurn}}<span class="qd-ui2-carousel-turn-marker" aria-hidden="true">◆</span>{{/if}}
+                </button>
+                {{/each}}
+              </div>
+              <button
+                type="button"
+                class="qd-ui2-carousel-arrow qd-ui2-carousel-arrow-right"
+                data-action="ui2-carousel-scroll"
+                data-carousel-direction="next"
+                title="Scroll active actors right"
+                aria-label="Scroll active actors right"
+              >›</button>
+            </section>
+          {{/if}}
+
+          <div class="qd-ui2-vital-stack" aria-label="HP and FP controls">
+            <label class="qd-ui2-vital-meter qd-ui2-hp-meter qd-ui2-vital-control" aria-label="HP {{gurpsData.display.hp}} / {{gurpsData.display.hpMax}}">
+              <span class="qd-ui2-vital-fill" style="width: {{gurpsData.hpPercent}}%;"></span>
+              <span class="qd-ui2-vital-label">HP</span>
+              <span class="qd-ui2-vital-readout">
                 <input
                   type="number"
-                  class="qd31-center-vital-input"
+                  class="qd-ui2-vital-input"
                   data-action="set-resource"
                   data-actor-id="{{activeActor.id}}"
                   data-resource="hp"
                   value="{{gurpsData.display.hp}}"
+                  aria-label="Current HP"
                 />
-                <span class="qd31-center-vital-max">/ {{gurpsData.display.hpMax}}</span>
-              </div>
-              <div class="qd31-center-vital-bar">
-                <span style="width: {{gurpsData.hpPercent}}%;"></span>
-              </div>
-            </div>
-            <div class="qd31-center-vital-line qd31-center-fp-line">
-              <div class="qd31-center-vital-main">
-                <span class="qd31-center-vital-label">⚡ FP</span>
+                <span class="qd-ui2-vital-max">/ {{gurpsData.display.hpMax}}</span>
+              </span>
+            </label>
+            <label class="qd-ui2-vital-meter qd-ui2-fp-meter qd-ui2-vital-control" aria-label="FP {{gurpsData.display.fp}} / {{gurpsData.display.fpMax}}">
+              <span class="qd-ui2-vital-fill" style="width: {{gurpsData.fpPercent}}%;"></span>
+              <span class="qd-ui2-vital-label">FP</span>
+              <span class="qd-ui2-vital-readout">
                 <input
                   type="number"
-                  class="qd31-center-vital-input"
+                  class="qd-ui2-vital-input"
                   data-action="set-resource"
                   data-actor-id="{{activeActor.id}}"
                   data-resource="fp"
                   value="{{gurpsData.display.fp}}"
+                  aria-label="Current FP"
                 />
-                <span class="qd31-center-vital-max">/ {{gurpsData.display.fpMax}}</span>
+                <span class="qd-ui2-vital-max">/ {{gurpsData.display.fpMax}}</span>
+              </span>
+            </label>
+          </div>
+
+          <div class="qd-ui2-instrument-deck" aria-label="Actor roll and defense instruments">
+            <div class="qd-ui2-roll-row" aria-label="Attribute roll controls">
+              <div class="qd-ui2-roll-pill qd31-primary-roll-chip" aria-label="Primary roll controls">
+                <select class="qd-ui2-roll-select" data-action="primary-roll-select" aria-label="Primary roll target">
+                  {{#each primaryRollView.options as |option|}}
+                  <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
+                  {{/each}}
+                </select>
+                <span class="qd-ui2-roll-value qd31-primary-roll-value">{{primaryRollView.selectedValue}}</span>
+                <button type="button" class="qd-ui2-roll-button" data-action="roll-primary-attribute" title="Roll selected primary attribute" aria-label="Roll selected primary attribute">🎲</button>
               </div>
-              <div class="qd31-center-vital-bar">
-                <span style="width: {{gurpsData.fpPercent}}%;"></span>
+              <div class="qd-ui2-roll-pill qd31-secondary-roll-chip" aria-label="Secondary roll controls">
+                <select class="qd-ui2-roll-select" data-action="secondary-roll-select" aria-label="Secondary roll target">
+                  {{#each secondaryRollView.options as |option|}}
+                  <option value="{{option.key}}" data-value="{{option.displayValue}}" {{#if option.selected}}selected{{/if}}>{{option.displayLabel}}</option>
+                  {{/each}}
+                </select>
+                <span class="qd-ui2-roll-value qd31-secondary-roll-value">{{secondaryRollView.selectedValue}}</span>
+                <button type="button" class="qd-ui2-roll-button" data-action="roll-secondary-attribute" title="Roll selected secondary attribute" aria-label="Roll selected secondary attribute">🎲</button>
               </div>
             </div>
+
+            <div class="qd-ui2-stat-grid" aria-label="Move and defense values">
+              <article class="qd-ui2-stat-tile" aria-label="Move"><span>Move</span><strong>{{gurpsData.display.move}}</strong></article>
+              <button class="qd-ui2-stat-tile qd-ui2-stat-button" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="dodge" data-value="{{gurpsData.display.dodge}}"><span>Dodge</span><strong>{{gurpsData.display.dodge}}</strong></button>
+              <button class="qd-ui2-stat-tile qd-ui2-stat-button" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="parry" data-value="{{gurpsData.display.parry}}"><span>Parry</span><strong>{{gurpsData.display.parry}}</strong></button>
+              <button class="qd-ui2-stat-tile qd-ui2-stat-button" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="block" data-value="{{gurpsData.display.block}}"><span>Block</span><strong>{{gurpsData.display.block}}</strong></button>
+            </div>
           </div>
-        </div>
-
-        <article class="qd31-center-move-tile" aria-label="Move">
-          <div class="qd31-center-move-medallion" aria-hidden="true"></div>
-          <div class="qd31-center-move-title">Move</div>
-          <div class="qd31-center-move-value">{{gurpsData.display.move}}</div>
-        </article>
-      </header>
-      <div class="qd31-command-icon-row">
-        <button type="button" class="qd31-icon-button" data-action="drop-token" data-actor-id="{{activeActor.id}}" title="Drop Token">♟</button>
-        <button type="button" class="qd31-icon-button" data-action="open-chat" title="Chat">💬</button>
-        <button type="button" class="qd31-icon-button" data-action="clear-targets" title="Clear Targets">🎯</button>
-        <button type="button" class="qd31-icon-button" data-action="next-actor" title="Next Actor">⏭</button>
-        <button type="button" class="qd31-icon-button" data-action="repeat-last-attack" title="Repeat Last Attack" {{#unless canRepeatLastAttack}}disabled{{/unless}}>↻</button>
-        <button type="button" class="qd31-icon-button" data-action="open-actions-drawer" data-drawer="combat" title="Open Actions">⚔</button>
-      </div>
-
-
-      <div class="qd31-defense-grid"><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="dodge" data-value="{{gurpsData.display.dodge}}">Dodge <span>{{gurpsData.display.dodge}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="parry" data-value="{{gurpsData.display.parry}}">Parry <span>{{gurpsData.display.parry}}</span></button><button class="qd31-defense-dial" type="button" data-action="roll-defense" data-actor-id="{{activeActor.id}}" data-defense="block" data-value="{{gurpsData.display.block}}">Block <span>{{gurpsData.display.block}}</span></button></div>
-
-      {{!-- QD v0.11.0 Phase 1: one center scroll body; footer stays outside normal content flow. --}}
-      <div class="qd31-center-scroll-body" data-qd-custom-scroll-candidate="true">
-      <section class="qd31-center-favorites">
-        <div class="qd31-center-fav-section qd31-center-fav-combat">
-          <button type="button" class="qd31-center-fav-header qd31-center-fav-toggle" data-action="toggle-center-favorite-section" data-section="combat">
-            <span>{{#if centerFavoriteSections.combat}}▾{{else}}▸{{/if}} Combat</span>
-            <small>{{favoriteAttackCount}}</small>
-          </button>
-          <div class="qd31-center-fav-list" {{#unless centerFavoriteSections.combat}}hidden{{/unless}}>
-            {{#if favoriteAttacks.length}}
-              {{#each favoriteAttacks as |attack|}}
-                <article class="qd31-center-fav-card is-favorite">
-                  <div class="qd31-center-fav-main">
-                    <strong>{{attack.name}}</strong>
-                    <div class="qd31-center-fav-detail">{{#if attack.mode}}{{attack.mode}} · {{/if}}{{#if attack.type}}{{attack.type}}{{/if}}{{#if attack.damageDisplay}} · {{attack.damageDisplay}}{{else if attack.damageFormula}} · {{attack.damageFormula}}{{else if attack.damage}} · {{attack.damage}}{{/if}}{{#if attack.reach}} · {{attack.reach}}{{/if}}{{#if attack.range}} · {{attack.range}}{{/if}}</div>
-                    {{#if attack.variant}}<div class="qd31-center-fav-variant">{{attack.variant}}</div>{{/if}}
-                  </div>
-                  <div class="qd31-center-fav-controls">
-                    <button type="button" class="qd31-square-button qd31-center-fav-action-main" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll">Attack</button>
-                    {{#if attack.damageDisplay}}<button type="button" class="qd31-square-button qd31-center-fav-action-main qd31-center-fav-action-damage" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">Damage</button>{{else if attack.damageFormula}}<button type="button" class="qd31-square-button qd31-center-fav-action-main qd31-center-fav-action-damage" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">Damage</button>{{else if attack.damage}}<button type="button" class="qd31-square-button qd31-center-fav-action-main qd31-center-fav-action-damage" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">Damage</button>{{/if}}
-                    <button type="button" class="qd31-square-button" data-action="target-opponent" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Target Opponent">🎯</button>
-                    <button type="button" class="qd31-square-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
-                    {{#if attack.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" title="Reference">Ref</button>{{/if}}
-                    <button type="button" class="qd31-square-button qd31-center-fav-pin is-active qd31-center-fav-unpin" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="Unpin">Unpin</button>
-                  </div>
-                </article>
-              {{/each}}
-            {{else}}
-              <div class="qd31-center-fav-empty">Pin attacks from Combat</div>
-            {{/if}}
-          </div>
-        </div>
-        <div class="qd31-center-fav-section qd31-center-fav-skills">
-          <button type="button" class="qd31-center-fav-header qd31-center-fav-toggle" data-action="toggle-center-favorite-section" data-section="skills">
-            <span>{{#if centerFavoriteSections.skills}}▾{{else}}▸{{/if}} Skills</span>
-            <small>{{quickSkillsCount}}</small>
-          </button>
-          <div class="qd31-center-fav-list" {{#unless centerFavoriteSections.skills}}hidden{{/unless}}>
-            {{#if indexedQuickSkills.length}}
-              {{#each indexedQuickSkills as |skill|}}
-                <article class="qd31-center-fav-card is-favorite">
-                  <div class="qd31-center-fav-main">
-                    <strong>{{skill.name}}</strong>
-                    <div class="qd31-center-fav-detail">{{#if skill.relativeLevelDisplay}}{{skill.relativeLevelDisplay}}{{else}}{{skill.levelDisplay}}{{/if}}</div>
-                    {{#if skill.specialization}}<div class="qd31-center-fav-variant">{{skill.specialization}}</div>{{/if}}
-                  </div>
-                  <div class="qd31-center-fav-controls">
-                    <button type="button" class="qd31-square-button qd31-center-fav-pin is-active" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="Unpin">📌</button>
-                    <button type="button" class="qd31-square-button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill">🎲</button>
-                    <button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>
-                  </div>
-                </article>
-              {{/each}}
-            {{else}}
-              <div class="qd31-center-fav-empty">Pin skills from Skills</div>
-            {{/if}}
-          </div>
-        </div>
-        <div class="qd31-center-fav-section qd31-center-fav-spells">
-          <button type="button" class="qd31-center-fav-header qd31-center-fav-toggle" data-action="toggle-center-favorite-section" data-section="spells">
-            <span>{{#if centerFavoriteSections.spells}}▾{{else}}▸{{/if}} Spells</span>
-            <small>{{favoriteSpellCount}}</small>
-          </button>
-          <div class="qd31-center-fav-list" {{#unless centerFavoriteSections.spells}}hidden{{/unless}}>
-            {{#if favoriteSpells.length}}
-              {{#each favoriteSpells as |spell|}}
-                <article class="qd31-center-fav-card is-favorite">
-                  <div class="qd31-center-fav-main">
-                    <strong>{{spell.name}}</strong>
-                    <div class="qd31-center-fav-detail">{{#if spell.class}}{{spell.class}}{{/if}}{{#if spell.college}} · {{spell.college}}{{/if}}</div>
-                    {{#if spell.detail}}<div class="qd31-center-fav-variant">{{spell.detail}}</div>{{/if}}
-                  </div>
-                  <div class="qd31-center-fav-controls">
-                    <button type="button" class="qd31-square-button" data-action="target-action" title="Target">🎯</button>
-                    <button type="button" class="qd31-square-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
-                    <button type="button" class="qd31-square-button qd31-center-fav-pin is-active" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="Unpin">📌</button>
-                    <button type="button" class="qd31-square-button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell">✨</button>
-                    <button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>
-                  </div>
-                </article>
-              {{/each}}
-            {{else}}
-              <div class="qd31-center-fav-empty">Pin spells from Spells</div>
-            {{/if}}
-          </div>
-        </div>
-      </section>
-      </div>
-    </section>
-    {{/if}}
-    <footer class="qd31-center-footer" aria-label="QuickDeck cockpit status">
-      <span class="qd31-center-footer-mark" aria-hidden="true">◆</span>
-      <span class="qd31-center-footer-text">COMMAND COCKPIT</span>
-      <span class="qd31-center-footer-state">{{#if activeActor}}ACTIVE ACTOR{{else}}READY{{/if}}</span>
-      <span class="qd31-center-footer-pins">PINS {{favoriteAttackCount}} · {{quickSkillsCount}} · {{favoriteSpellCount}}</span>
-    </footer>
-  </section>
-  </div>
-
-  <div class="qd31-right-panel-wrap qd31-panel-wrap {{#if isActionsDrawerOpen}}is-open{{else}}is-collapsed{{/if}}">
-    <button class="qd31-edge-tab qd31-right-edge-tab {{#unless isActionsDrawerOpen}}qd31-closed-edge-tab{{/unless}}" type="button" data-action="toggle-actions-drawer" data-drawer="combat" title="{{#if isActionsDrawerOpen}}Collapse actions{{else}}Open actions{{/if}}">{{#if isActionsDrawerOpen}}Collapse »{{else}}‹ Actions{{/if}}</button>
-  {{#if isActionsDrawerOpen}}
-  <aside class="qd31-right-drawer">
-    <nav class="qd31-drawer-tabs"><button data-action="toggle-drawer" data-drawer="combat">Combat</button><button data-action="toggle-drawer" data-drawer="skills">Skills</button><button data-action="toggle-drawer" data-drawer="spells">Spells</button><button data-action="toggle-drawer" data-drawer="settings">Settings</button></nav>
-    <section class="qd31-drawer-body" {{#unless isCombatDrawerOpen}}hidden{{/unless}}>
-      <div class="qd31-search-row">
-        <input type="search" data-action="combat-search" value="{{combatSearch}}" placeholder="Search attacks" />
-        <button type="button" class="qd31-search-clear" data-action="clear-combat-search" {{#unless combatSearchHasQuery}}hidden{{/unless}} title="Clear combat search">Clear</button>
-        <span class="qd31-search-status" data-search-status="combat">{{combatSearchStatusText}}</span>
-      </div>
-      <div class="qd31-search-empty" data-search-empty="combat" {{#unless combatSearchShowEmpty}}hidden{{/unless}}>No matching attacks.</div>
-      {{#each indexedAttacks as |attack|}}
-      <div class="qd31-action-row {{#if attack.isFavoriteAttack}}is-favorite{{/if}}" data-search-row="combat" data-search-text="{{attack.searchText}}"><div class="qd31-action-main"><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" {{#unless attack.reference}}disabled{{/unless}} title="Open attack reference"><strong>{{attack.name}}</strong></button>{{#if attack.type}}<small class="qd31-action-meta-item"><span class="qd31-action-meta-label">Type</span><span class="qd31-action-meta-value">{{attack.type}}</span></small>{{/if}}{{#if attack.mode}}<small class="qd31-action-meta-item"><span class="qd31-action-meta-label">Mode</span><span class="qd31-action-meta-value">{{attack.mode}}</span></small>{{/if}}{{#if attack.damageDisplay}}<small class="qd31-action-meta-item"><span class="qd31-action-meta-label">Damage</span><span class="qd31-action-meta-value">{{attack.damageDisplay}}</span></small>{{else if attack.damage}}<small class="qd31-action-meta-item"><span class="qd31-action-meta-label">Damage</span><span class="qd31-action-meta-value">{{attack.damage}}</span></small>{{/if}}</div><div class="qd31-action-controls">
-        <button type="button" class="qd31-square-button" data-action="target-opponent" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Target Opponent">🎯</button>
-        <button type="button" class="qd31-square-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
-        <button type="button" class="qd31-square-button {{#if attack.isFavoriteAttack}}is-active{{/if}}" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="{{attack.favoriteToggleLabel}}">📌</button>
-        <button type="button" class="qd31-square-button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll">⚔</button>
-        <button type="button" class="qd31-square-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">💥</button>
-        {{#if attack.reference}}<button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" title="Reference">ℹ</button>{{/if}}
-      </div></div>
-      {{/each}}
-    </section>
-    <section class="qd31-drawer-body" {{#unless isSkillsDrawerOpen}}hidden{{/unless}}>
-      <div class="qd31-search-row">
-        <input type="search" data-action="skills-search" value="{{skillsSearch}}" placeholder="Search skills" />
-        <button type="button" class="qd31-search-clear" data-action="clear-skills-search" {{#unless skillsSearchHasQuery}}hidden{{/unless}} title="Clear skills search">Clear</button>
-        <span class="qd31-search-status" data-search-status="skills">{{skillsSearchStatusText}}</span>
-      </div>
-      <div class="qd31-search-empty" data-search-empty="skills" {{#unless skillsSearchShowEmpty}}hidden{{/unless}}>No matching skills.</div>
-      {{#each indexedSkills as |skill|}}
-      <div class="qd31-action-row {{#if skill.isQuickSkillSelected}}is-favorite{{/if}}" data-search-row="skills" data-search-text="{{skill.searchText}}"><div class="qd31-action-main"><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Open skill reference"><strong>{{skill.name}}</strong></button>{{#if skill.relativeLevelDisplay}}<small class="qd31-action-meta-item"><span class="qd31-action-meta-label">Level</span><span class="qd31-action-meta-value">{{skill.relativeLevelDisplay}}</span></small>{{/if}}{{#if skill.specialization}}<small class="qd31-action-meta-item"><span class="qd31-action-meta-label">Spec</span><span class="qd31-action-meta-value">{{skill.specialization}}</span></small>{{/if}}</div><div class="qd31-action-controls">
-        <button type="button" class="qd31-square-button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill">🎲</button>
-        <button type="button" class="qd31-square-button {{#if skill.isQuickSkillSelected}}is-active{{/if}}" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="{{skill.quickSkillToggleLabel}}">📌</button>
-        <button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>
-      </div></div>
-      {{/each}}
-    </section>
-    <section class="qd31-drawer-body" {{#unless isSpellsDrawerOpen}}hidden{{/unless}}>
-      <div class="qd31-search-row">
-        <input type="search" data-action="spells-search" value="{{spellsSearch}}" placeholder="Search spells" />
-        <button type="button" class="qd31-search-clear" data-action="clear-spells-search" {{#unless spellsSearchHasQuery}}hidden{{/unless}} title="Clear spells search">Clear</button>
-        <span class="qd31-search-status" data-search-status="spells">{{spellsSearchStatusText}}</span>
-      </div>
-      <div class="qd31-search-empty" data-search-empty="spells" {{#unless spellsSearchShowEmpty}}hidden{{/unless}}>No matching spells.</div>
-      {{#each indexedSpells as |spell|}}
-      <div class="qd31-action-row {{#if spell.isFavoriteSpell}}is-favorite{{/if}}" data-search-row="spells" data-search-text="{{spell.searchText}}"><div class="qd31-action-main"><button type="button" class="qd31-reference-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Open spell reference"><strong>{{spell.name}}</strong></button>{{#if spell.class}}<small class="qd31-action-meta-item"><span class="qd31-action-meta-label">Class</span><span class="qd31-action-meta-value">{{spell.class}}</span></small>{{/if}}{{#if spell.college}}<small class="qd31-action-meta-item"><span class="qd31-action-meta-label">College</span><span class="qd31-action-meta-value">{{spell.college}}</span></small>{{/if}}</div><div class="qd31-action-controls">
-        <button type="button" class="qd31-square-button" data-action="target-action" title="Target">🎯</button>
-        <button type="button" class="qd31-square-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
-        <button type="button" class="qd31-square-button {{#if spell.isFavoriteSpell}}is-active{{/if}}" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="{{spell.favoriteToggleLabel}}">📌</button>
-        <button type="button" class="qd31-square-button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell">✨</button>
-        <button type="button" class="qd31-square-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>
-      </div></div>
-      {{/each}}
-    </section>
-    <section class="qd31-drawer-body" {{#unless isSettingsDrawerOpen}}hidden{{/unless}}>
-      <section class="qd31-settings-panel">
-        <header class="qd31-settings-header">
-          <h3>Dev Art Tuner</h3>
-          <small>Developer-only visual layout tool · temporary CSS only</small>
-        </header>
-        <div class="qd31-action-row qd31-dev-art-tuner-row">
-          <label class="qd31-dev-art-tuner-toggle">
-            <input type="checkbox" data-action="toggle-dev-art-tuner-enabled" {{#if devArtTunerEnabled}}checked{{/if}}>
-            <span>Enable Dev Art Tuner</span>
-          </label>
-        </div>
-        {{#if devArtTunerEnabled}}
-        <div class="qd31-action-controls qd31-dev-art-tuner-controls">
-          <button type="button" class="qd31-square-button" data-action="open-dev-art-tuner" title="Open Art Tuner">Open</button>
-          <button type="button" class="qd31-square-button" data-action="close-dev-art-tuner" title="Close Art Tuner">Close</button>
-          <button type="button" class="qd31-square-button" data-action="copy-dev-art-tuner-css" title="Copy Art Tuner CSS">Copy CSS</button>
-          <button type="button" class="qd31-square-button" data-action="reset-dev-art-tuner" title="Reset Art Tuner">Reset</button>
-          <button type="button" class="qd31-square-button" data-action="status-dev-art-tuner" title="Log Art Tuner Status">Status</button>
-        </div>
-        <small class="qd31-dev-art-tuner-note">Use Copy CSS to export manual overrides. Reset clears temporary tuner overrides.</small>
-        {{/if}}
-      </section>
-      <section class="qd31-settings-panel">
-        <header class="qd31-settings-header">
-          <h3>PDF Source Manager</h3>
-          <small>User PDFs primary · built-in summaries fallback · no PDF parsing</small>
-        </header>
-        <section class="qd31-source-priority-panel" aria-label="Source priority">
-          <h4>Source Priority</h4>
-          <ol>
-            <li><strong>Mapped user PDF source</strong> opens externally/browser-linked when available.</li>
-            <li><strong>Built-in QuickDeck summaries</strong> provide fallback popup content.</li>
-            <li><strong>Reference lookup key/page data</strong> helps resolve source/page targets.</li>
-          </ol>
         </section>
-        <div class="qd31-pdf-map-form">
-          <label>Source Key<input type="text" data-action="pdf-map-key" value="{{pdfMapDraft.key}}" placeholder="B"></label>
-          <label>Display Name<input type="text" data-action="pdf-map-name" value="{{pdfMapDraft.name}}" placeholder="Basic Set"></label>
-          <small>Known keys auto-fill names. Examples: B, BX, DFA, DFX, DFS, MA, M, DF1:, PU2:.</small>
-          <label>PDF Path
-            <div class="qd31-pdf-path-row">
-              <input type="text" data-action="pdf-map-path" value="{{pdfMapDraft.path}}" placeholder="Choose PDF..." readonly>
-              <button type="button" class="qd31-square-button" data-action="choose-pdf-source" title="Choose PDF">📁</button>
+
+
+        <section class="qd-ui2-quick-slots-card qd-ui2-suggestions-card" aria-label="Action Deck">
+          <header class="qd-ui2-quick-slots-header qd-ui2-suggestions-header">
+            <div>
+              <h2>Action Deck</h2>
+              <p>Ready actions for {{activeActor.name}}</p>
             </div>
-          </label>
-          <label>Page Offset<input type="number" data-action="pdf-map-offset" value="{{pdfMapDraft.offset}}"></label>
-          <div class="qd31-pdf-map-actions">
-            <button type="button" class="qd31-square-button" data-action="save-pdf-source" title="Save PDF mapping">💾</button>
-            <button type="button" class="qd31-square-button" data-action="clear-pdf-source-draft" title="Clear form">✕</button>
+            <span class="qd-ui2-suggestions-counts" title="Pinned combat, skills, and spells">
+              <b><i>Combat</i> {{favoriteAttackCount}}</b>
+              <b><i>Skills</i> {{quickSkillsCount}}</b>
+              <b><i>Spells</i> {{favoriteSpellCount}}</b>
+            </span>
+          </header>
+
+          <div class="qd-ui2-quick-slots-sections">
+            <section class="qd-ui2-quick-slot-section qd-ui2-quick-slot-combat" aria-label="Pinned combat actions">
+              <button type="button" class="qd-ui2-quick-slot-toggle" data-action="toggle-center-favorite-section" data-section="combat">
+                <span>{{#if centerFavoriteSections.combat}}▾{{else}}▸{{/if}} Combat</span>
+                <small>{{favoriteAttackCount}}</small>
+              </button>
+              <div class="qd-ui2-quick-slot-list" {{#unless centerFavoriteSections.combat}}hidden{{/unless}}>
+                {{#if favoriteAttacks.length}}
+                  {{#each favoriteAttacks as |attack|}}
+                  <article class="qd-ui2-quick-slot-card is-favorite">
+                    <div class="qd-ui2-quick-slot-main">
+                      <strong>{{attack.name}}</strong>
+                      <div class="qd-ui2-quick-slot-detail">{{#if attack.mode}}Mode: {{attack.mode}}{{/if}}{{#if attack.type}}{{#if attack.mode}} · {{/if}}Type: {{attack.type}}{{/if}}{{#if attack.damageDisplay}} · Damage: {{attack.damageDisplay}}{{else if attack.damageFormula}} · Damage: {{attack.damageFormula}}{{else if attack.damage}} · Damage: {{attack.damage}}{{/if}}{{#if attack.reach}} · Reach: {{attack.reach}}{{/if}}{{#if attack.range}} · Range: {{attack.range}}{{/if}}</div>
+                      {{#if attack.variant}}<div class="qd-ui2-quick-slot-variant">{{attack.variant}}</div>{{/if}}
+                    </div>
+                    <div class="qd-ui2-quick-slot-controls">
+                      <button type="button" class="qd-ui2-quick-slot-icon is-primary" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll" aria-label="Attack Roll">⚔</button>
+                      {{#if attack.damageDisplay}}<button type="button" class="qd-ui2-quick-slot-icon" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll" aria-label="Damage Roll">💥</button>{{else if attack.damageFormula}}<button type="button" class="qd-ui2-quick-slot-icon" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll" aria-label="Damage Roll">💥</button>{{else if attack.damage}}<button type="button" class="qd-ui2-quick-slot-icon" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll" aria-label="Damage Roll">💥</button>{{/if}}
+                      <button type="button" class="qd-ui2-quick-slot-icon" data-action="target-opponent" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Target Opponent">🎯</button>
+                      <button type="button" class="qd-ui2-quick-slot-icon" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
+                      {{#if attack.reference}}<button type="button" class="qd-ui2-quick-slot-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" title="Reference">Ref</button>{{/if}}
+                      <button type="button" class="qd-ui2-quick-slot-icon is-unpin" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="Unpin">📌</button>
+                    </div>
+                  </article>
+                  {{/each}}
+                {{else}}
+                  <div class="qd-ui2-quick-slot-empty">Pin attacks from the Combat drawer.</div>
+                {{/if}}
+              </div>
+            </section>
+
+            <section class="qd-ui2-quick-slot-section qd-ui2-quick-slot-skills" aria-label="Pinned skills">
+              <button type="button" class="qd-ui2-quick-slot-toggle" data-action="toggle-center-favorite-section" data-section="skills">
+                <span>{{#if centerFavoriteSections.skills}}▾{{else}}▸{{/if}} Skills</span>
+                <small>{{quickSkillsCount}}</small>
+              </button>
+              <div class="qd-ui2-quick-slot-list" {{#unless centerFavoriteSections.skills}}hidden{{/unless}}>
+                {{#if indexedQuickSkills.length}}
+                  {{#each indexedQuickSkills as |skill|}}
+                  <article class="qd-ui2-quick-slot-card is-favorite">
+                    <div class="qd-ui2-quick-slot-main">
+                      <strong>{{skill.name}}</strong>
+                      <div class="qd-ui2-quick-slot-detail">Skill Level: {{#if skill.relativeLevelDisplay}}{{skill.relativeLevelDisplay}}{{else}}{{skill.levelDisplay}}{{/if}}</div>
+                      {{#if skill.specialization}}<div class="qd-ui2-quick-slot-variant">{{skill.specialization}}</div>{{/if}}
+                    </div>
+                    <div class="qd-ui2-quick-slot-controls">
+                      <button type="button" class="qd-ui2-quick-slot-icon is-unpin" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="Unpin">📌</button>
+                      <button type="button" class="qd-ui2-quick-slot-icon is-primary" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill" aria-label="Roll Skill">🎲</button>
+                      <button type="button" class="qd-ui2-quick-slot-icon" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Reference">ℹ</button>
+                    </div>
+                  </article>
+                  {{/each}}
+                {{else}}
+                  <div class="qd-ui2-quick-slot-empty">Pin skills from the Skills drawer.</div>
+                {{/if}}
+              </div>
+            </section>
+
+            <section class="qd-ui2-quick-slot-section qd-ui2-quick-slot-spells" aria-label="Pinned spells">
+              <button type="button" class="qd-ui2-quick-slot-toggle" data-action="toggle-center-favorite-section" data-section="spells">
+                <span>{{#if centerFavoriteSections.spells}}▾{{else}}▸{{/if}} Spells</span>
+                <small>{{favoriteSpellCount}}</small>
+              </button>
+              <div class="qd-ui2-quick-slot-list" {{#unless centerFavoriteSections.spells}}hidden{{/unless}}>
+                {{#if favoriteSpells.length}}
+                  {{#each favoriteSpells as |spell|}}
+                  <article class="qd-ui2-quick-slot-card is-favorite">
+                    <div class="qd-ui2-quick-slot-main">
+                      <strong>{{spell.name}}</strong>
+                      <div class="qd-ui2-quick-slot-detail">{{#if spell.class}}Class: {{spell.class}}{{/if}}{{#if spell.college}}{{#if spell.class}} · {{/if}}College: {{spell.college}}{{/if}}</div>
+                      {{#if spell.detail}}<div class="qd-ui2-quick-slot-variant">{{spell.detail}}</div>{{/if}}
+                    </div>
+                    <div class="qd-ui2-quick-slot-controls">
+                      <button type="button" class="qd-ui2-quick-slot-icon" data-action="target-action" title="Target">🎯</button>
+                      <button type="button" class="qd-ui2-quick-slot-icon" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
+                      <button type="button" class="qd-ui2-quick-slot-icon is-unpin" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="Unpin">📌</button>
+                      <button type="button" class="qd-ui2-quick-slot-icon is-primary" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell" aria-label="Roll Spell">✨</button>
+                      <button type="button" class="qd-ui2-quick-slot-icon" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Reference">ℹ</button>
+                    </div>
+                  </article>
+                  {{/each}}
+                {{else}}
+                  <div class="qd-ui2-quick-slot-empty">Pin spells from the Spells drawer.</div>
+                {{/if}}
+              </div>
+            </section>
           </div>
-        </div>
-        <div class="qd31-pdf-map-list">
-          {{#each pdfPageRefMappings as |mapping|}}
-            <article class="qd31-pdf-map-row">
-              <div class="qd31-pdf-map-main">
-                <div class="qd31-pdf-map-title"><strong>{{mapping.key}}</strong><span>{{mapping.name}}</span></div>
-                <small class="qd31-pdf-map-path" title="{{mapping.pathDisplayTooltip}}">{{mapping.pathDisplay}}</small>
-                <div class="qd31-pdf-map-diagnostics">
-                  <small>{{mapping.statusText}}</small>
-                  <small>Offset: {{mapping.offset}}</small>
-                  <small>Test opens page: {{mapping.testPage}}</small>
+        </section>
+        {{else}}
+        <section class="qd-ui2-placeholder-card qd-ui2-center-placeholder">
+          <h2>No Actor Selected</h2>
+          <p>Open the roster drawer to add/select a character.</p>
+        </section>
+        {{/if}}
+
+      </main>
+
+      {{#if isActionsDrawerOpen}}
+      <aside class="qd-ui2-drawer qd-ui2-right-drawer" aria-label="UI2 action drawer">
+        <header class="qd-ui2-panel-header">
+          <h2>Action Deck</h2>
+        </header>
+
+        <nav class="qd-ui2-drawer-tabs" aria-label="UI2 action drawer sections">
+          <button type="button" class="qd-ui2-drawer-tab {{#if isCombatDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="combat" title="{{combatSearchStatusText}}" aria-label="Combat actions: {{combatSearchStatusText}}">Combat</button>
+          <button type="button" class="qd-ui2-drawer-tab {{#if isSkillsDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="skills" title="{{skillsSearchStatusText}}" aria-label="Skills: {{skillsSearchStatusText}}">Skills</button>
+          <button type="button" class="qd-ui2-drawer-tab {{#if isSpellsDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="spells" title="{{spellsSearchStatusText}}" aria-label="Spells: {{spellsSearchStatusText}}">Spells</button>
+          <button type="button" class="qd-ui2-drawer-tab {{#if isSettingsDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="settings" title="UI2 settings">Settings</button>
+        </nav>
+
+        <div class="qd-ui2-drawer-scroll" data-qd-native-scroll="true">
+          <section class="qd-ui2-drawer-section qd-ui2-combat-section" aria-label="Combat actions">
+            <div class="qd-ui2-search-row">
+              <input type="search" data-action="combat-search" value="{{combatSearch}}" placeholder="Search attacks" aria-label="Search attacks" />
+              <button type="button" class="qd-ui2-search-clear" data-action="clear-combat-search" {{#unless combatSearchHasQuery}}hidden{{/unless}} title="Clear combat search" aria-label="Clear combat search">×</button>
+            </div>
+            <div class="qd-ui2-search-empty" data-search-empty="combat" {{#unless combatSearchShowEmpty}}hidden{{/unless}}>No matching attacks.</div>
+            {{#if activeActor}}
+              {{#each indexedAttacks as |attack|}}
+              <article class="qd-ui2-action-row {{#if attack.isFavoriteAttack}}is-favorite{{/if}}" data-search-row="combat" data-search-text="{{attack.searchText}}">
+                <div class="qd-ui2-action-main">
+                  <button type="button" class="qd-ui2-reference-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" {{#unless attack.reference}}disabled{{/unless}} title="Open attack reference">{{attack.name}}</button>
+                  <div class="qd-ui2-action-meta qd-ui2-combat-meta-primary">
+                    {{#if attack.type}}<span class="qd-ui2-combat-type">Type: {{attack.type}}</span>{{/if}}
+                    {{#if attack.mode}}<span class="qd-ui2-combat-mode">Mode: {{attack.mode}}</span>{{/if}}
+                  </div>
+                  <div class="qd-ui2-action-meta qd-ui2-combat-meta-damage">
+                    {{#if attack.damageDisplay}}<span>Damage: {{attack.damageDisplay}}</span>{{else if attack.damage}}<span>Damage: {{attack.damage}}</span>{{/if}}
+                  </div>
                 </div>
+                <div class="qd-ui2-action-controls">
+                  <button type="button" class="qd-ui2-action-button" data-action="target-opponent" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Target Opponent">🎯</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
+                  <button type="button" class="qd-ui2-action-button {{#if attack.isFavoriteAttack}}is-active{{/if}}" data-action="toggle-favorite-attack" data-actor-id="{{../activeActor.id}}" data-attack-key="{{attack.attackKey}}" title="{{attack.favoriteToggleLabel}}">📌</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="roll-attack" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Attack Roll">⚔</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="roll-damage" data-actor-id="{{../activeActor.id}}" data-attack-index="{{attack.index}}" title="Damage Roll">💥</button>
+                  {{#if attack.reference}}<button type="button" class="qd-ui2-action-button" data-action="open-reference" data-ref-type="attack" data-ref-name="{{attack.name}}" data-ref-page="{{attack.reference}}" title="Reference">ℹ</button>{{/if}}
+                </div>
+              </article>
+              {{else}}
+              <p class="qd-ui2-empty-note">No attacks found for this actor.</p>
+              {{/each}}
+            {{else}}
+              <p class="qd-ui2-empty-note">Select an actor to show combat actions.</p>
+            {{/if}}
+          </section>
+
+          <section class="qd-ui2-drawer-section qd-ui2-skills-section" aria-label="Skill actions">
+            <div class="qd-ui2-search-row">
+              <input type="search" data-action="skills-search" value="{{skillsSearch}}" placeholder="Search skills" aria-label="Search skills" />
+              <button type="button" class="qd-ui2-search-clear" data-action="clear-skills-search" {{#unless skillsSearchHasQuery}}hidden{{/unless}} title="Clear skills search" aria-label="Clear skills search">×</button>
+            </div>
+            <div class="qd-ui2-search-empty" data-search-empty="skills" {{#unless skillsSearchShowEmpty}}hidden{{/unless}}>No matching skills.</div>
+            {{#if activeActor}}
+              {{#each indexedSkills as |skill|}}
+              <article class="qd-ui2-action-row {{#if skill.isQuickSkillSelected}}is-favorite{{/if}}" data-search-row="skills" data-search-text="{{skill.searchText}}">
+                <div class="qd-ui2-action-main">
+                  <button type="button" class="qd-ui2-reference-button" data-action="open-reference" data-ref-type="skill" data-ref-name="{{skill.name}}" data-ref-page="{{skill.referenceDisplay}}" title="Open skill reference">{{skill.name}}</button>
+                  <div class="qd-ui2-action-meta">
+                    {{#if skill.relativeLevelDisplay}}<span>Skill Level: {{skill.relativeLevelDisplay}}</span>{{else}}<span>Skill Level: {{skill.levelDisplay}}</span>{{/if}}
+                    {{#if skill.specialization}}<span>Spec: {{skill.specialization}}</span>{{/if}}
+                  </div>
+                </div>
+                <div class="qd-ui2-action-controls">
+                  <button type="button" class="qd-ui2-action-button" data-action="roll-skill" data-actor-id="{{../activeActor.id}}" data-skill-index="{{skill.index}}" title="Roll Skill">🎲</button>
+                  <button type="button" class="qd-ui2-action-button {{#if skill.isQuickSkillSelected}}is-active{{/if}}" data-action="toggle-quick-skill" data-actor-id="{{../activeActor.id}}" data-skill-key="{{skill.quickSkillKey}}" title="{{skill.quickSkillToggleLabel}}">📌</button>
+                </div>
+              </article>
+              {{else}}
+              <p class="qd-ui2-empty-note">No skills found for this actor.</p>
+              {{/each}}
+            {{else}}
+              <p class="qd-ui2-empty-note">Select an actor to show skills.</p>
+            {{/if}}
+          </section>
+
+          <section class="qd-ui2-drawer-section qd-ui2-spells-section" aria-label="Spell actions">
+            <div class="qd-ui2-search-row">
+              <input type="search" data-action="spells-search" value="{{spellsSearch}}" placeholder="Search spells" aria-label="Search spells" />
+              <button type="button" class="qd-ui2-search-clear" data-action="clear-spells-search" {{#unless spellsSearchHasQuery}}hidden{{/unless}} title="Clear spells search" aria-label="Clear spells search">×</button>
+            </div>
+            <div class="qd-ui2-search-empty" data-search-empty="spells" {{#unless spellsSearchShowEmpty}}hidden{{/unless}}>No matching spells.</div>
+            {{#if activeActor}}
+              {{#each indexedSpells as |spell|}}
+              <article class="qd-ui2-action-row {{#if spell.isFavoriteSpell}}is-favorite{{/if}}" data-search-row="spells" data-search-text="{{spell.searchText}}">
+                <div class="qd-ui2-action-main">
+                  <button type="button" class="qd-ui2-reference-button" data-action="open-reference" data-ref-type="spell" data-ref-name="{{spell.name}}" data-ref-page="{{spell.reference}}" title="Open spell reference">{{spell.name}}</button>
+                  <div class="qd-ui2-action-meta">
+                    {{#if spell.class}}<span>Class: {{spell.class}}</span>{{/if}}
+                    {{#if spell.college}}<span>College: {{spell.college}}</span>{{/if}}
+                  </div>
+                </div>
+                <div class="qd-ui2-action-controls">
+                  <button type="button" class="qd-ui2-action-button" data-action="target-action" title="Target">🎯</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="open-modifier-bucket" data-actor-id="{{../activeActor.id}}" title="Modifier Bucket">🧮</button>
+                  <button type="button" class="qd-ui2-action-button {{#if spell.isFavoriteSpell}}is-active{{/if}}" data-action="toggle-favorite-spell" data-actor-id="{{../activeActor.id}}" data-spell-key="{{spell.spellKey}}" title="{{spell.favoriteToggleLabel}}">📌</button>
+                  <button type="button" class="qd-ui2-action-button" data-action="roll-spell" data-actor-id="{{../activeActor.id}}" data-spell-index="{{spell.index}}" title="Roll Spell">✨</button>
+                </div>
+              </article>
+              {{else}}
+              <p class="qd-ui2-empty-note">No spells found for this actor.</p>
+              {{/each}}
+            {{else}}
+              <p class="qd-ui2-empty-note">Select an actor to show spells.</p>
+            {{/if}}
+          </section>
+
+          <section class="qd-ui2-drawer-section qd-ui2-settings-section" aria-label="Settings">
+            <header class="qd-ui2-section-header">
+              <h3>Settings</h3>
+              <span>QuickDeck preferences</span>
+            </header>
+            <div class="qd-ui2-settings-stack">
+              <label class="qd-ui2-mode-field">
+                <input type="checkbox" data-action="set-token-drop-auto-minimize" {{#if tokenDropAutoMinimizeEnabled}}checked{{/if}}>
+                <span>Minimize QuickDeck during Drop Carousel placement</span>
+              </label>
+              <label class="qd-ui2-mode-field">
+                <input type="checkbox" data-action="set-token-drop-auto-restore" {{#if tokenDropAutoRestoreEnabled}}checked{{/if}}>
+                <span>Restore QuickDeck after Drop Carousel placement</span>
+              </label>
+              <label class="qd-ui2-mode-field">
+                <input type="checkbox" data-action="set-damage-pick-auto-minimize" {{#if damagePickAutoMinimizeEnabled}}checked{{/if}}>
+                <span>Minimize QuickDeck during Damage Pick Target</span>
+              </label>
+              {{#if devArtTunerEnabled}}
+              <div class="qd-ui2-settings-actions">
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="open-dev-art-tuner" title="Open Art Tuner">Open</button>
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="close-dev-art-tuner" title="Close Art Tuner">Close</button>
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="copy-dev-art-tuner-css" title="Copy Art Tuner CSS">Copy CSS</button>
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="reset-dev-art-tuner" title="Reset Art Tuner">Reset</button>
+                <button type="button" class="qd-ui2-action-button qd-ui2-text-button" data-action="status-dev-art-tuner" title="Log Art Tuner Status">Status</button>
               </div>
-              <div class="qd31-action-controls qd31-pdf-map-controls">
-                <button type="button" class="qd31-square-button" data-action="edit-pdf-source" data-key="{{mapping.key}}" title="Edit">✎</button>
-                <button type="button" class="qd31-square-button" data-action="test-pdf-source" data-key="{{mapping.key}}" title="Test Open: page 1 + offset">▶</button>
-                <button type="button" class="qd31-square-button" data-action="remove-pdf-source" data-key="{{mapping.key}}" title="Remove">🗑</button>
-              </div>
-            </article>
-          {{else}}
-            <div class="qd31-center-fav-empty">No PDFs mapped yet. Add B, MA, M, etc.</div>
-          {{/each}}
+              <p class="qd-ui2-empty-note">Developer-only visual layout tool · temporary CSS only.</p>
+              {{/if}}
+            </div>
+          </section>
         </div>
-        <div class="qd31-action-row">
-          <span>Built-in QuickDeck summaries are still used when no mapped PDF exists.</span>
-          <button type="button" class="qd31-square-button" data-action="open-reference-index">Refs</button>
-        </div>
-      </section>
+      </aside>
+      {{/if}}
+
+      <button
+        class="qd-ui2-edge-tab qd-ui2-right-tab"
+        type="button"
+        data-action="toggle-actions-drawer"
+        data-drawer="combat"
+        title="{{#if isActionsDrawerOpen}}Collapse action drawer{{else}}Open action drawer{{/if}}"
+        aria-expanded="{{#if isActionsDrawerOpen}}true{{else}}false{{/if}}"
+      >
+        <span>{{#if isActionsDrawerOpen}}Close ›{{else}}‹ Actions{{/if}}</span>
+      </button>
     </section>
-  </aside>
-  {{/if}}
-  </div>
-  </section>
   </div>
 </div>
