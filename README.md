@@ -4,7 +4,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 
 ## What's New in v0.7.0 (Draft)
 
-- Refined the experimental UI2 center actor card toward the v23 handoff with a visible v0.14.5 badge, selected-actor portrait/name/type, overlay HP/FP meters, compact primary/secondary roll controls, and Move/Dodge/Parry/Block tiles while keeping UI1 as the default and preserving the UI2 shell/drawer behavior.
+- QuickDeck now uses the UI2 shell as the only supported interface, with the selected-actor portrait/name/type, overlay HP/FP meters, compact primary/secondary roll controls, Move/Dodge/Parry/Block tiles, drawers, and carousel behavior preserved.
 - The Command Desk art skin foundation is now wired after the existing QuickDeck stylesheet, making the v0.7 art assets available without replacing current behavior.
 
 ## What's New in v0.6.0 (Release Candidate)

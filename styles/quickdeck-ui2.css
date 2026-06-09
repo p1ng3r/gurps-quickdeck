@@ -1,6 +1,6 @@
 /* UI2-owned design-token aliases.
-   These keep UI2 renderable when legacy quickdeck/command-desk token scopes are removed.
-   Legacy --qd-* values still win while UI1 CSS is present so the current skin remains stable. */
+   These keep UI2 renderable if shared quickdeck/command-desk token scopes are later retired.
+   Shared --qd-* values still win while the current skin layers remain loaded. */
 #gurps-quickdeck-overlay.qd40-overlay,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-body,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell,

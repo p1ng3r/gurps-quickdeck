@@ -1,5 +1,5 @@
-/* GURPS QuickDeck shared runtime styles after UI1 retirement.
-   Legacy UI1 app-shell/card/list selectors were removed in v0.19.2. */
+/* GURPS QuickDeck shared runtime styles after legacy interface retirement.
+   Retired app-shell/card/list selectors were removed in v0.19.2. */
 
 .gurps-quickdeck,
 .gurps-quickdeck-reference,
