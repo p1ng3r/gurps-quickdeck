@@ -2,10 +2,10 @@
 
 A lightweight, drawer-based companion window for **Foundry VTT v13** with the **GURPS 4e Game Aid** system, including **Forge VTT-safe workflows**.
 
-## What's New in v0.7.0 (Draft)
+## What's New in v0.20.1 (Audit)
 
-- QuickDeck now uses the UI2 shell as the only supported interface, with the selected-actor portrait/name/type, overlay HP/FP meters, compact primary/secondary roll controls, Move/Dodge/Parry/Block tiles, drawers, and carousel behavior preserved.
-- The Command Desk art skin foundation is now wired after the existing QuickDeck stylesheet, making the v0.7 art assets available without replacing current behavior.
+- QuickDeck remains UI2-only and now includes a narrow Foundry v13 API, lifecycle cleanup, manifest/path, and Forge-hosted path audit.
+- The Command Desk art skin remains wired after the existing QuickDeck stylesheet without replacing current behavior.
 
 ## What's New in v0.6.0 (Release Candidate)
 
@@ -111,7 +111,7 @@ A lightweight, drawer-based companion window for **Foundry VTT v13** with the **
 ## Installation / Local Development
 
 1. Clone this repository into your Foundry modules folder:
-   - `<FoundryData>/Data/modules/gurps-quickdeck`
+   - your Foundry user-data modules folder, in a `gurps-quickdeck` module directory
 2. Start Foundry and enable **GURPS QuickDeck** in your world.
 3. Confirm your world is using the GURPS system.
 4. Open Actor Directory and click **QuickDeck**.
