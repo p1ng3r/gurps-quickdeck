@@ -38,17 +38,23 @@ function openQuickDeck() {
   return quickDeckApp;
 }
 
+const QUICKDECK_RENDER_DEBOUNCE_MS = 25;
+const QUICKDECK_DRAG_RENDER_RETRY_MS = 100;
 let pendingQuickDeckRender = null;
-function renderQuickDeckIfOpen() {
+function renderQuickDeckIfOpen(delay = QUICKDECK_RENDER_DEBOUNCE_MS) {
   if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
   if (pendingQuickDeckRender) return;
 
   pendingQuickDeckRender = setTimeout(() => {
     pendingQuickDeckRender = null;
     if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
+    if (quickDeckApp.isOverlayDragging?.()) {
+      renderQuickDeckIfOpen(QUICKDECK_DRAG_RENDER_RETRY_MS);
+      return;
+    }
     quickDeckApp.render(false, { focus: false });
     quickDeckApp.scheduleNativeWindowFocusAfterRender?.();
-  }, 0);
+  }, delay);
 }
 
 function actorAffectsQuickDeckView(actorId, options = {}) {
