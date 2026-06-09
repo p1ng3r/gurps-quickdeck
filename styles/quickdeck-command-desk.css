@@ -1596,8 +1596,7 @@
  * Default mode is now the clean real stone tile:
  * assets/ui/dwarven/clean-dark-stone-tile.webp
  *
- * Required asset location:
- * C:/Users/Owner/AppData/Local/FoundryVTT/Data/modules/gurps-quickdeck/assets/ui/dwarven/clean-dark-stone-tile.webp
+ * Keep this module-relative so Foundry local hosting and Forge CDN paths both work.
  *
  * Legacy dirty stone variants were intentionally purged after the clean tile
  * became the only referenced large-surface texture.
@@ -2038,7 +2037,7 @@
     inset 0 0 16px rgba(0, 0, 0, 0.22) !important;
 }
 
-/* Pass C: calm down loud border language across the UI. */
+/* Third pass: calm down loud border language across the UI. */
 #gurps-quickdeck-overlay.qd40-overlay .qd40-frame,
 .qd40-overlay .qd40-frame {
   border-color: rgba(10, 9, 8, 0.95) !important;

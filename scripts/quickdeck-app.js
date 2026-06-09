@@ -386,6 +386,7 @@ export class QuickDeckApp extends Application {
     this._qdPendingDamagePickTargetReticleElement = null;
     this._qdPendingDamagePickTargetWasMinimized = null;
     this._qdPendingDamagePopupDrag = null;
+    this._qdPendingDamagePopupDragBlurHandler = null;
     this.pendingTargetOpponentAttackIndex = null;
     this._pendingTargetOpponentCleanup = null;
     this._targetOpponentSceneId = null;
@@ -411,7 +412,9 @@ export class QuickDeckApp extends Application {
     this.referenceApp = null;
     this._overlayRoot = null;
     this._overlayDragCleanup = null;
+    this._overlayDragPointerId = null;
     this._overlayPosition = null;
+    this._filterRafByAction = new Map();
     this._overlayWindowResizeHandler = () => this.scheduleQd31WindowResize();
     this.isInfoPopoverOpen = false;
     this.centerFavoriteSections = {
@@ -2212,6 +2215,7 @@ export class QuickDeckApp extends Application {
     let visible = 0;
 
     for (const row of rows) {
+      if (!row?.dataset) continue;
       const searchableText = row.dataset.qdeckNormalizedSearchText
         ?? (row.dataset.qdeckNormalizedSearchText = this.normalizeSearchText(row.dataset.searchText));
       const isVisible = !normalizedSearch || searchableText.includes(normalizedSearch);
@@ -2220,6 +2224,29 @@ export class QuickDeckApp extends Application {
     }
 
     return { visible, total: rows.length };
+  }
+
+  scheduleSearchFilter(actionKey, html, applyFilter) {
+    if (!actionKey || typeof applyFilter !== "function") return;
+    const existing = this._filterRafByAction?.get(actionKey);
+    if (existing) cancelAnimationFrame(existing);
+
+    const raf = requestAnimationFrame(() => {
+      this._filterRafByAction?.delete(actionKey);
+      const root = html?.[0] ?? html;
+      if (root && !document.body.contains(root)) return;
+      try {
+        applyFilter();
+      } catch (error) {
+        console.warn("gurps-quickdeck | Search filter update failed safely.", error);
+      }
+    });
+    this._filterRafByAction?.set(actionKey, raf);
+  }
+
+  clearScheduledSearchFilters() {
+    for (const raf of this._filterRafByAction?.values?.() ?? []) cancelAnimationFrame(raf);
+    this._filterRafByAction?.clear?.();
   }
 
   applyAvailableActorFilter(html) {
@@ -3900,11 +3927,40 @@ export class QuickDeckApp extends Application {
 
   parseDropPayload(rawText) {
     if (!rawText || typeof rawText !== "string") return null;
+    if (rawText.length > 65536) {
+      console.warn("gurps-quickdeck | Ignored oversized drop payload.");
+      return null;
+    }
     try {
       return JSON.parse(rawText);
     } catch (_error) {
       return null;
     }
+  }
+
+  getSafeDropText(transfer) {
+    if (!transfer) return "";
+    const types = Array.from(transfer.types ?? []);
+    if (types.length && !types.includes("text/plain")) return "";
+    try {
+      const rawText = transfer.getData("text/plain");
+      if (typeof rawText !== "string") return "";
+      if (rawText.length > 65536) {
+        console.warn("gurps-quickdeck | Ignored oversized drop text.");
+        return "";
+      }
+      return rawText;
+    } catch (error) {
+      console.warn("gurps-quickdeck | Could not read drop data safely.", error);
+      return "";
+    }
+  }
+
+  isSupportedRosterDrop(event) {
+    const transfer = event?.dataTransfer;
+    if (!transfer) return false;
+    const types = Array.from(transfer.types ?? []);
+    return !types.length || types.includes("text/plain");
   }
 
   async resolveActorFromDropData(event) {
@@ -3914,7 +3970,7 @@ export class QuickDeckApp extends Application {
       return null;
     }
 
-    const rawText = transfer.getData("text/plain");
+    const rawText = this.getSafeDropText(transfer);
     const parsedPayload = this.parseDropPayload(rawText);
     const payload = parsedPayload && typeof parsedPayload === "object" ? parsedPayload : null;
 
@@ -4765,6 +4821,7 @@ export class QuickDeckApp extends Application {
   }
 
   unmountOverlay() {
+    this.clearScheduledSearchFilters();
     this.teardownQuickDeckCustomScrollbars();
     this.stopOverlayDrag();
     if (this._overlayWindowResizeHandler) window.removeEventListener("resize", this._overlayWindowResizeHandler);
@@ -4786,6 +4843,7 @@ export class QuickDeckApp extends Application {
 
   startOverlayDrag(event) {
     if (!this._overlayRoot) return;
+    if (event.button !== undefined && event.button !== 0) return;
     const target = event.target;
     if (target?.closest?.("button, input, select, textarea, a")) return;
 
@@ -4815,8 +4873,13 @@ export class QuickDeckApp extends Application {
       : ["qd40-dragging"];
 
     this.stopOverlayDrag();
+    this._overlayDragPointerId = event.pointerId;
     overlay.classList.add(...dragClasses);
-    dragHandle?.setPointerCapture?.(event.pointerId);
+    try {
+      dragHandle?.setPointerCapture?.(event.pointerId);
+    } catch (_error) {
+      // Pointer capture can fail if Foundry/browser focus changes mid-event.
+    }
     overlay.style.willChange = "transform";
     overlay.style.backfaceVisibility = "hidden";
     overlay.style.touchAction = "none";
@@ -4828,6 +4891,7 @@ export class QuickDeckApp extends Application {
     };
 
     const onPointerMove = (moveEvent) => {
+      if (moveEvent.pointerId !== this._overlayDragPointerId) return;
       const left = startLeft + (Number(moveEvent.clientX) - startClientX);
       const top = startTop + (Number(moveEvent.clientY) - startClientY);
       nextPosition = {
@@ -4837,7 +4901,10 @@ export class QuickDeckApp extends Application {
       if (!dragRaf) dragRaf = requestAnimationFrame(updateDragTransform);
     };
 
-    const onPointerUp = () => this.stopOverlayDrag();
+    const onPointerUp = (upEvent) => {
+      if (upEvent.pointerId !== this._overlayDragPointerId) return;
+      this.stopOverlayDrag();
+    };
     const onBlur = () => this.stopOverlayDrag();
     const onLostPointerCapture = () => this.stopOverlayDrag();
 
@@ -4854,6 +4921,7 @@ export class QuickDeckApp extends Application {
       isCleaningUp = true;
       if (dragRaf) cancelAnimationFrame(dragRaf);
       dragRaf = null;
+      this._overlayDragPointerId = null;
       this._overlayPosition = nextPosition;
       overlay.style.left = `${nextPosition.left}px`;
       overlay.style.top = `${nextPosition.top}px`;
@@ -4862,7 +4930,11 @@ export class QuickDeckApp extends Application {
       overlay.style.backfaceVisibility = previousBackfaceVisibility;
       overlay.style.touchAction = previousTouchAction;
       overlay.classList.remove(...dragClasses);
-      if (dragHandle?.hasPointerCapture?.(event.pointerId)) dragHandle.releasePointerCapture(event.pointerId);
+      try {
+        if (dragHandle?.hasPointerCapture?.(event.pointerId)) dragHandle.releasePointerCapture(event.pointerId);
+      } catch (_error) {
+        // Ignore release errors after pointercancel/blur.
+      }
       if (abortController) { abortController.abort(); return; }
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("pointerup", onPointerUp);
@@ -4875,6 +4947,11 @@ export class QuickDeckApp extends Application {
   stopOverlayDrag() {
     if (typeof this._overlayDragCleanup === "function") this._overlayDragCleanup();
     this._overlayDragCleanup = null;
+    this._overlayDragPointerId = null;
+  }
+
+  isOverlayDragging() {
+    return typeof this._overlayDragCleanup === "function";
   }
 
   getClampedOverlayPosition(left, top) {
@@ -4893,8 +4970,9 @@ export class QuickDeckApp extends Application {
   }
 
   activateOverlayListeners(root) {
+    this.clearScheduledSearchFilters();
     this.activateListeners($(root));
-    root.querySelector("[data-action=\"drag-overlay\"]")?.addEventListener("pointerdown", (event) => this.startOverlayDrag(event));
+    root.querySelector("[data-action=\"drag-overlay\"]")?.addEventListener("pointerdown", (event) => this.startOverlayDrag(event), { passive: false });
   }
 
   setupQuickDeckCustomScrollbars(root) {
@@ -6126,17 +6204,22 @@ export class QuickDeckApp extends Application {
     }
   }
 
-  setPendingDamagePopupPosition(left, top) {
+  clampPendingDamagePopupPosition(left, top) {
     const clampedLeft = Math.max(8, Math.min(Math.round(left), Math.max(8, window.innerWidth - 120)));
     const clampedTop = Math.max(8, Math.min(Math.round(top), Math.max(8, window.innerHeight - 80)));
+    return { left: clampedLeft, top: clampedTop };
+  }
+
+  setPendingDamagePopupPosition(left, top) {
+    const position = this.clampPendingDamagePopupPosition(left, top);
 
     try {
-      localStorage.setItem("gurps-quickdeck.pendingDamagePopupPosition", JSON.stringify({ left: clampedLeft, top: clampedTop }));
+      localStorage.setItem("gurps-quickdeck.pendingDamagePopupPosition", JSON.stringify(position));
     } catch (_error) {
       // localStorage can be unavailable in some embedded contexts.
     }
 
-    return { left: clampedLeft, top: clampedTop };
+    return position;
   }
 
   applyPendingDamagePopupPosition(popup) {
@@ -6172,39 +6255,59 @@ export class QuickDeckApp extends Application {
         startX: event.clientX,
         startY: event.clientY,
         startLeft: rect.left,
-        startTop: rect.top
+        startTop: rect.top,
+        nextLeft: rect.left,
+        nextTop: rect.top,
+        raf: null
       };
 
       popup.classList.add("is-dragging");
-      handle.setPointerCapture?.(event.pointerId);
+      try {
+        handle.setPointerCapture?.(event.pointerId);
+      } catch (_error) {
+        // Pointer capture can fail if the browser changes focus during Foundry events.
+      }
     });
+
+    const applyDragFrame = () => {
+      const drag = this._qdPendingDamagePopupDrag;
+      if (!drag) return;
+      drag.raf = null;
+      const position = this.clampPendingDamagePopupPosition(drag.nextLeft, drag.nextTop);
+      popup.style.left = `${position.left}px`;
+      popup.style.top = `${position.top}px`;
+      popup.style.right = "auto";
+      popup.style.bottom = "auto";
+      popup.classList.add("is-user-positioned");
+    };
 
     handle.addEventListener("pointermove", (event) => {
       const drag = this._qdPendingDamagePopupDrag;
       if (!drag || drag.pointerId !== event.pointerId) return;
 
       event.preventDefault();
+      drag.nextLeft = drag.startLeft + (event.clientX - drag.startX);
+      drag.nextTop = drag.startTop + (event.clientY - drag.startY);
+      if (!drag.raf) drag.raf = requestAnimationFrame(applyDragFrame);
+    });
 
-      const left = drag.startLeft + (event.clientX - drag.startX);
-      const top = drag.startTop + (event.clientY - drag.startY);
-      const position = this.setPendingDamagePopupPosition(left, top);
+    const endDrag = (event = null) => {
+      const drag = this._qdPendingDamagePopupDrag;
+      if (!drag) return;
+      if (event?.pointerId !== undefined && drag.pointerId !== event.pointerId) return;
 
+      if (drag.raf) cancelAnimationFrame(drag.raf);
+      const position = this.setPendingDamagePopupPosition(drag.nextLeft, drag.nextTop);
       popup.style.left = `${position.left}px`;
       popup.style.top = `${position.top}px`;
       popup.style.right = "auto";
       popup.style.bottom = "auto";
       popup.classList.add("is-user-positioned");
-    });
-
-    const endDrag = (event) => {
-      const drag = this._qdPendingDamagePopupDrag;
-      if (!drag || drag.pointerId !== event.pointerId) return;
-
       this._qdPendingDamagePopupDrag = null;
       popup.classList.remove("is-dragging");
 
       try {
-        handle.releasePointerCapture?.(event.pointerId);
+        if (event?.pointerId !== undefined && handle.hasPointerCapture?.(event.pointerId)) handle.releasePointerCapture(event.pointerId);
       } catch (_error) {
         // Ignore release errors from browser/Foundry focus changes.
       }
@@ -6212,6 +6315,9 @@ export class QuickDeckApp extends Application {
 
     handle.addEventListener("pointerup", endDrag);
     handle.addEventListener("pointercancel", endDrag);
+    if (this._qdPendingDamagePopupDragBlurHandler) window.removeEventListener("blur", this._qdPendingDamagePopupDragBlurHandler);
+    this._qdPendingDamagePopupDragBlurHandler = () => endDrag();
+    window.addEventListener("blur", this._qdPendingDamagePopupDragBlurHandler, { passive: true });
   }
 
   renderPendingDamagePopup() {
@@ -6290,8 +6396,18 @@ export class QuickDeckApp extends Application {
   }
 
   removePendingDamagePopup() {
+    if (this._qdPendingDamagePopupDragBlurHandler) {
+      window.removeEventListener("blur", this._qdPendingDamagePopupDragBlurHandler);
+      this._qdPendingDamagePopupDragBlurHandler = null;
+    }
+    const drag = this._qdPendingDamagePopupDrag;
+    if (drag?.raf) cancelAnimationFrame(drag.raf);
+    this._qdPendingDamagePopupDrag = null;
     const popup = this._qdPendingDamagePopupElement;
-    if (popup) popup.remove();
+    if (popup) {
+      popup.classList.remove("is-dragging");
+      popup.remove();
+    }
     this._qdPendingDamagePopupElement = null;
   }
 
@@ -6467,32 +6583,32 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='available-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.availableSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applyAvailableActorFilter(html);
+      this.scheduleSearchFilter("available", html, () => this.applyAvailableActorFilter(html));
     });
 
 
     html.find("[data-action='combat-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.combatSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applyCombatFilter(html);
+      this.scheduleSearchFilter("combat", html, () => this.applyCombatFilter(html));
     });
 
     html.find("[data-action='skills-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.skillsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applySkillsFilter(html);
+      this.scheduleSearchFilter("skills", html, () => this.applySkillsFilter(html));
     });
 
     html.find("[data-action='quick-skills-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.quickSkillsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applyQuickSkillsFilter(html);
+      this.scheduleSearchFilter("quick-skills", html, () => this.applyQuickSkillsFilter(html));
     });
 
     html.find("[data-action='spells-search']").on("input", (event) => {
       const searchValue = event.currentTarget?.value;
       this.spellsSearch = typeof searchValue === "string" ? searchValue : "";
-      this.applySpellsFilter(html);
+      this.scheduleSearchFilter("spells", html, () => this.applySpellsFilter(html));
     });
 
     html.find("[data-action='clear-combat-search']").on("click", (event) => {
@@ -6973,31 +7089,35 @@ export class QuickDeckApp extends Application {
       return;
     }
 
+    const setRosterDragOver = (isOver) => {
+      if (this.isDragOverRoster === isOver) return;
+      this.isDragOverRoster = isOver;
+      dropTarget.classList.toggle("is-drag-over", isOver);
+    };
+
     dropTarget.addEventListener("dragenter", (event) => {
+      if (!this.isSupportedRosterDrop(event)) return;
       event.preventDefault();
-      this.isDragOverRoster = true;
-      this.render(false);
+      setRosterDragOver(true);
     });
 
     dropTarget.addEventListener("dragover", (event) => {
+      if (!this.isSupportedRosterDrop(event)) return;
       event.preventDefault();
-      if (!this.isDragOverRoster) {
-        this.isDragOverRoster = true;
-        this.render(false);
-      }
+      if (event.dataTransfer) event.dataTransfer.dropEffect = "copy";
+      setRosterDragOver(true);
     });
 
     dropTarget.addEventListener("dragleave", (event) => {
-      event.preventDefault();
       if (event.currentTarget?.contains(event.relatedTarget)) return;
-      this.isDragOverRoster = false;
-      this.render(false);
+      setRosterDragOver(false);
     });
 
     dropTarget.addEventListener("drop", async (event) => {
+      if (!this.isSupportedRosterDrop(event)) return;
       event.preventDefault();
       event.stopPropagation();
-      this.isDragOverRoster = false;
+      setRosterDragOver(false);
 
       try {
         const actor = await this.resolveActorFromDropData(event);
@@ -7010,7 +7130,7 @@ export class QuickDeckApp extends Application {
 
         this.ensureActorTab(actor.id);
         console.log("gurps-quickdeck | Actor dropped", actor.name);
-        this.render();
+        this.render(false, { focus: false });
       } catch (error) {
         console.warn("gurps-quickdeck | Failed to process dropped actor.", error);
       }
