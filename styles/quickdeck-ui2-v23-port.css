@@ -1667,7 +1667,7 @@
 
 /* QuickDeck UI2 editable HP/FP vitals v0.15.8n */
 
-/* UI2 HP/FP bars now mirror UI1: the current value is an editable set-resource input. */
+/* UI2 HP/FP bars expose the current value as an editable set-resource input. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-control,
 .qd40-overlay .qd-ui2-vital-control {
   cursor: text !important;
@@ -1720,7 +1720,7 @@
   font-weight: 800 !important;
 }
 
-/* Hide number spinners so the value reads like the UI1 cockpit input. */
+/* Hide number spinners so the value reads like cockpit text. */
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input::-webkit-outer-spin-button,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input::-webkit-inner-spin-button,
 .qd40-overlay .qd-ui2-vital-input::-webkit-outer-spin-button,
