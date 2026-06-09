@@ -1,3 +1,20 @@
+## [Unreleased] - v0.20.3-release-readiness-checkpoint
+
+### Added
+- Adds a release-readiness checkpoint report for the UI2-only v0.20 hardening line, covering README/CHANGELOG sanity, manifest path existence, deleted UI1 reference searches, remaining shared `.quickdeck-*` references, CSS URL asset resolution, Forge/local path safety, validation commands, and manual Foundry smoke-test coverage.
+
+### Changed
+- Updates package metadata and README release wording to the v0.20.3 checkpoint while preserving runtime behavior, template behavior, CSS layout/visuals, `data-action` names, dependencies, and binary assets.
+
+## [Unreleased] - v0.20.1-foundry-forge-api-audit
+
+### Added
+- Adds a Foundry v13 API, Application lifecycle, hook usage, drag/drop, manifest/path, and Forge compatibility audit report for the UI2-only QuickDeck runtime.
+
+### Changed
+- Updates package metadata to the v0.20.1 audit release and keeps README release wording aligned with the UI2-only state.
+- Tightens close-time cleanup for UI2 carousel token drop, pending damage popup/pick-target state, scheduled UI2 sizing frames, and inline sizing.
+
 ## [Unreleased] - v0.19.5-ui2-only-release-checkpoint
 
 ### Added

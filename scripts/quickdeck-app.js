@@ -416,6 +416,7 @@ export class QuickDeckApp extends Application {
     this._overlayPosition = null;
     this._filterRafByAction = new Map();
     this._overlayWindowResizeHandler = () => this.scheduleQd31WindowResize();
+    this._qd31ResizeRaf = null;
     this.isInfoPopoverOpen = false;
     this.centerFavoriteSections = {
       combat: true,
@@ -4574,8 +4575,15 @@ export class QuickDeckApp extends Application {
 
   async close(options) {
     this.cancelTokenDrop({ render: false });
+    this.stopUi2CarouselTokenDrop({ restore: false });
+    this.clearPendingDamageContext({ render: false });
     this.teardownQuickDeckCustomScrollbars();
     this.cancelTargetOpponentMode({ render: false, restore: false });
+    if (this._qd31ResizeRaf) {
+      cancelAnimationFrame(this._qd31ResizeRaf);
+      this._qd31ResizeRaf = null;
+    }
+    this.clearQd31InlineSizing();
     window.qdArtTunerOff?.();
     this.unmountOverlay();
     this.showApplicationShellIfNeeded();
