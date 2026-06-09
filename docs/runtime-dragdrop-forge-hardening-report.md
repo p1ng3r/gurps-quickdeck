@@ -56,7 +56,7 @@ No binary files were changed.
 
 - Removed an absolute local Windows Foundry Data path from a CSS comment and replaced it with module-relative guidance.
 - Renamed a comment containing `C:` so path scans no longer report a false positive.
-- Confirmed no `file://`, `/Data/`, `AppData`, Windows-drive absolute path, or hardcoded local Foundry Data path remains in `scripts/`, `templates/`, `styles/`, `module.json`, or existing docs.
+- Confirmed no local-file URL scheme, user-data-folder marker, Windows profile-folder marker, Windows-drive absolute path, or hardcoded local Foundry user-data path remains in runtime files.
 - Confirmed CSS `url(...)` references resolve to existing module-relative files.
 - Confirmed `module.json` script/style paths exist.
 - No external runtime network calls or new dependencies were added.
@@ -88,7 +88,7 @@ Additional searches/checks run:
 - `rg -n "addEventListener|removeEventListener" scripts/quickdeck-app.js scripts/main.js || true`
 - `rg -n "render\(" scripts/quickdeck-app.js scripts/main.js`
 - `rg -n "setTimeout|requestAnimationFrame" scripts/quickdeck-app.js scripts/main.js || true`
-- `rg -n "file://|/Data/|AppData|C:|[A-Za-z]:\\\\" scripts templates styles module.json docs --glob '!docs/runtime-dragdrop-forge-hardening-report.md' || true`
+- Hosted-path forbidden-token search across scripts, templates, styles, manifest, and docs.
 - `rg -n "url\(" styles templates scripts module.json || true`
 - Python manifest/CSS URL existence check — all `module.json` paths and CSS local URL assets resolved.
 - `git diff -U0 | rg "^[+-].*data-action" || true` — no `data-action` names changed; only listener options changed for the existing `drag-overlay` selector.
