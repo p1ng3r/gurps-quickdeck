@@ -398,6 +398,7 @@
           <button type="button" class="qd-ui2-drawer-tab {{#if isSkillsDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="skills" title="{{skillsSearchStatusText}}" aria-label="Skills: {{skillsSearchStatusText}}">Skills</button>
           <button type="button" class="qd-ui2-drawer-tab {{#if isSpellsDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="spells" title="{{spellsSearchStatusText}}" aria-label="Spells: {{spellsSearchStatusText}}">Spells</button>
           <button type="button" class="qd-ui2-drawer-tab {{#if isSettingsDrawerOpen}}is-active{{/if}}" data-action="toggle-drawer" data-drawer="settings" title="UI2 settings">Settings</button>
+
         </nav>
 
         <div class="qd-ui2-drawer-scroll" data-qd-native-scroll="true">
@@ -503,6 +504,73 @@
               <span>QuickDeck preferences</span>
             </header>
             <div class="qd-ui2-settings-stack">
+              <!-- QD CURRENT PDF SOURCES PANEL START -->
+              <section class="qd-ui2-settings-card qd-ui2-pdf-sources-card" aria-label="PDF Sources">
+                <header class="qd-ui2-settings-card-header">
+                  <div>
+                    <h3>PDF Sources</h3>
+                    <p>Map source keys like B, MA, M, DF, etc. to your local PDFs.</p>
+                  </div>
+                  <button type="button" class="qd-ui2-settings-button" data-action="open-reference-index" title="Open Reference Index">Refs</button>
+                </header>
+
+                <div class="qd-ui2-settings-grid qd-ui2-pdf-source-form">
+                  <label class="qd-ui2-settings-field">
+                    <span>Source Key</span>
+                    <input type="text" data-action="pdf-map-key" value="{{pdfMapDraft.key}}" placeholder="B">
+                  </label>
+
+                  <label class="qd-ui2-settings-field">
+                    <span>Display Name</span>
+                    <input type="text" data-action="pdf-map-name" value="{{pdfMapDraft.name}}" placeholder="Basic Set">
+                  </label>
+
+                  <label class="qd-ui2-settings-field qd-ui2-settings-field-wide">
+                    <span>PDF Path</span>
+                    <div class="qd-ui2-pdf-path-row">
+                      <input type="text" data-action="pdf-map-path" value="{{pdfMapDraft.path}}" placeholder="Choose PDF..." readonly>
+                      <button type="button" class="qd-ui2-settings-button" data-action="choose-pdf-source" title="Choose PDF">Choose</button>
+                    </div>
+                  </label>
+
+                  <label class="qd-ui2-settings-field">
+                    <span>Page Offset</span>
+                    <input type="number" data-action="pdf-map-offset" value="{{pdfMapDraft.offset}}">
+                  </label>
+
+                  <div class="qd-ui2-pdf-source-actions">
+                    <button type="button" class="qd-ui2-settings-button" data-action="save-pdf-source" title="Save PDF mapping">Save</button>
+                    <button type="button" class="qd-ui2-settings-button" data-action="clear-pdf-source-draft" title="Clear PDF draft">Clear</button>
+                  </div>
+                </div>
+
+                <div class="qd-ui2-pdf-source-list" aria-label="Mapped PDFs">
+                  {{#if pdfMappings.length}}
+                    {{#each pdfMappings as |mapping|}}
+                      <article class="qd-ui2-pdf-source-row">
+                        <div class="qd-ui2-pdf-source-meta">
+                          <strong>{{mapping.key}}</strong>
+                          <span>{{mapping.name}}</span>
+                          <small>{{mapping.path}}</small>
+                          <small>Offset {{mapping.offset}}</small>
+                        </div>
+                        <div class="qd-ui2-pdf-source-row-actions">
+                          <button type="button" class="qd-ui2-settings-button" data-action="test-pdf-source" data-pdf-key="{{mapping.key}}" title="Test PDF mapping">Test</button>
+                          <button type="button" class="qd-ui2-settings-button" data-action="edit-pdf-source" data-pdf-key="{{mapping.key}}" title="Edit PDF mapping">Edit</button>
+                          <button type="button" class="qd-ui2-settings-button" data-action="remove-pdf-source" data-pdf-key="{{mapping.key}}" title="Remove PDF mapping">Remove</button>
+                        </div>
+                      </article>
+                    {{/each}}
+                  {{else}}
+                    <p class="qd-ui2-empty-note">No PDFs mapped yet. Add B, MA, M, DF, etc.</p>
+                  {{/if}}
+                </div>
+
+                <p class="qd-ui2-settings-help">
+                  Built-in QuickDeck summaries remain the fallback when no mapped PDF source exists.
+                </p>
+              </section>
+              <!-- QD CURRENT PDF SOURCES PANEL END -->
               <label class="qd-ui2-mode-field">
                 <input type="checkbox" data-action="set-token-drop-auto-minimize" {{#if tokenDropAutoMinimizeEnabled}}checked{{/if}}>
                 <span>Minimize QuickDeck during Drop Carousel placement</span>
