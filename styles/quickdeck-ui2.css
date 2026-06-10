@@ -7060,3 +7060,118 @@ button.qd-ui2-stat-tile {
 .qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-spells-section {
   display: none !important;
 }
+
+/* v0.21.0 roster height budget fix:
+   Keep Active from consuming the whole left drawer.
+   Available/Inactive must remain visible and scroll inside the roster panel. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer,
+.qd40-overlay .qd-ui2-left-drawer {
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-card,
+.qd40-overlay .qd-ui2-active-roster-card,
+.qd40-overlay .qd-ui2-inactive-roster-card {
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+/* Active should be important, but not allowed to eat the whole drawer. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-card,
+.qd40-overlay .qd-ui2-active-roster-card {
+  max-height: 56% !important;
+}
+
+/* Available should always remain visible. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-card,
+.qd40-overlay .qd-ui2-inactive-roster-card {
+  max-height: 40% !important;
+}
+
+/* Lists scroll inside their cards instead of pushing the card taller. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-list,
+.qd40-overlay .qd-ui2-active-roster-list {
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-list,
+.qd40-overlay .qd-ui2-inactive-roster-list {
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow-y: auto !important;
+}
+
+/* v0.21.0 roster scrollbar restore:
+   The roster cards get a height budget, and the inner lists own scrolling.
+   Do not let list content expand behind a clipped card. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-card,
+.qd40-overlay .qd-ui2-active-roster-card {
+  display: grid !important;
+  grid-template-rows: auto minmax(0, 1fr) !important;
+  max-height: 56% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-card,
+.qd40-overlay .qd-ui2-inactive-roster-card {
+  display: grid !important;
+  grid-template-rows: auto auto minmax(0, 1fr) !important;
+  max-height: 40% !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-list,
+.qd40-overlay .qd-ui2-active-roster-list,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-list,
+.qd40-overlay .qd-ui2-inactive-roster-list {
+  min-height: 0 !important;
+  max-height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  padding-right: 6px !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: rgba(184, 20, 104, 0.86) rgba(7, 6, 5, 0.72) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-list::-webkit-scrollbar,
+.qd40-overlay .qd-ui2-active-roster-list::-webkit-scrollbar,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-list::-webkit-scrollbar,
+.qd40-overlay .qd-ui2-inactive-roster-list::-webkit-scrollbar {
+  width: 8px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-list::-webkit-scrollbar-track,
+.qd40-overlay .qd-ui2-active-roster-list::-webkit-scrollbar-track,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-list::-webkit-scrollbar-track,
+.qd40-overlay .qd-ui2-inactive-roster-list::-webkit-scrollbar-track {
+  background: rgba(7, 6, 5, 0.72) !important;
+  border-radius: 999px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-list::-webkit-scrollbar-thumb,
+.qd40-overlay .qd-ui2-active-roster-list::-webkit-scrollbar-thumb,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-list::-webkit-scrollbar-thumb,
+.qd40-overlay .qd-ui2-inactive-roster-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(184, 20, 104, 0.95), rgba(108, 14, 66, 0.95)) !important;
+  border: 1px solid rgba(230, 82, 158, 0.55) !important;
+  border-radius: 999px !important;
+}
+
+/* v0.21.0 roster balance tune:
+   Active should show a few actors, then scroll.
+   Available gets more usable vertical space. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-active-roster-card,
+.qd40-overlay .qd-ui2-active-roster-card {
+  max-height: 44% !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-inactive-roster-card,
+.qd40-overlay .qd-ui2-inactive-roster-card {
+  max-height: 52% !important;
+}
