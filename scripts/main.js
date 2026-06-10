@@ -31,9 +31,9 @@ function openQuickDeck() {
   const existingOverlay = document.getElementById("gurps-quickdeck-overlay");
   if (existingOverlay && existingOverlay !== quickDeckApp._overlayRoot) existingOverlay.remove();
 
+  // QuickDeckApp._render owns overlay rendering and minimized presentation.
+  // Avoid forcing a second immediate overlay pass here when opening/restoring.
   quickDeckApp.render(true);
-  void quickDeckApp.renderOverlay?.();
-  quickDeckApp.syncMinimizedPresentation?.();
 
   return quickDeckApp;
 }

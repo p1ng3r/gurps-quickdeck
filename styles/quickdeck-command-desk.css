@@ -5835,3 +5835,71 @@
   font-weight: 700;
   text-align: center;
 }
+/* ------------------------------------------------------------------------- */
+/* Rendering performance guardrails                                           */
+/* ------------------------------------------------------------------------- */
+
+#gurps-quickdeck-overlay.qd40-overlay,
+.qd40-overlay {
+  contain: layout style;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd40-frame,
+.qd40-overlay .qd40-frame,
+#gurps-quickdeck-overlay.qd40-overlay .qd40-body,
+.qd40-overlay .qd40-body,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-panel-wrap,
+.qd40-overlay .qd31-panel-wrap,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-left-drawer,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-cockpit,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-right-drawer,
+.qd40-overlay .qd31-left-drawer,
+.qd40-overlay .qd31-center-cockpit,
+.qd40-overlay .qd31-right-drawer {
+  contain: layout style;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roster-list,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-list,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-drawer-body,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-scroll-body,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-list,
+.qd40-overlay .qd31-roster-list,
+.qd40-overlay .qd31-available-list,
+.qd40-overlay .qd31-drawer-body,
+.qd40-overlay .qd31-center-scroll-body,
+.qd40-overlay .qd31-center-fav-list {
+  contain: layout style;
+  overscroll-behavior: contain;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roster-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-action-row,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-pdf-map-row,
+.qd40-overlay .qd31-roster-card,
+.qd40-overlay .qd31-available-row,
+.qd40-overlay .qd31-action-row,
+.qd40-overlay .qd31-center-fav-card,
+.qd40-overlay .qd31-pdf-map-row {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 78px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-roster-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd31-center-fav-card,
+.qd40-overlay .qd31-roster-card,
+.qd40-overlay .qd31-center-fav-card {
+  contain-intrinsic-size: auto 64px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd31-available-row,
+.qd40-overlay .qd31-available-row {
+  contain-intrinsic-size: auto 52px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-custom-scrollbar-thumb,
+.qd40-overlay .qd-custom-scrollbar-thumb {
+  will-change: transform;
+}

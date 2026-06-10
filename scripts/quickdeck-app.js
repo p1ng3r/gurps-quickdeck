@@ -66,12 +66,16 @@ class QuickDeckCustomScrollbarManager {
     this.root = root;
     this.entries = new Map();
     this.resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver((records) => {
-      for (const record of records) this.refreshHost(record.target);
+      for (const record of records) this.scheduleHostRefresh(record.target);
     }) : null;
-    this.mutationObserver = typeof MutationObserver === "function" ? new MutationObserver(() => this.refreshAll()) : null;
+    this.mutationObserver = typeof MutationObserver === "function" ? new MutationObserver(() => {
+      this.didScrollMutate = true;
+      this.refreshAll();
+    }) : null;
     this.refreshRaf = null;
     this.handleWindowResize = () => this.refreshAll();
     this.pendingHostRefresh = new Set();
+    this.didScrollMutate = false;
     this.candidateSelectors = [
       ".qd31-center-scroll-body",
       ".qd31-right-drawer .qd31-drawer-body",
@@ -94,6 +98,7 @@ class QuickDeckCustomScrollbarManager {
     if (this.refreshRaf) cancelAnimationFrame(this.refreshRaf);
     this.refreshRaf = null;
     this.pendingHostRefresh.clear();
+    this.didScrollMutate = false;
     window.removeEventListener("resize", this.handleWindowResize);
     this.mutationObserver?.disconnect();
     this.resizeObserver?.disconnect();
@@ -107,9 +112,11 @@ class QuickDeckCustomScrollbarManager {
     if (this.refreshRaf) return;
     this.refreshRaf = requestAnimationFrame(() => {
       this.refreshRaf = null;
-      this.scanCandidates();
+      const shouldScan = !this.pendingHostRefresh.size || this.didScrollMutate;
+      if (shouldScan) this.scanCandidates();
       const hosts = this.pendingHostRefresh.size ? Array.from(this.pendingHostRefresh) : Array.from(this.entries.keys());
       this.pendingHostRefresh.clear();
+      this.didScrollMutate = false;
       for (const targetHost of hosts) this.refreshHost(targetHost);
     });
   }
@@ -118,11 +125,10 @@ class QuickDeckCustomScrollbarManager {
   }
   scanCandidates() {
     const found = new Set();
-    for (const selector of this.candidateSelectors) {
-      for (const host of this.root.querySelectorAll(selector)) {
-        found.add(host);
-        if (!this.entries.has(host)) this.bindHost(host);
-      }
+    const selectorList = this.candidateSelectors.join(",");
+    for (const host of this.root.querySelectorAll(selectorList)) {
+      found.add(host);
+      if (!this.entries.has(host)) this.bindHost(host);
     }
     for (const host of this.root.querySelectorAll('[data-qd-custom-scroll-candidate="true"]')) {
       found.add(host);
@@ -152,7 +158,7 @@ class QuickDeckCustomScrollbarManager {
     rail.appendChild(track);
     wrapper.appendChild(rail);
     host.classList.add("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
-    const onScroll = () => this.refreshHost(host);
+    const onScroll = () => this.scheduleHostRefresh(host);
     const onTrackPointerDown = (event) => this.onTrackPointerDown(host, event);
     const onThumbPointerDown = (event) => this.onThumbPointerDown(host, event);
     host.addEventListener("scroll", onScroll, { passive: true });
@@ -168,7 +174,10 @@ class QuickDeckCustomScrollbarManager {
       onScroll,
       onTrackPointerDown,
       onThumbPointerDown,
-      cleanupDrag: null
+      cleanupDrag: null,
+      lastActive: null,
+      lastThumbHeight: null,
+      lastThumbTop: null
     };
     this.entries.set(host, entry);
     this.resizeObserver?.observe(host);
@@ -236,10 +245,19 @@ class QuickDeckCustomScrollbarManager {
     entry.wrapper?.classList?.toggle("qd-custom-scroll-wrapper-visible-host", !isHiddenHost);
 
     const isUsable = this.isUsableScrollHost(host, entry);
-    entry.rail.classList.toggle("is-active", isUsable);
+    if (entry.lastActive !== isUsable) {
+      entry.rail.classList.toggle("is-active", isUsable);
+      entry.lastActive = isUsable;
+    }
     if (!isUsable) {
-      entry.thumb.style.removeProperty("height");
-      entry.thumb.style.removeProperty("transform");
+      if (entry.lastThumbHeight !== null) {
+        entry.thumb.style.removeProperty("height");
+        entry.lastThumbHeight = null;
+      }
+      if (entry.lastThumbTop !== null) {
+        entry.thumb.style.removeProperty("transform");
+        entry.lastThumbTop = null;
+      }
       return;
     }
 
@@ -252,9 +270,16 @@ class QuickDeckCustomScrollbarManager {
     // chain track to the bottom.
     const thumbHeight = Math.min(trackHeight, QuickDeckCustomScrollbarManager.MIN_THUMB_HEIGHT);
     const maxTop = Math.max(0, trackHeight - thumbHeight);
-    const top = maxScroll > 0 ? (host.scrollTop / maxScroll) * maxTop : 0;
-    entry.thumb.style.height = `${thumbHeight}px`;
-    entry.thumb.style.transform = `translateY(${Math.max(0, Math.min(maxTop, top))}px)`;
+    const top = Math.round(maxScroll > 0 ? (host.scrollTop / maxScroll) * maxTop : 0);
+    const nextTop = Math.max(0, Math.min(maxTop, top));
+    if (entry.lastThumbHeight !== thumbHeight) {
+      entry.thumb.style.height = `${thumbHeight}px`;
+      entry.lastThumbHeight = thumbHeight;
+    }
+    if (entry.lastThumbTop !== nextTop) {
+      entry.thumb.style.transform = `translateY(${nextTop}px)`;
+      entry.lastThumbTop = nextTop;
+    }
   }
   onTrackPointerDown(host,event){
     const entry=this.entries.get(host); if(!entry) return; if(event.target===entry.thumb) return;
@@ -273,23 +298,39 @@ class QuickDeckCustomScrollbarManager {
     const entry=this.entries.get(host); if(!entry) return;
     event.preventDefault(); event.stopPropagation();
     const startY=event.clientY; const startTop=host.scrollTop;
-    const trackRect=entry.track.getBoundingClientRect();
-    const thumbRect=entry.thumb.getBoundingClientRect();
-    const dragScale=Math.max(1, trackRect.height-thumbRect.height);
-    const maxScroll=Math.max(0, host.scrollHeight-host.clientHeight);
+    const trackHeight = Math.max(1, Number(entry.track.clientHeight) || entry.track.getBoundingClientRect().height || 1);
+    const thumbHeight = Math.max(1, Number(entry.thumb.offsetHeight) || QuickDeckCustomScrollbarManager.MIN_THUMB_HEIGHT);
+    const maxThumbTravel = Math.max(1, trackHeight - thumbHeight);
+    let latestClientY = startY;
+    let dragRaf = null;
+    const applyDragFrame = () => {
+      dragRaf = null;
+      const delta = Number(latestClientY) - startY;
+      const liveMaxScroll = Math.max(0, host.scrollHeight - host.clientHeight);
+      const scrollRatio = liveMaxScroll / maxThumbTravel;
+      host.scrollTop = Math.max(0, Math.min(liveMaxScroll, startTop + (delta * scrollRatio)));
+      this.scheduleHostRefresh(host);
+    };
     const onMove=(moveEvent)=>{
       moveEvent.preventDefault();
-      const delta=Number(moveEvent.clientY)-startY;
-      const liveMaxScroll=Math.max(0, host.scrollHeight-host.clientHeight);
-      const liveTrackRect=entry.track.getBoundingClientRect();
-      const liveThumbRect=entry.thumb.getBoundingClientRect();
-      const maxThumbTravel=Math.max(1, liveTrackRect.height-liveThumbRect.height);
-      const scrollRatio=liveMaxScroll/maxThumbTravel;
-      host.scrollTop=Math.max(0, Math.min(liveMaxScroll, startTop + (delta*scrollRatio)));
-      this.refreshHost(host);
+      latestClientY = moveEvent.clientY;
+      if (!dragRaf) dragRaf = requestAnimationFrame(applyDragFrame);
     };
     const onUp=()=>cleanup();
-    const cleanup=()=>{ window.removeEventListener("pointermove", onMove); window.removeEventListener("pointerup", onUp); window.removeEventListener("pointercancel", onUp); entry.cleanupDrag=null; entry.thumb.classList.remove("is-dragging"); entry.thumb.style.removeProperty("user-select"); entry.thumb.style.removeProperty("touch-action"); document.body.style.removeProperty("user-select"); if (entry.thumb.hasPointerCapture?.(event.pointerId)) entry.thumb.releasePointerCapture(event.pointerId);};
+    const cleanup=()=>{
+      if (dragRaf) cancelAnimationFrame(dragRaf);
+      dragRaf=null;
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+      entry.cleanupDrag=null;
+      entry.thumb.classList.remove("is-dragging");
+      entry.thumb.style.removeProperty("user-select");
+      entry.thumb.style.removeProperty("touch-action");
+      document.body.style.removeProperty("user-select");
+      if (entry.thumb.hasPointerCapture?.(event.pointerId)) entry.thumb.releasePointerCapture(event.pointerId);
+      this.scheduleHostRefresh(host);
+    };
     entry.cleanupDrag=cleanup;
     entry.thumb.classList.add("is-dragging");
     entry.thumb.style.userSelect = "none";
