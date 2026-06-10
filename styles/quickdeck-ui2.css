@@ -6986,3 +6986,77 @@ button.qd-ui2-stat-tile {
   pointer-events: none !important;
   visibility: hidden !important;
 }
+
+/* Restore scrolling on the active right-drawer tab section only.
+   The outer drawer scroll body can show a track without owning overflow,
+   so the active Combat / Skills / Spells / Settings section must be the scroller. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section {
+  min-height: 0 !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer=""] .qd-ui2-combat-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="combat"] .qd-ui2-combat-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="skills"] .qd-ui2-skills-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-spells-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-settings-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer=""] .qd-ui2-combat-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="combat"] .qd-ui2-combat-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="skills"] .qd-ui2-skills-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-spells-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-settings-section {
+  display: block !important;
+  max-height: calc(var(--qd-ui2-body-h) - var(--qd-ui2-tab-h) - 74px) !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  scrollbar-gutter: stable !important;
+  scrollbar-width: thin;
+  scrollbar-color: #b78235 rgba(5, 4, 3, 0.55);
+  padding-right: 6px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section::-webkit-scrollbar,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section::-webkit-scrollbar {
+  width: 10px !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section::-webkit-scrollbar-track,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section::-webkit-scrollbar-track {
+  background: rgba(5, 4, 3, 0.55);
+  border-radius: 999px;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section::-webkit-scrollbar-thumb,
+.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-section::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c79a4b, #6f461f);
+  border: 2px solid rgba(5, 4, 3, 0.75);
+  border-radius: 999px;
+}
+
+/* Keep inactive drawer sections truly hidden after making active sections block-scroll. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="combat"] .qd-ui2-skills-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="combat"] .qd-ui2-spells-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="combat"] .qd-ui2-settings-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="skills"] .qd-ui2-combat-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="skills"] .qd-ui2-spells-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="skills"] .qd-ui2-settings-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-combat-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-skills-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-settings-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-combat-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-skills-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-spells-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="combat"] .qd-ui2-skills-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="combat"] .qd-ui2-spells-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="combat"] .qd-ui2-settings-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="skills"] .qd-ui2-combat-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="skills"] .qd-ui2-spells-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="skills"] .qd-ui2-settings-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-combat-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-skills-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-settings-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-combat-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-skills-section,
+.qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-spells-section {
+  display: none !important;
+}
