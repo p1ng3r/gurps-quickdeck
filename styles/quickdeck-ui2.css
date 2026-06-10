@@ -1086,6 +1086,19 @@ button.qd-ui2-stat-tile {
   overflow: hidden !important;
 }
 
+/* Raw stone panel surfaces. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-left-drawer,
+.qd40-overlay .qd-ui2-center-cockpit {
+  background-color: #050403 !important;
+  background-image: var(--qd-asset-clean-stone-tile) !important;
+  background-repeat: repeat !important;
+  background-size: 420px 420px !important;
+  background-position: 0 0 !important;
+  background-blend-mode: normal !important;
+}
+
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer,
 .qd40-overlay .qd-ui2-drawer {
   flex: 0 0 0 !important;
@@ -1893,11 +1906,18 @@ button.qd-ui2-stat-tile {
   text-align: left !important;
   background: transparent !important;
   border-color: transparent !important;
+  transition:
+    background-color 80ms ease,
+    border-color 80ms ease,
+    color 80ms ease !important;
+  will-change: auto !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button:not(:disabled):hover,
 .qd40-overlay .qd-ui2-reference-button:not(:disabled):hover {
   color: #ffd979 !important;
+  filter: none !important;
+  transform: none !important;
   text-decoration: underline !important;
 }
 
@@ -1938,13 +1958,21 @@ button.qd-ui2-stat-tile {
   border: 1px solid rgba(204, 153, 65, 0.34) !important;
   border-radius: 8px !important;
   box-shadow: inset 0 1px 0 rgba(255, 225, 148, 0.12) !important;
+  transition:
+    background-color 80ms ease,
+    border-color 80ms ease,
+    color 80ms ease !important;
+  will-change: auto !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:hover,
 .qd40-overlay .qd-ui2-action-button:hover {
   color: #fff1c9 !important;
   border-color: rgba(236, 187, 86, 0.62) !important;
-  filter: brightness(1.12) !important;
+  filter: none !important;
+  transform: none !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 224, 128, 0.16) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button.is-active,
@@ -1952,6 +1980,18 @@ button.qd-ui2-stat-tile {
   color: #1b1107 !important;
   background: linear-gradient(180deg, #f0c86f, #a86920) !important;
   border-color: rgba(255, 225, 140, 0.78) !important;
+  filter: none !important;
+  transform: none !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 224, 128, 0.18) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:focus-visible,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button:focus-visible,
+.qd40-overlay .qd-ui2-action-button:focus-visible,
+.qd40-overlay .qd-ui2-reference-button:focus-visible {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 224, 128, 0.16) !important;
 }
 
 /* Settings panel is player-facing now; keep it clean. */
@@ -2196,12 +2236,20 @@ button.qd-ui2-stat-tile {
   margin-top: 0 !important;
 }
 
-/* The restored Quick Slots deck is now the center console surface.
-   Disable the old pseudo-window plate so it does not appear behind it. */
+/* Keep raw stone panels free of decorative tint/mask overlays. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer::before,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer::after,
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit::before,
-.qd40-overlay .qd-ui2-center-cockpit::before {
-  display: none !important;
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit::after,
+.qd40-overlay .qd-ui2-left-drawer::before,
+.qd40-overlay .qd-ui2-left-drawer::after,
+.qd40-overlay .qd-ui2-center-cockpit::before,
+.qd40-overlay .qd-ui2-center-cockpit::after {
   content: none !important;
+  display: none !important;
+  background: none !important;
+  background-image: none !important;
+  opacity: 0 !important;
 }
 
 /* Tighten the restored stack now that the extra background plate is gone. */
@@ -3560,13 +3608,10 @@ button.qd-ui2-stat-tile {
 .qd40-overlay .qd-ui2-spells-section .qd-ui2-action-row {
   margin-bottom: 2px !important;
   transition:
-    min-height 140ms ease,
-    height 140ms ease,
-    padding 140ms ease,
-    transform 140ms ease,
-    box-shadow 140ms ease,
-    border-color 140ms ease,
-    background 140ms ease !important;
+    background-color 80ms ease,
+    border-color 80ms ease,
+    color 80ms ease !important;
+  will-change: auto !important;
 }
 
 /* 50% hover growth: base 78px -> about 117px. */
@@ -3580,12 +3625,19 @@ button.qd-ui2-stat-tile {
   height: 117px !important;
   padding: 10px !important;
   z-index: 5 !important;
-  transform: translateX(2px) !important;
+  transform: none !important;
   border-color: rgba(235, 184, 88, 0.58) !important;
+  filter: none !important;
   box-shadow:
-    inset 3px 0 0 rgba(239, 186, 78, 0.70),
-    inset 0 1px 0 rgba(255, 231, 159, 0.10),
-    0 0 14px rgba(224, 160, 58, 0.18) !important;
+    inset 0 0 0 1px rgba(255, 224, 128, 0.16) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row.is-favorite,
+.qd40-overlay .qd-ui2-action-row.is-favorite {
+  filter: none !important;
+  transform: none !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 224, 128, 0.18) !important;
 }
 
 /* Keep expanded cards from clipping enlarged button rows. */
@@ -5894,6 +5946,17 @@ button.qd-ui2-stat-tile {
   user-select: none !important;
 }
 
+/* Large center/left containers should not darken the raw stone panel surface. */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer .qd-ui2-roster-section,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-actor-card,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-center-section,
+.qd40-overlay .qd-ui2-left-drawer .qd-ui2-roster-section,
+.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-center-section {
+  background-color: transparent !important;
+  background-image: none !important;
+}
+
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-vital-input,
 .qd40-overlay .qd-ui2-vital-input {
   user-select: text !important;
@@ -5948,29 +6011,24 @@ button.qd-ui2-stat-tile {
   letter-spacing: 0.045em !important;
   text-transform: uppercase !important;
   transition:
-    transform 110ms ease,
-    filter 110ms ease,
-    border-color 110ms ease,
-    box-shadow 110ms ease,
-    background 110ms ease !important;
+    background-color 80ms ease,
+    border-color 80ms ease,
+    color 80ms ease !important;
+  will-change: auto !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab:hover,
 .qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab:hover {
-  transform: translateY(-1px) !important;
-  filter: brightness(1.10) !important;
+  transform: none !important;
+  filter: none !important;
   border-color: rgba(244, 194, 91, 0.62) !important;
   color: #fff0c6 !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 239, 190, 0.14),
-    inset 0 -6px 10px rgba(0, 0, 0, 0.24),
-    0 0 8px rgba(233, 169, 57, 0.16) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab:active,
 .qd40-overlay .qd-ui2-right-drawer .qd-ui2-drawer-tab:active {
-  transform: translateY(1px) !important;
-  filter: brightness(0.94) !important;
+  transform: none !important;
+  filter: none !important;
 }
 
 /* Active tabs by category. */
@@ -6191,28 +6249,25 @@ button.qd-ui2-stat-tile {
     inset 0 1px 0 rgba(255, 230, 160, 0.09),
     inset 0 -6px 10px rgba(0, 0, 0, 0.24) !important;
   transition:
-    transform 110ms ease,
-    filter 110ms ease,
-    border-color 110ms ease,
-    box-shadow 110ms ease,
-    background 110ms ease !important;
+    background-color 80ms ease,
+    border-color 80ms ease,
+    color 80ms ease !important;
+  will-change: auto !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:hover,
 .qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:hover {
-  transform: translateY(-1px) !important;
-  filter: brightness(1.12) !important;
+  transform: none !important;
+  filter: none !important;
   border-color: rgba(244, 194, 91, 0.72) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 239, 190, 0.16),
-    inset 0 -6px 10px rgba(0, 0, 0, 0.26),
-    0 0 8px rgba(233, 169, 57, 0.20) !important;
+    inset 0 0 0 1px rgba(255, 224, 128, 0.16) !important;
 }
 
 #gurps-quickdeck-overlay.qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:active,
 .qd40-overlay .qd-ui2-right-drawer .qd-ui2-action-button:active {
-  transform: translateY(1px) !important;
-  filter: brightness(0.94) !important;
+  transform: none !important;
+  filter: none !important;
 }
 
 /* Primary roll/action icons get a stronger command-button look. */
@@ -6931,108 +6986,3 @@ button.qd-ui2-stat-tile {
   pointer-events: none !important;
   visibility: hidden !important;
 }
-
-/* Milestone 1.1 hotfix: raw clean stone tile on center and roster panels.
-   Matches the Action Deck direction: raw dark rocky tile, no brown wash, no black mask.
-   Visual-only. No layout, JS, template, selector rename, or data-action changes. */
-
-/* Left roster + center cockpit raw stone surfaces. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
-.qd40-overlay .qd-ui2-left-drawer,
-.qd40-overlay .qd-ui2-center-cockpit {
-  background-color: #050403 !important;
-  background-image: var(--qd-asset-clean-stone-tile) !important;
-  background-repeat: repeat !important;
-  background-size: 420px 420px !important;
-  background-position: 0 0 !important;
-  background-blend-mode: normal !important;
-}
-
-/* Stop center/left decorative overlays from tinting or masking the raw stone. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer::before,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer::after,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit::before,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit::after,
-.qd40-overlay .qd-ui2-left-drawer::before,
-.qd40-overlay .qd-ui2-left-drawer::after,
-.qd40-overlay .qd-ui2-center-cockpit::before,
-.qd40-overlay .qd-ui2-center-cockpit::after {
-  content: none !important;
-  display: none !important;
-  background: none !important;
-  background-image: none !important;
-  opacity: 0 !important;
-}
-
-/* Do not darken the large center/left containers over the stone. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-left-drawer .qd-ui2-roster-section,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-actor-card,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-center-section,
-.qd40-overlay .qd-ui2-left-drawer .qd-ui2-roster-section,
-.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-actor-card,
-.qd40-overlay .qd-ui2-center-cockpit .qd-ui2-center-section {
-  background-color: transparent !important;
-  background-image: none !important;
-}
-
-/* Milestone 1.2 hotfix: cheap action button render performance.
-   Reduces paint/compositing cost when clicking repeated roll/action controls.
-   Visual-only. No JS, template, roll logic, data-action, or layout changes. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab,
-.qd40-overlay .qd-ui2-action-row,
-.qd40-overlay .qd-ui2-action-button,
-.qd40-overlay .qd-ui2-reference-button,
-.qd40-overlay .qd-ui2-drawer-tab {
-  transition:
-    background-color 80ms ease,
-    border-color 80ms ease,
-    color 80ms ease !important;
-  will-change: auto !important;
-}
-
-/* Do not move or filter repeated rows/buttons on hover/click. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row:hover,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:hover,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:active,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button:hover,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab:hover,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-drawer-tab:active,
-.qd40-overlay .qd-ui2-action-row:hover,
-.qd40-overlay .qd-ui2-action-button:hover,
-.qd40-overlay .qd-ui2-action-button:active,
-.qd40-overlay .qd-ui2-reference-button:hover,
-.qd40-overlay .qd-ui2-drawer-tab:hover,
-.qd40-overlay .qd-ui2-drawer-tab:active {
-  transform: none !important;
-  filter: none !important;
-}
-
-/* Reduce expensive glow stacks on repeated action hover states.
-   Keep border/background feedback, but avoid large repaint-heavy shadows. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row:hover,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:hover,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button:focus-visible,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-reference-button:focus-visible,
-.qd40-overlay .qd-ui2-action-row:hover,
-.qd40-overlay .qd-ui2-action-button:hover,
-.qd40-overlay .qd-ui2-action-button:focus-visible,
-.qd40-overlay .qd-ui2-reference-button:focus-visible {
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 224, 128, 0.16) !important;
-}
-
-/* Keep active/favorite/pin readable without heavy glow. */
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-button.is-active,
-#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-action-row.is-favorite,
-.qd40-overlay .qd-ui2-action-button.is-active,
-.qd40-overlay .qd-ui2-action-row.is-favorite {
-  filter: none !important;
-  transform: none !important;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 224, 128, 0.18) !important;
-}
-
