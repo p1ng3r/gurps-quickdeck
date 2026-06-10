@@ -1,0 +1,102 @@
+/* GURPS QuickDeck — UI2 center modular art layer
+ * Center panel art only. No JS, template, data-action, or layout ownership.
+ */
+
+#gurps-quickdeck-overlay.qd40-overlay,
+.qd40-overlay {
+  --qd-center-art-panel-tile: url("../assets/ui/dwarven/center/center-iron-tile.webp");
+  --qd-center-art-actor-card: url("../assets/ui/dwarven/center/actor-card-iron-plate.webp");
+  --qd-center-art-quick-slots-panel: url("../assets/ui/dwarven/center/quick-slots-panel-iron.webp");
+  --qd-center-art-quick-slot-row: url("../assets/ui/dwarven/center/quick-slot-row-iron-rivets.webp");
+  --qd-center-art-toggle: url("../assets/ui/dwarven/center/dropdown-toggle-iron.webp");
+  --qd-center-art-button-small: url("../assets/ui/dwarven/center/button-small-bronze.webp");
+  --qd-center-art-button-round: url("../assets/ui/dwarven/center/button-round-bronze.webp");
+  --qd-center-art-header-strip: url("../assets/ui/dwarven/center/header-strip-iron-brass.webp");
+}
+
+/* Chrome header */
+#gurps-quickdeck-overlay.qd40-overlay .qd40-chrome-row,
+.qd40-overlay .qd40-chrome-row {
+  background-image:
+    linear-gradient(180deg, rgba(255, 226, 155, 0.10), rgba(0, 0, 0, 0.16)),
+    var(--qd-center-art-header-strip),
+    linear-gradient(180deg, rgba(11, 9, 7, 0.96), rgba(4, 4, 4, 0.96)) !important;
+  background-size: 100% 100%, auto 100%, 100% 100% !important;
+  background-repeat: no-repeat, repeat-x, no-repeat !important;
+}
+
+/* Center cockpit */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-center-cockpit,
+.qd40-overlay .qd-ui2-center-cockpit {
+  background-color: #050403 !important;
+  background-image:
+    radial-gradient(circle at 50% 0%, rgba(226, 178, 83, 0.10), transparent 42%),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.04), rgba(0, 0, 0, 0.22)),
+    var(--qd-center-art-panel-tile),
+    var(--qd-asset-clean-stone-tile) !important;
+  background-repeat: no-repeat, no-repeat, repeat, repeat !important;
+  background-size: 100% 100%, 100% 100%, 320px 320px, 420px 420px !important;
+}
+
+/* Actor card */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-actor-card,
+.qd40-overlay .qd-ui2-actor-card {
+  isolation: isolate !important;
+  background-image:
+    linear-gradient(180deg, rgba(255, 220, 145, 0.045), rgba(0, 0, 0, 0.22)),
+    var(--qd-center-art-actor-card),
+    linear-gradient(160deg, rgba(36, 28, 18, 0.96), rgba(8, 7, 6, 0.98)) !important;
+  background-size: 100% 100%, 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat !important;
+  border-color: rgba(222, 170, 78, 0.48) !important;
+}
+
+/* Center Action Deck */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slots-card,
+.qd40-overlay .qd-ui2-quick-slots-card {
+  background-image:
+    linear-gradient(180deg, rgba(255, 222, 145, 0.045), rgba(0, 0, 0, 0.26)),
+    var(--qd-center-art-quick-slots-panel),
+    linear-gradient(180deg, rgba(48, 31, 17, 0.72), rgba(9, 8, 7, 0.86)) !important;
+  background-size: 100% 100%, 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat !important;
+  border-color: rgba(226, 178, 82, 0.40) !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-toggle,
+.qd40-overlay .qd-ui2-quick-slot-toggle {
+  background-image:
+    linear-gradient(180deg, rgba(255, 226, 145, 0.10), rgba(0, 0, 0, 0.20)),
+    var(--qd-center-art-toggle),
+    linear-gradient(180deg, rgba(86, 54, 23, 0.86), rgba(24, 17, 10, 0.88)) !important;
+  background-size: 100% 100%, 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat !important;
+}
+
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-card,
+.qd40-overlay .qd-ui2-quick-slot-card {
+  background-image:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.24), transparent 18%, rgba(255, 196, 95, 0.035) 52%, rgba(0, 0, 0, 0.22)),
+    var(--qd-center-art-quick-slot-row),
+    linear-gradient(180deg, rgba(35, 23, 13, 0.78), rgba(8, 7, 6, 0.88)) !important;
+  background-size: 100% 100%, 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat !important;
+  border-color: rgba(204, 153, 65, 0.28) !important;
+}
+
+/* Center buttons */
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-roll-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-carousel-arrow,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-button,
+#gurps-quickdeck-overlay.qd40-overlay .qd-ui2-quick-slot-icon,
+.qd40-overlay .qd-ui2-roll-button,
+.qd40-overlay .qd-ui2-carousel-arrow,
+.qd40-overlay .qd-ui2-quick-slot-button,
+.qd40-overlay .qd-ui2-quick-slot-icon {
+  background-image:
+    linear-gradient(180deg, rgba(255, 226, 145, 0.12), rgba(0, 0, 0, 0.20)),
+    var(--qd-center-art-button-small),
+    linear-gradient(180deg, rgba(84, 53, 24, 0.92), rgba(23, 16, 9, 0.94)) !important;
+  background-size: 100% 100%, 100% 100%, 100% 100% !important;
+  background-repeat: no-repeat !important;
+}
