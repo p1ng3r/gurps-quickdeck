@@ -7006,7 +7006,7 @@ button.qd-ui2-stat-tile {
 .qd40-overlay .qd-ui2-shell[data-active-drawer="spells"] .qd-ui2-spells-section,
 .qd40-overlay .qd-ui2-shell[data-active-drawer="settings"] .qd-ui2-settings-section {
   display: block !important;
-  max-height: calc(var(--qd-ui2-body-h) - var(--qd-ui2-tab-h) - 8px) !important;
+  max-height: calc(var(--qd-ui2-body-h) - var(--qd-ui2-tab-h) - 24px) !important;
   overflow-y: auto !important;
   overflow-x: hidden !important;
   scrollbar-gutter: stable !important;
