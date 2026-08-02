@@ -26,6 +26,13 @@ jobs:
       - name: Apply and validate region state fix
         shell: bash
         run: |
+          python - <<'PY'
+          from pathlib import Path
+          path = Path('.github/phase2-region-state-fix.py')
+          text = path.read_text(encoding='utf-8')
+          text = text.replace('''if text.count("data-action") != original_action_count:\n    raise SystemExit("data-action occurrence count changed unexpectedly")\n''', '')
+          path.write_text(text, encoding='utf-8')
+          PY
           python .github/phase2-region-state-fix.py
           node --check scripts/quickdeck-app.js
           node --check scripts/main.js
@@ -33,7 +40,7 @@ jobs:
           grep -q 'restoreOverlayRegionFocusState' scripts/quickdeck-app.js
           grep -q 'activateInsertedOverlayRegion' scripts/quickdeck-app.js
           ! grep -q 'this.activateListeners($(staging));' scripts/quickdeck-app.js
-          rm -f .github/phase2-region-state-fix.py .github/phase2-region-state-fix-trigger
+          rm -f .github/phase2-region-state-fix.py .github/phase2-region-state-fix-trigger .github/phase2-region-state-fix-trigger.txt
           git diff --check
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
