@@ -50,10 +50,7 @@ function renderQuickDeckIfOpen(regions = "all", delay = QUICKDECK_DOCUMENT_RENDE
 function actorUpdateTouchesQuickDeckResources(changed = {}) {
   const flattened = foundry?.utils?.flattenObject?.(changed) ?? changed ?? {};
   return Object.keys(flattened).some((path) =>
-    path === "system.HP" ||
-    path === "system.FP" ||
-    path.startsWith("system.HP.") ||
-    path.startsWith("system.FP.")
+    /(?:^|\.)system\.(?:HP|FP)(?:\.|$)/.test(String(path))
   );
 }
 
@@ -275,6 +272,7 @@ Hooks.on("deleteActor", (actor) => {
 Hooks.on("updateActor", (actor, changed) => {
   if (!quickDeckApp) return;
   const actorId = actor?.id;
+  quickDeckApp.rememberActorDocument?.(actor);
   const shouldRender = actorAffectsQuickDeckView(actorId, { includeAvailable: true });
   quickDeckApp.invalidateDerivedActorData(actorId);
   if (!shouldRender) return;
@@ -284,6 +282,19 @@ Hooks.on("updateActor", (actor, changed) => {
     return;
   }
   renderQuickDeckIfOpen();
+});
+
+Hooks.on("updateToken", (tokenDocument, changed) => {
+  if (!quickDeckApp || !actorUpdateTouchesQuickDeckResources(changed)) return;
+  const actor = tokenDocument?.actor ?? null;
+  const actorId = actor?.id ?? tokenDocument?.actorId ?? null;
+  if (!actorId) return;
+
+  quickDeckApp.rememberActorDocument?.(actor);
+  quickDeckApp.invalidateDerivedActorData(actorId);
+  if (actorAffectsQuickDeckView(actorId, { includeAvailable: true })) {
+    renderQuickDeckIfOpen("center", 0);
+  }
 });
 
 Hooks.on("createItem", (item) => {

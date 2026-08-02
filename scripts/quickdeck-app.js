@@ -446,6 +446,7 @@ export class QuickDeckApp extends Application {
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
+    this._preferredActorDocumentsById = new Map();
     this.referenceApp = null;
     this._overlayRoot = null;
     this._overlayDragCleanup = null;
@@ -911,8 +912,58 @@ export class QuickDeckApp extends Application {
     return didRemove;
   }
 
+  isSyntheticTokenActor(actor) {
+    return Boolean(
+      actor?.isToken === true ||
+      actor?.parent?.documentName === "Token" ||
+      actor?.token?.documentName === "Token"
+    );
+  }
+
+  rememberActorDocument(actor) {
+    const actorId = String(actor?.id ?? "");
+    if (!actorId || !this.isSyntheticTokenActor(actor)) return actor ?? null;
+    this._preferredActorDocumentsById.set(actorId, actor);
+    return actor;
+  }
+
+  getCanvasTokenActor(actorId) {
+    const id = String(actorId ?? "");
+    if (!id) return null;
+
+    const controlledTokens = Array.from(canvas?.tokens?.controlled ?? []);
+    const controlledMatch = controlledTokens.find((token) => String(token?.actor?.id ?? "") === id);
+    if (controlledMatch?.actor) return controlledMatch.actor;
+
+    const currentCombatant = game?.combat?.combatant ?? null;
+    const currentTokenId = currentCombatant?.tokenId ?? currentCombatant?.token?.id ?? null;
+    const currentToken = currentTokenId ? canvas?.tokens?.get?.(currentTokenId) : null;
+    if (String(currentToken?.actor?.id ?? "") === id) return currentToken.actor;
+
+    const matches = Array.from(canvas?.tokens?.placeables ?? [])
+      .filter((token) => String(token?.actor?.id ?? "") === id);
+    return matches.length === 1 ? matches[0].actor : null;
+  }
+
+  resolveActorDocument(actorOrId) {
+    if (actorOrId && typeof actorOrId === "object") {
+      return this.rememberActorDocument(actorOrId);
+    }
+
+    const actorId = String(actorOrId ?? "");
+    if (!actorId) return null;
+
+    const canvasActor = this.getCanvasTokenActor(actorId);
+    if (canvasActor) return this.rememberActorDocument(canvasActor);
+
+    const rememberedActor = this._preferredActorDocumentsById.get(actorId);
+    if (rememberedActor) return rememberedActor;
+
+    return game.actors.get(actorId) ?? null;
+  }
+
   getActiveActor() {
-    return this.activeActorId ? game.actors.get(this.activeActorId) : null;
+    return this.resolveActorDocument(this.activeActorId);
   }
 
   getSelectedPrimaryRollOption() {
@@ -4000,7 +4051,7 @@ export class QuickDeckApp extends Application {
   }
 
   async adjustActorResource(actorId, resource, delta) {
-    const actor = actorId ? game.actors.get(actorId) : null;
+    const actor = this.resolveActorDocument(actorId);
     const path = this.getResourceUpdatePath(resource);
     const numericDelta = Number(delta);
     if (!actor || !path || !Number.isFinite(numericDelta)) return;
@@ -4015,7 +4066,7 @@ export class QuickDeckApp extends Application {
   }
 
   async setActorResourceValue(actorOrId, resource, value) {
-    const actor = typeof actorOrId === "string" ? game.actors.get(actorOrId) : actorOrId;
+    const actor = this.resolveActorDocument(actorOrId);
     const path = this.getResourceUpdatePath(resource);
     const numericValue = this.parseResourceNumber(value);
     if (!actor || !path) return false;
@@ -4106,7 +4157,7 @@ export class QuickDeckApp extends Application {
         const uuidValue = uuid ?? rawText;
         const resolvedDocument = await fromUuid(uuidValue);
         if (resolvedDocument?.documentName === "Actor" || resolvedDocument instanceof Actor) {
-          return resolvedDocument;
+          return this.rememberActorDocument(resolvedDocument);
         }
         console.warn("gurps-quickdeck | Ignored drop: UUID did not resolve to Actor.", {
           uuid: uuidValue
@@ -4117,7 +4168,7 @@ export class QuickDeckApp extends Application {
     }
 
     if (actorId) {
-      const actor = game.actors.get(actorId);
+      const actor = this.resolveActorDocument(actorId);
       if (actor) return actor;
     }
 
