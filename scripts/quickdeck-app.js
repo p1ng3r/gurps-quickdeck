@@ -4748,6 +4748,7 @@ export class QuickDeckApp extends Application {
     if (existing) {
       this._floatingRestoreIcon = existing;
       this.applyRestorePillPosition(existing);
+      this.installFloatingRestoreMouseGuards(existing);
       this.setupFloatingRestoreDraggable(existing);
       return;
     }
@@ -4763,6 +4764,7 @@ export class QuickDeckApp extends Application {
     document.body.appendChild(icon);
     this._floatingRestoreIcon = icon;
     this.applyRestorePillPosition(icon);
+    this.installFloatingRestoreMouseGuards(icon);
     this.setupFloatingRestoreDraggable(icon);
   }
 
@@ -4785,6 +4787,35 @@ export class QuickDeckApp extends Application {
     this.syncMinimizedPresentation();
     this.requestOverlayRender("all", { reason: "restore-pill" });
   };
+
+  onFloatingRestoreNonPrimaryMouse = (event) => {
+    if (Number(event?.button) === 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation?.();
+  };
+
+  onFloatingRestoreContextMenu = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation?.();
+  };
+
+  installFloatingRestoreMouseGuards(icon) {
+    if (!icon) return;
+    icon.addEventListener("pointerdown", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.addEventListener("mousedown", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.addEventListener("auxclick", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.addEventListener("contextmenu", this.onFloatingRestoreContextMenu, true);
+  }
+
+  uninstallFloatingRestoreMouseGuards(icon) {
+    if (!icon) return;
+    icon.removeEventListener("pointerdown", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.removeEventListener("mousedown", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.removeEventListener("auxclick", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.removeEventListener("contextmenu", this.onFloatingRestoreContextMenu, true);
+  }
 
   getFoundryDraggableClass() {
     const draggable = foundry?.applications?.ux?.Draggable ?? globalThis.Draggable ?? null;
@@ -4992,6 +5023,7 @@ export class QuickDeckApp extends Application {
 
   removeFloatingRestoreIcon() {
     const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    this.uninstallFloatingRestoreMouseGuards(icon);
     this.teardownFloatingRestoreDraggable(icon);
     if (!icon) return;
     icon.removeEventListener("click", this.onFloatingRestoreClick);
