@@ -1,0 +1,52 @@
+name: Apply Phase 2 synthetic actor sync
+
+on:
+  pull_request:
+    types: [synchronize, reopened]
+    branches:
+      - codex/v0.20.4-runtime-cleanup-phase1
+
+permissions:
+  contents: write
+
+jobs:
+  fix:
+    if: github.event.pull_request.head.ref == 'codex/v0.20.4-runtime-cleanup-phase2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/v0.20.4-runtime-cleanup-phase2
+          fetch-depth: 0
+
+      - name: Apply and validate synthetic actor synchronization
+        shell: bash
+        run: |
+          set -euo pipefail
+          python .github/phase2-synthetic-actor-sync.py
+          node --check scripts/quickdeck-app.js
+          node --check scripts/main.js
+          grep -q 'rememberActorDocument(actor)' scripts/quickdeck-app.js
+          grep -q 'resolveActorDocument(actorOrId)' scripts/quickdeck-app.js
+          grep -q 'Hooks.on("updateToken"' scripts/main.js
+          grep -q 'const actor = this.resolveActorDocument(actorOrId)' scripts/quickdeck-app.js
+          rm -f .github/phase2-synthetic-actor-sync.py .github/phase2-synthetic-actor-sync-trigger.txt
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Sync resources with synthetic token actors"
+          git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase2
+
+      - name: Remove one-use workflow from Phase 1
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch origin codex/v0.20.4-runtime-cleanup-phase1
+          git checkout -B cleanup-phase1 origin/codex/v0.20.4-runtime-cleanup-phase1
+          git rm .github/workflows/apply-phase2-synthetic-actor-sync.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Remove one-use synthetic actor sync workflow"
+          git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase1
