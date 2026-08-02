@@ -26,13 +26,14 @@ jobs:
       - name: Apply and validate restore pill fix
         shell: bash
         run: |
-          git apply --check .github/phase2-restore-pill-fix.patch
-          git apply .github/phase2-restore-pill-fix.patch
+          python .github/phase2-restore-pill-fix.py
           node --check scripts/quickdeck-app.js
           node --check scripts/main.js
-          ! grep -q '_restorePillPreventClick = true;.*persistRestorePillPosition' scripts/quickdeck-app.js
           grep -q 'requestOverlayRender("all", { reason: "restore-pill" })' scripts/quickdeck-app.js
-          rm -f .github/phase2-restore-pill-fix.patch .github/phase2-restore-pill-fix-trigger
+          grep -q '_restorePillDragRaf = requestAnimationFrame' scripts/quickdeck-app.js
+          rm -f .github/phase2-restore-pill-fix.py
+          rm -f .github/phase2-restore-pill-fix.patch
+          rm -f .github/phase2-restore-pill-fix-trigger
           git diff --check
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
