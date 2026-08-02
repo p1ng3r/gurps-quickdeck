@@ -101,15 +101,12 @@
   box-shadow:
     0 4px 14px rgba(0, 0, 0, 0.48),
     0 0 0 1px rgba(255, 232, 177, 0.12) inset;
-  cursor: pointer;
+  cursor: grab;
   contain: layout style paint;
-  will-change: transform;
-  transform: translate3d(0, 0, 0);
-  backface-visibility: hidden;
 }
 
 .quickdeck-floating-restore.is-dragging {
-  cursor: move;
+  cursor: grabbing;
   transition: none !important;
 }
 

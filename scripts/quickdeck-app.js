@@ -426,9 +426,11 @@ export class QuickDeckApp extends Application {
     this._targetOpponentPreviousCursor = null;
     this.isMinimized = false;
     this._floatingRestoreIcon = null;
-    this._restorePillDragCleanup = null;
-    this._restorePillDragRaf = null;
-    this._restorePillPendingPosition = null;
+    this._restorePillDraggable = null;
+    this._restorePillDragAdapter = null;
+    this._restorePillDragElement = null;
+    this._restorePillNativePointerDown = null;
+    this._restorePillNativeDragCleanup = null;
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
     this._pendingAttackGuidance = null;
@@ -4746,6 +4748,7 @@ export class QuickDeckApp extends Application {
     if (existing) {
       this._floatingRestoreIcon = existing;
       this.applyRestorePillPosition(existing);
+      this.setupFloatingRestoreDraggable(existing);
       return;
     }
 
@@ -4753,15 +4756,14 @@ export class QuickDeckApp extends Application {
     icon.type = "button";
     icon.id = this.getFloatingRestoreIconId();
     icon.className = "quickdeck-floating-restore";
-    icon.title = "Left-click restore · Right-drag move";
-    icon.setAttribute("aria-label", "Left-click restore · Right-drag move");
+    icon.title = "Click to restore · drag to move";
+    icon.setAttribute("aria-label", "Click to restore · drag to move");
     icon.innerHTML = '<span class="quickdeck-floating-restore-mark">QD</span><span class="quickdeck-floating-restore-label">QuickDeck</span>';
-    icon.addEventListener("contextmenu", this.onFloatingRestoreContextMenu);
-    icon.addEventListener("pointerdown", this.onFloatingRestorePointerDown);
     icon.addEventListener("click", this.onFloatingRestoreClick);
     document.body.appendChild(icon);
     this._floatingRestoreIcon = icon;
     this.applyRestorePillPosition(icon);
+    this.setupFloatingRestoreDraggable(icon);
   }
 
   getFloatingRestoreIconId() {
@@ -4784,143 +4786,177 @@ export class QuickDeckApp extends Application {
     this.requestOverlayRender("all", { reason: "restore-pill" });
   };
 
-  onFloatingRestoreContextMenu = (event) => {
-    event.preventDefault();
-  };
+  getFoundryDraggableClass() {
+    const draggable = foundry?.applications?.ux?.Draggable ?? globalThis.Draggable ?? null;
+    return draggable?.implementation ?? draggable;
+  }
 
-  onFloatingRestorePointerDown = (event) => {
-    if (event.button !== 2) return;
+  setupFloatingRestoreDraggable(icon) {
+    if (!icon) return false;
+    if (this._restorePillDraggable && this._restorePillDragElement === icon) return true;
 
-    const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
-    if (!icon) return;
-
-    event.preventDefault();
-    event.stopPropagation();
-    this._restorePillPreventClick = true;
-    this.stopRestorePillDrag();
-
-    const startRect = icon.getBoundingClientRect();
-    const startLeft = Number.parseFloat(icon.style.left) || startRect.left || icon.offsetLeft || 0;
-    const startTop = Number.parseFloat(icon.style.top) || startRect.top || icon.offsetTop || 0;
-    const startClientX = Number(event.clientX);
-    const startClientY = Number(event.clientY);
-    const pointerId = event.pointerId;
-    const dragThreshold = 10;
-    const maxLeft = Math.max(0, window.innerWidth - (startRect.width || icon.offsetWidth || 0));
-    const maxTop = Math.max(0, window.innerHeight - (startRect.height || icon.offsetHeight || 0));
-    let didDrag = false;
-    let latestPosition = {
-      left: startLeft,
-      top: startTop,
-      deltaX: 0,
-      deltaY: 0
-    };
-
-    const applyPendingTransform = () => {
-      this._restorePillDragRaf = null;
-      const pending = this._restorePillPendingPosition;
-      this._restorePillPendingPosition = null;
-      if (!pending) return;
-      icon.style.transform = `translate3d(${pending.deltaX}px, ${pending.deltaY}px, 0)`;
-    };
-
-    const queueTransform = (nextLeft, nextTop) => {
-      const clampedLeft = Math.min(Math.max(0, Number(nextLeft) || 0), maxLeft);
-      const clampedTop = Math.min(Math.max(0, Number(nextTop) || 0), maxTop);
-      latestPosition = {
-        left: clampedLeft,
-        top: clampedTop,
-        deltaX: clampedLeft - startLeft,
-        deltaY: clampedTop - startTop
-      };
-      this._restorePillPendingPosition = latestPosition;
-      if (this._restorePillDragRaf) return;
-      this._restorePillDragRaf = requestAnimationFrame(applyPendingTransform);
-    };
-
-    const flushPendingTransform = () => {
-      if (this._restorePillDragRaf) cancelAnimationFrame(this._restorePillDragRaf);
-      this._restorePillDragRaf = null;
-      applyPendingTransform();
-    };
-
-    const commitPosition = () => {
-      flushPendingTransform();
-      if (!didDrag) {
-        icon.style.removeProperty("transform");
-        return;
-      }
-      icon.style.left = `${latestPosition.left}px`;
-      icon.style.top = `${latestPosition.top}px`;
-      icon.style.right = "auto";
-      icon.style.removeProperty("transform");
-      this.restorePillPosition = {
-        left: latestPosition.left,
-        top: latestPosition.top
-      };
-      this.persistRestorePillPosition(this.restorePillPosition);
-    };
-
-    const onPointerMove = (moveEvent) => {
-      if (moveEvent.pointerId !== pointerId) return;
-      const deltaX = Number(moveEvent.clientX) - startClientX;
-      const deltaY = Number(moveEvent.clientY) - startClientY;
-      if (!didDrag && Math.hypot(deltaX, deltaY) >= dragThreshold) didDrag = true;
-      if (!didDrag) return;
-      moveEvent.preventDefault();
-      queueTransform(startLeft + deltaX, startTop + deltaY);
-    };
-
-    const finishDrag = (finishEvent = null) => {
-      if (finishEvent?.pointerId !== undefined && finishEvent.pointerId !== pointerId) return;
-      commitPosition();
-      this._restorePillPreventClick = false;
-      this.stopRestorePillDrag();
-    };
-
-    const onWindowBlur = () => finishDrag();
-    const abortController = typeof AbortController === "function" ? new AbortController() : null;
-    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
-    window.addEventListener("pointermove", onPointerMove, listenerOptions);
-    window.addEventListener("pointerup", finishDrag, listenerOptions);
-    window.addEventListener("pointercancel", finishDrag, listenerOptions);
-    window.addEventListener("blur", onWindowBlur, listenerOptions);
-
-    this._restorePillDragCleanup = () => {
-      if (abortController) {
-        abortController.abort();
-      } else {
-        window.removeEventListener("pointermove", onPointerMove);
-        window.removeEventListener("pointerup", finishDrag);
-        window.removeEventListener("pointercancel", finishDrag);
-        window.removeEventListener("blur", onWindowBlur);
-      }
-      try {
-        if (icon.hasPointerCapture?.(pointerId)) icon.releasePointerCapture(pointerId);
-      } catch (_error) {}
-    };
-
-    icon.classList.add("is-dragging");
-    icon.style.userSelect = "none";
-    icon.style.touchAction = "none";
-    document.body.style.userSelect = "none";
-    try { icon.setPointerCapture?.(pointerId); } catch (_error) {}
-  };
-
-  stopRestorePillDrag() {
-    if (this._restorePillDragRaf) cancelAnimationFrame(this._restorePillDragRaf);
-    this._restorePillDragRaf = null;
-    this._restorePillPendingPosition = null;
-    if (typeof this._restorePillDragCleanup === "function") {
-      this._restorePillDragCleanup();
+    this.teardownFloatingRestoreDraggable();
+    const DraggableClass = this.getFoundryDraggableClass();
+    if (typeof DraggableClass !== "function") {
+      console.warn("gurps-quickdeck | Foundry Draggable is unavailable for the restore pill.");
+      return false;
     }
-    this._restorePillDragCleanup = null;
-    const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
-    icon?.classList?.remove("is-dragging");
-    icon?.style?.removeProperty("transform");
-    icon?.style?.removeProperty("user-select");
-    icon?.style?.removeProperty("touch-action");
-    document.body.style.removeProperty("user-select");
+
+    const initialRect = icon.getBoundingClientRect();
+    const adapter = {
+      appId: `${this.appId}-restore-pill`,
+      element: icon,
+      rendered: true,
+      options: { popOut: true, resizable: false },
+      position: {
+        left: initialRect.left,
+        top: initialRect.top,
+        width: initialRect.width,
+        height: initialRect.height,
+        scale: 1
+      },
+      setPosition: (position = {}) => {
+        const left = Number(position.left);
+        const top = Number(position.top);
+        const currentLeft = Number(adapter.position.left) || 0;
+        const currentTop = Number(adapter.position.top) || 0;
+        const clamped = this.getClampedRestorePillPosition(
+          Number.isFinite(left) ? left : currentLeft,
+          Number.isFinite(top) ? top : currentTop,
+          icon
+        );
+        const rect = icon.getBoundingClientRect();
+        const width = Number(position.width);
+        const height = Number(position.height);
+        const scale = Number(position.scale);
+
+        icon.style.left = `${clamped.left}px`;
+        icon.style.top = `${clamped.top}px`;
+        icon.style.right = "auto";
+        this.restorePillPosition = clamped;
+        adapter.position = {
+          ...adapter.position,
+          ...clamped,
+          width: Number.isFinite(width) ? width : rect.width,
+          height: Number.isFinite(height) ? height : rect.height,
+          scale: Number.isFinite(scale) ? scale : adapter.position.scale
+        };
+        return adapter.position;
+      },
+      bringToTop: () => adapter,
+      bringToFront: () => adapter,
+      _onResize: () => {}
+    };
+
+    try {
+      const draggable = new DraggableClass(adapter, icon, icon, false);
+      draggable.activateListeners();
+      this._restorePillDraggable = draggable;
+      this._restorePillDragAdapter = adapter;
+      this._restorePillDragElement = icon;
+    } catch (error) {
+      console.warn("gurps-quickdeck | Could not attach Foundry native dragging to the restore pill.", error);
+      return false;
+    }
+
+    const onPointerDown = (event) => {
+      if (event.button !== 0) return;
+      const pointerId = event.pointerId;
+      const startClientX = Number(event.clientX);
+      const startClientY = Number(event.clientY);
+      const startRect = icon.getBoundingClientRect();
+      let didDrag = false;
+
+      if (typeof this._restorePillNativeDragCleanup === "function") {
+        this._restorePillNativeDragCleanup();
+      }
+
+      const onPointerMove = (moveEvent) => {
+        if (moveEvent.pointerId !== pointerId || didDrag) return;
+        const deltaX = Number(moveEvent.clientX) - startClientX;
+        const deltaY = Number(moveEvent.clientY) - startClientY;
+        if (Math.hypot(deltaX, deltaY) < 4) return;
+        didDrag = true;
+        this._restorePillPreventClick = true;
+        icon.classList.add("is-dragging");
+      };
+
+      const cleanup = () => {
+        window.removeEventListener("pointermove", onPointerMove, true);
+        window.removeEventListener("pointerup", finishDrag, true);
+        window.removeEventListener("pointercancel", finishDrag, true);
+        this._restorePillNativeDragCleanup = null;
+      };
+
+      const finishDrag = (finishEvent) => {
+        if (finishEvent?.pointerId !== undefined && finishEvent.pointerId !== pointerId) return;
+        cleanup();
+        icon.classList.remove("is-dragging");
+
+        if (didDrag) {
+          requestAnimationFrame(() => {
+            if (!icon.isConnected) return;
+            const finalRect = icon.getBoundingClientRect();
+            const clamped = this.getClampedRestorePillPosition(finalRect.left, finalRect.top, icon);
+            icon.style.left = `${clamped.left}px`;
+            icon.style.top = `${clamped.top}px`;
+            icon.style.right = "auto";
+            this.restorePillPosition = clamped;
+            if (this._restorePillDragAdapter) {
+              this._restorePillDragAdapter.position = {
+                ...this._restorePillDragAdapter.position,
+                ...clamped,
+                width: finalRect.width,
+                height: finalRect.height
+              };
+            }
+            this.persistRestorePillPosition(clamped);
+          });
+        }
+
+        globalThis.setTimeout?.(() => {
+          this._restorePillPreventClick = false;
+        }, 0);
+      };
+
+      this._restorePillNativeDragCleanup = cleanup;
+      window.addEventListener("pointermove", onPointerMove, true);
+      window.addEventListener("pointerup", finishDrag, true);
+      window.addEventListener("pointercancel", finishDrag, true);
+
+      if (startRect.left !== Number(this._restorePillDragAdapter?.position?.left)
+        || startRect.top !== Number(this._restorePillDragAdapter?.position?.top)) {
+        this._restorePillDragAdapter.position = {
+          ...this._restorePillDragAdapter.position,
+          left: startRect.left,
+          top: startRect.top,
+          width: startRect.width,
+          height: startRect.height
+        };
+      }
+    };
+
+    icon.addEventListener("pointerdown", onPointerDown, true);
+    this._restorePillNativePointerDown = onPointerDown;
+    return true;
+  }
+
+  teardownFloatingRestoreDraggable(icon = this._restorePillDragElement ?? this._floatingRestoreIcon) {
+    if (typeof this._restorePillNativeDragCleanup === "function") {
+      this._restorePillNativeDragCleanup();
+    }
+    this._restorePillNativeDragCleanup = null;
+
+    if (icon && this._restorePillNativePointerDown) {
+      icon.removeEventListener("pointerdown", this._restorePillNativePointerDown, true);
+      icon.classList.remove("is-dragging");
+    }
+
+    this._restorePillNativePointerDown = null;
+    this._restorePillDraggable = null;
+    this._restorePillDragAdapter = null;
+    this._restorePillDragElement = null;
+    this._restorePillPreventClick = false;
   }
 
   getClampedRestorePillPosition(left, top, icon) {
@@ -4955,11 +4991,9 @@ export class QuickDeckApp extends Application {
   }
 
   removeFloatingRestoreIcon() {
-    this.stopRestorePillDrag();
     const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    this.teardownFloatingRestoreDraggable(icon);
     if (!icon) return;
-    icon.removeEventListener("contextmenu", this.onFloatingRestoreContextMenu);
-    icon.removeEventListener("pointerdown", this.onFloatingRestorePointerDown);
     icon.removeEventListener("click", this.onFloatingRestoreClick);
     icon.remove();
     this._floatingRestoreIcon = null;
