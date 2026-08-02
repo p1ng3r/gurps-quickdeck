@@ -1,0 +1,58 @@
+name: Apply Phase 2 runtime cleanup
+
+on:
+  push:
+    branches:
+      - codex/v0.20.4-runtime-cleanup-phase2
+    paths:
+      - .github/workflows/apply-phase2-runtime-cleanup.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/v0.20.4-runtime-cleanup-phase2
+          fetch-depth: 0
+
+      - name: Reconstruct and verify transformations
+        shell: bash
+        run: |
+          cat .github/phase2-apply-part-*.pyfrag > /tmp/apply_phase2.py
+          echo "1b0394ada11cef602f79dd94fb3c07ce66d765577c99d2d1cd8b3ac9b8ac186f  /tmp/apply_phase2.py" | sha256sum --check
+          echo "58c49f6a03fb7ec5fe9e867c990bff1523edb5084610821d9298ad1cacc2758e  .github/phase2-small.patch" | sha256sum --check
+
+      - name: Apply Phase 2 changes
+        shell: bash
+        run: |
+          python /tmp/apply_phase2.py
+          git apply --check .github/phase2-small.patch
+          git apply .github/phase2-small.patch
+
+      - name: Validate source and template contract
+        shell: bash
+        run: |
+          node --check scripts/main.js
+          node --check scripts/quickdeck-app.js
+          test "$(grep -Rho 'data-action=' templates/quickdeck-overlay.hbs templates/parts/*.hbs | wc -l)" -eq 89
+          ! grep -q 'MutationObserver' scripts/quickdeck-app.js
+          grep -q 'renderApplicationV1' scripts/quickdeck-app.js
+          grep -q 'renderApplicationV2' scripts/quickdeck-app.js
+          git diff --check
+
+      - name: Commit source and remove staging files
+        shell: bash
+        run: |
+          rm -f .github/phase2-apply-part-*.pyfrag
+          rm -f .github/phase2-patch-part-*.b64
+          rm -f .github/phase2-small.patch
+          rm -f .github/workflows/apply-phase2-runtime-cleanup.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Implement Phase 2 render efficiency"
+          git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase2
