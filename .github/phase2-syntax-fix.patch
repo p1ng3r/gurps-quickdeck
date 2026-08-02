@@ -1,0 +1,19 @@
+diff --git a/scripts/quickdeck-app.js b/scripts/quickdeck-app.js
+index a0a6c5d..0000000 100644
+--- a/scripts/quickdeck-app.js
++++ b/scripts/quickdeck-app.js
+@@ -530,14 +530,6 @@ export class QuickDeckApp extends Application {
+       return this;
+     }
+ 
+-    if (this._overlayRenderTimer) {
+-      globalThis.clearTimeout?.(this._overlayRenderTimer);
+-      this._overlayRenderTimer = null;
+-        this.queueOverlayRenderFrame();
+-      }, numericDelay) ?? null;
+-      return this;
+-    }
+-
+     if (this._overlayRenderTimer) {
+       globalThis.clearTimeout?.(this._overlayRenderTimer);
+       this._overlayRenderTimer = null;
