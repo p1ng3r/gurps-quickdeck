@@ -4,9 +4,11 @@
 
 #gurps-quickdeck-overlay.qd40-overlay,
 .qd40-overlay {
-  --qd-center-art-panel-tile: url("../assets/ui/dwarven/center/center-iron-tile.webp");
+  /* These two optional source images are not part of the repository. Keep the
+   * existing CSS fallback layers active without issuing repeated 404 requests. */
+  --qd-center-art-panel-tile: none;
   --qd-center-art-actor-card: url("../assets/ui/dwarven/center/actor-card-iron-plate.webp");
-  --qd-center-art-quick-slots-panel: url("../assets/ui/dwarven/center/quick-slots-panel-iron.webp");
+  --qd-center-art-quick-slots-panel: none;
   --qd-center-art-quick-slot-row: url("../assets/ui/dwarven/center/quick-slot-row-iron-rivets.webp");
   --qd-center-art-toggle: url("../assets/ui/dwarven/center/dropdown-toggle-iron.webp");
   --qd-center-art-button-small: url("../assets/ui/dwarven/center/button-small-bronze.webp");
