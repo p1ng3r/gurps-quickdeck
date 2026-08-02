@@ -7229,7 +7229,7 @@ export class QuickDeckApp extends Application {
       else shouldSelect = !this.getQuickSkillSelection(actorId).has(skillKey);
 
       this.setQuickSkillSelected(actorId, skillKey, shouldSelect);
-      this.render(false, { focus: false });
+      this.requestOverlayRender(["center", "right"], { reason: "toggle-quick-skill" });
       this.scheduleNativeWindowFocusAfterRender();
     });
 
@@ -7241,7 +7241,7 @@ export class QuickDeckApp extends Application {
       if (!actorId || !skillKey) return;
 
       this.setQuickSkillSelected(actorId, skillKey, false);
-      this.render(false, { focus: false });
+      this.requestOverlayRender(["center", "right"], { reason: "unpin-quick-skill" });
       this.scheduleNativeWindowFocusAfterRender();
     });
 
@@ -7254,7 +7254,7 @@ export class QuickDeckApp extends Application {
 
       const selection = this.getFavoriteAttackSelection(actorId);
       this.setFavoriteAttackSelected(actorId, attackKey, !selection.has(attackKey));
-      this.render(false, { focus: false });
+      this.requestOverlayRender(["center", "right"], { reason: "favorite-attack" });
       this.scheduleNativeWindowFocusAfterRender();
     });
     html.find("[data-action='toggle-pin-attack']").on("click", (event) => {
@@ -7263,7 +7263,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const attackKey = event.currentTarget.dataset.attackKey;
       this.togglePinnedAction(actorId, "attack", attackKey);
-      this.render(false, { focus: false });
+      this.requestOverlayRender(["center", "right"], { reason: "pin-attack" });
       this.scheduleNativeWindowFocusAfterRender();
     });
     html.find("[data-action='remove-pinned-action']").on("click", (event) => {
@@ -7273,7 +7273,7 @@ export class QuickDeckApp extends Application {
       const type = event.currentTarget.dataset.pinType;
       const key = event.currentTarget.dataset.pinKey;
       this.removePinnedAction(actorId, type, key);
-      this.render(false, { focus: false });
+      this.requestOverlayRender(["center", "right"], { reason: "remove-pinned-action" });
       this.scheduleNativeWindowFocusAfterRender();
     });
     html.find("[data-action='toggle-pin-skill']").on("click", (event) => {
@@ -7282,7 +7282,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const skillKey = event.currentTarget.dataset.skillKey;
       this.togglePinnedAction(actorId, "skill", skillKey);
-      this.render(false, { focus: false });
+      this.requestOverlayRender(["center", "right"], { reason: "pin-skill" });
       this.scheduleNativeWindowFocusAfterRender();
     });
     html.find("[data-action='toggle-pin-spell']").on("click", (event) => {
@@ -7291,7 +7291,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const spellKey = event.currentTarget.dataset.spellKey;
       this.togglePinnedAction(actorId, "spell", spellKey);
-      this.render(false, { focus: false });
+      this.requestOverlayRender(["center", "right"], { reason: "pin-spell" });
       this.scheduleNativeWindowFocusAfterRender();
     });
 

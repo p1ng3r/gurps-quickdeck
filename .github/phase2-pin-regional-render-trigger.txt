@@ -1,1 +1,0 @@
-Run the one-use regional pin-render fix so Combat, Skills, and Spells preserve drawer scroll position.
