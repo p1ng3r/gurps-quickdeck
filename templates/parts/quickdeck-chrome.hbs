@@ -1,0 +1,37 @@
+<div class="qd40-chrome-row" data-action="drag-overlay" title="Drag QuickDeck">
+    <div class="qd40-corner-badge">
+      <span class="qd40-corner-title">GURPS QuickDeck</span>
+      <button
+        type="button"
+        class="qd40-info-button"
+        data-action="toggle-info-popover"
+        aria-expanded="{{#if isInfoPopoverOpen}}true{{else}}false{{/if}}"
+        title="QuickDeck Help / Dev"
+      >?</button>
+    </div>
+
+    <div class="qd40-window-controls">
+      <button class="qd40-window-button" type="button" data-action="minimize-overlay" title="Minimize">−</button>
+      <button class="qd40-window-button" type="button" data-action="close-overlay" title="Close">×</button>
+    </div>
+  </div>
+
+
+
+  {{#if isInfoPopoverOpen}}
+  <div class="qd40-info-popover" role="dialog" aria-label="QuickDeck Help / Dev">
+    <div class="qd40-info-title">QuickDeck Help / Dev</div>
+    <div class="qd40-info-row"><span>UI</span><strong>{{uiBuildLabel}}</strong></div>
+    <div class="qd40-info-row"><span>Module</span><strong>{{moduleVersion}}</strong></div>
+    <div class="qd40-info-row"><span>Interface</span><strong>UI2 command desk</strong></div>
+    <div class="qd40-info-row"><span>Branch</span><strong>{{uiBranchLabel}}</strong></div>
+    <div class="qd40-info-divider" aria-hidden="true"></div>
+    <label class="qd40-info-dev-field">
+      <input type="checkbox" data-action="toggle-dev-art-tuner-enabled" {{#if devArtTunerEnabled}}checked{{/if}}>
+      <span>
+        <strong>Dev Art Tuner</strong>
+        <small>Layout/art inspection tools</small>
+      </span>
+    </label>
+  </div>
+  {{/if}}

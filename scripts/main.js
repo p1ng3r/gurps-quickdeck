@@ -36,23 +36,10 @@ function openQuickDeck() {
   return quickDeckApp;
 }
 
-const QUICKDECK_RENDER_DEBOUNCE_MS = 25;
-const QUICKDECK_DRAG_RENDER_RETRY_MS = 100;
-let pendingQuickDeckRender = null;
-function renderQuickDeckIfOpen(delay = QUICKDECK_RENDER_DEBOUNCE_MS) {
+const QUICKDECK_DOCUMENT_RENDER_DEBOUNCE_MS = 25;
+function renderQuickDeckIfOpen(regions = "all", delay = QUICKDECK_DOCUMENT_RENDER_DEBOUNCE_MS) {
   if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-  if (pendingQuickDeckRender) return;
-
-  pendingQuickDeckRender = setTimeout(() => {
-    pendingQuickDeckRender = null;
-    if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-    if (quickDeckApp.isOverlayDragging?.()) {
-      renderQuickDeckIfOpen(QUICKDECK_DRAG_RENDER_RETRY_MS);
-      return;
-    }
-    quickDeckApp.render(false, { focus: false });
-    quickDeckApp.scheduleNativeWindowFocusAfterRender?.();
-  }, delay);
+  quickDeckApp.requestOverlayRender?.(regions, { delay, reason: "document-hook" });
 }
 
 function actorAffectsQuickDeckView(actorId, options = {}) {
@@ -77,6 +64,11 @@ Hooks.once("ready", () => {
         return;
       }
       quickDeckApp.dumpActiveActorData();
+    },
+    dumpRenderTimings: () => {
+      const timings = quickDeckApp?.getOverlayRenderTimingSummary?.() ?? null;
+      console.table(timings?.summary ?? {});
+      return timings;
     },
   };
 });
@@ -277,36 +269,29 @@ Hooks.on("createItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen();
+  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen(["center", "right"]);
 });
 
 Hooks.on("updateItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen();
+  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen(["center", "right"]);
 });
 
 Hooks.on("deleteItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen();
+  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen(["center", "right"]);
 });
 
 function refreshQuickDeckOnCombatChange() {
-  renderQuickDeckIfOpen();
+  renderQuickDeckIfOpen(["left", "center", "right"]);
 }
 
-let pendingModifierBucketRefresh = null;
 function refreshQuickDeckOnModifierBucketChange() {
-  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-
-  if (pendingModifierBucketRefresh) clearTimeout(pendingModifierBucketRefresh);
-  pendingModifierBucketRefresh = setTimeout(() => {
-    pendingModifierBucketRefresh = null;
-    renderQuickDeckIfOpen();
-  }, 0);
+  renderQuickDeckIfOpen(["center", "right"], 0);
 }
 
 Hooks.on("renderModifierBucket", () => {

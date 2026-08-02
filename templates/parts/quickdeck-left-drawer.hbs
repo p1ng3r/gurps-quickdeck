@@ -1,0 +1,83 @@
+{{#if isRosterDrawerOpen}}
+      <aside class="qd-ui2-drawer qd-ui2-left-drawer" aria-label="UI2 character drawer">
+        <header class="qd-ui2-panel-header">
+          <h2>Roster</h2>
+        </header>
+        <section class="qd-ui2-active-roster-card" aria-label="Active roster">
+          <h3>Active</h3>
+          {{#if hasRosterActors}}
+          <div class="qd-ui2-active-roster-list" data-drop-zone="roster">
+            {{#each rosterActors as |actor|}}
+            <article
+              class="qd-ui2-active-roster-row {{#if actor.isActive}}is-active{{/if}}"
+              data-action="open-actor"
+              data-actor-id="{{actor.id}}"
+              title="Select {{actor.name}}"
+            >
+              <img class="qd-ui2-active-roster-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+              <div class="qd-ui2-active-roster-meta">
+                <strong>{{actor.name}}</strong>
+                {{#if actor.actorType}}<small>{{actor.actorType}}</small>{{/if}}
+              </div>
+              <button
+                type="button"
+                class="qd-ui2-active-roster-remove"
+                data-action="remove-actor"
+                data-actor-id="{{actor.id}}"
+                title="Remove {{actor.name}}"
+                aria-label="Remove {{actor.name}}"
+              >×</button>
+            </article>
+            {{/each}}
+          </div>
+          {{else}}
+          <p>No active actors yet. Drop actors here or add them from Available.</p>
+          {{/if}}
+        </section>
+        <section class="qd-ui2-inactive-roster-card" aria-label="Available actors">
+          <header class="qd-ui2-inactive-roster-header">
+            <div>
+              <h3>Available</h3>
+            </div>
+            <span
+              class="qd-ui2-inactive-roster-count"
+              data-search-status="available"
+              title="Click + to add an actor to the active roster"
+              aria-label="Click plus to add an actor to the active roster"
+            >{{availableSearchStatusText}}</span>
+          </header>
+          <input
+            class="qd-ui2-inactive-roster-search"
+            type="search"
+            data-action="available-search"
+            value="{{availableSearch}}"
+            placeholder="Search available"
+            aria-label="Search available actors"
+          />
+          {{#if hasAvailableActors}}
+          <div class="qd-ui2-inactive-roster-list">
+            {{#each availableActors as |actor|}}
+            <article class="qd-ui2-inactive-roster-row" data-search-row="available" data-search-text="{{actor.searchText}}" {{#unless actor.isAvailableSearchMatch}}hidden{{/unless}}>
+              <img class="qd-ui2-inactive-roster-portrait" src="{{actor.img}}" alt="{{actor.name}}" />
+              <div class="qd-ui2-inactive-roster-meta">
+                <strong>{{actor.name}}</strong>
+                {{#if actor.actorType}}<small>{{actor.actorType}}</small>{{/if}}
+              </div>
+              <button
+                type="button"
+                class="qd-ui2-inactive-roster-add"
+                data-action="add-actor"
+                data-actor-id="{{actor.id}}"
+                title="Add {{actor.name}} to active roster"
+                aria-label="Add {{actor.name}} to active roster"
+              >+</button>
+            </article>
+            {{/each}}
+          </div>
+          <p class="qd-ui2-inactive-roster-empty" data-search-empty="available" {{#unless availableSearchShowEmpty}}hidden{{/unless}}>No available actors match your search.</p>
+          {{else}}
+          <p class="qd-ui2-inactive-roster-empty">No available actors available.</p>
+          {{/if}}
+        </section>
+      </aside>
+      {{/if}}

@@ -1,3 +1,15 @@
+## [Unreleased] - v0.20.4-runtime-cleanup-phase2
+
+### Changed
+- Routes document hooks and direct UI refreshes through one overlay render scheduler that coalesces region requests and delays updates while the command desk is being dragged.
+- Splits the overlay into chrome, roster, center cockpit, and action-drawer templates so common drawer, carousel, favorite, settings, actor-item, and combat changes replace only affected regions.
+- Keeps the custom scrollbar manager alive across renders, removes its broad subtree mutation observer, and explicitly refreshes changed regions while preserving scroll and focus state.
+- Replaces per-roll focus-hook registration and five delayed focus attempts with one persistent Foundry V1/V2 focus controller and one delayed fallback.
+- Adds development timing summaries through `game.gurpsQuickDeckDebug.dumpRenderTimings()`.
+
+### Validation
+- Adds scheduler/focus smoke coverage, Handlebars block checks, template action/layout contract comparison, DOM structure checks, syntax checks, and whitespace checks.
+
 ## [Unreleased] - v0.20.4-runtime-cleanup-phase1
 
 ### Changed
