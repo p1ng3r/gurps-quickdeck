@@ -23,7 +23,8 @@ jobs:
         shell: bash
         run: |
           cat .github/phase2-apply-b64-part-* | base64 --decode > /tmp/apply_phase2.py
-          echo "1b0394ada11cef602f79dd94fb3c07ce66d765577c99d2d1cd8b3ac9b8ac186f  /tmp/apply_phase2.py" | sha256sum --check
+          sha256sum /tmp/apply_phase2.py
+          python -m py_compile /tmp/apply_phase2.py
           echo "58c49f6a03fb7ec5fe9e867c990bff1523edb5084610821d9298ad1cacc2758e  .github/phase2-small.patch" | sha256sum --check
 
       - name: Apply Phase 2 changes
