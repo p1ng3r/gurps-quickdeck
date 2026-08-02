@@ -1,0 +1,51 @@
+name: Apply Phase 2 pill GPU fix
+
+on:
+  pull_request:
+    types: [synchronize, reopened]
+    branches:
+      - codex/v0.20.4-runtime-cleanup-phase1
+
+permissions:
+  contents: write
+
+concurrency:
+  group: phase2-pill-gpu-fix
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    if: github.event.pull_request.head.ref == 'codex/v0.20.4-runtime-cleanup-phase2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/v0.20.4-runtime-cleanup-phase2
+          fetch-depth: 0
+
+      - name: Apply and validate GPU drag fix
+        shell: bash
+        run: |
+          python .github/phase2-pill-gpu-fix.py
+          node --check scripts/quickdeck-app.js
+          grep -q 'translate3d(${pending.deltaX}px, ${pending.deltaY}px, 0)' scripts/quickdeck-app.js
+          grep -q 'contain: layout style paint' styles/quickdeck.css
+          grep -q 'will-change: transform' styles/quickdeck.css
+          rm -f .github/phase2-pill-gpu-fix.py .github/phase2-pill-gpu-fix-trigger
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Move restore pill with GPU transforms"
+          git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase2
+
+      - name: Remove one-use workflow from Phase 1
+        shell: bash
+        run: |
+          git fetch origin codex/v0.20.4-runtime-cleanup-phase1
+          git checkout -B phase1-cleanup origin/codex/v0.20.4-runtime-cleanup-phase1
+          git rm .github/workflows/apply-phase2-pill-gpu-fix.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Remove Phase 2 pill GPU workflow"
+          git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase1
