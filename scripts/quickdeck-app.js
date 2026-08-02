@@ -532,14 +532,6 @@ export class QuickDeckApp extends Application {
     if (this._overlayRenderTimer) {
       globalThis.clearTimeout?.(this._overlayRenderTimer);
       this._overlayRenderTimer = null;
-        this.queueOverlayRenderFrame();
-      }, numericDelay) ?? null;
-      return this;
-    }
-
-    if (this._overlayRenderTimer) {
-      globalThis.clearTimeout?.(this._overlayRenderTimer);
-      this._overlayRenderTimer = null;
     }
     this.queueOverlayRenderFrame();
     return this;
