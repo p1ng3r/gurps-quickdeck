@@ -32,8 +32,6 @@ function openQuickDeck() {
   if (existingOverlay && existingOverlay !== quickDeckApp._overlayRoot) existingOverlay.remove();
 
   quickDeckApp.render(true);
-  void quickDeckApp.renderOverlay?.();
-  quickDeckApp.syncMinimizedPresentation?.();
 
   return quickDeckApp;
 }
@@ -64,7 +62,8 @@ function actorAffectsQuickDeckView(actorId, options = {}) {
 
 Hooks.once("ready", () => {
   console.log(`${MODULE_ID} | Ready`);
-  Hooks.on("renderChatMessage", (message, html) => {
+  Hooks.on("renderChatMessageHTML", (message, html) => {
+    if (!game.user?.isGM) return;
     if (!quickDeckApp) quickDeckApp = new QuickDeckApp();
     quickDeckApp.capturePendingDamageFromChatMessage?.(message, html);
   });
