@@ -1,0 +1,1 @@
+Run the one-use in-place pin UI workflow so pinning never replaces the right drawer.
