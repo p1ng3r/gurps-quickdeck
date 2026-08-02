@@ -6,12 +6,17 @@ on:
       - codex/v0.20.4-runtime-cleanup-phase2
     paths:
       - .github/workflows/apply-phase2-runtime-cleanup.yml
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - codex/v0.20.4-runtime-cleanup-phase1
 
 permissions:
   contents: write
 
 jobs:
   apply:
+    if: github.head_ref == 'codex/v0.20.4-runtime-cleanup-phase2' || github.ref_name == 'codex/v0.20.4-runtime-cleanup-phase2'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
