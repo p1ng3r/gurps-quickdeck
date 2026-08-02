@@ -427,6 +427,8 @@ export class QuickDeckApp extends Application {
     this.isMinimized = false;
     this._floatingRestoreIcon = null;
     this._restorePillDragCleanup = null;
+    this._restorePillDragRaf = null;
+    this._restorePillPendingPosition = null;
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
     this._pendingAttackGuidance = null;
@@ -4778,7 +4780,8 @@ export class QuickDeckApp extends Application {
     }
     this.isMinimized = false;
     this.persistMinimizedState();
-    this.render(false);
+    this.syncMinimizedPresentation();
+    this.requestOverlayRender("all", { reason: "restore-pill" });
   };
 
   onFloatingRestoreContextMenu = (event) => {
@@ -4796,40 +4799,65 @@ export class QuickDeckApp extends Application {
     this._restorePillPreventClick = true;
     this.stopRestorePillDrag();
 
-    const startLeft = Number.parseFloat(icon.style.left) || icon.offsetLeft || 0;
-    const startTop = Number.parseFloat(icon.style.top) || icon.offsetTop || 0;
+    const startRect = icon.getBoundingClientRect();
+    const startLeft = Number.parseFloat(icon.style.left) || startRect.left || icon.offsetLeft || 0;
+    const startTop = Number.parseFloat(icon.style.top) || startRect.top || icon.offsetTop || 0;
     const startClientX = Number(event.clientX);
     const startClientY = Number(event.clientY);
+    const pointerId = event.pointerId;
     const dragThreshold = 3;
+    const maxLeft = Math.max(0, window.innerWidth - (startRect.width || icon.offsetWidth || 0));
+    const maxTop = Math.max(0, window.innerHeight - (startRect.height || icon.offsetHeight || 0));
     let didDrag = false;
 
-    const updatePosition = (nextLeft, nextTop) => {
-      const clamped = this.getClampedRestorePillPosition(nextLeft, nextTop, icon);
+    const applyPendingPosition = () => {
+      this._restorePillDragRaf = null;
+      const pending = this._restorePillPendingPosition;
+      this._restorePillPendingPosition = null;
+      if (!pending) return;
+      const clamped = {
+        left: Math.min(Math.max(0, Number(pending.left) || 0), maxLeft),
+        top: Math.min(Math.max(0, Number(pending.top) || 0), maxTop)
+      };
       icon.style.left = `${clamped.left}px`;
       icon.style.top = `${clamped.top}px`;
       icon.style.right = "auto";
       this.restorePillPosition = clamped;
     };
 
+    const queuePosition = (nextLeft, nextTop) => {
+      this._restorePillPendingPosition = { left: nextLeft, top: nextTop };
+      if (this._restorePillDragRaf) return;
+      this._restorePillDragRaf = requestAnimationFrame(applyPendingPosition);
+    };
+
+    const flushPendingPosition = () => {
+      if (this._restorePillDragRaf) cancelAnimationFrame(this._restorePillDragRaf);
+      this._restorePillDragRaf = null;
+      applyPendingPosition();
+    };
+
     const onPointerMove = (moveEvent) => {
+      if (moveEvent.pointerId !== pointerId) return;
       const deltaX = Number(moveEvent.clientX) - startClientX;
       const deltaY = Number(moveEvent.clientY) - startClientY;
       if (!didDrag && (Math.abs(deltaX) >= dragThreshold || Math.abs(deltaY) >= dragThreshold)) {
         didDrag = true;
       }
-      updatePosition(startLeft + deltaX, startTop + deltaY);
+      if (didDrag) queuePosition(startLeft + deltaX, startTop + deltaY);
     };
 
-    const onPointerUp = () => {
-      if (!didDrag) {
-        this._restorePillPreventClick = false;
-      } else {
-        this.persistRestorePillPosition(this.restorePillPosition);
-      }
+    const onPointerUp = (upEvent) => {
+      if (upEvent.pointerId !== pointerId) return;
+      flushPendingPosition();
+      this._restorePillPreventClick = false;
+      if (didDrag) this.persistRestorePillPosition(this.restorePillPosition);
       this.stopRestorePillDrag();
     };
 
     const onWindowBlur = () => {
+      flushPendingPosition();
+      this._restorePillPreventClick = false;
       if (didDrag) this.persistRestorePillPosition(this.restorePillPosition);
       this.stopRestorePillDrag();
     };
@@ -4843,19 +4871,36 @@ export class QuickDeckApp extends Application {
     this._restorePillDragCleanup = () => {
       if (abortController) {
         abortController.abort();
-        return;
+      } else {
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+        window.removeEventListener("blur", onWindowBlur);
       }
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
-      window.removeEventListener("blur", onWindowBlur);
+      try {
+        if (icon.hasPointerCapture?.(pointerId)) icon.releasePointerCapture(pointerId);
+      } catch (_error) {}
     };
+
+    icon.classList.add("is-dragging");
+    icon.style.userSelect = "none";
+    icon.style.touchAction = "none";
+    document.body.style.userSelect = "none";
+    try { icon.setPointerCapture?.(pointerId); } catch (_error) {}
   };
 
   stopRestorePillDrag() {
+    if (this._restorePillDragRaf) cancelAnimationFrame(this._restorePillDragRaf);
+    this._restorePillDragRaf = null;
+    this._restorePillPendingPosition = null;
     if (typeof this._restorePillDragCleanup === "function") {
       this._restorePillDragCleanup();
     }
     this._restorePillDragCleanup = null;
+    const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    icon?.classList?.remove("is-dragging");
+    icon?.style?.removeProperty("user-select");
+    icon?.style?.removeProperty("touch-action");
+    document.body.style.removeProperty("user-select");
   }
 
   getClampedRestorePillPosition(left, top, icon) {
