@@ -1,0 +1,53 @@
+name: Apply Phase 2 native pill drag
+
+on:
+  pull_request:
+    types: [synchronize, reopened]
+    branches:
+      - codex/v0.20.4-runtime-cleanup-phase1
+
+permissions:
+  contents: write
+
+concurrency:
+  group: phase2-native-pill-drag
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    if: github.event.pull_request.head.ref == 'codex/v0.20.4-runtime-cleanup-phase2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/v0.20.4-runtime-cleanup-phase2
+          fetch-depth: 0
+
+      - name: Apply and validate native Foundry drag conversion
+        shell: bash
+        run: |
+          python .github/phase2-native-pill-drag.py
+          node --check scripts/quickdeck-app.js
+          node --check scripts/main.js
+          grep -q 'new DraggableClass(adapter, icon, icon, false)' scripts/quickdeck-app.js
+          grep -q 'getFoundryDraggableClass' scripts/quickdeck-app.js
+          ! grep -q 'onFloatingRestorePointerDown' scripts/quickdeck-app.js
+          ! grep -q 'stopRestorePillDrag' scripts/quickdeck-app.js
+          rm -f .github/phase2-native-pill-drag.py .github/phase2-native-pill-drag-trigger
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Use Foundry native dragging for restore pill"
+          git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase2
+
+      - name: Remove one-use workflow from Phase 1
+        shell: bash
+        run: |
+          git fetch origin codex/v0.20.4-runtime-cleanup-phase1
+          git checkout -B phase1-cleanup origin/codex/v0.20.4-runtime-cleanup-phase1
+          git rm .github/workflows/apply-phase2-native-pill-drag.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Remove Phase 2 native pill workflow"
+          git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase1
