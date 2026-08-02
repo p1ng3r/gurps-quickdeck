@@ -6989,6 +6989,48 @@ export class QuickDeckApp extends Application {
     this._qdPendingDamagePopupElement = null;
   }
 
+  syncRightDrawerFavoriteState(type, key, isActive) {
+    const root = this._overlayRoot;
+    if (!root || !type || !key) return;
+
+    const config = {
+      attack: {
+        action: "toggle-favorite-attack",
+        datasetKey: "attackKey",
+        activeTitle: "Unpin attack",
+        inactiveTitle: "Pin attack"
+      },
+      skill: {
+        action: "toggle-quick-skill",
+        datasetKey: "skillKey",
+        activeTitle: "Unpin skill",
+        inactiveTitle: "Pin skill"
+      },
+      spell: {
+        action: "toggle-favorite-spell",
+        datasetKey: "spellKey",
+        activeTitle: "Unpin spell",
+        inactiveTitle: "Pin spell"
+      }
+    }[type];
+    if (!config) return;
+
+    const normalizedKey = String(key);
+    const buttons = root.querySelectorAll(`[data-action="${config.action}"]`);
+    for (const button of buttons) {
+      if (String(button.dataset?.[config.datasetKey] ?? "") !== normalizedKey) continue;
+      button.classList.toggle("is-active", Boolean(isActive));
+      button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      button.title = isActive ? config.activeTitle : config.inactiveTitle;
+      button.closest(".qd-ui2-action-row")?.classList.toggle("is-favorite", Boolean(isActive));
+    }
+  }
+
+  renderCenterAfterPinChange(reason) {
+    this.requestOverlayRender("center", { reason });
+    this.scheduleNativeWindowFocusAfterRender();
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
 
@@ -7229,8 +7271,8 @@ export class QuickDeckApp extends Application {
       else shouldSelect = !this.getQuickSkillSelection(actorId).has(skillKey);
 
       this.setQuickSkillSelected(actorId, skillKey, shouldSelect);
-      this.requestOverlayRender(["center", "right"], { reason: "toggle-quick-skill" });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.syncRightDrawerFavoriteState("skill", skillKey, shouldSelect);
+      this.renderCenterAfterPinChange("toggle-quick-skill");
     });
 
     html.find("[data-action='unpin-quick-skill']").on("click", (event) => {
@@ -7241,8 +7283,8 @@ export class QuickDeckApp extends Application {
       if (!actorId || !skillKey) return;
 
       this.setQuickSkillSelected(actorId, skillKey, false);
-      this.requestOverlayRender(["center", "right"], { reason: "unpin-quick-skill" });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.syncRightDrawerFavoriteState("skill", skillKey, false);
+      this.renderCenterAfterPinChange("unpin-quick-skill");
     });
 
     html.find("[data-action='toggle-favorite-attack']").on("click", (event) => {
@@ -7253,9 +7295,10 @@ export class QuickDeckApp extends Application {
       if (!actorId || !attackKey) return;
 
       const selection = this.getFavoriteAttackSelection(actorId);
-      this.setFavoriteAttackSelected(actorId, attackKey, !selection.has(attackKey));
-      this.requestOverlayRender(["center", "right"], { reason: "favorite-attack" });
-      this.scheduleNativeWindowFocusAfterRender();
+      const isSelected = !selection.has(attackKey);
+      this.setFavoriteAttackSelected(actorId, attackKey, isSelected);
+      this.syncRightDrawerFavoriteState("attack", attackKey, isSelected);
+      this.renderCenterAfterPinChange("favorite-attack");
     });
     html.find("[data-action='toggle-pin-attack']").on("click", (event) => {
       event.preventDefault();
@@ -7263,8 +7306,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const attackKey = event.currentTarget.dataset.attackKey;
       this.togglePinnedAction(actorId, "attack", attackKey);
-      this.requestOverlayRender(["center", "right"], { reason: "pin-attack" });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.renderCenterAfterPinChange("pin-attack");
     });
     html.find("[data-action='remove-pinned-action']").on("click", (event) => {
       event.preventDefault();
@@ -7273,8 +7315,7 @@ export class QuickDeckApp extends Application {
       const type = event.currentTarget.dataset.pinType;
       const key = event.currentTarget.dataset.pinKey;
       this.removePinnedAction(actorId, type, key);
-      this.requestOverlayRender(["center", "right"], { reason: "remove-pinned-action" });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.renderCenterAfterPinChange("remove-pinned-action");
     });
     html.find("[data-action='toggle-pin-skill']").on("click", (event) => {
       event.preventDefault();
@@ -7282,8 +7323,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const skillKey = event.currentTarget.dataset.skillKey;
       this.togglePinnedAction(actorId, "skill", skillKey);
-      this.requestOverlayRender(["center", "right"], { reason: "pin-skill" });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.renderCenterAfterPinChange("pin-skill");
     });
     html.find("[data-action='toggle-pin-spell']").on("click", (event) => {
       event.preventDefault();
@@ -7291,8 +7331,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const spellKey = event.currentTarget.dataset.spellKey;
       this.togglePinnedAction(actorId, "spell", spellKey);
-      this.requestOverlayRender(["center", "right"], { reason: "pin-spell" });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.renderCenterAfterPinChange("pin-spell");
     });
 
     html.find("[data-action='toggle-favorite-spell']").on("click", (event) => {
@@ -7303,9 +7342,10 @@ export class QuickDeckApp extends Application {
       if (!actorId || !spellKey) return;
 
       const selection = this.getFavoriteSpellSelection(actorId);
-      this.setFavoriteSpellSelected(actorId, spellKey, !selection.has(spellKey));
-      this.requestOverlayRender(["center", "right"], { reason: "favorite-spell" });
-      this.scheduleNativeWindowFocusAfterRender();
+      const isSelected = !selection.has(spellKey);
+      this.setFavoriteSpellSelected(actorId, spellKey, isSelected);
+      this.syncRightDrawerFavoriteState("spell", spellKey, isSelected);
+      this.renderCenterAfterPinChange("favorite-spell");
     });
 
     html.find("[data-action='toggle-center-favorite-section']").on("click", (event) => {
