@@ -4018,19 +4018,24 @@ export class QuickDeckApp extends Application {
     const actor = typeof actorOrId === "string" ? game.actors.get(actorOrId) : actorOrId;
     const path = this.getResourceUpdatePath(resource);
     const numericValue = this.parseResourceNumber(value);
-    if (!actor || !path) return;
+    if (!actor || !path) return false;
     if (!Number.isFinite(numericValue)) {
       ui.notifications?.warn(`QuickDeck: Enter a numeric ${resource} value.`);
-      return;
+      return false;
     }
 
+    const currentValue = this.parseResourceNumber(foundry.utils.getProperty(actor, path));
+    if (Number.isFinite(currentValue) && currentValue === numericValue) return true;
+
     try {
-      await actor.update({ [path]: numericValue });
+      await actor.update({ [path]: numericValue }, { render: true });
       this.invalidateDerivedActorData(actor.id);
       this.requestOverlayRender("center", { reason: "resource-update" });
+      return true;
     } catch (error) {
       console.warn(`gurps-quickdeck | Failed to update ${resource}.`, error);
       ui.notifications?.warn(`QuickDeck: Could not update ${resource} for ${actor.name}.`);
+      return false;
     }
   }
 
@@ -7392,15 +7397,33 @@ export class QuickDeckApp extends Application {
       await this.adjustActorResource(actorId, resource, delta);
     });
 
-    html.find("[data-action='set-resource']").on("change", async (event) => {
-      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
-      const resource = event.currentTarget.dataset.resource;
-      await this.setActorResourceValue(actorId, resource, event.currentTarget.value);
+    const commitResourceInput = async (input) => {
+      if (!input) return;
+      const nextValue = String(input.value ?? "");
+      if (input.dataset.qdResourceCommitPending === nextValue) return;
+      if (input.dataset.qdResourceCommitted === nextValue) return;
+
+      input.dataset.qdResourceCommitPending = nextValue;
+      try {
+        const actorId = input.dataset.actorId || this.activeActorId;
+        const resource = input.dataset.resource;
+        const didUpdate = await this.setActorResourceValue(actorId, resource, nextValue);
+        if (didUpdate) input.dataset.qdResourceCommitted = nextValue;
+      } finally {
+        if (input.dataset.qdResourceCommitPending === nextValue) {
+          delete input.dataset.qdResourceCommitPending;
+        }
+      }
+    };
+
+    html.find("[data-action='set-resource']").on("change blur", (event) => {
+      void commitResourceInput(event.currentTarget);
     });
 
-    html.find("[data-action='set-resource']").on("keydown", (event) => {
+    html.find("[data-action='set-resource']").on("keydown", async (event) => {
       if (event.key !== "Enter") return;
       event.preventDefault();
+      await commitResourceInput(event.currentTarget);
       event.currentTarget.blur();
     });
 

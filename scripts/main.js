@@ -37,9 +37,24 @@ function openQuickDeck() {
 }
 
 const QUICKDECK_DOCUMENT_RENDER_DEBOUNCE_MS = 25;
+function isQuickDeckOverlayMounted() {
+  const root = quickDeckApp?._overlayRoot;
+  return Boolean(root && document.documentElement?.contains?.(root));
+}
+
 function renderQuickDeckIfOpen(regions = "all", delay = QUICKDECK_DOCUMENT_RENDER_DEBOUNCE_MS) {
-  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
+  if ((!quickDeckApp?.rendered && !isQuickDeckOverlayMounted()) || quickDeckApp?.isMinimized) return;
   quickDeckApp.requestOverlayRender?.(regions, { delay, reason: "document-hook" });
+}
+
+function actorUpdateTouchesQuickDeckResources(changed = {}) {
+  const flattened = foundry?.utils?.flattenObject?.(changed) ?? changed ?? {};
+  return Object.keys(flattened).some((path) =>
+    path === "system.HP" ||
+    path === "system.FP" ||
+    path.startsWith("system.HP.") ||
+    path.startsWith("system.FP.")
+  );
 }
 
 function actorAffectsQuickDeckView(actorId, options = {}) {
@@ -257,12 +272,18 @@ Hooks.on("deleteActor", (actor) => {
   if (shouldRender && !quickDeckApp.onActorDeleted(actorId)) renderQuickDeckIfOpen();
 });
 
-Hooks.on("updateActor", (actor) => {
+Hooks.on("updateActor", (actor, changed) => {
   if (!quickDeckApp) return;
   const actorId = actor?.id;
   const shouldRender = actorAffectsQuickDeckView(actorId, { includeAvailable: true });
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (shouldRender) renderQuickDeckIfOpen();
+  if (!shouldRender) return;
+
+  if (actorUpdateTouchesQuickDeckResources(changed)) {
+    renderQuickDeckIfOpen("center", 0);
+    return;
+  }
+  renderQuickDeckIfOpen();
 });
 
 Hooks.on("createItem", (item) => {
