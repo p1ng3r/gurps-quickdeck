@@ -4,16 +4,16 @@
 
 #gurps-quickdeck-overlay.qd40-overlay,
 .qd40-overlay {
-  /* These two optional source images are not part of the repository. Keep the
-   * existing CSS fallback layers active without issuing repeated 404 requests. */
+  /* The optional center-art source files are not part of the repository.
+   * Keep the existing gradient and stone fallback layers without issuing 404s. */
   --qd-center-art-panel-tile: none;
-  --qd-center-art-actor-card: url("../assets/ui/dwarven/center/actor-card-iron-plate.webp");
+  --qd-center-art-actor-card: none;
   --qd-center-art-quick-slots-panel: none;
-  --qd-center-art-quick-slot-row: url("../assets/ui/dwarven/center/quick-slot-row-iron-rivets.webp");
-  --qd-center-art-toggle: url("../assets/ui/dwarven/center/dropdown-toggle-iron.webp");
-  --qd-center-art-button-small: url("../assets/ui/dwarven/center/button-small-bronze.webp");
-  --qd-center-art-button-round: url("../assets/ui/dwarven/center/button-round-bronze.webp");
-  --qd-center-art-header-strip: url("../assets/ui/dwarven/center/header-strip-iron-brass.webp");
+  --qd-center-art-quick-slot-row: none;
+  --qd-center-art-toggle: none;
+  --qd-center-art-button-small: none;
+  --qd-center-art-button-round: none;
+  --qd-center-art-header-strip: none;
 }
 
 /* Chrome header */
