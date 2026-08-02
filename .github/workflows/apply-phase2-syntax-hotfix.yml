@@ -1,0 +1,55 @@
+name: Apply Phase 2 syntax hotfix
+
+on:
+  pull_request:
+    types: [synchronize, reopened]
+    branches:
+      - codex/v0.20.4-runtime-cleanup-phase1
+
+permissions:
+  contents: write
+
+concurrency:
+  group: phase2-syntax-hotfix
+  cancel-in-progress: false
+
+jobs:
+  fix:
+    if: github.event.pull_request.head.ref == 'codex/v0.20.4-runtime-cleanup-phase2'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/v0.20.4-runtime-cleanup-phase2
+          fetch-depth: 0
+
+      - name: Apply and validate syntax hotfix
+        shell: bash
+        run: |
+          if [ -f .github/phase2-syntax-fix.patch ]; then
+            git apply --check .github/phase2-syntax-fix.patch
+            git apply .github/phase2-syntax-fix.patch
+            node --check scripts/quickdeck-app.js
+            node --check scripts/main.js
+            rm -f .github/phase2-syntax-fix.patch .github/phase2-syntax-hotfix-trigger
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add -A
+            git commit -m "Fix Phase 2 render scheduler syntax"
+            git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase2
+          else
+            echo "Phase 2 syntax patch already applied."
+          fi
+
+      - name: Remove one-use workflow from Phase 1
+        shell: bash
+        run: |
+          git fetch origin codex/v0.20.4-runtime-cleanup-phase1
+          git checkout -B phase1-cleanup origin/codex/v0.20.4-runtime-cleanup-phase1
+          if [ -f .github/workflows/apply-phase2-syntax-hotfix.yml ]; then
+            git rm .github/workflows/apply-phase2-syntax-hotfix.yml
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git commit -m "Remove Phase 2 syntax hotfix workflow"
+            git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase1
+          fi
