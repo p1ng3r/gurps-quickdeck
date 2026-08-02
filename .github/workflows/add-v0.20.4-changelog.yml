@@ -1,0 +1,55 @@
+name: Add v0.20.4 cleanup changelog
+
+on:
+  push:
+    branches:
+      - codex/v0.20.4-runtime-cleanup-phase1
+    paths:
+      - .github/workflows/add-v0.20.4-changelog.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update-changelog:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: codex/v0.20.4-runtime-cleanup-phase1
+
+      - name: Add cleanup release note
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+
+          path = Path("CHANGELOG.md")
+          text = path.read_text(encoding="utf-8")
+          heading = "## [Unreleased] - v0.20.4-runtime-cleanup-phase1"
+          entry = """## [Unreleased] - v0.20.4-runtime-cleanup-phase1
+
+          ### Changed
+          - Removes the duplicate overlay render performed when QuickDeck opens and prevents the hidden Application host from building the full overlay view model.
+          - Consolidates fallback and chat-captured damage into one native GURPS-compatible pending-damage payload queue, limited to the GM client.
+          - Uses Foundry 13/14's `renderChatMessageHTML` hook and avoids full overlay rerenders when only the floating pending-damage popup changes.
+          - Lazy-loads the developer art tuner and replaces stale historical UI build labels with the installed module version.
+
+          ### Documentation
+          - Adds the staged v0.20.4 runtime, render, CSS, and package cleanup plan.
+
+          """
+          if not text.startswith(heading):
+              path.write_text(entry + text, encoding="utf-8")
+          PY
+
+      - name: Commit release note
+        shell: bash
+        run: |
+          rm .github/workflows/add-v0.20.4-changelog.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Document v0.20.4 runtime cleanup"
+          git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase1
