@@ -1,0 +1,40 @@
+name: Apply v0.20.4 runtime cleanup
+
+on:
+  push:
+    branches:
+      - codex/v0.20.4-runtime-cleanup-phase1
+    paths:
+      - .github/workflows/apply-v0.20.4-runtime-cleanup.yml
+      - .github/patches/v0.20.4-runtime-cleanup.patch
+
+permissions:
+  contents: write
+
+jobs:
+  apply-cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out branch
+        uses: actions/checkout@v4
+        with:
+          ref: codex/v0.20.4-runtime-cleanup-phase1
+
+      - name: Apply and validate cleanup
+        shell: bash
+        run: |
+          git apply --check .github/patches/v0.20.4-runtime-cleanup.patch
+          git apply .github/patches/v0.20.4-runtime-cleanup.patch
+          node --check scripts/main.js
+          node --check scripts/quickdeck-app.js
+
+      - name: Commit cleaned source
+        shell: bash
+        run: |
+          rm .github/patches/v0.20.4-runtime-cleanup.patch
+          rm .github/workflows/apply-v0.20.4-runtime-cleanup.yml
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "Reduce QuickDeck duplicate runtime work"
+          git push origin HEAD:codex/v0.20.4-runtime-cleanup-phase1
