@@ -7450,24 +7450,38 @@ export class QuickDeckApp extends Application {
 
     const commitResourceInput = async (input) => {
       if (!input) return;
-      const nextValue = String(input.value ?? "");
-      if (input.dataset.qdResourceCommitPending === nextValue) return;
-      if (input.dataset.qdResourceCommitted === nextValue) return;
+      const actorId = input.dataset.actorId || this.activeActorId;
+      const resource = input.dataset.resource;
+      const actor = this.resolveActorDocument(actorId);
+      const nextValue = String(input.value ?? "").trim();
+      const parsedValue = this.parseResourceNumber(nextValue);
 
-      input.dataset.qdResourceCommitPending = nextValue;
+      if (!Number.isFinite(parsedValue)) {
+        const currentValue = this.parseResourceNumber(this.getResourceValue(actor, resource));
+        input.value = Number.isFinite(currentValue) ? String(currentValue) : "";
+        input.dataset.qdResourceCommitted = input.value;
+        return;
+      }
+
+      const normalizedValue = String(parsedValue);
+      if (input.dataset.qdResourceCommitPending === normalizedValue) return;
+      if (input.dataset.qdResourceCommitted === normalizedValue) return;
+
+      input.dataset.qdResourceCommitPending = normalizedValue;
       try {
-        const actorId = input.dataset.actorId || this.activeActorId;
-        const resource = input.dataset.resource;
-        const didUpdate = await this.setActorResourceValue(actorId, resource, nextValue);
-        if (didUpdate) input.dataset.qdResourceCommitted = nextValue;
+        const didUpdate = await this.setActorResourceValue(actor, resource, parsedValue);
+        if (didUpdate) {
+          input.value = normalizedValue;
+          input.dataset.qdResourceCommitted = normalizedValue;
+        }
       } finally {
-        if (input.dataset.qdResourceCommitPending === nextValue) {
+        if (input.dataset.qdResourceCommitPending === normalizedValue) {
           delete input.dataset.qdResourceCommitPending;
         }
       }
     };
 
-    html.find("[data-action='set-resource']").on("change blur", (event) => {
+    html.find("[data-action='set-resource']").on("change", (event) => {
       void commitResourceInput(event.currentTarget);
     });
 
