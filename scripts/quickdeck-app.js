@@ -5,6 +5,13 @@ import { normalizePdfMapKey, parsePageReferences, getMappedPdfFinalPage, buildPd
 
 const HOST_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-host.hbs";
 const OVERLAY_TEMPLATE_PATH = "modules/gurps-quickdeck/templates/quickdeck-overlay.hbs";
+const OVERLAY_REGION_TEMPLATE_PATHS = Object.freeze({
+  chrome: "modules/gurps-quickdeck/templates/parts/quickdeck-chrome.hbs",
+  left: "modules/gurps-quickdeck/templates/parts/quickdeck-left-drawer.hbs",
+  center: "modules/gurps-quickdeck/templates/parts/quickdeck-center.hbs",
+  right: "modules/gurps-quickdeck/templates/parts/quickdeck-right-drawer.hbs"
+});
+const OVERLAY_REGION_NAMES = Object.freeze(Object.keys(OVERLAY_REGION_TEMPLATE_PATHS));
 const DEBUG = false;
 const MODULE_ID = "gurps-quickdeck";
 const SETTING_KEYS = {
@@ -23,7 +30,7 @@ const SETTING_KEYS = {
   PDF_PAGE_REF_MAPPINGS: "pdfPageRefMappings"
 };
 const VALID_DRAWERS = new Set(["combat", "skills", "spells", "settings"]);
-const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 100, 250, 500, 900];
+const NATIVE_WINDOW_FOCUS_DELAYS_MS = [0, 180];
 const NATIVE_WINDOW_FOCUS_GUARD_MS = 1500;
 const SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS = 30000;
 const NATIVE_GURPS_WINDOW_PATTERN = /gurps|damage|roll|modifier|bucket|attack|defense|melee|ranged|hit[-\s]?location|otf/i;
@@ -83,7 +90,6 @@ class QuickDeckCustomScrollbarManager {
     this.resizeObserver = typeof ResizeObserver === "function" ? new ResizeObserver((records) => {
       for (const record of records) this.refreshHost(record.target);
     }) : null;
-    this.mutationObserver = typeof MutationObserver === "function" ? new MutationObserver(() => this.refreshAll()) : null;
     this.refreshRaf = null;
     this.handleWindowResize = () => this.refreshAll();
     this.pendingHostRefresh = new Set();
@@ -101,7 +107,6 @@ class QuickDeckCustomScrollbarManager {
     if (!this.root) return;
     this.scanCandidates();
     this.refreshAll();
-    this.mutationObserver?.observe(this.root, { childList: true, subtree: true, attributes: true, attributeFilter: ["class", "style", "hidden", "open"] });
     window.addEventListener("resize", this.handleWindowResize);
   }
 
@@ -110,7 +115,6 @@ class QuickDeckCustomScrollbarManager {
     this.refreshRaf = null;
     this.pendingHostRefresh.clear();
     window.removeEventListener("resize", this.handleWindowResize);
-    this.mutationObserver?.disconnect();
     this.resizeObserver?.disconnect();
     for (const [host, entry] of this.entries.entries()) this.unbindHost(host, entry);
     this.entries.clear();
@@ -188,7 +192,7 @@ class QuickDeckCustomScrollbarManager {
     this.entries.set(host, entry);
     this.resizeObserver?.observe(host);
   }
-  unbindHost(host, entry) {
+  unbindHost(host, entry, { restoreHost = true } = {}) {
     if (!entry) return;
     entry.cleanupDrag?.();
     host.removeEventListener("scroll", entry.onScroll);
@@ -196,13 +200,26 @@ class QuickDeckCustomScrollbarManager {
     entry.thumb.removeEventListener("pointerdown", entry.onThumbPointerDown);
     host.classList.remove("qd-custom-scroll-host", "qd-custom-scrollbar-hidden-native");
     entry.rail.remove();
-    if (entry.wrapper?.contains?.(host)) {
+    if (restoreHost && entry.wrapper?.contains?.(host)) {
       const parent = entry.wrapper.parentElement ?? entry.originalParent;
       if (parent) parent.insertBefore(host, entry.wrapper);
     }
     entry.wrapper?.remove?.();
     this.entries.delete(host);
   }
+  releaseWithin(root, { restoreHosts = false } = {}) {
+    if (!root) return;
+    for (const [host, entry] of Array.from(this.entries.entries())) {
+      if (root === host || root.contains?.(host)) this.unbindHost(host, entry, { restoreHost: restoreHosts });
+    }
+  }
+
+  clearEntries({ restoreHosts = false } = {}) {
+    for (const [host, entry] of Array.from(this.entries.entries())) {
+      this.unbindHost(host, entry, { restoreHost: restoreHosts });
+    }
+  }
+
   isVisible(host) {
     if (!host || host.hidden) return false;
     const style = window.getComputedStyle(host);
@@ -409,7 +426,11 @@ export class QuickDeckApp extends Application {
     this._targetOpponentPreviousCursor = null;
     this.isMinimized = false;
     this._floatingRestoreIcon = null;
-    this._restorePillDragCleanup = null;
+    this._restorePillDraggable = null;
+    this._restorePillDragAdapter = null;
+    this._restorePillDragElement = null;
+    this._restorePillNativePointerDown = null;
+    this._restorePillNativeDragCleanup = null;
     this._restorePillPreventClick = false;
     this.restorePillPosition = null;
     this._pendingAttackGuidance = null;
@@ -417,17 +438,26 @@ export class QuickDeckApp extends Application {
     this._nativeWindowFocusUntil = 0;
     this._lastNativeWindowIds = new Set();
     this._nativeWindowFocusLock = null;
+    this._nativeWindowFocusHookIds = [];
+    this._nativeWindowFocusRetryIds = new Set();
     this.primaryRollKey = DEFAULT_PRIMARY_ROLL_KEY;
     this.secondaryRollKey = DEFAULT_SECONDARY_ROLL_KEY;
     this._stateLoadedFromSettings = false;
     this.isRosterDrawerOpen = false;
     this.isActionsDrawerOpen = false;
     this._derivedActorDataCache = new Map();
+    this._preferredActorDocumentsById = new Map();
     this.referenceApp = null;
     this._overlayRoot = null;
     this._overlayDragCleanup = null;
     this._overlayDragPointerId = null;
     this._overlayPosition = null;
+    this._overlayRenderRegions = new Set();
+    this._overlayRenderTimer = null;
+    this._overlayRenderRaf = null;
+    this._overlayRenderInFlight = null;
+    this._overlayRenderQueuedWhileBusy = false;
+    this._overlayRenderTiming = { samples: [], totals: {}, counts: {} };
     this._filterRafByAction = new Map();
     this._overlayWindowResizeHandler = () => this.scheduleQd31WindowResize();
     this._qd31ResizeRaf = null;
@@ -444,6 +474,7 @@ export class QuickDeckApp extends Application {
       offset: 0
     };
     this.loadPersistedState();
+    this.installNativeWindowFocusController();
   }
 
   static get defaultOptions() {
@@ -462,15 +493,136 @@ export class QuickDeckApp extends Application {
   }
 
 
+  render(force = false, options = {}) {
+    if (!force && this.rendered && this._overlayRoot) {
+      this.requestOverlayRender(options?.regions ?? "all", options);
+      return this;
+    }
+    return super.render(force, options);
+  }
+
+  normalizeOverlayRenderRegions(regions = "all") {
+    const values = Array.isArray(regions) || regions instanceof Set ? Array.from(regions) : [regions];
+    const normalized = new Set();
+    for (const value of values) {
+      const region = String(value ?? "").trim().toLowerCase();
+      if (region === "all") return new Set(["all"]);
+      if (OVERLAY_REGION_NAMES.includes(region)) normalized.add(region);
+    }
+    return normalized.size ? normalized : new Set(["all"]);
+  }
+
+  requestOverlayRender(regions = "all", { delay = 0, reason = "ui" } = {}) {
+    const requested = this.normalizeOverlayRenderRegions(regions);
+    if (requested.has("all")) {
+      this._overlayRenderRegions.clear();
+      this._overlayRenderRegions.add("all");
+    } else if (!this._overlayRenderRegions.has("all")) {
+      for (const region of requested) this._overlayRenderRegions.add(region);
+    }
+
+    this._lastOverlayRenderReason = reason;
+    if (this.isMinimized) return this;
+
+    const numericDelay = Math.max(0, Number(delay) || 0);
+    if (numericDelay > 0) {
+      if (this._overlayRenderTimer || this._overlayRenderRaf) return this;
+      this._overlayRenderTimer = globalThis.setTimeout?.(() => {
+        this._overlayRenderTimer = null;
+        this.queueOverlayRenderFrame();
+      }, numericDelay) ?? null;
+      return this;
+    }
+
+    if (this._overlayRenderTimer) {
+      globalThis.clearTimeout?.(this._overlayRenderTimer);
+      this._overlayRenderTimer = null;
+    }
+    this.queueOverlayRenderFrame();
+    return this;
+  }
+
+  queueOverlayRenderFrame() {
+    if (this._overlayRenderRaf) return;
+    const run = () => {
+      this._overlayRenderRaf = null;
+      void this.flushOverlayRenderQueue();
+    };
+    this._overlayRenderRaf = typeof requestAnimationFrame === "function"
+      ? requestAnimationFrame(run)
+      : globalThis.setTimeout?.(run, 0);
+  }
+
+  cancelOverlayRenderQueue() {
+    if (this._overlayRenderTimer) globalThis.clearTimeout?.(this._overlayRenderTimer);
+    if (this._overlayRenderRaf) {
+      if (typeof cancelAnimationFrame === "function") cancelAnimationFrame(this._overlayRenderRaf);
+      else globalThis.clearTimeout?.(this._overlayRenderRaf);
+    }
+    this._overlayRenderTimer = null;
+    this._overlayRenderRaf = null;
+    this._overlayRenderRegions.clear();
+    this._overlayRenderQueuedWhileBusy = false;
+  }
+
+  async flushOverlayRenderQueue() {
+    if (this._overlayRenderInFlight) {
+      this._overlayRenderQueuedWhileBusy = true;
+      return this._overlayRenderInFlight;
+    }
+    if (!this.rendered || !this._overlayRoot || this.isMinimized) return null;
+    if (this.isOverlayDragging?.()) {
+      this.requestOverlayRender(this._overlayRenderRegions, { delay: 100, reason: "drag-retry" });
+      return null;
+    }
+
+    const regions = this._overlayRenderRegions.size
+      ? new Set(this._overlayRenderRegions)
+      : new Set(["all"]);
+    this._overlayRenderRegions.clear();
+
+    const task = regions.has("all")
+      ? this.renderOverlay()
+      : this.renderOverlayRegions(regions);
+    this._overlayRenderInFlight = Promise.resolve(task);
+    try {
+      return await this._overlayRenderInFlight;
+    } finally {
+      this._overlayRenderInFlight = null;
+      if (this._overlayRenderQueuedWhileBusy || this._overlayRenderRegions.size) {
+        this._overlayRenderQueuedWhileBusy = false;
+        this.queueOverlayRenderFrame();
+      }
+    }
+  }
+
+  recordOverlayRenderTiming(label, durationMs, regions = []) {
+    if (!Number.isFinite(durationMs)) return;
+    const timing = this._overlayRenderTiming;
+    timing.totals[label] = (timing.totals[label] ?? 0) + durationMs;
+    timing.counts[label] = (timing.counts[label] ?? 0) + 1;
+    timing.samples.push({ label, durationMs: Math.round(durationMs * 100) / 100, regions: Array.from(regions), at: Date.now() });
+    if (timing.samples.length > 80) timing.samples.splice(0, timing.samples.length - 80);
+  }
+
+  getOverlayRenderTimingSummary() {
+    const result = {};
+    for (const [label, total] of Object.entries(this._overlayRenderTiming.totals)) {
+      const count = this._overlayRenderTiming.counts[label] ?? 0;
+      result[label] = { count, totalMs: Math.round(total * 100) / 100, averageMs: count ? Math.round((total / count) * 100) / 100 : 0 };
+    }
+    return { summary: result, recent: [...this._overlayRenderTiming.samples] };
+  }
+
   openRosterDrawer() {
     if (this.isRosterDrawerOpen) return;
     this.isRosterDrawerOpen = true;
-    this.render(false);
+    this.requestOverlayRender("left", { reason: "open-roster" });
   }
   closeRosterDrawer() {
     if (!this.isRosterDrawerOpen) return;
     this.isRosterDrawerOpen = false;
-    this.render(false);
+    this.requestOverlayRender("left", { reason: "close-roster" });
   }
   toggleRosterDrawer() { this.isRosterDrawerOpen ? this.closeRosterDrawer() : this.openRosterDrawer(); }
   openActionsDrawer(drawer = null) {
@@ -479,12 +631,12 @@ export class QuickDeckApp extends Application {
     if (nextDrawer) this.activeDrawer = nextDrawer;
     if (this.isActionsDrawerOpen && previousDrawer === this.activeDrawer) return;
     this.isActionsDrawerOpen = true;
-    this.render(false);
+    this.requestOverlayRender("right", { reason: "open-actions" });
   }
   closeActionsDrawer() {
     if (!this.isActionsDrawerOpen) return;
     this.isActionsDrawerOpen = false;
-    this.render(false);
+    this.requestOverlayRender("right", { reason: "close-actions" });
   }
   toggleActionsDrawer(drawer = null) { this.isActionsDrawerOpen ? this.closeActionsDrawer() : this.openActionsDrawer(drawer); }
 
@@ -760,8 +912,58 @@ export class QuickDeckApp extends Application {
     return didRemove;
   }
 
+  isSyntheticTokenActor(actor) {
+    return Boolean(
+      actor?.isToken === true ||
+      actor?.parent?.documentName === "Token" ||
+      actor?.token?.documentName === "Token"
+    );
+  }
+
+  rememberActorDocument(actor) {
+    const actorId = String(actor?.id ?? "");
+    if (!actorId || !this.isSyntheticTokenActor(actor)) return actor ?? null;
+    this._preferredActorDocumentsById.set(actorId, actor);
+    return actor;
+  }
+
+  getCanvasTokenActor(actorId) {
+    const id = String(actorId ?? "");
+    if (!id) return null;
+
+    const controlledTokens = Array.from(canvas?.tokens?.controlled ?? []);
+    const controlledMatch = controlledTokens.find((token) => String(token?.actor?.id ?? "") === id);
+    if (controlledMatch?.actor) return controlledMatch.actor;
+
+    const currentCombatant = game?.combat?.combatant ?? null;
+    const currentTokenId = currentCombatant?.tokenId ?? currentCombatant?.token?.id ?? null;
+    const currentToken = currentTokenId ? canvas?.tokens?.get?.(currentTokenId) : null;
+    if (String(currentToken?.actor?.id ?? "") === id) return currentToken.actor;
+
+    const matches = Array.from(canvas?.tokens?.placeables ?? [])
+      .filter((token) => String(token?.actor?.id ?? "") === id);
+    return matches.length === 1 ? matches[0].actor : null;
+  }
+
+  resolveActorDocument(actorOrId) {
+    if (actorOrId && typeof actorOrId === "object") {
+      return this.rememberActorDocument(actorOrId);
+    }
+
+    const actorId = String(actorOrId ?? "");
+    if (!actorId) return null;
+
+    const canvasActor = this.getCanvasTokenActor(actorId);
+    if (canvasActor) return this.rememberActorDocument(canvasActor);
+
+    const rememberedActor = this._preferredActorDocumentsById.get(actorId);
+    if (rememberedActor) return rememberedActor;
+
+    return game.actors.get(actorId) ?? null;
+  }
+
   getActiveActor() {
-    return this.activeActorId ? game.actors.get(this.activeActorId) : null;
+    return this.resolveActorDocument(this.activeActorId);
   }
 
   getSelectedPrimaryRollOption() {
@@ -2937,6 +3139,33 @@ export class QuickDeckApp extends Application {
     return id === undefined || id === null ? null : String(id);
   }
 
+  installNativeWindowFocusController() {
+    if (this._nativeWindowFocusHookIds.length) return;
+    const onRender = (app) => this.handleNativeWindowFocusLockRender(app);
+    for (const hookName of ["renderApplicationV1", "renderApplicationV2"]) {
+      try {
+        const hookId = globalThis.Hooks?.on?.(hookName, onRender);
+        if (hookId !== undefined && hookId !== null) this._nativeWindowFocusHookIds.push([hookName, hookId, onRender]);
+      } catch (_error) {
+        // Native window focus is best-effort only.
+      }
+    }
+  }
+
+  uninstallNativeWindowFocusController() {
+    for (const [hookName, hookId, callback] of this._nativeWindowFocusHookIds) {
+      try { globalThis.Hooks?.off?.(hookName, hookId); } catch (_error) {}
+      try { globalThis.Hooks?.off?.(hookName, callback); } catch (_error) {}
+    }
+    this._nativeWindowFocusHookIds = [];
+    this.clearNativeWindowFocusRetries();
+  }
+
+  clearNativeWindowFocusRetries() {
+    for (const timeoutId of this._nativeWindowFocusRetryIds) globalThis.clearTimeout?.(timeoutId);
+    this._nativeWindowFocusRetryIds.clear();
+  }
+
   handleNativeWindowFocusLockRender(app) {
     const lock = this._nativeWindowFocusLock;
     if (!lock || Date.now() > lock.until) return;
@@ -2961,20 +3190,9 @@ export class QuickDeckApp extends Application {
       focusedWindowIds: new Set(),
       persistWhileNativeOpen: ["primary-", "secondary-"].some((prefix) => String(reason ?? "").startsWith(prefix)),
       maxUntil: Date.now() + SECONDARY_NATIVE_WINDOW_FOCUS_MAX_MS,
-      hooks: [],
       timeoutId: null,
       until
     };
-    const onRender = (app) => this.handleNativeWindowFocusLockRender(app);
-
-    for (const hookName of ["renderApplicationV1", "renderApplicationV2", "renderApplication"]) {
-      try {
-        const hookId = globalThis.Hooks?.on?.(hookName, onRender);
-        lock.hooks.push([hookName, hookId, onRender]);
-      } catch (_error) {
-        // Native window focus locking is best-effort only.
-      }
-    }
 
     lock.timeoutId = globalThis.setTimeout?.(() => this.stopNativeWindowFocusLock(), NATIVE_WINDOW_FOCUS_GUARD_MS) ?? null;
     this._nativeWindowFocusLock = lock;
@@ -3009,20 +3227,6 @@ export class QuickDeckApp extends Application {
       lock.timeoutId = globalThis.setTimeout?.(() => this.stopNativeWindowFocusLock(), NATIVE_WINDOW_FOCUS_GUARD_MS) ?? null;
       this.bringNativeWindowsToFront(lock.previousWindowIds);
       return;
-    }
-
-    for (const [hookName, hookId, hookCallback] of lock.hooks ?? []) {
-      try {
-        globalThis.Hooks?.off?.(hookName, hookId);
-      } catch (_error) {
-        // Native window focus locking is best-effort only.
-      }
-
-      try {
-        globalThis.Hooks?.off?.(hookName, hookCallback);
-      } catch (_error) {
-        // Native window focus locking is best-effort only.
-      }
     }
 
     if (lock.timeoutId) {
@@ -3075,15 +3279,15 @@ export class QuickDeckApp extends Application {
       // Native window focus is best-effort only.
     }
 
+    this.clearNativeWindowFocusRetries();
     for (const delay of NATIVE_WINDOW_FOCUS_DELAYS_MS) {
+      if (delay === 0) continue;
       try {
-        globalThis.setTimeout?.(() => {
-          try {
-            this.bringNativeWindowsToFront(guardedWindowIds);
-          } catch (_error) {
-            // Native window focus is best-effort only.
-          }
+        const timeoutId = globalThis.setTimeout?.(() => {
+          this._nativeWindowFocusRetryIds.delete(timeoutId);
+          try { this.bringNativeWindowsToFront(guardedWindowIds); } catch (_error) {}
         }, delay);
+        if (timeoutId) this._nativeWindowFocusRetryIds.add(timeoutId);
       } catch (_error) {
         // Native window focus is best-effort only.
       }
@@ -3284,7 +3488,7 @@ export class QuickDeckApp extends Application {
       console.warn("gurps-quickdeck | Failed to clear targets.", error);
       ui.notifications?.warn("QuickDeck: Could not clear targets.");
     }
-    this.render(false);
+    this.requestOverlayRender(["center", "right"], { reason: "clear-targets" });
   }
 
   activateNextRosterActor() {
@@ -3294,7 +3498,7 @@ export class QuickDeckApp extends Application {
     this.activeActorId = this.rosterActorIds[nextIndex] ?? null;
     this.keepActiveActorInCenterRosterWindow();
     this.persistRosterState();
-    this.render(false);
+    this.requestOverlayRender(["left", "center", "right"], { reason: "next-roster-actor" });
   }
 
 
@@ -3692,7 +3896,7 @@ export class QuickDeckApp extends Application {
             : "Success";
     ui.notifications?.info(`QuickDeck: Attack outcome: ${outcomeLabel}.`);
     this._pendingAttackGuidance = success ? { actorId: actor.id, attackIndex } : null;
-    this.render(false);
+    this.requestOverlayRender(["center", "right"], { reason: "guided-attack" });
   }
 
   bringReferenceAppToFrontSoon() {
@@ -3847,7 +4051,7 @@ export class QuickDeckApp extends Application {
   }
 
   async adjustActorResource(actorId, resource, delta) {
-    const actor = actorId ? game.actors.get(actorId) : null;
+    const actor = this.resolveActorDocument(actorId);
     const path = this.getResourceUpdatePath(resource);
     const numericDelta = Number(delta);
     if (!actor || !path || !Number.isFinite(numericDelta)) return;
@@ -3862,22 +4066,27 @@ export class QuickDeckApp extends Application {
   }
 
   async setActorResourceValue(actorOrId, resource, value) {
-    const actor = typeof actorOrId === "string" ? game.actors.get(actorOrId) : actorOrId;
+    const actor = this.resolveActorDocument(actorOrId);
     const path = this.getResourceUpdatePath(resource);
     const numericValue = this.parseResourceNumber(value);
-    if (!actor || !path) return;
+    if (!actor || !path) return false;
     if (!Number.isFinite(numericValue)) {
       ui.notifications?.warn(`QuickDeck: Enter a numeric ${resource} value.`);
-      return;
+      return false;
     }
 
+    const currentValue = this.parseResourceNumber(foundry.utils.getProperty(actor, path));
+    if (Number.isFinite(currentValue) && currentValue === numericValue) return true;
+
     try {
-      await actor.update({ [path]: numericValue });
+      await actor.update({ [path]: numericValue }, { render: true });
       this.invalidateDerivedActorData(actor.id);
-      this.render(false);
+      this.requestOverlayRender("center", { reason: "resource-update" });
+      return true;
     } catch (error) {
       console.warn(`gurps-quickdeck | Failed to update ${resource}.`, error);
       ui.notifications?.warn(`QuickDeck: Could not update ${resource} for ${actor.name}.`);
+      return false;
     }
   }
 
@@ -3948,7 +4157,7 @@ export class QuickDeckApp extends Application {
         const uuidValue = uuid ?? rawText;
         const resolvedDocument = await fromUuid(uuidValue);
         if (resolvedDocument?.documentName === "Actor" || resolvedDocument instanceof Actor) {
-          return resolvedDocument;
+          return this.rememberActorDocument(resolvedDocument);
         }
         console.warn("gurps-quickdeck | Ignored drop: UUID did not resolve to Actor.", {
           uuid: uuidValue
@@ -3959,7 +4168,7 @@ export class QuickDeckApp extends Application {
     }
 
     if (actorId) {
-      const actor = game.actors.get(actorId);
+      const actor = this.resolveActorDocument(actorId);
       if (actor) return actor;
     }
 
@@ -4532,6 +4741,7 @@ export class QuickDeckApp extends Application {
     this.cancelTokenDrop({ render: false });
     this.stopUi2CarouselTokenDrop({ restore: false });
     this.clearPendingDamageContext({ render: false });
+    this.cancelOverlayRenderQueue();
     this.teardownQuickDeckCustomScrollbars();
     this.cancelTargetOpponentMode({ render: false, restore: false });
     if (this._qd31ResizeRaf) {
@@ -4549,6 +4759,7 @@ export class QuickDeckApp extends Application {
     }
     this.invalidateDerivedActorData();
     this.stopNativeWindowFocusLock({ force: true });
+    this.uninstallNativeWindowFocusController();
     return super.close(options);
   }
 
@@ -4593,6 +4804,8 @@ export class QuickDeckApp extends Application {
     if (existing) {
       this._floatingRestoreIcon = existing;
       this.applyRestorePillPosition(existing);
+      this.installFloatingRestoreMouseGuards(existing);
+      this.setupFloatingRestoreDraggable(existing);
       return;
     }
 
@@ -4600,15 +4813,15 @@ export class QuickDeckApp extends Application {
     icon.type = "button";
     icon.id = this.getFloatingRestoreIconId();
     icon.className = "quickdeck-floating-restore";
-    icon.title = "Left-click restore · Right-drag move";
-    icon.setAttribute("aria-label", "Left-click restore · Right-drag move");
+    icon.title = "Click to restore · drag to move";
+    icon.setAttribute("aria-label", "Click to restore · drag to move");
     icon.innerHTML = '<span class="quickdeck-floating-restore-mark">QD</span><span class="quickdeck-floating-restore-label">QuickDeck</span>';
-    icon.addEventListener("contextmenu", this.onFloatingRestoreContextMenu);
-    icon.addEventListener("pointerdown", this.onFloatingRestorePointerDown);
     icon.addEventListener("click", this.onFloatingRestoreClick);
     document.body.appendChild(icon);
     this._floatingRestoreIcon = icon;
     this.applyRestorePillPosition(icon);
+    this.installFloatingRestoreMouseGuards(icon);
+    this.setupFloatingRestoreDraggable(icon);
   }
 
   getFloatingRestoreIconId() {
@@ -4627,84 +4840,210 @@ export class QuickDeckApp extends Application {
     }
     this.isMinimized = false;
     this.persistMinimizedState();
-    this.render(false);
+    this.syncMinimizedPresentation();
+    this.requestOverlayRender("all", { reason: "restore-pill" });
+  };
+
+  onFloatingRestoreNonPrimaryMouse = (event) => {
+    if (Number(event?.button) === 0) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation?.();
   };
 
   onFloatingRestoreContextMenu = (event) => {
     event.preventDefault();
-  };
-
-  onFloatingRestorePointerDown = (event) => {
-    if (event.button !== 2) return;
-
-    const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
-    if (!icon) return;
-
-    event.preventDefault();
     event.stopPropagation();
-    this._restorePillPreventClick = true;
-    this.stopRestorePillDrag();
-
-    const startLeft = Number.parseFloat(icon.style.left) || icon.offsetLeft || 0;
-    const startTop = Number.parseFloat(icon.style.top) || icon.offsetTop || 0;
-    const startClientX = Number(event.clientX);
-    const startClientY = Number(event.clientY);
-    const dragThreshold = 3;
-    let didDrag = false;
-
-    const updatePosition = (nextLeft, nextTop) => {
-      const clamped = this.getClampedRestorePillPosition(nextLeft, nextTop, icon);
-      icon.style.left = `${clamped.left}px`;
-      icon.style.top = `${clamped.top}px`;
-      icon.style.right = "auto";
-      this.restorePillPosition = clamped;
-    };
-
-    const onPointerMove = (moveEvent) => {
-      const deltaX = Number(moveEvent.clientX) - startClientX;
-      const deltaY = Number(moveEvent.clientY) - startClientY;
-      if (!didDrag && (Math.abs(deltaX) >= dragThreshold || Math.abs(deltaY) >= dragThreshold)) {
-        didDrag = true;
-      }
-      updatePosition(startLeft + deltaX, startTop + deltaY);
-    };
-
-    const onPointerUp = () => {
-      if (!didDrag) {
-        this._restorePillPreventClick = false;
-      } else {
-        this.persistRestorePillPosition(this.restorePillPosition);
-      }
-      this.stopRestorePillDrag();
-    };
-
-    const onWindowBlur = () => {
-      if (didDrag) this.persistRestorePillPosition(this.restorePillPosition);
-      this.stopRestorePillDrag();
-    };
-
-    const abortController = typeof AbortController === "function" ? new AbortController() : null;
-    const listenerOptions = abortController ? { signal: abortController.signal } : undefined;
-    window.addEventListener("pointermove", onPointerMove, listenerOptions);
-    window.addEventListener("pointerup", onPointerUp, listenerOptions);
-    window.addEventListener("blur", onWindowBlur, listenerOptions);
-
-    this._restorePillDragCleanup = () => {
-      if (abortController) {
-        abortController.abort();
-        return;
-      }
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("pointerup", onPointerUp);
-      window.removeEventListener("blur", onWindowBlur);
-    };
+    event.stopImmediatePropagation?.();
   };
 
-  stopRestorePillDrag() {
-    if (typeof this._restorePillDragCleanup === "function") {
-      this._restorePillDragCleanup();
+  installFloatingRestoreMouseGuards(icon) {
+    if (!icon) return;
+    icon.addEventListener("pointerdown", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.addEventListener("mousedown", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.addEventListener("auxclick", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.addEventListener("contextmenu", this.onFloatingRestoreContextMenu, true);
+  }
+
+  uninstallFloatingRestoreMouseGuards(icon) {
+    if (!icon) return;
+    icon.removeEventListener("pointerdown", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.removeEventListener("mousedown", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.removeEventListener("auxclick", this.onFloatingRestoreNonPrimaryMouse, true);
+    icon.removeEventListener("contextmenu", this.onFloatingRestoreContextMenu, true);
+  }
+
+  getFoundryDraggableClass() {
+    const draggable = foundry?.applications?.ux?.Draggable ?? globalThis.Draggable ?? null;
+    return draggable?.implementation ?? draggable;
+  }
+
+  setupFloatingRestoreDraggable(icon) {
+    if (!icon) return false;
+    if (this._restorePillDraggable && this._restorePillDragElement === icon) return true;
+
+    this.teardownFloatingRestoreDraggable();
+    const DraggableClass = this.getFoundryDraggableClass();
+    if (typeof DraggableClass !== "function") {
+      console.warn("gurps-quickdeck | Foundry Draggable is unavailable for the restore pill.");
+      return false;
     }
-    this._restorePillDragCleanup = null;
+
+    const initialRect = icon.getBoundingClientRect();
+    const adapter = {
+      appId: `${this.appId}-restore-pill`,
+      element: icon,
+      rendered: true,
+      options: { popOut: true, resizable: false },
+      position: {
+        left: initialRect.left,
+        top: initialRect.top,
+        width: initialRect.width,
+        height: initialRect.height,
+        scale: 1
+      },
+      setPosition: (position = {}) => {
+        const left = Number(position.left);
+        const top = Number(position.top);
+        const currentLeft = Number(adapter.position.left) || 0;
+        const currentTop = Number(adapter.position.top) || 0;
+        const clamped = this.getClampedRestorePillPosition(
+          Number.isFinite(left) ? left : currentLeft,
+          Number.isFinite(top) ? top : currentTop,
+          icon
+        );
+        const rect = icon.getBoundingClientRect();
+        const width = Number(position.width);
+        const height = Number(position.height);
+        const scale = Number(position.scale);
+
+        icon.style.left = `${clamped.left}px`;
+        icon.style.top = `${clamped.top}px`;
+        icon.style.right = "auto";
+        this.restorePillPosition = clamped;
+        adapter.position = {
+          ...adapter.position,
+          ...clamped,
+          width: Number.isFinite(width) ? width : rect.width,
+          height: Number.isFinite(height) ? height : rect.height,
+          scale: Number.isFinite(scale) ? scale : adapter.position.scale
+        };
+        return adapter.position;
+      },
+      bringToTop: () => adapter,
+      bringToFront: () => adapter,
+      _onResize: () => {}
+    };
+
+    try {
+      const draggable = new DraggableClass(adapter, icon, icon, false);
+      draggable.activateListeners();
+      this._restorePillDraggable = draggable;
+      this._restorePillDragAdapter = adapter;
+      this._restorePillDragElement = icon;
+    } catch (error) {
+      console.warn("gurps-quickdeck | Could not attach Foundry native dragging to the restore pill.", error);
+      return false;
+    }
+
+    const onPointerDown = (event) => {
+      if (event.button !== 0) return;
+      const pointerId = event.pointerId;
+      const startClientX = Number(event.clientX);
+      const startClientY = Number(event.clientY);
+      const startRect = icon.getBoundingClientRect();
+      let didDrag = false;
+
+      if (typeof this._restorePillNativeDragCleanup === "function") {
+        this._restorePillNativeDragCleanup();
+      }
+
+      const onPointerMove = (moveEvent) => {
+        if (moveEvent.pointerId !== pointerId || didDrag) return;
+        const deltaX = Number(moveEvent.clientX) - startClientX;
+        const deltaY = Number(moveEvent.clientY) - startClientY;
+        if (Math.hypot(deltaX, deltaY) < 4) return;
+        didDrag = true;
+        this._restorePillPreventClick = true;
+        icon.classList.add("is-dragging");
+      };
+
+      const cleanup = () => {
+        window.removeEventListener("pointermove", onPointerMove, true);
+        window.removeEventListener("pointerup", finishDrag, true);
+        window.removeEventListener("pointercancel", finishDrag, true);
+        this._restorePillNativeDragCleanup = null;
+      };
+
+      const finishDrag = (finishEvent) => {
+        if (finishEvent?.pointerId !== undefined && finishEvent.pointerId !== pointerId) return;
+        cleanup();
+        icon.classList.remove("is-dragging");
+
+        if (didDrag) {
+          requestAnimationFrame(() => {
+            if (!icon.isConnected) return;
+            const finalRect = icon.getBoundingClientRect();
+            const clamped = this.getClampedRestorePillPosition(finalRect.left, finalRect.top, icon);
+            icon.style.left = `${clamped.left}px`;
+            icon.style.top = `${clamped.top}px`;
+            icon.style.right = "auto";
+            this.restorePillPosition = clamped;
+            if (this._restorePillDragAdapter) {
+              this._restorePillDragAdapter.position = {
+                ...this._restorePillDragAdapter.position,
+                ...clamped,
+                width: finalRect.width,
+                height: finalRect.height
+              };
+            }
+            this.persistRestorePillPosition(clamped);
+          });
+        }
+
+        globalThis.setTimeout?.(() => {
+          this._restorePillPreventClick = false;
+        }, 0);
+      };
+
+      this._restorePillNativeDragCleanup = cleanup;
+      window.addEventListener("pointermove", onPointerMove, true);
+      window.addEventListener("pointerup", finishDrag, true);
+      window.addEventListener("pointercancel", finishDrag, true);
+
+      if (startRect.left !== Number(this._restorePillDragAdapter?.position?.left)
+        || startRect.top !== Number(this._restorePillDragAdapter?.position?.top)) {
+        this._restorePillDragAdapter.position = {
+          ...this._restorePillDragAdapter.position,
+          left: startRect.left,
+          top: startRect.top,
+          width: startRect.width,
+          height: startRect.height
+        };
+      }
+    };
+
+    icon.addEventListener("pointerdown", onPointerDown, true);
+    this._restorePillNativePointerDown = onPointerDown;
+    return true;
+  }
+
+  teardownFloatingRestoreDraggable(icon = this._restorePillDragElement ?? this._floatingRestoreIcon) {
+    if (typeof this._restorePillNativeDragCleanup === "function") {
+      this._restorePillNativeDragCleanup();
+    }
+    this._restorePillNativeDragCleanup = null;
+
+    if (icon && this._restorePillNativePointerDown) {
+      icon.removeEventListener("pointerdown", this._restorePillNativePointerDown, true);
+      icon.classList.remove("is-dragging");
+    }
+
+    this._restorePillNativePointerDown = null;
+    this._restorePillDraggable = null;
+    this._restorePillDragAdapter = null;
+    this._restorePillDragElement = null;
+    this._restorePillPreventClick = false;
   }
 
   getClampedRestorePillPosition(left, top, icon) {
@@ -4739,11 +5078,10 @@ export class QuickDeckApp extends Application {
   }
 
   removeFloatingRestoreIcon() {
-    this.stopRestorePillDrag();
     const icon = this._floatingRestoreIcon ?? document.getElementById(this.getFloatingRestoreIconId());
+    this.uninstallFloatingRestoreMouseGuards(icon);
+    this.teardownFloatingRestoreDraggable(icon);
     if (!icon) return;
-    icon.removeEventListener("contextmenu", this.onFloatingRestoreContextMenu);
-    icon.removeEventListener("pointerdown", this.onFloatingRestorePointerDown);
     icon.removeEventListener("click", this.onFloatingRestoreClick);
     icon.remove();
     this._floatingRestoreIcon = null;
@@ -4759,14 +5097,298 @@ export class QuickDeckApp extends Application {
   async renderOverlay() {
     this.mountOverlay();
     if (!this._overlayRoot) return;
-    const html = await renderQuickDeckTemplate(OVERLAY_TEMPLATE_PATH, this.getOverlayData());
-    this.teardownQuickDeckCustomScrollbars();
+    const startedAt = globalThis.performance?.now?.() ?? Date.now();
+    const data = this.getOverlayData();
+    const modelReadyAt = globalThis.performance?.now?.() ?? Date.now();
+    const regionEntries = await Promise.all(OVERLAY_REGION_NAMES.map(async (region) => [
+      region,
+      await renderQuickDeckTemplate(OVERLAY_REGION_TEMPLATE_PATHS[region], data)
+    ]));
+    const regionHtml = Object.fromEntries(regionEntries);
+    const html = await renderQuickDeckTemplate(OVERLAY_TEMPLATE_PATH, {
+      ...data,
+      chromeRegionHtml: regionHtml.chrome,
+      leftRegionHtml: regionHtml.left,
+      centerRegionHtml: regionHtml.center,
+      rightRegionHtml: regionHtml.right
+    });
+    const templateReadyAt = globalThis.performance?.now?.() ?? Date.now();
+
+    this._quickDeckCustomScrollbarManager?.clearEntries?.({ restoreHosts: false });
     this._overlayRoot.innerHTML = html;
     this.applyQd31LayoutSizing(this.getQd31LayoutMetrics());
     this.setOverlayPosition();
     this.activateOverlayListeners(this._overlayRoot);
-    this.setupQuickDeckCustomScrollbars(this._overlayRoot);
+    if (!this._quickDeckCustomScrollbarManager) this.setupQuickDeckCustomScrollbars(this._overlayRoot);
+    else this._quickDeckCustomScrollbarManager.refreshAll();
     focusQuickDeckCockpitFirst(this._overlayRoot);
+
+    const finishedAt = globalThis.performance?.now?.() ?? Date.now();
+    this.recordOverlayRenderTiming("model", modelReadyAt - startedAt, ["all"]);
+    this.recordOverlayRenderTiming("templates", templateReadyAt - modelReadyAt, ["all"]);
+    this.recordOverlayRenderTiming("dom", finishedAt - templateReadyAt, ["all"]);
+    this.recordOverlayRenderTiming("total", finishedAt - startedAt, ["all"]);
+  }
+
+  async renderOverlayRegions(regions) {
+    if (!this._overlayRoot) return this.renderOverlay();
+    const requested = Array.from(this.normalizeOverlayRenderRegions(regions)).filter((region) => region !== "all");
+    if (!requested.length) return this.renderOverlay();
+
+    const startedAt = globalThis.performance?.now?.() ?? Date.now();
+    const data = this.getOverlayData();
+    const modelReadyAt = globalThis.performance?.now?.() ?? Date.now();
+    const rendered = await Promise.all(requested.map(async (region) => [
+      region,
+      await renderQuickDeckTemplate(OVERLAY_REGION_TEMPLATE_PATHS[region], data)
+    ]));
+    const templateReadyAt = globalThis.performance?.now?.() ?? Date.now();
+
+    const restoreRegionState = [];
+    for (const [region, html] of rendered) {
+      const restore = this.replaceOverlayRegion(region, html);
+      if (typeof restore === "function") restoreRegionState.push(restore);
+    }
+    this.syncOverlayShellState(data);
+    if (requested.includes("left") || requested.includes("right")) {
+      this.applyQd31LayoutSizing(this.getQd31LayoutMetrics());
+      this.setOverlayPosition();
+    }
+    this.refreshQuickDeckCustomScrollbars();
+    for (const restore of restoreRegionState) restore();
+    requestAnimationFrame(() => {
+      for (const restore of restoreRegionState) restore();
+      this.refreshQuickDeckCustomScrollbars();
+    });
+    this.bringReferenceAppToFrontSoon();
+
+    const finishedAt = globalThis.performance?.now?.() ?? Date.now();
+    this.recordOverlayRenderTiming("model", modelReadyAt - startedAt, requested);
+    this.recordOverlayRenderTiming("templates", templateReadyAt - modelReadyAt, requested);
+    this.recordOverlayRenderTiming("dom", finishedAt - templateReadyAt, requested);
+    this.recordOverlayRenderTiming("total", finishedAt - startedAt, requested);
+  }
+
+  getOverlayRegionMarkers(region) {
+    const root = this._overlayRoot;
+    if (!root || typeof document?.createTreeWalker !== "function") return null;
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_COMMENT);
+    let start = null;
+    let end = null;
+    while (walker.nextNode()) {
+      const value = String(walker.currentNode?.nodeValue ?? "").trim();
+      if (value === `qd-region:${region}:start`) start = walker.currentNode;
+      if (value === `qd-region:${region}:end`) { end = walker.currentNode; break; }
+    }
+    return start && end ? { start, end } : null;
+  }
+
+  collectOverlayRegionElements(regionNodes, selector) {
+    if (!selector) return [];
+    const elements = [];
+    const seen = new Set();
+    const add = (element) => {
+      if (!element || seen.has(element)) return;
+      seen.add(element);
+      elements.push(element);
+    };
+
+    for (const node of regionNodes ?? []) {
+      if (node?.nodeType !== Node.ELEMENT_NODE) continue;
+      if (node.matches?.(selector)) add(node);
+      for (const descendant of node.querySelectorAll?.(selector) ?? []) add(descendant);
+    }
+    return elements;
+  }
+
+  isElementWithinOverlayRegion(element, regionNodes) {
+    if (!element) return false;
+    return (regionNodes ?? []).some((node) =>
+      node?.nodeType === Node.ELEMENT_NODE && (node === element || node.contains?.(element))
+    );
+  }
+
+  captureOverlayRegionScrollState(regionNodes) {
+    const selector = [
+      '[data-qd-native-scroll="true"]',
+      '[data-qd-custom-scroll-candidate="true"]',
+      '.qd-ui2-drawer-scroll',
+      '.qd31-drawer-body',
+      '.qd31-center-scroll-body',
+      '.qd31-roster-list',
+      '.qd31-available-list',
+      '.qd31-pdf-map-list'
+    ].join(', ');
+    return this.collectOverlayRegionElements(regionNodes, selector).map((element, index) => ({
+      index,
+      scrollTop: Number(element.scrollTop) || 0,
+      scrollLeft: Number(element.scrollLeft) || 0
+    }));
+  }
+
+  restoreOverlayRegionScrollState(regionNodes, state = []) {
+    if (!state.length) return;
+    const selector = [
+      '[data-qd-native-scroll="true"]',
+      '[data-qd-custom-scroll-candidate="true"]',
+      '.qd-ui2-drawer-scroll',
+      '.qd31-drawer-body',
+      '.qd31-center-scroll-body',
+      '.qd31-roster-list',
+      '.qd31-available-list',
+      '.qd31-pdf-map-list'
+    ].join(', ');
+    const elements = this.collectOverlayRegionElements(regionNodes, selector);
+    for (const saved of state) {
+      const element = elements[saved.index];
+      if (!element) continue;
+      const maxTop = Math.max(0, (Number(element.scrollHeight) || 0) - (Number(element.clientHeight) || 0));
+      const maxLeft = Math.max(0, (Number(element.scrollWidth) || 0) - (Number(element.clientWidth) || 0));
+      element.scrollTop = Math.min(Math.max(0, saved.scrollTop), maxTop || saved.scrollTop);
+      element.scrollLeft = Math.min(Math.max(0, saved.scrollLeft), maxLeft || saved.scrollLeft);
+    }
+  }
+
+  getPreferredOverlaySearchAction(region) {
+    if (region !== "right") return null;
+    return {
+      combat: "combat-search",
+      skills: "skills-search",
+      spells: "spells-search"
+    }[this.activeDrawer] ?? null;
+  }
+
+  captureOverlayRegionFocusState(region, regionNodes) {
+    const activeElement = document.activeElement;
+    if (!this.isElementWithinOverlayRegion(activeElement, regionNodes)) return null;
+
+    let target = activeElement;
+    const preferredSearchAction = this.getPreferredOverlaySearchAction(region);
+    if (preferredSearchAction) {
+      const searchInput = this.collectOverlayRegionElements(
+        regionNodes,
+        `[data-action="${preferredSearchAction}"]`
+      )[0];
+      if (searchInput && String(searchInput.value ?? "").length > 0) target = searchInput;
+    }
+
+    const dataset = {};
+    for (const key of [
+      "action", "actorId", "attackIndex", "attackKey", "skillIndex", "skillKey",
+      "spellIndex", "spellKey", "drawer", "refType", "refName", "pdfKey"
+    ]) {
+      const value = target?.dataset?.[key];
+      if (value !== undefined && value !== "") dataset[key] = value;
+    }
+
+    return {
+      id: target?.id ?? "",
+      action: target?.dataset?.action ?? "",
+      dataset,
+      selectionStart: Number.isInteger(target?.selectionStart) ? target.selectionStart : null,
+      selectionEnd: Number.isInteger(target?.selectionEnd) ? target.selectionEnd : null,
+      selectionDirection: target?.selectionDirection ?? "none"
+    };
+  }
+
+  restoreOverlayRegionFocusState(regionNodes, state) {
+    if (!state) return;
+    let candidates = [];
+
+    if (state.id) {
+      const byId = document.getElementById(state.id);
+      if (this.isElementWithinOverlayRegion(byId, regionNodes)) candidates.push(byId);
+    }
+    if (!candidates.length && state.action) {
+      candidates = this.collectOverlayRegionElements(regionNodes, `[data-action="${state.action}"]`);
+    }
+
+    const target = candidates.find((candidate) =>
+      Object.entries(state.dataset ?? {}).every(([key, value]) => candidate?.dataset?.[key] === value)
+    ) ?? candidates[0];
+    if (!target) return;
+
+    try {
+      target.focus?.({ preventScroll: true });
+    } catch (_error) {
+      target.focus?.();
+    }
+    if (typeof target.setSelectionRange === "function" && state.selectionStart !== null) {
+      try {
+        target.setSelectionRange(state.selectionStart, state.selectionEnd ?? state.selectionStart, state.selectionDirection);
+      } catch (_error) {
+        // Selection restoration is best-effort for supported input types.
+      }
+    }
+  }
+
+  activateInsertedOverlayRegion(region, regionNodes) {
+    const elementNodes = (regionNodes ?? []).filter((node) => node?.nodeType === Node.ELEMENT_NODE);
+    if (!elementNodes.length) return;
+    this.activateListeners($(elementNodes));
+
+    if (region === "chrome") {
+      const handles = this.collectOverlayRegionElements(elementNodes, '[data-action="drag-overlay"]');
+      for (const handle of handles) {
+        handle.addEventListener("pointerdown", (event) => this.startOverlayDrag(event), { passive: false });
+      }
+    }
+  }
+
+  replaceOverlayRegion(region, html) {
+    const markers = this.getOverlayRegionMarkers(region);
+    if (!markers) return null;
+    const oldNodes = [];
+    for (let node = markers.start.nextSibling; node && node !== markers.end; node = node.nextSibling) oldNodes.push(node);
+
+    const scrollState = this.captureOverlayRegionScrollState(oldNodes);
+    const focusState = this.captureOverlayRegionFocusState(region, oldNodes);
+    for (const node of oldNodes) {
+      if (node.nodeType === Node.ELEMENT_NODE) {
+        this._quickDeckCustomScrollbarManager?.releaseWithin?.(node, { restoreHosts: false });
+      }
+    }
+
+    const staging = document.createElement("div");
+    staging.innerHTML = html;
+    const newNodes = Array.from(staging.childNodes);
+    const fragment = document.createDocumentFragment();
+    for (const node of newNodes) fragment.appendChild(node);
+    for (const node of oldNodes) node.remove();
+    markers.end.parentNode?.insertBefore(fragment, markers.end);
+    this.activateInsertedOverlayRegion(region, newNodes);
+
+    const restore = () => {
+      this.restoreOverlayRegionFocusState(newNodes, focusState);
+      this.restoreOverlayRegionScrollState(newNodes, scrollState);
+    };
+    restore();
+    return restore;
+  }
+
+  syncOverlayShellState(data = this.getOverlayData()) {
+    const shell = this._overlayRoot?.querySelector?.(".qd-ui2-shell");
+    if (!shell) return;
+    shell.classList.toggle("qd-ui2-left-open", Boolean(data.isRosterDrawerOpen));
+    shell.classList.toggle("qd-ui2-left-collapsed", !data.isRosterDrawerOpen);
+    shell.classList.toggle("qd-ui2-right-open", Boolean(data.isActionsDrawerOpen));
+    shell.classList.toggle("qd-ui2-right-collapsed", !data.isActionsDrawerOpen);
+    shell.dataset.activeDrawer = data.activeDrawer ?? "";
+
+    const leftTab = shell.querySelector(".qd-ui2-left-tab");
+    if (leftTab) {
+      leftTab.title = data.isRosterDrawerOpen ? "Collapse Active Characters drawer" : "Open Active Characters drawer";
+      leftTab.setAttribute("aria-expanded", data.isRosterDrawerOpen ? "true" : "false");
+      const label = leftTab.querySelector("span");
+      if (label) label.textContent = data.isRosterDrawerOpen ? "‹ Close" : "Active ›";
+    }
+    const rightTab = shell.querySelector(".qd-ui2-right-tab");
+    if (rightTab) {
+      rightTab.title = data.isActionsDrawerOpen ? "Collapse action drawer" : "Open action drawer";
+      rightTab.setAttribute("aria-expanded", data.isActionsDrawerOpen ? "true" : "false");
+      const label = rightTab.querySelector("span");
+      if (label) label.textContent = data.isActionsDrawerOpen ? "Close ›" : "‹ Actions";
+    }
   }
 
   mountOverlay() {
@@ -4940,6 +5562,10 @@ export class QuickDeckApp extends Application {
 
   setupQuickDeckCustomScrollbars(root) {
     if (!root) return;
+    if (this._quickDeckCustomScrollbarManager?.root === root) {
+      this._quickDeckCustomScrollbarManager.refreshAll();
+      return;
+    }
     this.teardownQuickDeckCustomScrollbars();
     this._quickDeckCustomScrollbarManager = new QuickDeckCustomScrollbarManager(root);
     this._quickDeckCustomScrollbarManager.setup();
@@ -6419,6 +7045,48 @@ export class QuickDeckApp extends Application {
     this._qdPendingDamagePopupElement = null;
   }
 
+  syncRightDrawerFavoriteState(type, key, isActive) {
+    const root = this._overlayRoot;
+    if (!root || !type || !key) return;
+
+    const config = {
+      attack: {
+        action: "toggle-favorite-attack",
+        datasetKey: "attackKey",
+        activeTitle: "Unpin attack",
+        inactiveTitle: "Pin attack"
+      },
+      skill: {
+        action: "toggle-quick-skill",
+        datasetKey: "skillKey",
+        activeTitle: "Unpin skill",
+        inactiveTitle: "Pin skill"
+      },
+      spell: {
+        action: "toggle-favorite-spell",
+        datasetKey: "spellKey",
+        activeTitle: "Unpin spell",
+        inactiveTitle: "Pin spell"
+      }
+    }[type];
+    if (!config) return;
+
+    const normalizedKey = String(key);
+    const buttons = root.querySelectorAll(`[data-action="${config.action}"]`);
+    for (const button of buttons) {
+      if (String(button.dataset?.[config.datasetKey] ?? "") !== normalizedKey) continue;
+      button.classList.toggle("is-active", Boolean(isActive));
+      button.setAttribute("aria-pressed", isActive ? "true" : "false");
+      button.title = isActive ? config.activeTitle : config.inactiveTitle;
+      button.closest(".qd-ui2-action-row")?.classList.toggle("is-favorite", Boolean(isActive));
+    }
+  }
+
+  renderCenterAfterPinChange(reason) {
+    this.requestOverlayRender("center", { reason });
+    this.scheduleNativeWindowFocusAfterRender();
+  }
+
   activateListeners(html) {
     super.activateListeners(html);
 
@@ -6659,8 +7327,8 @@ export class QuickDeckApp extends Application {
       else shouldSelect = !this.getQuickSkillSelection(actorId).has(skillKey);
 
       this.setQuickSkillSelected(actorId, skillKey, shouldSelect);
-      this.render(false, { focus: false });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.syncRightDrawerFavoriteState("skill", skillKey, shouldSelect);
+      this.renderCenterAfterPinChange("toggle-quick-skill");
     });
 
     html.find("[data-action='unpin-quick-skill']").on("click", (event) => {
@@ -6671,8 +7339,8 @@ export class QuickDeckApp extends Application {
       if (!actorId || !skillKey) return;
 
       this.setQuickSkillSelected(actorId, skillKey, false);
-      this.render(false, { focus: false });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.syncRightDrawerFavoriteState("skill", skillKey, false);
+      this.renderCenterAfterPinChange("unpin-quick-skill");
     });
 
     html.find("[data-action='toggle-favorite-attack']").on("click", (event) => {
@@ -6683,9 +7351,10 @@ export class QuickDeckApp extends Application {
       if (!actorId || !attackKey) return;
 
       const selection = this.getFavoriteAttackSelection(actorId);
-      this.setFavoriteAttackSelected(actorId, attackKey, !selection.has(attackKey));
-      this.render(false, { focus: false });
-      this.scheduleNativeWindowFocusAfterRender();
+      const isSelected = !selection.has(attackKey);
+      this.setFavoriteAttackSelected(actorId, attackKey, isSelected);
+      this.syncRightDrawerFavoriteState("attack", attackKey, isSelected);
+      this.renderCenterAfterPinChange("favorite-attack");
     });
     html.find("[data-action='toggle-pin-attack']").on("click", (event) => {
       event.preventDefault();
@@ -6693,8 +7362,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const attackKey = event.currentTarget.dataset.attackKey;
       this.togglePinnedAction(actorId, "attack", attackKey);
-      this.render(false, { focus: false });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.renderCenterAfterPinChange("pin-attack");
     });
     html.find("[data-action='remove-pinned-action']").on("click", (event) => {
       event.preventDefault();
@@ -6703,8 +7371,7 @@ export class QuickDeckApp extends Application {
       const type = event.currentTarget.dataset.pinType;
       const key = event.currentTarget.dataset.pinKey;
       this.removePinnedAction(actorId, type, key);
-      this.render(false, { focus: false });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.renderCenterAfterPinChange("remove-pinned-action");
     });
     html.find("[data-action='toggle-pin-skill']").on("click", (event) => {
       event.preventDefault();
@@ -6712,8 +7379,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const skillKey = event.currentTarget.dataset.skillKey;
       this.togglePinnedAction(actorId, "skill", skillKey);
-      this.render(false, { focus: false });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.renderCenterAfterPinChange("pin-skill");
     });
     html.find("[data-action='toggle-pin-spell']").on("click", (event) => {
       event.preventDefault();
@@ -6721,8 +7387,7 @@ export class QuickDeckApp extends Application {
       const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
       const spellKey = event.currentTarget.dataset.spellKey;
       this.togglePinnedAction(actorId, "spell", spellKey);
-      this.render(false, { focus: false });
-      this.scheduleNativeWindowFocusAfterRender();
+      this.renderCenterAfterPinChange("pin-spell");
     });
 
     html.find("[data-action='toggle-favorite-spell']").on("click", (event) => {
@@ -6733,9 +7398,10 @@ export class QuickDeckApp extends Application {
       if (!actorId || !spellKey) return;
 
       const selection = this.getFavoriteSpellSelection(actorId);
-      this.setFavoriteSpellSelected(actorId, spellKey, !selection.has(spellKey));
-      this.render(false, { focus: false });
-      this.scheduleNativeWindowFocusAfterRender();
+      const isSelected = !selection.has(spellKey);
+      this.setFavoriteSpellSelected(actorId, spellKey, isSelected);
+      this.syncRightDrawerFavoriteState("spell", spellKey, isSelected);
+      this.renderCenterAfterPinChange("favorite-spell");
     });
 
     html.find("[data-action='toggle-center-favorite-section']").on("click", (event) => {
@@ -6750,7 +7416,7 @@ export class QuickDeckApp extends Application {
         spells: this.centerFavoriteSections?.spells ?? true,
         [section]: !(current ?? true)
       };
-      this.render(false, { focus: false });
+      this.requestOverlayRender("center", { reason: "favorite-section" });
     });
 
 
@@ -6761,7 +7427,7 @@ export class QuickDeckApp extends Application {
       if (!drawer || !VALID_DRAWERS.has(drawer)) return;
       this.activeDrawer = this.activeDrawer === drawer ? null : drawer;
       this.isActionsDrawerOpen = true;
-      this.render(false);
+      this.requestOverlayRender("right", { reason: "drawer-tab" });
     });
 
     html.find("[data-action='open-roster-drawer']").on("click", (event) => { event.preventDefault(); this.openRosterDrawer(); });
@@ -6770,7 +7436,7 @@ export class QuickDeckApp extends Application {
     html.find("[data-action='open-actions-drawer']").on("click", (event) => { event.preventDefault(); this.openActionsDrawer(event.currentTarget.dataset.drawer); });
     html.find("[data-action='close-actions-drawer']").on("click", (event) => { event.preventDefault(); this.closeActionsDrawer(); });
     html.find("[data-action='toggle-actions-drawer']").on("click", (event) => { event.preventDefault(); this.toggleActionsDrawer(event.currentTarget.dataset.drawer); });
-    html.find("[data-action='toggle-info-popover']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.isInfoPopoverOpen = !this.isInfoPopoverOpen; this.render(false); });
+    html.find("[data-action='toggle-info-popover']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.isInfoPopoverOpen = !this.isInfoPopoverOpen; this.requestOverlayRender("chrome", { reason: "info-popover" }); });
     html.find("[data-action='minimize-overlay']").on("click", (event) => { event.preventDefault(); event.stopPropagation(); this.toggleMinimizedState(); });
     html.find("[data-action='close-overlay']").on("click", async (event) => { event.preventDefault(); event.stopPropagation(); await this.close(); });
 
@@ -6782,15 +7448,47 @@ export class QuickDeckApp extends Application {
       await this.adjustActorResource(actorId, resource, delta);
     });
 
-    html.find("[data-action='set-resource']").on("change", async (event) => {
-      const actorId = event.currentTarget.dataset.actorId || this.activeActorId;
-      const resource = event.currentTarget.dataset.resource;
-      await this.setActorResourceValue(actorId, resource, event.currentTarget.value);
+    const commitResourceInput = async (input) => {
+      if (!input) return;
+      const actorId = input.dataset.actorId || this.activeActorId;
+      const resource = input.dataset.resource;
+      const actor = this.resolveActorDocument(actorId);
+      const nextValue = String(input.value ?? "").trim();
+      const parsedValue = this.parseResourceNumber(nextValue);
+
+      if (!Number.isFinite(parsedValue)) {
+        const currentValue = this.parseResourceNumber(this.getResourceValue(actor, resource));
+        input.value = Number.isFinite(currentValue) ? String(currentValue) : "";
+        input.dataset.qdResourceCommitted = input.value;
+        return;
+      }
+
+      const normalizedValue = String(parsedValue);
+      if (input.dataset.qdResourceCommitPending === normalizedValue) return;
+      if (input.dataset.qdResourceCommitted === normalizedValue) return;
+
+      input.dataset.qdResourceCommitPending = normalizedValue;
+      try {
+        const didUpdate = await this.setActorResourceValue(actor, resource, parsedValue);
+        if (didUpdate) {
+          input.value = normalizedValue;
+          input.dataset.qdResourceCommitted = normalizedValue;
+        }
+      } finally {
+        if (input.dataset.qdResourceCommitPending === normalizedValue) {
+          delete input.dataset.qdResourceCommitPending;
+        }
+      }
+    };
+
+    html.find("[data-action='set-resource']").on("change", (event) => {
+      void commitResourceInput(event.currentTarget);
     });
 
-    html.find("[data-action='set-resource']").on("keydown", (event) => {
+    html.find("[data-action='set-resource']").on("keydown", async (event) => {
       if (event.key !== "Enter") return;
       event.preventDefault();
+      await commitResourceInput(event.currentTarget);
       event.currentTarget.blur();
     });
 
@@ -7043,7 +7741,7 @@ export class QuickDeckApp extends Application {
         callback: (path) => {
           this.pdfMapDraft.path = path;
           if (!String(path).toLowerCase().endsWith(".pdf")) ui.notifications?.warn("QuickDeck: Selected file does not end in .pdf.");
-          this.render(false);
+          this.requestOverlayRender("right", { reason: "choose-pdf" });
         }
       }).render(true);
     });
@@ -7062,12 +7760,12 @@ export class QuickDeckApp extends Application {
       };
       await this.savePdfPageRefMappings(mappings);
       this.clearPdfMapDraft();
-      this.render(false);
+      this.requestOverlayRender("right", { reason: "save-pdf" });
     });
     html.find("[data-action='clear-pdf-source-draft']").on("click", (event) => {
       event.preventDefault();
       this.clearPdfMapDraft();
-      this.render(false);
+      this.requestOverlayRender("right", { reason: "clear-pdf-draft" });
     });
     html.find("[data-action='edit-pdf-source']").on("click", (event) => {
       event.preventDefault();
@@ -7075,7 +7773,7 @@ export class QuickDeckApp extends Application {
       const mapping = this.getPdfPageRefMappings()[key];
       if (!mapping) return;
       this.pdfMapDraft = { key, name: String(mapping.name ?? ""), path: String(mapping.path ?? ""), offset: Number(mapping.offset) || 0 };
-      this.render(false);
+      this.requestOverlayRender("right", { reason: "edit-pdf" });
     });
     html.find("[data-action='remove-pdf-source']").on("click", async (event) => {
       event.preventDefault();
@@ -7084,7 +7782,7 @@ export class QuickDeckApp extends Application {
       if (!mappings[key]) return;
       delete mappings[key];
       await this.savePdfPageRefMappings(mappings);
-      this.render(false);
+      this.requestOverlayRender("right", { reason: "remove-pdf" });
     });
     html.find("[data-action='test-pdf-source']").on("click", (event) => {
       event.preventDefault();
@@ -7138,7 +7836,7 @@ export class QuickDeckApp extends Application {
 
         this.ensureActorTab(actor.id);
         console.log("gurps-quickdeck | Actor dropped", actor.name);
-        this.render(false, { focus: false });
+        this.requestOverlayRender(["left", "center", "right"], { reason: "roster-drop" });
       } catch (error) {
         console.warn("gurps-quickdeck | Failed to process dropped actor.", error);
       }

@@ -36,23 +36,22 @@ function openQuickDeck() {
   return quickDeckApp;
 }
 
-const QUICKDECK_RENDER_DEBOUNCE_MS = 25;
-const QUICKDECK_DRAG_RENDER_RETRY_MS = 100;
-let pendingQuickDeckRender = null;
-function renderQuickDeckIfOpen(delay = QUICKDECK_RENDER_DEBOUNCE_MS) {
-  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-  if (pendingQuickDeckRender) return;
+const QUICKDECK_DOCUMENT_RENDER_DEBOUNCE_MS = 25;
+function isQuickDeckOverlayMounted() {
+  const root = quickDeckApp?._overlayRoot;
+  return Boolean(root && document.documentElement?.contains?.(root));
+}
 
-  pendingQuickDeckRender = setTimeout(() => {
-    pendingQuickDeckRender = null;
-    if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-    if (quickDeckApp.isOverlayDragging?.()) {
-      renderQuickDeckIfOpen(QUICKDECK_DRAG_RENDER_RETRY_MS);
-      return;
-    }
-    quickDeckApp.render(false, { focus: false });
-    quickDeckApp.scheduleNativeWindowFocusAfterRender?.();
-  }, delay);
+function renderQuickDeckIfOpen(regions = "all", delay = QUICKDECK_DOCUMENT_RENDER_DEBOUNCE_MS) {
+  if ((!quickDeckApp?.rendered && !isQuickDeckOverlayMounted()) || quickDeckApp?.isMinimized) return;
+  quickDeckApp.requestOverlayRender?.(regions, { delay, reason: "document-hook" });
+}
+
+function actorUpdateTouchesQuickDeckResources(changed = {}) {
+  const flattened = foundry?.utils?.flattenObject?.(changed) ?? changed ?? {};
+  return Object.keys(flattened).some((path) =>
+    /(?:^|\.)system\.(?:HP|FP)(?:\.|$)/.test(String(path))
+  );
 }
 
 function actorAffectsQuickDeckView(actorId, options = {}) {
@@ -77,6 +76,11 @@ Hooks.once("ready", () => {
         return;
       }
       quickDeckApp.dumpActiveActorData();
+    },
+    dumpRenderTimings: () => {
+      const timings = quickDeckApp?.getOverlayRenderTimingSummary?.() ?? null;
+      console.table(timings?.summary ?? {});
+      return timings;
     },
   };
 });
@@ -265,48 +269,61 @@ Hooks.on("deleteActor", (actor) => {
   if (shouldRender && !quickDeckApp.onActorDeleted(actorId)) renderQuickDeckIfOpen();
 });
 
-Hooks.on("updateActor", (actor) => {
+Hooks.on("updateActor", (actor, changed) => {
   if (!quickDeckApp) return;
   const actorId = actor?.id;
+  quickDeckApp.rememberActorDocument?.(actor);
   const shouldRender = actorAffectsQuickDeckView(actorId, { includeAvailable: true });
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (shouldRender) renderQuickDeckIfOpen();
+  if (!shouldRender) return;
+
+  if (actorUpdateTouchesQuickDeckResources(changed)) {
+    renderQuickDeckIfOpen("center", 0);
+    return;
+  }
+  renderQuickDeckIfOpen();
+});
+
+Hooks.on("updateToken", (tokenDocument, changed) => {
+  if (!quickDeckApp || !actorUpdateTouchesQuickDeckResources(changed)) return;
+  const actor = tokenDocument?.actor ?? null;
+  const actorId = actor?.id ?? tokenDocument?.actorId ?? null;
+  if (!actorId) return;
+
+  quickDeckApp.rememberActorDocument?.(actor);
+  quickDeckApp.invalidateDerivedActorData(actorId);
+  if (actorAffectsQuickDeckView(actorId, { includeAvailable: true })) {
+    renderQuickDeckIfOpen("center", 0);
+  }
 });
 
 Hooks.on("createItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen();
+  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen(["center", "right"]);
 });
 
 Hooks.on("updateItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen();
+  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen(["center", "right"]);
 });
 
 Hooks.on("deleteItem", (item) => {
   const actorId = item?.parent?.id ?? item?.actor?.id ?? null;
   if (!quickDeckApp || !actorId) return;
   quickDeckApp.invalidateDerivedActorData(actorId);
-  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen();
+  if (actorAffectsQuickDeckView(actorId, { includeRoster: false })) renderQuickDeckIfOpen(["center", "right"]);
 });
 
 function refreshQuickDeckOnCombatChange() {
-  renderQuickDeckIfOpen();
+  renderQuickDeckIfOpen(["left", "center", "right"]);
 }
 
-let pendingModifierBucketRefresh = null;
 function refreshQuickDeckOnModifierBucketChange() {
-  if (!quickDeckApp?.rendered || quickDeckApp?.isMinimized) return;
-
-  if (pendingModifierBucketRefresh) clearTimeout(pendingModifierBucketRefresh);
-  pendingModifierBucketRefresh = setTimeout(() => {
-    pendingModifierBucketRefresh = null;
-    renderQuickDeckIfOpen();
-  }, 0);
+  renderQuickDeckIfOpen(["center", "right"], 0);
 }
 
 Hooks.on("renderModifierBucket", () => {
