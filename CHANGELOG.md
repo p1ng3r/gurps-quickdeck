@@ -1,3 +1,14 @@
+## [Unreleased] - v0.20.4-runtime-cleanup-phase1
+
+### Changed
+- Removes the duplicate overlay render performed when QuickDeck opens and prevents the hidden Application host from building the full overlay view model.
+- Consolidates fallback and chat-captured damage into one native GURPS-compatible pending-damage payload queue, limited to the GM client.
+- Uses Foundry 13/14's `renderChatMessageHTML` hook and avoids full overlay rerenders when only the floating pending-damage popup changes.
+- Lazy-loads the developer art tuner and replaces stale historical UI build labels with the installed module version.
+
+### Documentation
+- Adds the staged v0.20.4 runtime, render, CSS, and package cleanup plan.
+
 ## [Unreleased] - v0.20.3-release-readiness-checkpoint
 
 ### Added
