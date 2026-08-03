@@ -1,0 +1,22 @@
+# Root module files
+module.json
+LICENSE
+README.md
+CHANGELOG.md
+
+# Runtime directories
+assets
+data
+styles
+templates
+
+# Runtime JavaScript
+scripts/main.js
+scripts/page-ref-key-names.js
+scripts/pdf-page-ref-utils.js
+scripts/quickdeck-app.js
+scripts/reference-app.js
+scripts/reference-index-app.js
+scripts/reference-index-store.js
+scripts/reference-lookup-name.js
+scripts/reference-summaries-store.js
